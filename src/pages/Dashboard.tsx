@@ -614,7 +614,7 @@ export default function Dashboard() {
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="text-center p-4 border rounded-lg">
-                        <div className="text-2xl font-bold text-blue-600">{formatCurrency(totalRevenue)}</div>
+                        <div className="text-2xl font-bold text-blue-800">{formatCurrency(totalRevenue)}</div>
                         <div className="text-sm text-muted-foreground">Total Revenue</div>
                         <div className="text-xs text-green-600 mt-1">↗ +12.5% vs last month</div>
                       </div>
