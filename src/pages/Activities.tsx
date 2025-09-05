@@ -152,7 +152,7 @@ export default function Activities() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-background p-6">
         <div className="space-y-6">
           <div className="animate-fade-in">
             <div className="h-8 bg-muted rounded w-64 mb-2"></div>
@@ -160,7 +160,7 @@ export default function Activities() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse border border-border shadow-sm bg-white rounded-lg p-6">
+              <div key={i} className="animate-pulse border border-border shadow-sm bg-card rounded-lg p-6">
                 <div className="h-6 bg-muted rounded w-24 mb-4"></div>
                 <div className="h-8 bg-muted rounded w-16 mb-2"></div>
                 <div className="h-8 w-8 bg-muted rounded"></div>
@@ -173,7 +173,7 @@ export default function Activities() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="space-y-6 animate-fade-in">
         {/* Header Section */}
         <div className="mb-6">
@@ -246,7 +246,7 @@ export default function Activities() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           {/* Recent Notifications */}
-          <Card className="border border-border shadow-sm bg-white">
+          <Card className="border border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                 <Bell className="h-5 w-5 text-yellow-600" />
@@ -276,7 +276,7 @@ export default function Activities() {
           </Card>
 
           {/* Recent Activities */}
-          <Card className="border border-border shadow-sm bg-white">
+          <Card className="border border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                 <Activity className="h-5 w-5 text-blue-600" />
@@ -315,7 +315,7 @@ export default function Activities() {
         </div>
 
         {/* Activity Timeline */}
-        <Card className="border border-border shadow-sm bg-white">
+        <Card className="border border-border shadow-sm">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
               <Clock className="h-5 w-5 text-green-600" />
