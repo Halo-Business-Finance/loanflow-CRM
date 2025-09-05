@@ -379,7 +379,7 @@ export default function Integrations() {
         </div>
 
           {/* Search and Filter Bar */}
-          <div className="bg-white/80 backdrop-blur-sm border border-border rounded-2xl p-4 space-y-4">
+          <div className="bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-4 space-y-4">
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
@@ -426,7 +426,7 @@ export default function Integrations() {
             <TabsContent value="integrations" className="space-y-6">
               {/* Stats Overview */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <Card className="border border-border shadow-sm bg-white">
+                <Card className="border border-border shadow-sm">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-accent/10 rounded-lg">
@@ -441,7 +441,7 @@ export default function Integrations() {
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="border border-border shadow-sm bg-white">
+                <Card className="border border-border shadow-sm">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-primary/10 rounded-lg">
@@ -488,7 +488,7 @@ export default function Integrations() {
                 {filteredIntegrations.map((integration) => (
                   <Card 
                     key={integration.id} 
-                    className="group border border-border shadow-sm bg-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                    className="group border border-border shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
                   >
                     <CardHeader className="pb-4 relative">
                       <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-primary opacity-5 rounded-full blur-xl group-hover:opacity-10 transition-opacity" />
