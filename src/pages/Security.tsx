@@ -27,7 +27,7 @@ import {
 
 const SecurityPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-background p-6">
       <SecurityWrapper>
         <div className="space-y-6 animate-fade-in">
           {/* Header Section */}
