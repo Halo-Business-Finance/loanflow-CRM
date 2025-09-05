@@ -454,7 +454,7 @@ export default function ExistingBorrowers() {
   return (
     <div className="min-h-screen bg-background">
       {/* Modern Header */}
-      <div className="bg-white border-b border-border sticky top-0 z-10">
+      <div className="bg-card border-b border-border sticky top-0 z-10">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -491,7 +491,7 @@ export default function ExistingBorrowers() {
       <div className="p-6 space-y-6">
         {/* Client Metrics Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border border-border shadow-sm bg-white">
+          <Card className="border border-border shadow-sm">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
