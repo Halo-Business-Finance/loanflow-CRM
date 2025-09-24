@@ -35,6 +35,7 @@ import {
 import { useAuth } from "@/components/auth/AuthProvider"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { cn } from "@/lib/utils"
+import { BrandLogo } from "@/components/BrandLogo"
 
 interface LayoutProps {
   children: React.ReactNode
@@ -194,10 +195,7 @@ export default function MicrosoftLayout({ children }: LayoutProps) {
           <div className="flex items-center justify-between">
             {!sidebarCollapsed && (
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 bg-primary rounded-sm flex items-center justify-center">
-                  <div className="h-6 w-6 bg-white rounded-sm"></div>
-                </div>
-                <span className="font-semibold text-foreground">Halo Business Finance</span>
+                <BrandLogo showText />
               </div>
             )}
             <Button
@@ -308,7 +306,8 @@ export default function MicrosoftLayout({ children }: LayoutProps) {
       <div className="flex-1 flex flex-col">
         {/* Top Header */}
         <header className="bg-card border-b border-border px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <BrandLogo showText={false} size={24} />
             <h1 className="text-lg font-semibold text-foreground">
               {navigationGroups
                 .flatMap(group => group.items)
