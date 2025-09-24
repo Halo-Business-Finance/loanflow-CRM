@@ -122,24 +122,24 @@ export function ContextualSidebar() {
   }
 
   return (
-    <Sidebar className={cn("border-r bg-muted/10", collapsed ? "w-14" : "w-64")} collapsible="icon">
-      <SidebarContent>
+    <Sidebar className={cn("border-r bg-card/60 backdrop-blur", collapsed ? "w-16" : "w-72")} collapsible="icon">
+      <SidebarContent className="py-4">
         <SidebarGroup>
-          <SidebarGroupLabel className={cn("text-xs font-medium text-muted-foreground px-2", collapsed && "sr-only")}>
+          <SidebarGroupLabel className={cn("text-xs font-semibold text-muted-foreground px-4 mb-2", collapsed && "sr-only")}>
             {getModuleName(currentModule)}
           </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
+          <SidebarGroupContent className="px-2">
+            <SidebarMenu className="space-y-1">
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild>
                     <Link
                       to={item.url}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors",
+                        "flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-200 font-medium",
                         isActivePath(item.url)
-                          ? "bg-primary text-primary-foreground font-medium"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                          ? "bg-primary text-primary-foreground shadow-medium"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/60 hover:shadow-soft"
                       )}
                     >
                       <item.icon className="h-4 w-4 flex-shrink-0" />

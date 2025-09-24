@@ -72,9 +72,9 @@ export function TopNavigation() {
   }
 
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <header className="border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/90 sticky top-0 z-50 shadow-medium">
       {/* Primary Header */}
-      <div className="flex h-14 items-center px-4 gap-4">
+      <div className="flex h-16 items-center px-6 gap-4">
         {/* Sidebar Toggle & Logo */}
         <div className="flex items-center gap-3">
           <SidebarTrigger className="h-8 w-8" />
@@ -91,23 +91,23 @@ export function TopNavigation() {
               placeholder="Search across all modules..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-muted/50 border-none focus-visible:bg-background"
+              className="pl-9 bg-muted/30 border-input-border focus-visible:bg-card h-10"
             />
           </div>
         </form>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* Notifications */}
-          <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Button variant="ghost" size="icon" className="h-9 w-9 relative">
             <Bell className="h-4 w-4" />
-            <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs">
+            <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center">
               3
             </Badge>
           </Button>
 
           {/* Help */}
-          <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Button variant="ghost" size="icon" className="h-9 w-9">
             <HelpCircle className="h-4 w-4" />
           </Button>
 
@@ -117,17 +117,17 @@ export function TopNavigation() {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 px-2 gap-2">
-                <div className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium">
+              <Button variant="ghost" className="h-9 px-3 gap-2 font-medium">
+                <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
                   {getUserDisplayName().charAt(0).toUpperCase()}
                 </div>
-                <span className="text-sm font-medium hidden sm:inline">
+                <span className="text-sm font-medium hidden sm:inline text-foreground">
                   {getUserDisplayName()}
                 </span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-background border">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuContent align="end" className="w-64 bg-card border shadow-large">
+              <DropdownMenuLabel className="font-semibold">My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => navigate('/settings')}>
                 <User className="mr-2 h-4 w-4" />
@@ -148,17 +148,17 @@ export function TopNavigation() {
       </div>
 
       {/* Secondary Navigation - Module Tabs */}
-      <div className="border-t bg-muted/30">
-        <nav className="flex items-center px-4 overflow-x-auto">
+      <div className="border-t bg-muted/20">
+        <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
           {mainModules.map((module) => (
             <Link
               key={module.path}
               to={module.path}
               className={cn(
-                "flex items-center px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors",
+                "flex items-center px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-all duration-200",
                 isActiveModule(module.path, module.exact)
-                  ? "border-primary text-primary bg-background" 
-                  : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  ? "border-primary text-primary bg-primary/5 font-semibold" 
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/40 hover:border-muted-foreground/30"
               )}
             >
               {module.name}

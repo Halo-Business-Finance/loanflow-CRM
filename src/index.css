@@ -8,144 +8,136 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Microsoft-inspired color scheme */
-    --background: 0 0% 98%;
-    --foreground: 0 0% 13%;
+    /* Enterprise CRM Color Scheme - Professional Blues & Grays */
+    --background: 240 10% 98%;
+    --foreground: 222 84% 4.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 13%;
+    --card-foreground: 222 84% 4.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 13%;
+    --popover-foreground: 222 84% 4.9%;
 
-    /* Microsoft Blue (#0078d4) */
-    --primary: 207 100% 42%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 207 90% 54%;
+    /* Primary - Professional Blue */
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 221 70% 65%;
 
-    --secondary: 220 13% 91%;
-    --secondary-foreground: 0 0% 13%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 84% 4.9%;
 
-    --muted: 220 13% 95%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 207 100% 42%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 40% 94%;
+    --accent-foreground: 222 84% 4.9%;
 
-    --warning: 35 91% 65%;
-    --warning-foreground: 0 0% 13%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 89%;
 
-    --destructive: 0 75% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 220 13% 91%;
+    --border: 214 32% 91%;
     --input: 0 0% 100%;
-    --ring: 207 100% 42%;
+    --ring: 221 83% 53%;
 
-    /* Enhanced field borders */
-    --input-border: 0 0% 75%;
-    --input-border-hover: 0 0% 65%;
-    --input-border-focus: 220 91% 25%;
+    /* Enhanced borders for enterprise look */
+    --input-border: 214 32% 91%;
+    --input-border-hover: 217 32% 85%;
+    --input-border-focus: 221 83% 53%;
 
-    /* Microsoft-style clean design - no gradients */
-    --gradient-primary: hsl(207 100% 42%);
-    --gradient-card: hsl(0 0% 100%);
-    --gradient-accent: hsl(207 100% 42%);
-    --gradient-blue: hsl(207 100% 42%);
-    --gradient-navy: hsl(207 100% 42%);
-    --gradient-green: hsl(140 60% 45%);
-    --gradient-orange: hsl(35 91% 65%);
-    --gradient-purple: hsl(262 70% 50%);
-    --gradient-red: hsl(0 75% 60%);
-    /* Microsoft-style subtle shadows */
+    /* Enterprise gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(221 70% 65%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 98%));
+    --gradient-accent: linear-gradient(135deg, hsl(210 40% 94%), hsl(210 30% 97%));
+    --gradient-blue: linear-gradient(135deg, hsl(221 83% 53%), hsl(221 70% 65%));
+    --gradient-navy: linear-gradient(135deg, hsl(222 84% 25%), hsl(222 70% 35%));
+    --gradient-green: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 60% 50%));
+    --gradient-orange: linear-gradient(135deg, hsl(25 95% 53%), hsl(25 85% 65%));
+    --gradient-purple: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 70% 70%));
+    --gradient-red: linear-gradient(135deg, hsl(0 84% 60%), hsl(0 74% 72%));
+
+    /* Enterprise shadows */
     --shadow-soft: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
-    --shadow-medium: 0 2px 4px -1px hsl(0 0% 0% / 0.06), 0 1px 2px -1px hsl(0 0% 0% / 0.06);
-    --shadow-large: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.06);
-    --shadow-glow: 0 0 15px hsl(207 100% 42% / 0.15);
+    --shadow-medium: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-large: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
+    --shadow-glow: 0 0 20px hsl(221 83% 53% / 0.15);
 
-    --radius: 0.5rem;
+    --radius: 8px;
 
-    /* Field styling */
-    --field-accent: 212 90% 70%;
-
-    /* Microsoft blue for navigation and widgets */
-    --navy: 207 100% 42%;
-    --navy-foreground: 0 0% 100%;
-    
-    /* Microsoft blue variants */
-    --navy-light: 207 90% 54%;
-    --navy-dark: 207 100% 35%;
+    /* Professional color variants */
+    --navy: 222 84% 25%;
+    --navy-foreground: 210 40% 98%;
+    --navy-light: 222 70% 35%;
+    --navy-dark: 222 84% 15%;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 0%;
-    --sidebar-primary: 220 91% 25%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 96%;
-    --sidebar-accent-foreground: 0 0% 0%;
-    --sidebar-border: 0 0% 0%;
-    --sidebar-ring: 220 91% 25%;
+    --sidebar-foreground: 222 84% 4.9%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 84% 4.9%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 221 83% 53%;
   }
 
   .dark {
-    --background: 220 25% 8%;
-    --foreground: 220 10% 95%;
+    --background: 222 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 212 80% 25%;
-    --card-foreground: 0 0% 100%;
+    --card: 222 84% 7%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 220 23% 12%;
-    --popover-foreground: 220 10% 95%;
+    --popover: 222 84% 7%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 220 100% 25%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 220 90% 40%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 84% 4.9%;
+    --primary-glow: 217 70% 72%;
     
-    /* Navy blue for dark mode */
-    --navy: 220 100% 25%;
-    --navy-light: 220 80% 40%;
-    --navy-dark: 220 100% 20%;
+    --navy: 217 91% 60%;
+    --navy-light: 217 70% 72%;
+    --navy-dark: 217 91% 50%;
 
-    --secondary: 220 25% 18%;
-    --secondary-foreground: 220 10% 95%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 220 20% 15%;
-    --muted-foreground: 0 0% 100%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 142 76% 60%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 217 32% 17%;
+    --accent-foreground: 210 40% 98%;
 
-    --warning: 38 92% 60%;
-    --warning-foreground: 220 25% 8%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 84% 4.9%;
 
-    --destructive: 0 84% 70%;
-    --destructive-foreground: 220 25% 8%;
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 0 0% 0%;
-    --input: 220 25% 20%;
-    --ring: 220 91% 60%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 217 91% 60%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(220 100% 25%), hsl(220 90% 40%));
-    --gradient-blue: linear-gradient(135deg, hsl(220 100% 25%), hsl(220 90% 40%));
-    --gradient-navy: linear-gradient(135deg, hsl(220 100% 25%), hsl(220 90% 40%));
-    --gradient-green: linear-gradient(135deg, hsl(142 76% 60%), hsl(142 65% 70%));
-    --gradient-orange: linear-gradient(135deg, hsl(24 95% 65%), hsl(24 85% 75%));
-    --gradient-purple: linear-gradient(135deg, hsl(262 90% 65%), hsl(262 80% 75%));
-    --gradient-red: linear-gradient(135deg, hsl(0 84% 70%), hsl(0 74% 80%));
-    --shadow-glow: 0 0 20px hsl(220 91% 60% / 0.15);
-    --gradient-card: linear-gradient(145deg, hsl(220 23% 12%), hsl(220 20% 15%));
-    --gradient-accent: linear-gradient(135deg, hsl(142 76% 60%), hsl(142 60% 70%));
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 70% 72%));
+    --gradient-blue: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 70% 72%));
+    --gradient-navy: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 70% 72%));
+    --gradient-green: linear-gradient(135deg, hsl(142 76% 60%), hsl(142 65% 72%));
+    --gradient-orange: linear-gradient(135deg, hsl(25 95% 65%), hsl(25 85% 77%));
+    --gradient-purple: linear-gradient(135deg, hsl(262 83% 68%), hsl(262 70% 80%));
+    --gradient-red: linear-gradient(135deg, hsl(0 75% 60%), hsl(0 65% 72%));
+    --shadow-glow: 0 0 25px hsl(217 91% 60% / 0.2);
+    --gradient-card: linear-gradient(145deg, hsl(222 84% 7%), hsl(217 32% 10%));
+    --gradient-accent: linear-gradient(135deg, hsl(217 32% 17%), hsl(217 20% 22%));
 
-    /* Field styling for dark mode */
-    --field-accent: 212 90% 75%;
-
-    --sidebar-background: 220 30% 6%;
-    --sidebar-foreground: 220 10% 95%;
-    --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 220 10% 95%;
-    --sidebar-accent: 220 25% 15%;
-    --sidebar-accent-foreground: 220 10% 95%;
-    --sidebar-border: 0 0% 0%;
-    --sidebar-ring: 220 91% 60%;
+    --sidebar-background: 222 84% 4.9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 222 84% 4.9%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 32% 17%;
+    --sidebar-ring: 217 91% 60%;
   }
 }
 
@@ -155,17 +147,26 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
 
-  /* Global styles for titles and column headers - underlines removed */
+  /* Enterprise typography */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-thin font-sans;
+    @apply font-semibold text-foreground;
+    letter-spacing: -0.025em;
   }
 
-  /* Table headers - underlines removed */
+  h1 { @apply text-3xl; }
+  h2 { @apply text-2xl; }
+  h3 { @apply text-xl; }
+  h4 { @apply text-lg; }
+
+  /* Professional table headers */
   th {
-    @apply font-thin;
+    @apply font-semibold text-sm text-muted-foreground uppercase tracking-wide;
   }
 
   /* Card titles */
@@ -242,19 +243,26 @@ All colors MUST be HSL.
     @apply text-sm cursor-default;
   }
 
-  /* Enhanced card visibility with blue background */
+  /* Enterprise card styling */
   .card, [data-card="true"], .bg-card {
-    @apply border border-border shadow-sm;
-    background-color: hsl(var(--card));
+    @apply border border-border shadow-medium bg-gradient-card rounded-lg;
+    backdrop-filter: blur(10px);
   }
 
-  /* Widget visibility fixes with blue background */
+  /* Professional dashboard widgets */
   .widget, .metric-card, .stats-card {
-    @apply border border-border shadow-sm bg-card rounded-lg;
+    @apply border border-border shadow-medium bg-gradient-card rounded-lg p-6;
+    backdrop-filter: blur(10px);
   }
 
-  /* Dropdown menu styling for proper visibility */
+  /* Enhanced dropdown styling */
   [data-radix-dropdown-menu-content] {
-    @apply bg-white border border-border shadow-lg z-50;
+    @apply bg-card border border-border shadow-large rounded-lg z-50;
+    backdrop-filter: blur(20px);
+  }
+
+  /* Professional button enhancements */
+  .btn-primary {
+    @apply bg-gradient-primary shadow-medium hover:shadow-large transition-all duration-200;
   }
 }
