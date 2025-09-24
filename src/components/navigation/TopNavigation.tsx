@@ -157,6 +157,7 @@ export function TopNavigation() {
         <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
           {/* Navigation Controls */}
           <div className="flex items-center gap-2 mr-4">
+            <SidebarTrigger className="h-8 w-8" />
             <Button 
               variant="ghost" 
               size="icon" 
@@ -175,7 +176,6 @@ export function TopNavigation() {
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
-            <SidebarTrigger className="h-8 w-8" />
           </div>
           {mainModules.map((module) => (
             <Link
