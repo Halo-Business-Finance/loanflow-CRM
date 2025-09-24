@@ -291,12 +291,7 @@ function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="pl-6 pr-6 py-6 space-y-6">
-        {/* Dashboard Title */}
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
-        </div>
-        
+      <div className="p-6 space-y-6">
         {/* Empty State - Show when no leads exist */}
         {metrics.totalLeads === 0 && !loading && (
           <Card className="bg-card border border-border shadow-soft">
