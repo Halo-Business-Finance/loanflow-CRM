@@ -3,7 +3,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom"
 import { Search, Bell, Settings, LogOut, User, HelpCircle, ChevronLeft, ChevronRight } from "lucide-react"
 import { BrandLogo } from "@/components/BrandLogo"
 import { ThemeToggle } from "@/components/ThemeToggle"
-
+import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { 
@@ -168,6 +168,7 @@ export function TopNavigation() {
         <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
           {/* Navigation Controls */}
           <div className="flex items-center gap-2 mr-4">
+            <SidebarTrigger className="h-12 w-12 [&>svg]:h-6 [&>svg]:w-6" />
             <Button 
               variant="ghost" 
               size="icon" 
