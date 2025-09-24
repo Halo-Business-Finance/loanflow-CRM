@@ -197,7 +197,7 @@ export default function MicrosoftLayout({ children }: LayoutProps) {
                 <div className="h-8 w-8 bg-primary rounded-sm flex items-center justify-center">
                   <div className="h-6 w-6 bg-white rounded-sm"></div>
                 </div>
-                <span className="font-semibold text-foreground">Halo Finance</span>
+                <span className="font-semibold text-foreground">Halo Business Finance</span>
               </div>
             )}
             <Button
