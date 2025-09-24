@@ -72,7 +72,7 @@ export function TopNavigation() {
   }
 
   return (
-    <header className="border-b bg-card/95 sticky top-0 z-40 shadow-medium">
+    <header className="border-b bg-blue-900 sticky top-0 z-40 shadow-medium">
       {/* Primary Header */}
       <div className="flex h-16 items-center px-6 gap-4 relative">
         {/* Logo */}
@@ -86,12 +86,12 @@ export function TopNavigation() {
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <form onSubmit={handleSearch} className="w-80">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-200" />
               <Input
                 placeholder="Search for Borrower or Company"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 bg-muted/30 border-input-border focus-visible:bg-card h-10 w-full"
+                className="pl-9 bg-blue-800/50 border-blue-700 focus-visible:bg-blue-800 h-10 w-full text-white placeholder:text-blue-200"
               />
             </div>
           </form>
@@ -106,7 +106,7 @@ export function TopNavigation() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-9 w-9 relative"
+            className="h-9 w-9 relative text-white hover:bg-blue-800"
             onClick={() => navigate('/activities')}
             title="Activities & Notifications"
           >
@@ -120,7 +120,7 @@ export function TopNavigation() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-9 w-9"
+            className="h-9 w-9 text-white hover:bg-blue-800"
             onClick={() => navigate('/resources')}
             title="Help & Resources"
           >
@@ -133,11 +133,11 @@ export function TopNavigation() {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-9 px-3 gap-2 font-medium">
-                <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
+              <Button variant="ghost" className="h-9 px-3 gap-2 font-medium text-white hover:bg-blue-800">
+                <div className="h-7 w-7 rounded-full bg-white text-blue-900 flex items-center justify-center text-sm font-semibold">
                   {getUserDisplayName().charAt(0).toUpperCase()}
                 </div>
-                <span className="text-sm font-medium hidden sm:inline text-foreground">
+                <span className="text-sm font-medium hidden sm:inline text-white">
                   {getUserDisplayName()}
                 </span>
               </Button>
@@ -164,15 +164,15 @@ export function TopNavigation() {
       </div>
 
       {/* Secondary Navigation - Module Tabs */}
-      <div className="border-t bg-muted/20">
+      <div className="border-t bg-blue-800/50">
         <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
           {/* Navigation Controls */}
           <div className="flex items-center gap-2 mr-4">
-            <SidebarTrigger className="h-12 w-12 [&>svg]:h-6 [&>svg]:w-6" />
+            <SidebarTrigger className="h-12 w-12 [&>svg]:h-6 [&>svg]:w-6 text-white hover:bg-blue-700" />
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-8 w-8" 
+              className="h-8 w-8 text-white hover:bg-blue-700" 
               onClick={() => window.history.back()}
               title="Go back"
             >
@@ -181,7 +181,7 @@ export function TopNavigation() {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-8 w-8" 
+              className="h-8 w-8 text-white hover:bg-blue-700" 
               onClick={() => window.history.forward()}
               title="Go forward"
             >
@@ -197,8 +197,8 @@ export function TopNavigation() {
                 className={cn(
                   "flex items-center px-6 py-3 text-sm font-normal border-b-2 whitespace-nowrap transition-all duration-200",
                   isActiveModule(module.path, module.exact)
-                    ? "border-primary text-black" 
-                    : "border-transparent text-black hover:text-black hover:bg-muted/40 hover:border-muted-foreground/30"
+                    ? "border-white text-white bg-blue-700/50" 
+                    : "border-transparent text-white hover:text-white hover:bg-blue-700/30 hover:border-blue-300"
                 )}
               >
                 {module.name}
