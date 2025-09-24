@@ -272,9 +272,9 @@ function Dashboard() {
   return (
     <div className="bg-background min-h-screen">
       {/* Microsoft-style Dashboard Header */}
-      <div className="bg-white border-b border-border px-6 py-4">
+      <div className="bg-white border-b border-border pl-0 pr-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex-1">
+          <div className="flex-1 pl-6">
             <p className="text-lg text-black mt-1 text-left">Welcome back, {getUserDisplayName()}</p>
           </div>
           <div className="flex items-center gap-3">
