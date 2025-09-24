@@ -74,7 +74,7 @@ export function TopNavigation() {
   return (
     <header className="border-b bg-card/95 sticky top-0 z-40 shadow-medium">
       {/* Primary Header */}
-      <div className="flex h-16 items-center px-6 gap-4">
+      <div className="flex h-16 items-center px-6 gap-4 relative">
         {/* Logo */}
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center">
@@ -82,12 +82,9 @@ export function TopNavigation() {
           </Link>
         </div>
 
-        {/* Spacer */}
-        <div className="flex-1" />
-
-        {/* Global Search - Centered */}
-        <div className="flex justify-center flex-1">
-          <form onSubmit={handleSearch} className="w-full max-w-lg">
+        {/* Centered Search Bar */}
+        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <form onSubmit={handleSearch} className="w-80">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
