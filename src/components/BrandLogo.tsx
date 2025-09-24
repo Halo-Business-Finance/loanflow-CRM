@@ -36,11 +36,11 @@ export function BrandLogo({
           style={{ width: size, height: size }}
           aria-label="LoanFlow CRM logo placeholder"
         >
-          <span className="text-[10px] font-bold">LF</span>
+          <span className="text-sm font-bold">LF</span>
         </div>
       )}
       {showText && (
-        <span className="ml-2 font-semibold text-foreground" aria-label="LoanFlow CRM brand name">
+        <span className="ml-2 font-semibold text-foreground text-lg" aria-label="LoanFlow CRM brand name">
           {text}
         </span>
       )}
