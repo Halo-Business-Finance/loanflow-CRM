@@ -157,7 +157,7 @@ function Dashboard() {
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
-            <Button size="sm">
+            <Button size="sm" onClick={() => window.print()}>
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
