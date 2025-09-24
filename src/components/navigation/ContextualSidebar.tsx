@@ -136,14 +136,14 @@ export function ContextualSidebar() {
                     <Link
                       to={item.url}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-200 font-medium",
+                        "flex items-center gap-3 px-3 py-3 text-sm rounded-lg transition-all duration-200 font-medium",
                         isActivePath(item.url)
                           ? "bg-primary text-primary-foreground shadow-medium"
                           : "text-foreground hover:text-primary hover:bg-primary/10 hover:shadow-soft"
                       )}
                     >
-                      <item.icon className="h-4 w-4 flex-shrink-0" />
-                      {!collapsed && <span className="truncate">{item.title}</span>}
+                      <item.icon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                      {!collapsed && <span className="truncate leading-relaxed">{item.title}</span>}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
