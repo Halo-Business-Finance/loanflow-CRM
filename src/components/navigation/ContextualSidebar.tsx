@@ -139,7 +139,7 @@ export function ContextualSidebar() {
                         "flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-200 font-medium",
                         isActivePath(item.url)
                           ? "bg-primary text-primary-foreground shadow-medium"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/60 hover:shadow-soft"
+                          : "text-foreground hover:text-primary hover:bg-primary/10 hover:shadow-soft"
                       )}
                     >
                       <item.icon className="h-4 w-4 flex-shrink-0" />
