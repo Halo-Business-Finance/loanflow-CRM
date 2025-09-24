@@ -9,7 +9,7 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Enterprise CRM Color Scheme - Professional Blues & Grays */
-    --background: 240 10% 98%;
+    --background: 0 0% 100%;
     --foreground: 222 84% 4.9%;
 
     --card: 0 0% 100%;
