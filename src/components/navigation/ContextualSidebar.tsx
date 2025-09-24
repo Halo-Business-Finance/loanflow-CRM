@@ -125,7 +125,7 @@ export function ContextualSidebar() {
     <Sidebar className={cn("bg-card/60 backdrop-blur h-full !border-0 group-data-[side=left]:!border-r-0 group-data-[side=right]:!border-l-0", collapsed ? "w-16" : "w-72")} collapsible="icon">
       <SidebarContent className="pt-32 pb-4 h-full">
         <SidebarGroup>
-          <SidebarGroupLabel className={cn("text-lg font-bold text-black px-4 mt-6 mb-2", collapsed && "sr-only")}>
+          <SidebarGroupLabel className={cn("text-lg font-bold text-black px-6 mt-6 mb-2", collapsed && "sr-only")}>
             {getModuleName(currentModule)}
           </SidebarGroupLabel>
           <SidebarGroupContent className="px-4">
