@@ -33,15 +33,18 @@ export function NotificationBell() {
 
     try {
       const { data, error } = await supabase
-        .from('notifications' as any)
+        .from('notifications')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(20)
 
-      if (error) throw error
+      if (error) {
+        console.error('Error fetching notifications:', error)
+        return
+      }
 
-      const notifications = (data as unknown as Notification[]) || []
+      const notifications = (data as Notification[]) || []
       setNotifications(notifications)
       const unread = notifications.filter(n => !n.is_read).length || 0
       setUnreadCount(unread)
@@ -52,10 +55,15 @@ export function NotificationBell() {
 
   const markAsRead = async (notificationId: string) => {
     try {
-      await supabase
-        .from('notifications' as any)
+      const { error } = await supabase
+        .from('notifications')
         .update({ is_read: true })
         .eq('id', notificationId)
+      
+      if (error) {
+        console.error('Error marking notification as read:', error)
+        return
+      }
       
       setNotifications(prev => 
         prev.map(n => n.id === notificationId ? { ...n, is_read: true } : n)
@@ -70,11 +78,16 @@ export function NotificationBell() {
     if (!user) return
 
     try {
-      await supabase
-        .from('notifications' as any)
+      const { error } = await supabase
+        .from('notifications')
         .update({ is_read: true })
         .eq('user_id', user.id)
         .eq('is_read', false)
+      
+      if (error) {
+        console.error('Error marking all notifications as read:', error)
+        return
+      }
       
       setNotifications(prev => prev.map(n => ({ ...n, is_read: true })))
       setUnreadCount(0)

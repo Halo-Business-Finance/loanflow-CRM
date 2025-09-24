@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -99,6 +99,7 @@ interface HorizontalNavProps {
 
 export function HorizontalNav({ onFolderClick, sidebarOpen = false, activeFolder = null }: HorizontalNavProps = {}) {
   const location = useLocation()
+  const navigate = useNavigate()
   const { user, signOut } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
   const [localSidebarOpen, setLocalSidebarOpen] = useState(false)
@@ -173,10 +174,22 @@ export function HorizontalNav({ onFolderClick, sidebarOpen = false, activeFolder
 
           {/* Right Side - Actions and Profile */}
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" className="h-9 w-9 p-0 text-white hover:bg-white/10">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-9 w-9 p-0 text-white hover:bg-white/10"
+              onClick={() => navigate('/activities')}
+              title="Activities & Notifications"
+            >
               <Bell className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm" className="h-9 w-9 p-0 text-white hover:bg-white/10">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-9 w-9 p-0 text-white hover:bg-white/10"
+              onClick={() => navigate('/resources')}
+              title="Help & Resources"
+            >
               <HelpCircle className="h-4 w-4" />
             </Button>
             
