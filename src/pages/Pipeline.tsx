@@ -161,7 +161,7 @@ export default function Pipeline() {
                 <p className="text-sm font-medium text-muted-foreground">Total Opportunities</p>
                 <p className="text-2xl font-bold text-primary">{overview.totalOpportunities}</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full">
                 <Target className="h-6 w-6 text-primary" />
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function Pipeline() {
                 <p className="text-sm font-medium text-muted-foreground">Active Deals</p>
                 <p className="text-2xl font-bold text-primary">{overview.activeDeals}</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full">
                 <Activity className="h-6 w-6 text-secondary-foreground" />
               </div>
             </div>
@@ -189,7 +189,7 @@ export default function Pipeline() {
                 <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
                 <p className="text-2xl font-bold text-primary">{formatCurrency(overview.totalValue)}</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full">
                 <DollarSign className="h-6 w-6 text-accent-foreground" />
               </div>
             </div>
@@ -203,7 +203,7 @@ export default function Pipeline() {
                 <p className="text-sm font-medium text-muted-foreground">Avg Cycle Time</p>
                 <p className="text-2xl font-bold text-primary">{overview.avgCycleTime}d</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full">
                 <Timer className="h-6 w-6 text-muted-foreground" />
               </div>
             </div>
@@ -220,7 +220,7 @@ export default function Pipeline() {
                 <p className="text-sm font-medium text-muted-foreground">Conversion Rate</p>
                 <p className="text-2xl font-bold text-primary">{overview.conversionRate.toFixed(1)}%</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full">
                 <TrendingUp className="h-6 w-6 text-primary" />
               </div>
             </div>
@@ -234,7 +234,7 @@ export default function Pipeline() {
                 <p className="text-sm font-medium text-muted-foreground">Avg Deal Size</p>
                 <p className="text-2xl font-bold text-primary">{formatCurrency(overview.avgDealSize)}</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full">
                 <BarChart3 className="h-6 w-6 text-secondary-foreground" />
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function Pipeline() {
                 <p className="text-sm font-medium text-muted-foreground">Closed Deals</p>
                 <p className="text-2xl font-bold text-primary">{overview.closedDeals}</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full">
                 <CheckCircle className="h-6 w-6 text-accent-foreground" />
               </div>
             </div>

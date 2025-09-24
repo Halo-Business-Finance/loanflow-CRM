@@ -335,7 +335,7 @@ function Dashboard() {
                       <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
                       <p className="text-3xl font-semibold text-foreground">{formatCurrency(metrics.totalRevenue)}</p>
                     </div>
-                    <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-lg flex items-center justify-center">
                       <DollarSign className="h-5 w-5 text-primary" />
                     </div>
                   </div>
@@ -349,7 +349,7 @@ function Dashboard() {
                       <p className="text-sm font-medium text-muted-foreground">Total Leads</p>
                       <p className="text-3xl font-semibold text-foreground">{metrics.totalLeads}</p>
                     </div>
-                    <div className="h-10 w-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-lg flex items-center justify-center">
                       <Users className="h-5 w-5 text-blue-600" />
                     </div>
                   </div>
@@ -363,7 +363,7 @@ function Dashboard() {
                       <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
                       <p className="text-3xl font-semibold text-foreground">{formatCurrency(metrics.pipelineValue)}</p>
                     </div>
-                    <div className="h-10 w-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-lg flex items-center justify-center">
                       <Target className="h-5 w-5 text-orange-600" />
                     </div>
                   </div>
@@ -377,7 +377,7 @@ function Dashboard() {
                       <p className="text-sm font-medium text-muted-foreground">Conversion Rate</p>
                       <p className="text-3xl font-semibold text-foreground">{metrics.conversionRate.toFixed(1)}%</p>
                     </div>
-                    <div className="h-10 w-10 bg-green-50 rounded-lg flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-lg flex items-center justify-center">
                       <TrendingUp className="h-5 w-5 text-green-600" />
                     </div>
                   </div>
