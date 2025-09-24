@@ -136,7 +136,7 @@ export function ContextualSidebar() {
                     <Link
                       to={item.url}
                       className={cn(
-                        "flex items-start gap-3 px-3 py-3 text-base rounded-lg transition-all duration-200",
+                        "flex items-start gap-3 px-3 py-3 text-sm rounded-lg transition-all duration-200 font-medium",
                         isActivePath(item.url)
                           ? "text-primary"
                           : "text-foreground hover:text-primary hover:bg-primary/10 hover:shadow-soft"

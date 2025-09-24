@@ -278,11 +278,11 @@ function Dashboard() {
             <p className="text-lg text-black mt-1 text-left">Welcome back, {getUserDisplayName()}</p>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={fetchDashboardData} disabled={loading} className="text-base font-normal">
+            <Button variant="outline" size="sm" onClick={fetchDashboardData} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
-            <Button size="sm" onClick={() => window.print()} className="text-base font-normal">
+            <Button size="sm" onClick={() => window.print()}>
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
