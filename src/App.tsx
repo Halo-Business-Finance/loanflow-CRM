@@ -15,7 +15,7 @@ import { CSPHeaders } from "@/components/security/CSPHeaders";
 import { MasterSecurityDashboard } from "@/components/security/MasterSecurityDashboard";
 import { MilitaryGradeSecurityDashboard } from "@/components/security/MilitaryGradeSecurityDashboard";
 
-import MicrosoftLayout from "@/components/MicrosoftLayout";
+import HybridLayout from "@/components/HybridLayout";
 import { SecurityEnhancementProvider } from "@/components/security/SecurityEnhancementProvider";
 import { SecurityProvider as EnhancedSecurityProvider } from "@/components/security/SecurityProvider";
 import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
@@ -103,63 +103,63 @@ function AuthenticatedApp() {
         {/* Protected routes - require authentication */}
         {user ? (
           <>
-            <Route path="/" element={<MicrosoftLayout><Index /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/" element={<HybridLayout><Index /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/leads" element={<MicrosoftLayout><Leads /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/leads/new" element={<MicrosoftLayout><NewLead /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/leads/stats" element={<MicrosoftLayout><LeadStats /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/leads/assignment" element={<MicrosoftLayout><LeadAssignment /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/leads/:id" element={<MicrosoftLayout><LeadDetail /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/leads/:leadId/documents" element={<MicrosoftLayout><LeadDocuments /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads" element={<HybridLayout><Leads /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/new" element={<HybridLayout><NewLead /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/stats" element={<HybridLayout><LeadStats /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/assignment" element={<HybridLayout><LeadAssignment /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/:id" element={<HybridLayout><LeadDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/:leadId/documents" element={<HybridLayout><LeadDocuments /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/existing-borrowers" element={<MicrosoftLayout><Clients /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/existing-borrowers/details" element={<MicrosoftLayout><BorrowerDetails /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/existing-borrowers/history" element={<MicrosoftLayout><LoanHistory /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/existing-borrowers/:id" element={<MicrosoftLayout><ClientDetail /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers" element={<HybridLayout><Clients /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers/details" element={<HybridLayout><BorrowerDetails /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers/history" element={<HybridLayout><LoanHistory /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers/:id" element={<HybridLayout><ClientDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             {/* Redirect old client routes to existing borrowers */}
-            <Route path="/clients/:id" element={<MicrosoftLayout><ClientDetail /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/clients/:id" element={<HybridLayout><ClientDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/pipeline" element={<MicrosoftLayout><Pipeline /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/pipeline/analytics" element={<MicrosoftLayout><PipelineAnalytics /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/pipeline/stages" element={<MicrosoftLayout><StageManagement /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/pipeline" element={<HybridLayout><Pipeline /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/pipeline/analytics" element={<HybridLayout><PipelineAnalytics /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/pipeline/stages" element={<HybridLayout><StageManagement /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/underwriter" element={<MicrosoftLayout><Underwriter /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/underwriter/documents" element={<MicrosoftLayout><UnderwriterDocuments /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/underwriter/risk" element={<MicrosoftLayout><UnderwriterRisk /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/underwriter" element={<HybridLayout><Underwriter /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/underwriter/documents" element={<HybridLayout><UnderwriterDocuments /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/underwriter/risk" element={<HybridLayout><UnderwriterRisk /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
             {/* Documents routes now redirect to Underwriter */}
-            <Route path="/documents" element={<MicrosoftLayout><Underwriter /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/documents/upload" element={<MicrosoftLayout><Underwriter /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/documents/templates" element={<MicrosoftLayout><Underwriter /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents" element={<HybridLayout><Underwriter /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents/upload" element={<HybridLayout><Underwriter /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents/templates" element={<HybridLayout><Underwriter /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/activities" element={<MicrosoftLayout><Activities /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/activities/calendar" element={<MicrosoftLayout><ActivitiesCalendar /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/activities/tasks" element={<MicrosoftLayout><ActivitiesTasks /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/activities" element={<HybridLayout><Activities /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/activities/calendar" element={<HybridLayout><ActivitiesCalendar /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/activities/tasks" element={<HybridLayout><ActivitiesTasks /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/reports" element={<MicrosoftLayout><Reports /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/reports" element={<HybridLayout><Reports /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/settings" element={<MicrosoftLayout><Settings /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/settings/users" element={<MicrosoftLayout><SettingsUsers /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/settings/system" element={<MicrosoftLayout><SettingsSystem /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/settings" element={<HybridLayout><Settings /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/settings/users" element={<HybridLayout><SettingsUsers /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/settings/system" element={<HybridLayout><SettingsSystem /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
             {/* Debug route */}
             <Route path="/users-debug" element={<div>Users route test</div>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/security" element={<MicrosoftLayout><Security /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/access" element={<MicrosoftLayout><SecurityAccess /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/audit" element={<MicrosoftLayout><SecurityAudit /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/threats" element={<MicrosoftLayout><SecurityThreats /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/compliance" element={<MicrosoftLayout><SecurityCompliance /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/military" element={<MicrosoftLayout><MilitaryGradeSecurityDashboard /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security" element={<HybridLayout><Security /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/access" element={<HybridLayout><SecurityAccess /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/audit" element={<HybridLayout><SecurityAudit /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/threats" element={<HybridLayout><SecurityThreats /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/compliance" element={<HybridLayout><SecurityCompliance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/military" element={<HybridLayout><MilitaryGradeSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/enterprise" element={<MicrosoftLayout><Enterprise /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/integrations" element={<MicrosoftLayout><Integrations /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/ai-tools" element={<MicrosoftLayout><AITools /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/screenshots" element={<MicrosoftLayout><Screenshots /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/api-docs" element={<MicrosoftLayout><APIDocs /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/resources" element={<MicrosoftLayout><Resources /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/emergency-maintenance" element={<MicrosoftLayout><EmergencyMaintenance /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="*" element={<MicrosoftLayout><NotFound /></MicrosoftLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/enterprise" element={<HybridLayout><Enterprise /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/integrations" element={<HybridLayout><Integrations /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/ai-tools" element={<HybridLayout><AITools /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/screenshots" element={<HybridLayout><Screenshots /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/api-docs" element={<HybridLayout><APIDocs /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/resources" element={<HybridLayout><Resources /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/emergency-maintenance" element={<HybridLayout><EmergencyMaintenance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="*" element={<HybridLayout><NotFound /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
           </>
         ) : (
           <>
