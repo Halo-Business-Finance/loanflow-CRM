@@ -89,7 +89,6 @@ export default function Reports() {
                   <p className="text-sm font-medium text-muted-foreground">Data Accuracy</p>
                   <p className="text-2xl font-bold text-primary">{overview.dataAccuracy}%</p>
                 </div>
-                <Target className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -101,7 +100,6 @@ export default function Reports() {
                   <p className="text-sm font-medium text-muted-foreground">Processing Time</p>
                   <p className="text-2xl font-bold text-primary">{overview.processingTime}s</p>
                 </div>
-                <Activity className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -113,7 +111,6 @@ export default function Reports() {
                   <p className="text-sm font-medium text-muted-foreground">Compliance Score</p>
                   <p className="text-2xl font-bold text-primary">{overview.complianceScore}%</p>
                 </div>
-                <CheckCircle className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>

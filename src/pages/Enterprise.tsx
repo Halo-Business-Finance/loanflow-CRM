@@ -119,7 +119,6 @@ export default function Enterprise() {
                   <p className="text-sm font-medium text-muted-foreground">Active Workflows</p>
                   <p className="text-2xl font-bold text-primary">12</p>
                 </div>
-                <Workflow className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -131,7 +130,6 @@ export default function Enterprise() {
                   <p className="text-sm font-medium text-muted-foreground">Custom Objects</p>
                   <p className="text-2xl font-bold text-primary">8</p>
                 </div>
-                <Database className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -143,7 +141,6 @@ export default function Enterprise() {
                   <p className="text-sm font-medium text-muted-foreground">Approval Processes</p>
                   <p className="text-2xl font-bold text-primary">5</p>
                 </div>
-                <CheckCircle className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>

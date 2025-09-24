@@ -206,9 +206,6 @@ export default function Dashboard() {
                           <span className="text-xs text-muted-foreground">vs last month</span>
                         </div>
                       </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                        <DollarSign className="h-6 w-6 text-primary" />
-                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -228,9 +225,6 @@ export default function Dashboard() {
                           </Badge>
                           <span className="text-xs text-muted-foreground">vs last month</span>
                         </div>
-                      </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                        <Users className="h-6 w-6 text-accent-foreground" />
                       </div>
                     </div>
                   </CardContent>
@@ -252,9 +246,6 @@ export default function Dashboard() {
                           <span className="text-xs text-muted-foreground">vs last month</span>
                         </div>
                       </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                        <Target className="h-6 w-6 text-secondary-foreground" />
-                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -274,9 +265,6 @@ export default function Dashboard() {
                           </Badge>
                           <span className="text-xs text-muted-foreground">vs last month</span>
                         </div>
-                      </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                        <Activity className="h-6 w-6 text-accent-foreground" />
                       </div>
                     </div>
                   </CardContent>
