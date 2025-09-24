@@ -195,7 +195,7 @@ export function TopNavigation() {
                 key={module.path}
                 to={module.path}
                 className={cn(
-                  "flex items-center px-6 py-3 text-xs font-normal border-b-2 whitespace-nowrap transition-all duration-200",
+                  "flex items-center px-6 py-3 text-sm font-normal border-b-2 whitespace-nowrap transition-all duration-200",
                   isActiveModule(module.path, module.exact)
                     ? "border-primary text-black" 
                     : "border-transparent text-black hover:text-black hover:bg-muted/40 hover:border-muted-foreground/30"
