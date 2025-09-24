@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils"
 
 // Main navigation modules
 const mainModules = [
-  { name: "Dashboard", path: "/", exact: true },
+  { name: "Home", path: "/", exact: true },
   { name: "Leads", path: "/leads" },
   { name: "Borrowers", path: "/existing-borrowers" },
   { name: "Pipeline", path: "/pipeline" },
