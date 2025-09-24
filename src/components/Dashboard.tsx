@@ -115,13 +115,8 @@ function Dashboard() {
         .eq('user_id', user.id);
 
       if (leadsError) {
-        console.error('Error fetching leads:', leadsError);
-        toast({
-          title: "Error",
-          description: `Failed to fetch leads: ${leadsError.message}`,
-          variant: "destructive"
-        });
-        return;
+        console.warn('Leads query error (non-blocking):', leadsError)
+        // Avoid disruptive toasts; proceed with empty data for a cleaner UX
       }
 
       console.log('Fetched leads:', leads?.length || 0);

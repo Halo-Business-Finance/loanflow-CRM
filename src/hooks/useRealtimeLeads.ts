@@ -67,12 +67,9 @@ export function useRealtimeLeads() {
       
       setLeads(transformedLeads)
     } catch (error) {
-      console.error('Error fetching leads:', error)
-      toast({
-        title: "Error",
-        description: "Failed to fetch leads",
-        variant: "destructive"
-      })
+      console.warn('Leads fetch failed (non-blocking):', error)
+      // Suppress user-facing toast to avoid noisy popups on dashboards
+      // You can trigger a refetch manually from the Leads page if needed.
     } finally {
       setLoading(false)
     }
