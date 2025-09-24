@@ -71,7 +71,7 @@ export const UnderwriterDocuments = ({ selectedApplicationId }: UnderwriterDocum
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'verified':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="w-3 h-3 mr-1" />Verified</Badge>;
+        return <Badge className="text-green-800"><CheckCircle className="w-3 h-3 mr-1" />Verified</Badge>;
       case 'pending':
         return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
       case 'rejected':

@@ -199,7 +199,7 @@ export default function Dashboard() {
                           <span className="text-2xl font-bold text-primary">{formatCurrency(totalRevenue)}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="bg-secondary/20 text-secondary-foreground border-secondary/30">
+                          <Badge variant="secondary" className="text-secondary-foreground border-secondary/30">
                             <ArrowUpRight className="h-3 w-3 mr-1" />
                             +12.5%
                           </Badge>
@@ -222,7 +222,7 @@ export default function Dashboard() {
                           <span className="text-2xl font-bold text-primary">1,247</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="bg-secondary/20 text-secondary-foreground border-secondary/30">
+                          <Badge variant="secondary" className="text-secondary-foreground border-secondary/30">
                             <ArrowUpRight className="h-3 w-3 mr-1" />
                             +8.2%
                           </Badge>
@@ -245,7 +245,7 @@ export default function Dashboard() {
                           <span className="text-2xl font-bold text-primary">{formatCurrency(pipelineValue)}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="bg-destructive/20 text-destructive border-destructive/30">
+                          <Badge variant="secondary" className="text-destructive border-destructive/30">
                             <ArrowDownRight className="h-3 w-3 mr-1" />
                             -2.1%
                           </Badge>
@@ -268,7 +268,7 @@ export default function Dashboard() {
                           <span className="text-2xl font-bold text-primary">24.8%</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="bg-secondary/20 text-secondary-foreground border-secondary/30">
+                          <Badge variant="secondary" className="text-secondary-foreground border-secondary/30">
                             <ArrowUpRight className="h-3 w-3 mr-1" />
                             +5.4%
                           </Badge>

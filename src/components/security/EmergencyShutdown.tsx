@@ -423,7 +423,7 @@ export function EmergencyShutdown() {
                         {event.severity}
                       </Badge>
                       {event.auto_shutdown && (
-                        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                        <Badge variant="outline" className="text-red-700 border-red-200">
                           AUTO-SHUTDOWN
                         </Badge>
                       )}

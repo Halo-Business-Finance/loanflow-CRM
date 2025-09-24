@@ -520,12 +520,12 @@ export default function Integrations() {
                         <Label className="text-sm font-medium text-foreground/80">Key Features</Label>
                         <div className="flex flex-wrap gap-2">
                           {integration.features.slice(0, 3).map((feature) => (
-                            <Badge key={feature} variant="secondary" className="text-xs bg-muted/50 text-foreground/70 border-0 rounded-lg px-2 py-1">
+                            <Badge key={feature} variant="secondary" className="text-xs text-foreground/70 border-0 rounded-lg px-2 py-1">
                               {feature}
                             </Badge>
                           ))}
                           {integration.features.length > 3 && (
-                            <Badge variant="secondary" className="text-xs bg-muted/50 text-foreground/70 border-0 rounded-lg px-2 py-1">
+                            <Badge variant="secondary" className="text-xs text-foreground/70 border-0 rounded-lg px-2 py-1">
                               +{integration.features.length - 3} more
                             </Badge>
                           )}
@@ -712,7 +712,7 @@ export default function Integrations() {
                         ].map((api, index) => (
                           <div key={index} className="flex justify-between items-center p-3 bg-background/50 rounded-lg border">
                             <span className="font-mono text-foreground">{api.endpoint}</span>
-                            <Badge className="bg-accent/10 text-accent border-accent/20">{api.status}</Badge>
+                            <Badge className="text-accent border-accent/20">{api.status}</Badge>
                           </div>
                         ))}
                       </div>
@@ -749,7 +749,7 @@ export default function Integrations() {
                 <div className="bg-muted/30 rounded-lg p-3 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Status</span>
-                    <Badge className={adobeConfig.isDemo ? "bg-orange-50 text-orange-700 border-orange-200" : "bg-green-50 text-green-700 border-green-200"} variant="outline">
+                    <Badge className={adobeConfig.isDemo ? "text-orange-700 border-orange-200" : "text-green-700 border-green-200"} variant="outline">
                       {adobeConfig.isDemo ? 'Demo Mode' : 'Licensed'}
                     </Badge>
                   </div>
@@ -768,7 +768,7 @@ export default function Integrations() {
                   {!adobeConfig.isDemo && (
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Advanced Features</span>
-                      <Badge className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
+                      <Badge className="text-blue-700 border-blue-200 text-xs">
                         {adobeConfig.hasApiKey ? 'Available' : 'Limited'}
                       </Badge>
                     </div>

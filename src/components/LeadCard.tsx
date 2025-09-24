@@ -118,7 +118,7 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
                   {lead.name}
                 </h3>
                 {lead.is_converted_to_client && (
-                  <Badge variant="default" className="text-xs bg-green-100 text-green-700 border-green-200">
+                  <Badge variant="default" className="text-xs text-green-700 border-green-200">
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Client
                   </Badge>

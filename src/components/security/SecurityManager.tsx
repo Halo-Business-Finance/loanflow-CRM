@@ -512,7 +512,7 @@ export function SecurityManager() {
                     </div>
                   </div>
                   <div className="text-center">
-                    <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                    <Badge variant="outline" className="text-xs text-green-700">
                       HIGH ALERT MODE
                     </Badge>
                   </div>
@@ -541,7 +541,7 @@ export function SecurityManager() {
                     </div>
                   </div>
                   <div className="text-center">
-                    <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700">
+                    <Badge variant="outline" className="text-xs text-purple-700">
                       MONITORING DARK WEB
                     </Badge>
                   </div>
@@ -570,7 +570,7 @@ export function SecurityManager() {
                     </div>
                   </div>
                   <div className="text-center">
-                    <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700">
+                    <Badge variant="outline" className="text-xs text-yellow-700">
                       SCANNING FOR ATTACKS
                     </Badge>
                   </div>
@@ -829,9 +829,9 @@ export function SecurityManager() {
                             {role.role}
                           </Badge>
                           {role.is_active ? (
-                            <Badge variant="outline" className="text-xs bg-green-50 text-green-700">Active</Badge>
+                            <Badge variant="outline" className="text-xs text-green-700">Active</Badge>
                           ) : (
-                            <Badge variant="outline" className="text-xs bg-gray-50 text-gray-700">Inactive</Badge>
+                            <Badge variant="outline" className="text-xs text-gray-700">Inactive</Badge>
                           )}
                         </div>
                       </div>
@@ -862,7 +862,7 @@ export function SecurityManager() {
                             IP: {session.ip_address} • Last activity: {new Date(session.last_activity).toLocaleString()}
                           </p>
                         </div>
-                        <Badge variant="outline" className="text-xs bg-green-50 text-green-700">Active</Badge>
+                        <Badge variant="outline" className="text-xs text-green-700">Active</Badge>
                       </div>
                     ))}
                   </div>

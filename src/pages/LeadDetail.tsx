@@ -408,7 +408,7 @@ export default function LeadDetail() {
                         {lead.priority || 'normal'}
                       </Badge>
                       {lead.is_converted_to_client && (
-                        <Badge variant="default" className="text-xs font-medium px-2 py-1 bg-green-100 text-green-800 border-green-200">
+                        <Badge variant="default" className="text-xs font-medium px-2 py-1 text-green-800 border-green-200">
                           <CheckCircle className="h-3 w-3 mr-1" />
                           Converted
                         </Badge>

@@ -499,7 +499,7 @@ export const UnderwriterDashboard = () => {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Overall Risk Score</span>
-                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                      <Badge variant="secondary" className="text-green-800">
                         Low Risk
                       </Badge>
                     </div>

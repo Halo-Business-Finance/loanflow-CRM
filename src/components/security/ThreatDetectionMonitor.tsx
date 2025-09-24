@@ -452,7 +452,7 @@ export function ThreatDetectionMonitor() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-green-500" />
-                  <Badge variant="default" className="bg-green-100 text-green-800 border-green-300">
+                  <Badge variant="default" className="text-green-800 border-green-300">
                     PROTECTED
                   </Badge>
                 </div>

@@ -63,11 +63,11 @@ export const SystemHealthMonitor: React.FC = () => {
   const getStatusBadge = (status: ServiceStatus['status']) => {
     switch (status) {
       case 'online':
-        return <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">Online</Badge>;
+        return <Badge variant="secondary" className="text-green-700 border-green-200">Online</Badge>;
       case 'offline':
         return <Badge variant="destructive">Offline</Badge>;
       default:
-        return <Badge variant="secondary" className="bg-yellow-50 text-yellow-700 border-yellow-200">Unknown</Badge>;
+        return <Badge variant="secondary" className="text-yellow-700 border-yellow-200">Unknown</Badge>;
     }
   };
 
