@@ -118,7 +118,7 @@ export default function Documents() {
           <div className="mb-6">
             <h1 className="text-3xl font-bold tracking-tight text-foreground">Document Command Center</h1>
             <p className="text-muted-foreground mt-2">
-              Military Grade Secure document management with advanced upload and verification for SBA and Commercial loan CRM
+              Enterprise-grade secure document management with advanced upload and verification for SBA and Commercial loan CRM
             </p>
           </div>
 

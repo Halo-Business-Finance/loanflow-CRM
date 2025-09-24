@@ -32,9 +32,9 @@ const SecurityPage: React.FC = () => {
         <div className="space-y-6 animate-fade-in">
           {/* Header Section */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">Military Grade Security Center</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">Enterprise Security Center</h1>
             <p className="text-muted-foreground mt-2">
-              World Government and Military Grade Security monitoring, threat detection, and multi-factor authentication for SBA and Commercial loan CRM
+              World-class enterprise security monitoring, threat detection, and multi-factor authentication for SBA and Commercial loan CRM
             </p>
           </div>
 

@@ -152,7 +152,7 @@ export function MilitaryGradeSecurityDashboard() {
       <div className="flex items-center gap-3 mb-6">
         <Command className="h-8 w-8 text-primary" />
         <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
-          MILITARY GRADE SECURITY COMMAND CENTER
+          ENTERPRISE SECURITY COMMAND CENTER
         </h1>
         <Badge variant="destructive" className="ml-auto text-lg px-4 py-2">
           {metrics.threatLevel}

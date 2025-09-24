@@ -186,7 +186,7 @@ export default function Settings() {
         <div className="mb-6">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Configuration Command Center</h1>
           <p className="text-muted-foreground mt-2">
-            System configuration, user preferences, and account management for Military Grade Security CRM
+            System configuration, user preferences, and account management for enterprise security CRM
           </p>
         </div>
 
