@@ -104,7 +104,13 @@ export function TopNavigation() {
         {/* Actions */}
         <div className="flex items-center gap-3">
           {/* Notifications */}
-          <Button variant="ghost" size="icon" className="h-9 w-9 relative">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-9 w-9 relative"
+            onClick={() => navigate('/notifications')}
+            title="Notifications"
+          >
             <Bell className="h-4 w-4" />
             <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center">
               3
@@ -112,7 +118,13 @@ export function TopNavigation() {
           </Button>
 
           {/* Help */}
-          <Button variant="ghost" size="icon" className="h-9 w-9">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-9 w-9"
+            onClick={() => window.open('https://docs.lovable.dev', '_blank')}
+            title="Help & Documentation"
+          >
             <HelpCircle className="h-4 w-4" />
           </Button>
 
