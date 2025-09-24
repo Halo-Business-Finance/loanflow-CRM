@@ -72,7 +72,7 @@ export function TopNavigation() {
   }
 
   return (
-    <header className="border-b bg-blue-900 sticky top-0 z-40 shadow-medium">
+    <header className="bg-blue-900 sticky top-0 z-40 shadow-medium">
       {/* Primary Header */}
       <div className="flex h-16 items-center px-6 gap-4 relative">
         {/* Logo */}
@@ -164,7 +164,7 @@ export function TopNavigation() {
       </div>
 
       {/* Secondary Navigation - Module Tabs */}
-      <div className="border-t bg-blue-800/50">
+      <div className="bg-blue-800/50">
         <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
           {/* Navigation Controls */}
           <div className="flex items-center gap-2 mr-4">
