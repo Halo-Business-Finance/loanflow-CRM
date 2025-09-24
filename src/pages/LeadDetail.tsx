@@ -354,6 +354,7 @@ export default function LeadDetail() {
         </div>
       </div>
     )
+  }
 
   if (!lead) {
     return (
@@ -1125,6 +1126,5 @@ export default function LeadDetail() {
 
         {/* Future: Action Reminder Dialog can be added here */}
       </div>
-    </div>
-  )
-}
+    )
+  }
