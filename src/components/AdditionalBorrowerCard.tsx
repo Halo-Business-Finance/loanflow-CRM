@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+
 import { EmailComposer } from "./EmailComposer"
 import { ClickablePhone } from "./ui/clickable-phone"
 import { 
@@ -66,7 +66,7 @@ export function AdditionalBorrowerCard({
             <CardTitle className="text-foreground">
               Additional Borrower {borrowerNumber}
             </CardTitle>
-            <Badge variant="secondary">Co-Applicant</Badge>
+            <span className="text-sm font-medium">Co-Applicant</span>
           </div>
           <div className="flex items-center gap-2">
             {isEditing ? (

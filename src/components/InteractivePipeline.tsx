@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -65,15 +65,9 @@ const LeadCard = ({ lead, onStageChange, onViewDetails }: {
           </div>
           
           <div className="flex flex-col gap-2 items-end">
-            <Badge 
-              variant={
-                lead.priority === 'high' ? 'destructive' : 
-                lead.priority === 'medium' ? 'default' : 'secondary'
-              }
-              className="text-xs"
-            >
+            <span className="text-xs">
               {lead.priority}
-            </Badge>
+            </span>
             
             <div className="flex gap-1" onClick={handleActionClick}>
               <Button
@@ -244,7 +238,7 @@ export function InteractivePipeline() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg text-foreground">{stage}</CardTitle>
                   <div className="flex items-center gap-2">
-                    <Badge variant="secondary">{stageGroups[stage]?.length || 0}</Badge>
+                    <span className="text-sm font-medium">{stageGroups[stage]?.length || 0}</span>
                     {index < stageOrder.length - 1 && (
                       <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     )}
@@ -311,20 +305,14 @@ export function InteractivePipeline() {
               
               <div>
                 <label className="text-sm font-medium dark:text-white">Current Stage:</label>
-                <Badge className="ml-2">{selectedLead.stage}</Badge>
+                <span className="ml-2 text-sm">{selectedLead.stage}</span>
               </div>
               
               <div>
                 <label className="text-sm font-medium dark:text-white">Priority:</label>
-                <Badge 
-                  className="ml-2"
-                  variant={
-                    selectedLead.priority === 'high' ? 'destructive' : 
-                    selectedLead.priority === 'medium' ? 'default' : 'secondary'
-                  }
-                >
+                <span className="ml-2 text-sm">
                   {selectedLead.priority}
-                </Badge>
+                </span>
               </div>
               
               {selectedLead.loan_amount && (

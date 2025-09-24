@@ -1,6 +1,6 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { Badge } from "@/components/ui/badge"
+
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { 
@@ -93,7 +93,7 @@ export function LeadTableRow({ lead, onEdit, onDelete, onConvert, hasAdminRole, 
             <div className="flex items-center gap-2 mb-1">
               <span className="font-medium text-foreground dark:text-white truncate">{lead.name}</span>
               {lead.is_converted_to_client && (
-                <Badge variant="default" className="text-xs">Client</Badge>
+                <span className="text-xs font-medium">Client</span>
               )}
             </div>
             {lead.business_name && (
@@ -133,17 +133,17 @@ export function LeadTableRow({ lead, onEdit, onDelete, onConvert, hasAdminRole, 
       {/* Stage */}
       <td className="p-4">
         <div className="flex items-center gap-2 flex-wrap">
-          <Badge variant={getStageColor(lead.stage)} className="text-xs">
+          <span className="text-xs">
             {lead.stage}
-          </Badge>
+          </span>
         </div>
       </td>
 
       {/* Priority */}
       <td className="p-4">
-        <Badge variant={getPriorityColor(lead.priority)} className="text-xs">
+        <span className="text-xs">
           {lead.priority}
-        </Badge>
+        </span>
       </td>
 
       {/* Actions */}

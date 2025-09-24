@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
+
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { useNavigate } from "react-router-dom"
@@ -206,16 +206,16 @@ export function GlobalSearch() {
                       <div className="font-medium truncate">{result.title}</div>
                       <div className="text-sm text-muted-foreground truncate">{result.subtitle}</div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {result.stage && (
-                        <Badge variant="secondary" className="text-xs">
-                          {result.stage}
-                        </Badge>
-                      )}
-                      <Badge variant="outline" className="text-xs capitalize">
-                        {result.type}
-                      </Badge>
-                    </div>
+                     <div className="flex items-center gap-2">
+                       {result.stage && (
+                         <span className="text-xs">
+                           {result.stage}
+                         </span>
+                       )}
+                       <span className="text-xs capitalize">
+                         {result.type}
+                       </span>
+                     </div>
                   </div>
                 )
               })}

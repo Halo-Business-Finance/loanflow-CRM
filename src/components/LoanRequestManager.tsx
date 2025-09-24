@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
+
 import { useToast } from "@/hooks/use-toast"
 import { formatCurrency } from "@/lib/utils"
 import { Plus, DollarSign, Trash2, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react"
@@ -357,14 +357,14 @@ export default function LoanRequestManager({
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline">{request.loan_type}</Badge>
-                  <Badge variant={getStatusColor(request.status)} className="flex items-center gap-1">
+                  <span className="text-sm">{request.loan_type}</span>
+                  <span className="flex items-center gap-1 text-sm">
                     {getStatusIcon(request.status)}
                     {request.status.charAt(0).toUpperCase() + request.status.slice(1).replace('_', ' ')}
-                  </Badge>
-                  <Badge variant={getPriorityColor(request.priority)}>
+                  </span>
+                  <span className="text-sm">
                     {request.priority.toUpperCase()}
-                  </Badge>
+                  </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-sm">

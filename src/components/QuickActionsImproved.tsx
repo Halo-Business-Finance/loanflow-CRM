@@ -3,7 +3,7 @@ import { Plus, Phone, Mail, Calendar, User, Users, FileText, BarChart3, Bell, Se
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   DropdownMenu,
@@ -246,9 +246,9 @@ export function QuickActionsImproved() {
               <div className="flex items-center gap-2 w-full">
                 <Calendar className="h-4 w-4" />
                 <span className="font-medium">View All Actions</span>
-                <Badge variant="secondary" className="ml-auto">
+                <span className="ml-auto text-sm">
                   {quickActions.length}
-                </Badge>
+                </span>
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -264,9 +264,9 @@ export function QuickActionsImproved() {
           >
             <Zap className="mr-2 h-4 w-4" />
             Quick Actions
-            <Badge variant="secondary" className="ml-2">
+            <span className="ml-2 text-sm">
               {quickActions.length}
-            </Badge>
+            </span>
           </Button>
         </div>
       </div>
@@ -289,9 +289,9 @@ export function QuickActionsImproved() {
                 className="whitespace-nowrap"
               >
                 {category.label}
-                <Badge variant="secondary" className="ml-2">
+                <span className="ml-2 text-sm">
                   {category.count}
-                </Badge>
+                </span>
               </Button>
             ))}
           </div>
@@ -333,7 +333,7 @@ export function QuickActionsImproved() {
           <div className="mt-6 pt-4 border-t border-border/50">
             <div className="flex items-center justify-between text-sm text-muted-foreground">
               <span>Total Actions Available</span>
-              <Badge variant="outline">{quickActions.length}</Badge>
+              <span className="text-sm">{quickActions.length}</span>
             </div>
           </div>
         </DialogContent>

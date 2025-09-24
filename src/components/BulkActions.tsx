@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Check, Edit, Trash2, Mail, Phone, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+
 import {
   Select,
   SelectContent,
@@ -97,9 +97,9 @@ export function BulkActions({ selectedItems, onClearSelection, onBulkUpdate, typ
       <div className="fixed bottom-20 md:bottom-6 left-1/2 transform -translate-x-1/2 z-40 bg-background border rounded-lg shadow-lg p-4 animate-slide-in-right">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="font-medium">
+            <span className="font-medium">
               {selectedItems.length} selected
-            </Badge>
+            </span>
             <Button
               variant="ghost"
               size="sm"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+
 import { Download, ExternalLink, FileText, X, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -348,15 +348,15 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
                 {document.document_name}
               </DialogTitle>
               <div className="flex items-center gap-2 mt-1">
-                <Badge variant="secondary" className="text-xs">
+                <span className="text-xs">
                   {document.document_type}
-                </Badge>
-                <Badge variant="outline" className="text-xs">
+                </span>
+                <span className="text-xs">
                   {document.file_mime_type || 'Unknown type'}
-                </Badge>
-                <Badge variant="outline" className="text-xs">
+                </span>
+                <span className="text-xs">
                   {formatFileSize(document.file_size)}
-                </Badge>
+                </span>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -404,10 +404,10 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
                     <div className="flex items-center gap-2">
                       <FileText className="h-4 w-4 text-red-600" />
                       <span className="text-sm font-medium">PDF Document</span>
-                      <Badge variant="default" className="text-xs">
+                      <span className="text-xs">
                         PDF Reader: Adobe PDF Embed {adobeConfig?.isDemo ? '(Demo)' : '(Licensed)'} 
                         {viewerError && ' - Error'}
-                      </Badge>
+                      </span>
                     </div>
                     <div className="flex gap-2">
                       <Button

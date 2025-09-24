@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, AlertTriangle, X, RefreshCw, Database, FileText } from "lucide-react";
@@ -316,16 +316,16 @@ export function DataIntegrityDashboard() {
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start">
                       <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          {getIssueTypeIcon(issue.issueType)}
-                          <Badge variant={getSeverityColor(issue.severity)}>
-                            {issue.severity.toUpperCase()}
-                          </Badge>
-                          <span className="font-medium">{issue.fieldName}</span>
-                          <Badge variant="outline">
-                            {issue.recordType}
-                          </Badge>
-                        </div>
+                         <div className="flex items-center gap-2">
+                           {getIssueTypeIcon(issue.issueType)}
+                           <span className="font-medium text-xs">
+                             {issue.severity.toUpperCase()}
+                           </span>
+                           <span className="font-medium">{issue.fieldName}</span>
+                           <span className="text-xs">
+                             {issue.recordType}
+                           </span>
+                         </div>
                         <p className="text-sm text-muted-foreground">{issue.description}</p>
                         <p className="text-xs text-muted-foreground">
                           Record ID: {issue.recordId} | Type: {issue.issueType}

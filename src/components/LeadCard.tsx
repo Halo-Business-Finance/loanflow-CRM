@@ -1,7 +1,7 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { PhoneDialer } from "@/components/PhoneDialer"
@@ -118,10 +118,10 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
                   {lead.name}
                 </h3>
                 {lead.is_converted_to_client && (
-                  <Badge variant="default" className="text-xs text-green-700 border-green-200">
+                  <span className="text-xs text-green-700 font-medium flex items-center">
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Client
-                  </Badge>
+                  </span>
                 )}
               </div>
               
@@ -198,9 +198,9 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
             {lead.loan_type && (
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Loan Type</span>
-                <Badge variant="outline" className="text-xs font-medium">
+                <span className="text-xs font-medium">
                   {lead.loan_type}
-                </Badge>
+                </span>
               </div>
             )}
             
@@ -218,21 +218,15 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
         {/* Status and Priority */}
         <div className="flex items-center justify-between pt-2">
           <div className="flex items-center gap-2">
-            <Badge 
-              variant={getStageColor(lead.stage)} 
-              className="text-xs font-medium px-3 py-1"
-            >
+            <span className="text-xs font-medium px-3 py-1">
               {lead.stage}
-            </Badge>
+            </span>
           </div>
           
-          <Badge 
-            variant={getPriorityColor(lead.priority)} 
-            className="flex items-center gap-1.5 text-xs font-medium px-3 py-1"
-          >
+          <span className="flex items-center gap-1.5 text-xs font-medium px-3 py-1">
             {getPriorityIcon(lead.priority)}
             <span className="capitalize">{lead.priority}</span>
-          </Badge>
+          </span>
         </div>
 
         {/* Quick Actions */}

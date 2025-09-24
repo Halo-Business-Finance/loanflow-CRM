@@ -3,7 +3,7 @@ import { format, addDays, addWeeks } from "date-fns"
 import { Calendar as CalendarIcon, Clock, Phone, Mail, Bell, X, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -144,7 +144,7 @@ export function ActionReminder({ entityId, entityName, entityType, isOpen, onClo
       <CardContent className="space-y-4 px-4 pb-4">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>For:</span>
-          <Badge variant="outline">{entityName}</Badge>
+          <span className="font-medium">{entityName}</span>
         </div>
 
         {/* Reminder Type Selection */}

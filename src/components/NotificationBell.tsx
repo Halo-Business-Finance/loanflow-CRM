@@ -6,7 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
+
 import { NotificationCenter } from "./NotificationCenter"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
@@ -126,12 +126,9 @@ export function NotificationBell() {
         >
           <Bell className="w-5 h-5" fill="rgb(234, 179, 8)" stroke="rgb(234, 179, 8)" />
           {unreadCount > 0 && (
-            <Badge 
-              variant="default" 
-              className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-            >
+            <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground">
               {unreadCount > 99 ? '99+' : unreadCount}
-            </Badge>
+            </span>
           )}
         </Button>
       </DropdownMenuTrigger>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
 import { RefreshCw, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
 import { ExternalServiceChecker, ServiceStatus } from "@/lib/external-service-checker";
@@ -63,11 +63,11 @@ export const SystemHealthMonitor: React.FC = () => {
   const getStatusBadge = (status: ServiceStatus['status']) => {
     switch (status) {
       case 'online':
-        return <Badge variant="secondary" className="text-green-700 border-green-200">Online</Badge>;
+        return <span className="text-green-700">Online</span>;
       case 'offline':
-        return <Badge variant="destructive">Offline</Badge>;
+        return <span className="text-red-700">Offline</span>;
       default:
-        return <Badge variant="secondary" className="text-yellow-700 border-yellow-200">Unknown</Badge>;
+        return <span className="text-yellow-700">Unknown</span>;
     }
   };
 
