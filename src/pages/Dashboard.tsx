@@ -141,44 +141,44 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Modern Header */}
-      <div className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="px-6 py-4">
+    <div className="h-full bg-background">
+      {/* Microsoft-style Header */}
+      <div className="bg-card border-b border-border/60">
+        <div className="px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="text-xl font-semibold text-foreground">
-                    Analytics Dashboard
+                  <h1 className="text-2xl font-bold text-foreground">
+                    Home
                   </h1>
-                  <Badge variant="default" className="text-xs font-medium px-2 py-1">
+                  <Badge variant="secondary" className="text-xs font-medium px-2.5 py-1">
                     Overview
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Monitor your business performance and key metrics
+                  Welcome to your CRM dashboard. Monitor performance and manage your business.
                 </p>
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
-                <Calendar className="h-3 w-3 mr-2" />
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" className="h-8 text-xs font-medium gap-2">
+                <Calendar className="h-3 w-3" />
                 Last 30 days
               </Button>
-              <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
-                <Download className="h-3 w-3 mr-2" />
+              <Button variant="outline" size="sm" className="h-8 text-xs font-medium gap-2">
+                <Download className="h-3 w-3" />
                 Export
               </Button>
               <Button 
                 onClick={fetchDashboardData} 
-                variant="outline" 
+                variant="default" 
                 size="sm"
                 disabled={loading}
-                className="h-8 text-xs font-medium"
+                className="h-8 text-xs font-medium gap-2"
               >
-                <RefreshCw className={`h-3 w-3 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-3 w-3 ${loading ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
             </div>
@@ -187,7 +187,7 @@ export default function Dashboard() {
       </div>
 
       {/* Content Area */}
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-8">
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 bg-muted/50">
             <TabsTrigger value="overview">Overview</TabsTrigger>
