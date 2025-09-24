@@ -3,16 +3,30 @@ import { supabase } from '@/integrations/supabase/client'
 import { Lead } from '@/types/lead'
 import { useToast } from '@/hooks/use-toast'
 import { useRealtimeSubscription } from './useRealtimeSubscription'
+import { useAuth } from '@/components/auth/AuthProvider'
 
 export function useRealtimeLeads() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
   const { toast } = useToast()
+  const { user, loading: authLoading } = useAuth()
 
   // Fetch initial leads data
   const fetchLeads = async () => {
     try {
       setLoading(true)
+      
+      // Add debugging
+      const { data: { session } } = await supabase.auth.getSession()
+      console.log('Current session:', session)
+      console.log('User authenticated:', !!session?.user)
+      
+      if (!session?.user) {
+        console.warn('No authenticated user found, skipping leads fetch')
+        setLeads([])
+        return
+      }
+      
       const { data, error } = await supabase
         .from('leads')
         .select(`
@@ -21,7 +35,10 @@ export function useRealtimeLeads() {
         `)
         .order('created_at', { ascending: false })
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase query error:', error)
+        throw error
+      }
       
       // Transform the data to match Lead interface
       const transformedLeads: Lead[] = (data || []).map(lead => ({
@@ -126,8 +143,15 @@ export function useRealtimeLeads() {
   })
 
   useEffect(() => {
-    fetchLeads()
-  }, [])
+    // Only fetch leads if user is authenticated and auth is not loading
+    if (!authLoading && user) {
+      fetchLeads()
+    } else if (!authLoading && !user) {
+      // User is not authenticated, clear leads and stop loading
+      setLeads([])
+      setLoading(false)
+    }
+  }, [user, authLoading])
 
   const refetch = () => {
     fetchLeads()
