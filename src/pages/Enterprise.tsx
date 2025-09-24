@@ -100,8 +100,7 @@ export default function Enterprise() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Available Features</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Database className="w-5 h-5" />
+                  <div className="mt-1">
                     <p className="text-lg font-bold">{features.length}</p>
                   </div>
                 </div>
