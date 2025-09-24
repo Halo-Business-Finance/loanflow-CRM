@@ -311,7 +311,7 @@ export function KeyRotationManager() {
                           {keyStatus.status}
                         </Badge>
                         <Badge variant="outline">{key.key_type}</Badge>
-                        {key.is_active && <Badge variant="default">Active</Badge>}
+                        {key.is_active && <span className="text-sm font-medium">Active</span>}
                       </div>
                       <p className="text-sm text-muted-foreground">
                         Rotation interval: {key.rotation_interval_days} days

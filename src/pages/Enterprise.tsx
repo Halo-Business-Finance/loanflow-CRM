@@ -3,7 +3,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import SimpleLayout from "@/components/SimpleLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { CustomObjectsManager } from "@/components/enterprise/CustomObjectsManager";
 import { WorkflowBuilder } from "@/components/enterprise/WorkflowBuilder";
 import { ApprovalProcessManager } from "@/components/enterprise/ApprovalProcessManager";
@@ -105,9 +105,9 @@ export default function Enterprise() {
                     <p className="text-lg font-bold">{features.length}</p>
                   </div>
                 </div>
-                <Badge variant="default">
+                <span className="text-sm font-medium">
                   ENTERPRISE
-                </Badge>
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -174,7 +174,7 @@ export default function Enterprise() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <Icon className={`h-5 w-5 ${isActive ? 'text-primary-foreground' : 'text-primary-foreground'}`} />
-                      {isActive && <Badge variant="secondary">Active</Badge>}
+                      {isActive && <span className="text-sm font-medium">Active</span>}
                     </div>
                     <CardTitle className="text-sm">{feature.label}</CardTitle>
                     <CardDescription className={`text-xs ${isActive ? 'text-primary-foreground/80' : 'text-primary-foreground/80'}`}>

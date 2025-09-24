@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -56,15 +56,15 @@ export default function LoanHistory() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "Active":
-        return <Badge className="text-green-800">Active</Badge>
+        return <span className="text-green-800 font-medium">Active</span>
       case "Closed":
-        return <Badge variant="outline">Closed</Badge>
+        return <span className="text-gray-600 font-medium">Closed</span>
       case "In Process":
-        return <Badge className="text-blue-800">In Process</Badge>
+        return <span className="text-blue-800 font-medium">In Process</span>
       case "Underwriting":
-        return <Badge className="text-yellow-800">Underwriting</Badge>
+        return <span className="text-yellow-800 font-medium">Underwriting</span>
       default:
-        return <Badge variant="secondary">{status}</Badge>
+        return <span className="font-medium">{status}</span>
     }
   }
 

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
+
 
 export default function BorrowerDetails() {
   return (
@@ -126,14 +126,14 @@ export default function BorrowerDetails() {
                 <div className="font-medium">Mortgage Loan #12345</div>
                 <div className="text-sm text-muted-foreground">$350,000 • 30-year fixed • 3.25%</div>
               </div>
-              <Badge>Active</Badge>
+              <span className="text-sm font-medium">Active</span>
             </div>
             <div className="flex justify-between items-center p-3 border rounded-lg">
               <div>
                 <div className="font-medium">Auto Loan #67890</div>
                 <div className="text-sm text-muted-foreground">$25,000 • 5-year • 4.5%</div>
               </div>
-              <Badge variant="outline">Paid Off</Badge>
+              <span className="text-sm font-medium">Paid Off</span>
             </div>
           </div>
         </CardContent>

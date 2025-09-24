@@ -258,7 +258,7 @@ export function ZeroTrustArchitecture() {
                     <span className="text-sm font-medium">Multi-Factor Authentication</span>
                     <div className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500" />
-                      <Badge variant="default">ACTIVE</Badge>
+                      <span className="font-medium">ACTIVE</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
