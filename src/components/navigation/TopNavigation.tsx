@@ -83,18 +83,24 @@ export function TopNavigation() {
           </Link>
         </div>
 
-        {/* Global Search */}
-        <form onSubmit={handleSearch} className="flex-1 max-w-md">
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Global Search - Centered */}
+        <form onSubmit={handleSearch} className="flex-1 max-w-md mx-auto">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search across all modules..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-muted/30 border-input-border focus-visible:bg-card h-10"
+              className="pl-9 bg-muted/30 border-input-border focus-visible:bg-card h-10 w-full"
             />
           </div>
         </form>
+
+        {/* Spacer */}
+        <div className="flex-1" />
 
         {/* Actions */}
         <div className="flex items-center gap-3">
