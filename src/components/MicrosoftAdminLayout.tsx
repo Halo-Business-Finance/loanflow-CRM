@@ -8,6 +8,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { TopNavigation } from "./navigation/TopNavigation"
+import { SidebarProvider } from "@/components/ui/sidebar"
 
 interface MicrosoftAdminLayoutProps {
   children: React.ReactNode
@@ -75,69 +76,71 @@ export default function MicrosoftAdminLayout({ children }: MicrosoftAdminLayoutP
   }
 
   return (
-    <div className="h-screen flex flex-col w-full bg-background">
-      {/* Top Navigation - Preserved as requested */}
-      <TopNavigation />
-      
-      {/* Main Content Area */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar - Microsoft Style */}
-        <div className="w-72 bg-card border-r border-border/60 overflow-y-auto">
-          <div className="p-4">
-            <div className="space-y-6">
-              {navigationGroups.map((group, groupIndex) => (
-                <div key={group.label} className="space-y-2">
-                  {/* Group Label */}
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2">
-                    {group.label}
-                  </h3>
-                  
-                  {/* Group Items */}
-                  <div className="space-y-1">
-                    {group.items.map((item) => (
-                      <Link
-                        key={item.url}
-                        to={item.url}
-                        className={cn(
-                          "flex items-start gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group",
-                          isActivePath(item.url)
-                            ? "bg-primary/10 text-primary border-l-2 border-primary"
-                            : "text-foreground hover:bg-muted/60 hover:text-primary"
-                        )}
-                      >
-                        <item.icon 
+    <SidebarProvider>
+      <div className="h-screen flex flex-col w-full bg-background">
+        {/* Top Navigation - Preserved as requested */}
+        <TopNavigation />
+        
+        {/* Main Content Area */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left Sidebar - Microsoft Style */}
+          <div className="w-72 bg-card border-r border-border/60 overflow-y-auto">
+            <div className="p-4">
+              <div className="space-y-6">
+                {navigationGroups.map((group, groupIndex) => (
+                  <div key={group.label} className="space-y-2">
+                    {/* Group Label */}
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2">
+                      {group.label}
+                    </h3>
+                    
+                    {/* Group Items */}
+                    <div className="space-y-1">
+                      {group.items.map((item) => (
+                        <Link
+                          key={item.url}
+                          to={item.url}
                           className={cn(
-                            "h-4 w-4 flex-shrink-0 mt-0.5",
-                            isActivePath(item.url) ? "text-primary" : "text-muted-foreground"
-                          )} 
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className={cn(
-                            "text-sm font-medium",
-                            isActivePath(item.url) ? "text-primary" : "text-foreground"
-                          )}>
-                            {item.title}
+                            "flex items-start gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group",
+                            isActivePath(item.url)
+                              ? "bg-primary/10 text-primary border-l-2 border-primary"
+                              : "text-foreground hover:bg-muted/60 hover:text-primary"
+                          )}
+                        >
+                          <item.icon 
+                            className={cn(
+                              "h-4 w-4 flex-shrink-0 mt-0.5",
+                              isActivePath(item.url) ? "text-primary" : "text-muted-foreground"
+                            )} 
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className={cn(
+                              "text-sm font-medium",
+                              isActivePath(item.url) ? "text-primary" : "text-foreground"
+                            )}>
+                              {item.title}
+                            </div>
+                            <div className="text-xs text-muted-foreground truncate">
+                              {item.description}
+                            </div>
                           </div>
-                          <div className="text-xs text-muted-foreground truncate">
-                            {item.description}
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto bg-background">
-          <div className="h-full">
-            {children}
-          </div>
-        </main>
+          {/* Main Content */}
+          <main className="flex-1 overflow-y-auto bg-background">
+            <div className="h-full">
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   )
 }
