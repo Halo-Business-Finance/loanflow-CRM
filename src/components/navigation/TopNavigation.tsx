@@ -189,20 +189,23 @@ export function TopNavigation() {
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
-          {mainModules.map((module) => (
-            <Link
-              key={module.path}
-              to={module.path}
-              className={cn(
-                "flex items-center px-4 py-3 text-xs font-bold border-b-2 whitespace-nowrap transition-all duration-200",
-                isActiveModule(module.path, module.exact)
-                  ? "border-primary text-black font-bold" 
-                  : "border-transparent text-black hover:text-black hover:bg-muted/40 hover:border-muted-foreground/30"
-              )}
-            >
-              {module.name}
-            </Link>
-          ))}
+          {/* Navigation Menu - Centered */}
+          <div className="flex-1 flex justify-center">
+            {mainModules.map((module) => (
+              <Link
+                key={module.path}
+                to={module.path}
+                className={cn(
+                  "flex items-center px-4 py-3 text-xs font-bold border-b-2 whitespace-nowrap transition-all duration-200",
+                  isActiveModule(module.path, module.exact)
+                    ? "border-primary text-black font-bold" 
+                    : "border-transparent text-black hover:text-black hover:bg-muted/40 hover:border-muted-foreground/30"
+                )}
+              >
+                {module.name}
+              </Link>
+            ))}
+          </div>
         </nav>
       </div>
     </header>
