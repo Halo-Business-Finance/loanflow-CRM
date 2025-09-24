@@ -13,12 +13,12 @@ export default function LeadStats() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="widget-glass widget-glow">
+          <CardHeader className="widget-content flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Leads</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="widget-content">
             <div className="text-2xl font-bold">254</div>
             <div className="flex items-center text-xs text-green-600">
               <TrendingUp className="h-3 w-3 mr-1" />
@@ -27,12 +27,12 @@ export default function LeadStats() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="widget-glass widget-glow">
+          <CardHeader className="widget-content flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="widget-content">
             <div className="text-2xl font-bold">24.5%</div>
             <div className="flex items-center text-xs text-green-600">
               <TrendingUp className="h-3 w-3 mr-1" />
@@ -41,12 +41,12 @@ export default function LeadStats() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="widget-glass widget-glow">
+          <CardHeader className="widget-content flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Qualified Leads</CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="widget-content">
             <div className="text-2xl font-bold">156</div>
             <div className="flex items-center text-xs text-red-600">
               <TrendingDown className="h-3 w-3 mr-1" />
@@ -55,12 +55,12 @@ export default function LeadStats() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="widget-glass widget-glow">
+          <CardHeader className="widget-content flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avg. Response Time</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="widget-content">
             <div className="text-2xl font-bold">2.4h</div>
             <div className="flex items-center text-xs text-green-600">
               <TrendingUp className="h-3 w-3 mr-1" />
@@ -71,12 +71,12 @@ export default function LeadStats() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
+        <Card className="widget-glass widget-glow">
+          <CardHeader className="widget-content">
             <CardTitle>Lead Sources</CardTitle>
             <CardDescription>Where your leads are coming from</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="widget-content space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-sm">Website</span>
               <div className="flex items-center gap-2">
@@ -108,12 +108,12 @@ export default function LeadStats() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
+        <Card className="widget-glass widget-glow">
+          <CardHeader className="widget-content">
             <CardTitle>Lead Status Distribution</CardTitle>
             <CardDescription>Current status of all leads</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="widget-content space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-sm">New</span>
               <div className="flex items-center gap-2">

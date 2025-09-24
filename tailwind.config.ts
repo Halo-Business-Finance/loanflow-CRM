@@ -40,11 +40,14 @@ export default {
 				'gradient-primary': 'var(--gradient-primary)',
 				'gradient-card': 'var(--gradient-card)',
 				'gradient-navy': 'var(--gradient-navy)',
+				'glass-pattern': 'var(--widget-pattern)',
 			},
 			boxShadow: {
 				'soft': 'var(--shadow-soft)',
 				'medium': 'var(--shadow-medium)',
 				'large': 'var(--shadow-large)',
+				'glass': 'var(--glass-shadow)',
+				'widget': 'var(--widget-glow)',
 			},
 			colors: {
 				border: 'hsl(var(--border))',

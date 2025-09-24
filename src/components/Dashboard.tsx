@@ -294,8 +294,8 @@ function Dashboard() {
       <div className="pl-2 pr-6 py-6 space-y-6">
         {/* Empty State - Show when no leads exist */}
         {metrics.totalLeads === 0 && !loading && (
-          <Card className="bg-card border border-border shadow-soft">
-            <CardContent className="flex flex-col items-center justify-center py-12 px-6 text-center">
+          <Card className="widget-glass widget-glow">
+            <CardContent className="widget-content flex flex-col items-center justify-center py-12 px-6 text-center">
               <div className="mb-4">
                 <Target className="h-16 w-16 text-muted-foreground/50 mx-auto" />
               </div>
@@ -322,8 +322,8 @@ function Dashboard() {
           <>
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="bg-card border border-border shadow-soft">
-                <CardContent className="p-6">
+              <Card className="widget-glass widget-glow">
+                <CardContent className="widget-content p-6">
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
                     <p className="text-3xl font-semibold text-foreground">{formatCurrency(metrics.totalRevenue)}</p>
@@ -331,8 +331,8 @@ function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-card border border-border shadow-soft">
-                <CardContent className="p-6">
+              <Card className="widget-glass widget-glow">
+                <CardContent className="widget-content p-6">
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-muted-foreground">Total Leads</p>
                     <p className="text-3xl font-semibold text-foreground">{metrics.totalLeads}</p>
@@ -340,8 +340,8 @@ function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-card border border-border shadow-soft">
-                <CardContent className="p-6">
+              <Card className="widget-glass widget-glow">
+                <CardContent className="widget-content p-6">
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
                     <p className="text-3xl font-semibold text-foreground">{formatCurrency(metrics.pipelineValue)}</p>
@@ -349,8 +349,8 @@ function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-card border border-border shadow-soft">
-                <CardContent className="p-6">
+              <Card className="widget-glass widget-glow">
+                <CardContent className="widget-content p-6">
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-muted-foreground">Conversion Rate</p>
                     <p className="text-3xl font-semibold text-foreground">{metrics.conversionRate.toFixed(1)}%</p>
@@ -362,12 +362,12 @@ function Dashboard() {
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Sales Funnel */}
-              <Card className="bg-card border border-border shadow-soft">
-                <CardHeader>
+              <Card className="widget-glass widget-glow">
+                <CardHeader className="widget-content">
                   <CardTitle className="text-lg font-normal text-foreground">Sales Funnel</CardTitle>
                   <CardDescription className="text-muted-foreground">Leads by stage</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="widget-content">
                   {leadsByStage.length > 0 ? (
                     <div className="h-64">
                       <ResponsiveContainer width="100%" height="100%">
@@ -401,12 +401,12 @@ function Dashboard() {
               </Card>
 
               {/* Loan Distribution */}
-              <Card className="bg-card border border-border shadow-soft">
-                <CardHeader>
+              <Card className="widget-glass widget-glow">
+                <CardHeader className="widget-content">
                   <CardTitle className="text-lg font-normal text-foreground">Loan Type Distribution</CardTitle>
                   <CardDescription className="text-muted-foreground">Distribution by loan type</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="widget-content">
                   {loanDistribution.length > 0 ? (
                     <div className="h-64">
                       <ResponsiveContainer width="100%" height="100%">
