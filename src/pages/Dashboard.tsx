@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import HorizontalLayout from '@/components/HorizontalLayout';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -17,7 +16,8 @@ import {
   ArrowDownRight,
   Calendar,
   Download,
-  FileText
+  FileText,
+  Filter
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -141,51 +141,60 @@ export default function Dashboard() {
   };
 
   return (
-    <HorizontalLayout>
-      <div className="bg-muted/20 min-h-screen">
-        {/* Page Header */}
-        <div className="bg-white border-b border-border shadow-sm">
-          <div className="px-6 py-6">
-            <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-background">
+      {/* Modern Header */}
+      <div className="bg-card border-b border-border sticky top-0 z-10">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-foreground mb-1">Analytics Dashboard</h1>
-                <p className="text-muted-foreground">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-xl font-semibold text-foreground">
+                    Analytics Dashboard
+                  </h1>
+                  <Badge variant="default" className="text-xs font-medium px-2 py-1">
+                    Overview
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mt-1">
                   Monitor your business performance and key metrics
                 </p>
               </div>
-              <div className="flex items-center gap-3">
-                <Button variant="outline" size="sm" className="text-sm">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Last 30 days
-                </Button>
-                <Button variant="outline" size="sm" className="text-sm">
-                  <Download className="h-4 w-4 mr-2" />
-                  Export
-                </Button>
-                <Button 
-                  onClick={fetchDashboardData} 
-                  variant="default" 
-                  size="sm"
-                  disabled={loading}
-                  className="text-sm bg-blue-600 hover:bg-blue-700"
-                >
-                  <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                  Refresh Data
-                </Button>
-              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
+                <Calendar className="h-3 w-3 mr-2" />
+                Last 30 days
+              </Button>
+              <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
+                <Download className="h-3 w-3 mr-2" />
+                Export
+              </Button>
+              <Button 
+                onClick={fetchDashboardData} 
+                variant="outline" 
+                size="sm"
+                disabled={loading}
+                className="h-8 text-xs font-medium"
+              >
+                <RefreshCw className={`h-3 w-3 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Main Content */}
-        <div className="p-6">
-          <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="bg-muted/50">
-              <TabsTrigger value="overview" className="text-sm">Overview</TabsTrigger>
-              <TabsTrigger value="performance" className="text-sm">Performance</TabsTrigger>
-              <TabsTrigger value="analytics" className="text-sm">Analytics</TabsTrigger>
-              <TabsTrigger value="reports" className="text-sm">Reports</TabsTrigger>
-            </TabsList>
+      {/* Content Area */}
+      <div className="p-6 space-y-6">
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/50">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="performance">Performance</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="reports">Reports</TabsTrigger>
+          </TabsList>
             
             <TabsContent value="overview" className="space-y-6">
               {/* KPI Cards */}
@@ -804,10 +813,9 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
               </div>
-            </TabsContent>
-          </Tabs>
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
-    </HorizontalLayout>
+    </div>
   );
 }
