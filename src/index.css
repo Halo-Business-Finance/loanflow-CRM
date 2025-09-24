@@ -8,70 +8,73 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Pure white theme colors */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    /* Microsoft-inspired color scheme */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 0 0% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 0 0% 13%;
 
-    --primary: 220 100% 20%;
+    /* Microsoft Blue (#0078d4) */
+    --primary: 207 100% 42%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 220 90% 35%;
+    --primary-glow: 207 90% 54%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 220 13% 91%;
+    --secondary-foreground: 0 0% 13%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 30%;
+    --muted: 220 13% 95%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 142 76% 36%;
+    --accent: 207 100% 42%;
     --accent-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 0%;
+    --warning: 35 91% 65%;
+    --warning-foreground: 0 0% 13%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 75% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 0%;
+    --border: 220 13% 91%;
     --input: 0 0% 100%;
-    --ring: 220 91% 25%;
+    --ring: 207 100% 42%;
 
     /* Enhanced field borders */
     --input-border: 0 0% 75%;
     --input-border-hover: 0 0% 65%;
     --input-border-focus: 220 91% 25%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(220 100% 20%), hsl(220 90% 35%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(0 0% 98%));
-    --gradient-accent: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 60% 45%));
-    --gradient-blue: linear-gradient(135deg, hsl(220 100% 20%), hsl(220 90% 35%));
-    --gradient-navy: linear-gradient(135deg, hsl(220 100% 20%), hsl(220 90% 35%));
-    --gradient-green: linear-gradient(135deg, hsl(142 76% 50%), hsl(142 65% 60%));
-    --gradient-orange: linear-gradient(135deg, hsl(24 95% 53%), hsl(24 85% 63%));
-    --gradient-purple: linear-gradient(135deg, hsl(262 90% 55%), hsl(262 80% 65%));
-    --gradient-red: linear-gradient(135deg, hsl(0 84% 60%), hsl(0 74% 70%));
-    --shadow-soft: 0 1px 3px 0 hsl(0 0% 0% / 0.08), 0 1px 2px 0 hsl(0 0% 0% / 0.04);
-    --shadow-medium: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.06);
-    --shadow-large: 0 10px 15px -3px hsl(0 0% 0% / 0.12), 0 4px 6px -2px hsl(0 0% 0% / 0.05);
-    --shadow-glow: 0 0 20px hsl(0 0% 0% / 0.15);
+    /* Microsoft-style clean design - no gradients */
+    --gradient-primary: hsl(207 100% 42%);
+    --gradient-card: hsl(0 0% 100%);
+    --gradient-accent: hsl(207 100% 42%);
+    --gradient-blue: hsl(207 100% 42%);
+    --gradient-navy: hsl(207 100% 42%);
+    --gradient-green: hsl(140 60% 45%);
+    --gradient-orange: hsl(35 91% 65%);
+    --gradient-purple: hsl(262 70% 50%);
+    --gradient-red: hsl(0 75% 60%);
+    /* Microsoft-style subtle shadows */
+    --shadow-soft: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-medium: 0 2px 4px -1px hsl(0 0% 0% / 0.06), 0 1px 2px -1px hsl(0 0% 0% / 0.06);
+    --shadow-large: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.06);
+    --shadow-glow: 0 0 15px hsl(207 100% 42% / 0.15);
 
     --radius: 0.5rem;
 
     /* Field styling */
     --field-accent: 212 90% 70%;
 
-    /* Navy blue for navigation and widgets */
-    --navy: 220 100% 20%;
+    /* Microsoft blue for navigation and widgets */
+    --navy: 207 100% 42%;
     --navy-foreground: 0 0% 100%;
     
-    /* Navy variants for widgets and CRM */
-    --navy-light: 220 80% 35%;
-    --navy-dark: 220 100% 15%;
+    /* Microsoft blue variants */
+    --navy-light: 207 90% 54%;
+    --navy-dark: 207 100% 35%;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 0 0% 0%;

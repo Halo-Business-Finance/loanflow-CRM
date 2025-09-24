@@ -139,127 +139,133 @@ function Dashboard() {
   };
 
   return (
-    <div className="bg-muted/20 min-h-screen">
+    <div className="bg-background min-h-screen">
+      {/* Microsoft-style Dashboard Header */}
+      <div className="bg-white border-b border-border px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-normal text-foreground">Dashboard</h1>
+            <p className="text-sm text-muted-foreground mt-1">Welcome back, {getUserDisplayName()}</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm" onClick={fetchDashboardData} disabled={loading}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            <Button size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
-      <div className="space-y-4 lg:space-y-6">
-        <Tabs defaultValue="overview" className="space-y-4 lg:space-y-6">
-          <TabsList className="bg-muted/50 w-full sm:w-auto overflow-x-auto">
-            <TabsTrigger value="overview" className="text-xs sm:text-sm px-3 sm:px-4">Overview</TabsTrigger>
-            <TabsTrigger value="performance" className="text-xs sm:text-sm px-3 sm:px-4">Performance</TabsTrigger>
-            <TabsTrigger value="analytics" className="text-xs sm:text-sm px-3 sm:px-4">Analytics</TabsTrigger>
-            <TabsTrigger value="reports" className="text-xs sm:text-sm px-3 sm:px-4">Reports</TabsTrigger>
-          </TabsList>
+      <div className="p-6 space-y-6">
+        {/* Simple Overview - No Tabs */}
+        <div className="space-y-6">
           
-          <TabsContent value="overview" className="space-y-4 lg:space-y-6">
-            {/* KPI Cards - Responsive Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-              <Card className="bg-card border-0 shadow-lg hover:shadow-xl transition-shadow duration-200">
-                <CardContent className="p-3 sm:p-4 lg:p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
-                      <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Revenue</p>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <span className="text-lg sm:text-2xl lg:text-3xl font-bold text-foreground truncate">{formatCurrency(totalRevenue)}</span>
+          {/* KPI Cards - Microsoft Style */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="bg-card border border-border shadow-soft hover:shadow-medium transition-shadow duration-200">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                    <p className="text-3xl font-semibold text-foreground">{formatCurrency(totalRevenue)}</p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 text-green-600">
+                        <ArrowUpRight className="h-3 w-3" />
+                        <span className="text-sm font-medium">12.5%</span>
                       </div>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200 text-xs">
-                          <ArrowUpRight className="h-2 w-2 sm:h-3 sm:w-3 mr-1" />
-                          <span className="hidden sm:inline">+</span>12.5%
-                        </Badge>
-                        <span className="text-xs text-muted-foreground hidden sm:inline">vs last month</span>
-                      </div>
-                    </div>
-                    <div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 bg-navy/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-navy" />
+                      <span className="text-xs text-muted-foreground">vs last month</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <DollarSign className="h-5 w-5 text-primary" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-              <Card className="bg-card border-0 shadow-lg hover:shadow-xl transition-shadow duration-200">
-                <CardContent className="p-3 sm:p-4 lg:p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
-                      <p className="text-xs sm:text-sm font-medium text-muted-foreground">Active Leads</p>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <span className="text-lg sm:text-2xl lg:text-3xl font-bold text-foreground">1,247</span>
+            <Card className="bg-card border border-border shadow-soft hover:shadow-medium transition-shadow duration-200">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Active Leads</p>
+                    <p className="text-3xl font-semibold text-foreground">1,247</p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 text-green-600">
+                        <ArrowUpRight className="h-3 w-3" />
+                        <span className="text-sm font-medium">8.2%</span>
                       </div>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200 text-xs">
-                          <ArrowUpRight className="h-2 w-2 sm:h-3 sm:w-3 mr-1" />
-                          <span className="hidden sm:inline">+</span>8.2%
-                        </Badge>
-                        <span className="text-xs text-muted-foreground hidden sm:inline">vs last month</span>
-                      </div>
-                    </div>
-                    <div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Users className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-purple-600" />
+                      <span className="text-xs text-muted-foreground">vs last month</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="h-10 w-10 bg-green-600/10 rounded-lg flex items-center justify-center">
+                    <Users className="h-5 w-5 text-green-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-              <Card className="bg-card border-0 shadow-lg hover:shadow-xl transition-shadow duration-200">
-                <CardContent className="p-3 sm:p-4 lg:p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
-                      <p className="text-xs sm:text-sm font-medium text-muted-foreground">Pipeline Value</p>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <span className="text-lg sm:text-2xl lg:text-3xl font-bold text-foreground truncate">{formatCurrency(pipelineValue)}</span>
+            <Card className="bg-card border border-border shadow-soft hover:shadow-medium transition-shadow duration-200">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
+                    <p className="text-3xl font-semibold text-foreground">{formatCurrency(pipelineValue)}</p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 text-red-600">
+                        <ArrowDownRight className="h-3 w-3" />
+                        <span className="text-sm font-medium">2.1%</span>
                       </div>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <Badge variant="secondary" className="bg-red-100 text-red-700 border-red-200 text-xs">
-                          <ArrowDownRight className="h-2 w-2 sm:h-3 sm:w-3 mr-1" />
-                          -2.1%
-                        </Badge>
-                        <span className="text-xs text-muted-foreground hidden sm:inline">vs last month</span>
-                      </div>
-                    </div>
-                    <div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Target className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-green-600" />
+                      <span className="text-xs text-muted-foreground">vs last month</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="h-10 w-10 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                    <Target className="h-5 w-5 text-orange-500" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-              <Card className="bg-card border-0 shadow-lg hover:shadow-xl transition-shadow duration-200">
-                <CardContent className="p-3 sm:p-4 lg:p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
-                      <p className="text-xs sm:text-sm font-medium text-muted-foreground">Conversion Rate</p>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <span className="text-lg sm:text-2xl lg:text-3xl font-bold text-foreground">24.8%</span>
+            <Card className="bg-card border border-border shadow-soft hover:shadow-medium transition-shadow duration-200">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Conversion Rate</p>
+                    <p className="text-3xl font-semibold text-foreground">24.8%</p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 text-green-600">
+                        <ArrowUpRight className="h-3 w-3" />
+                        <span className="text-sm font-medium">5.4%</span>
                       </div>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200 text-xs">
-                          <ArrowUpRight className="h-2 w-2 sm:h-3 sm:w-3 mr-1" />
-                          <span className="hidden sm:inline">+</span>5.4%
-                        </Badge>
-                        <span className="text-xs text-muted-foreground hidden sm:inline">vs last month</span>
-                      </div>
-                    </div>
-                    <div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Activity className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-orange-600" />
+                      <span className="text-xs text-muted-foreground">vs last month</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                  <div className="h-10 w-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                    <Activity className="h-5 w-5 text-blue-500" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-            {/* Charts Section - Responsive Grid */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
-              
-              {/* Performance Metrics Bar Chart */}
-              <Card className="bg-card border-0 shadow-lg col-span-1">
-                <CardHeader className="pb-2 sm:pb-4 p-3 sm:p-6">
-                  <CardTitle className="flex items-center gap-2 text-base sm:text-lg font-semibold text-foreground">
-                    <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-navy" />
-                    <span className="truncate">Performance Metrics</span>
-                  </CardTitle>
-                  <CardDescription className="text-xs sm:text-sm text-muted-foreground">
-                    Key performance indicators across departments
-                  </CardDescription>
-                </CardHeader>
+          {/* Charts Section - Microsoft Style */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            
+            {/* Performance Metrics */}
+            <Card className="bg-card border border-border shadow-soft">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-normal text-foreground">
+                  <BarChart3 className="h-5 w-5 text-primary" />
+                  Performance Metrics
+                </CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">
+                  Key performance indicators across departments
+                </CardDescription>
+              </CardHeader>
                 <CardContent className="p-3 sm:p-6 pt-0">
                   <div className="h-64 sm:h-72">
                     <ResponsiveContainer width="100%" height="100%">
@@ -297,17 +303,17 @@ function Dashboard() {
                 </CardContent>
               </Card>
 
-              {/* Sales Funnel */}
-              <Card className="bg-card border-0 shadow-lg">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                    <Target className="h-5 w-5 text-purple-600" />
-                    Sales Funnel
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    Lead progression through sales stages
-                  </CardDescription>
-                </CardHeader>
+            {/* Sales Funnel */}
+            <Card className="bg-card border border-border shadow-soft">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-normal text-foreground">
+                  <Target className="h-5 w-5 text-orange-500" />
+                  Sales Funnel
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Lead progression through sales stages
+                </CardDescription>
+              </CardHeader>
                 <CardContent>
                   <div className="h-72">
                     <ResponsiveContainer width="100%" height="100%">
@@ -335,17 +341,17 @@ function Dashboard() {
                 </CardContent>
               </Card>
 
-              {/* Monthly Performance */}
-              <Card className="bg-card border-0 shadow-lg">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                    <BarChart3 className="h-5 w-5 text-green-600" />
-                    Monthly Performance
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    Revenue vs targets over time
-                  </CardDescription>
-                </CardHeader>
+            {/* Monthly Performance */}
+            <Card className="bg-card border border-border shadow-soft">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-normal text-foreground">
+                  <BarChart3 className="h-5 w-5 text-green-600" />
+                  Monthly Performance
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Revenue vs targets over time
+                </CardDescription>
+              </CardHeader>
                 <CardContent>
                   <div className="h-72">
                     <ResponsiveContainer width="100%" height="100%">
@@ -386,13 +392,13 @@ function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
+          </div>
 
-            {/* Bottom Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
-              {/* Loan Type Distribution */}
-              <Card className="bg-card border-0 shadow-lg">
+          {/* Additional Charts Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {/* Loan Type Distribution */}
+            <Card className="bg-card border border-border shadow-soft">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                     <PieChart className="h-5 w-5 text-orange-600" />
@@ -478,11 +484,10 @@ function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </TabsContent>
-
-          {/* Performance Tab */}
-          <TabsContent value="performance" className="space-y-6 min-h-[400px]">
+          </div>
+        </div>
+      </div>
+    </div>
             <div className="grid gap-6 md:grid-cols-2">
               <Card className="bg-card border-0 shadow-lg hover:shadow-xl transition-shadow duration-200">
                 <CardHeader className="pb-4">
