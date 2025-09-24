@@ -275,7 +275,7 @@ function Dashboard() {
       <div className="bg-white border-b border-border px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-muted-foreground mt-1">Welcome back, {getUserDisplayName()}</p>
+            <p className="text-lg text-black mt-1">Welcome back, {getUserDisplayName()}</p>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" onClick={fetchDashboardData} disabled={loading}>
