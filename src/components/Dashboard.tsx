@@ -90,10 +90,20 @@ function Dashboard() {
   };
 
   const fetchDashboardData = async () => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      console.error('No authenticated user found');
+      toast({
+        title: "Authentication Error",
+        description: "Please log in to view dashboard data",
+        variant: "destructive"
+      });
+      return;
+    }
     
     try {
       setLoading(true);
+      
+      console.log('Fetching dashboard data for user:', user.id);
       
       // Fetch leads with contact entities
       const { data: leads, error: leadsError } = await supabase
@@ -106,8 +116,16 @@ function Dashboard() {
 
       if (leadsError) {
         console.error('Error fetching leads:', leadsError);
+        toast({
+          title: "Error",
+          description: `Failed to fetch leads: ${leadsError.message}`,
+          variant: "destructive"
+        });
         return;
       }
+
+      console.log('Fetched leads:', leads?.length || 0);
+      console.log('Fetched leads data:', leads);
 
       // Calculate real metrics
       const totalLeads = leads?.length || 0;
@@ -133,6 +151,16 @@ function Dashboard() {
       ).length || 0;
       const conversionRate = totalLeads > 0 ? (closedWonLeads / totalLeads) * 100 : 0;
 
+      // Show success message if no data
+      if (totalLeads === 0) {
+        console.log('No leads found - showing empty state');
+        toast({
+          title: "No Leads Found",
+          description: "Start by creating your first lead to see dashboard data",
+          variant: "default"
+        });
+      }
+
       // Group leads by stage for funnel chart
       const stageGroups = leads?.reduce((acc, lead) => {
         const stage = lead.contact_entities?.stage || 'unknown';
@@ -151,8 +179,8 @@ function Dashboard() {
       }));
 
       // Group by loan type
-      const loanTypeGroups = leads?.reduce((acc, lead) => {
-        const loanType = lead.contact_entities?.loan_type || 'Other';
+      const loanGroups = leads?.reduce((acc, lead) => {
+        const loanType = lead.contact_entities?.loan_type || 'Unknown';
         if (!acc[loanType]) {
           acc[loanType] = { count: 0, total_amount: 0 };
         }
@@ -161,7 +189,7 @@ function Dashboard() {
         return acc;
       }, {} as Record<string, { count: number; total_amount: number }>) || {};
 
-      const loanDistributionData = Object.entries(loanTypeGroups).map(([loan_type, data]) => ({
+      const loanDistributionData = Object.entries(loanGroups).map(([loan_type, data]) => ({
         loan_type,
         count: data.count,
         total_amount: data.total_amount
@@ -174,17 +202,17 @@ function Dashboard() {
         totalRevenue,
         pipelineValue,
         conversionRate,
-        monthlyGrowth: 12.5 // Calculate from historical data if available
+        monthlyGrowth: 0 // Would need historical data to calculate
       });
-
+      
       setLeadsByStage(leadsByStageData);
       setLoanDistribution(loanDistributionData);
 
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error('Dashboard data fetch error:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch dashboard data",
+        description: "Failed to load dashboard data",
         variant: "destructive"
       });
     } finally {
@@ -192,15 +220,17 @@ function Dashboard() {
     }
   };
 
+  useEffect(() => {
+    fetchDashboardData();
+  }, [user?.id]);
+
   // Set up real-time subscriptions
   useEffect(() => {
     if (!user?.id) return;
 
-    fetchDashboardData();
-
-    // Subscribe to real-time updates
+    // Subscribe to leads changes
     const channel = supabase
-      .channel('dashboard-updates')
+      .channel('dashboard-changes')
       .on(
         'postgres_changes',
         {
@@ -210,7 +240,7 @@ function Dashboard() {
           filter: `user_id=eq.${user.id}`
         },
         () => {
-          console.log('Leads data changed, refreshing dashboard...');
+          console.log('Leads changed, refreshing dashboard...');
           fetchDashboardData();
         }
       )
@@ -268,330 +298,215 @@ function Dashboard() {
 
       {/* Main Content */}
       <div className="p-6 space-y-6">
-        {/* KPI Cards - Microsoft Style */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="bg-card border border-border shadow-soft hover:shadow-medium transition-shadow duration-200">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                  <p className="text-3xl font-semibold text-foreground">{formatCurrency(metrics.totalRevenue)}</p>
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 text-green-600">
-                      <ArrowUpRight className="h-3 w-3" />
-                      <span className="text-sm font-medium">12.5%</span>
+        {/* Empty State - Show when no leads exist */}
+        {metrics.totalLeads === 0 && !loading && (
+          <Card className="bg-card border border-border shadow-soft">
+            <CardContent className="flex flex-col items-center justify-center py-12 px-6 text-center">
+              <div className="mb-4">
+                <Target className="h-16 w-16 text-muted-foreground/50 mx-auto" />
+              </div>
+              <h3 className="text-xl font-semibold text-foreground mb-2">Welcome to Your Dashboard</h3>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                Get started by creating your first lead. Once you add leads, you'll see real-time metrics, 
+                charts, and insights here.
+              </p>
+              <div className="flex gap-3">
+                <Button onClick={() => navigate('/leads/new')} className="bg-primary text-primary-foreground">
+                  <Users className="h-4 w-4 mr-2" />
+                  Create Your First Lead
+                </Button>
+                <Button variant="outline" onClick={() => navigate('/leads')}>
+                  View All Leads
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Show metrics and charts when we have data or during loading */}
+        {(metrics.totalLeads > 0 || loading) && (
+          <>
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="bg-card border border-border shadow-soft">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                      <p className="text-3xl font-semibold text-foreground">{formatCurrency(metrics.totalRevenue)}</p>
                     </div>
-                    <span className="text-xs text-muted-foreground">vs last month</span>
-                  </div>
-                </div>
-                <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <DollarSign className="h-5 w-5 text-primary" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border border-border shadow-soft hover:shadow-medium transition-shadow duration-200">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Active Leads</p>
-                  <p className="text-3xl font-semibold text-foreground">{metrics.activeLeads.toLocaleString()}</p>
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 text-green-600">
-                      <ArrowUpRight className="h-3 w-3" />
-                      <span className="text-sm font-medium">8.2%</span>
+                    <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <DollarSign className="h-5 w-5 text-primary" />
                     </div>
-                    <span className="text-xs text-muted-foreground">vs last month</span>
                   </div>
-                </div>
-                <div className="h-10 w-10 bg-green-600/10 rounded-lg flex items-center justify-center">
-                  <Users className="h-5 w-5 text-green-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
 
-          <Card className="bg-card border border-border shadow-soft hover:shadow-medium transition-shadow duration-200">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
-                  <p className="text-3xl font-semibold text-foreground">{formatCurrency(metrics.pipelineValue)}</p>
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 text-red-600">
-                      <ArrowDownRight className="h-3 w-3" />
-                      <span className="text-sm font-medium">2.1%</span>
+              <Card className="bg-card border border-border shadow-soft">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground">Total Leads</p>
+                      <p className="text-3xl font-semibold text-foreground">{metrics.totalLeads}</p>
                     </div>
-                    <span className="text-xs text-muted-foreground">vs last month</span>
-                  </div>
-                </div>
-                <div className="h-10 w-10 bg-orange-500/10 rounded-lg flex items-center justify-center">
-                  <Target className="h-5 w-5 text-orange-500" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border border-border shadow-soft hover:shadow-medium transition-shadow duration-200">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Conversion Rate</p>
-                  <p className="text-3xl font-semibold text-foreground">{metrics.conversionRate.toFixed(1)}%</p>
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 text-green-600">
-                      <ArrowUpRight className="h-3 w-3" />
-                      <span className="text-sm font-medium">5.4%</span>
+                    <div className="h-10 w-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                      <Users className="h-5 w-5 text-blue-600" />
                     </div>
-                    <span className="text-xs text-muted-foreground">vs last month</span>
                   </div>
-                </div>
-                <div className="h-10 w-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                  <Activity className="h-5 w-5 text-blue-500" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                </CardContent>
+              </Card>
 
-        {/* Charts Section - Microsoft Style */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          
-          {/* Lead Distribution by Stage */}
-          <Card className="bg-card border border-border shadow-soft">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-normal text-foreground">
-                <BarChart3 className="h-5 w-5 text-primary" />
-                Lead Distribution by Stage
-              </CardTitle>
-              <CardDescription className="text-sm text-muted-foreground">
-                Current leads breakdown by pipeline stage
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-6 pt-0">
-              {leadsByStage.length > 0 ? (
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={leadsByStage} layout="horizontal">
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                      <XAxis 
-                        type="number" 
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{ fontSize: 10, fill: '#6b7280' }}
-                      />
-                      <YAxis 
-                        type="category" 
-                        dataKey="stage" 
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{ fontSize: 9, fill: '#6b7280' }}
-                        width={80}
-                      />
-                      <Tooltip 
-                        formatter={(value, name) => [
-                          name === 'count' ? `${value} leads` : formatCurrency(value as number),
-                          name === 'count' ? 'Leads' : 'Value'
-                        ]}
-                        contentStyle={{
-                          backgroundColor: 'white',
-                          border: '1px solid #e5e7eb',
-                          borderRadius: '8px',
-                          fontSize: '11px',
-                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                        }}
-                      />
-                      <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              ) : (
-                <div className="h-64 flex items-center justify-center text-muted-foreground">
-                  <p>No lead data available. Create some leads to see your pipeline.</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              <Card className="bg-card border border-border shadow-soft">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
+                      <p className="text-3xl font-semibold text-foreground">{formatCurrency(metrics.pipelineValue)}</p>
+                    </div>
+                    <div className="h-10 w-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                      <Target className="h-5 w-5 text-orange-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-          {/* Sales Funnel */}
-          <Card className="bg-card border border-border shadow-soft">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-normal text-foreground">
-                <Target className="h-5 w-5 text-orange-500" />
-                Sales Pipeline
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Lead progression through sales stages
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {leadsByStage.length > 0 ? (
-                <div className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <FunnelChart>
-                      <Tooltip 
-                        formatter={(value) => [value, 'Leads']}
-                        contentStyle={{
-                          backgroundColor: 'white',
-                          border: '1px solid #e5e7eb',
-                          borderRadius: '8px',
-                          fontSize: '12px',
-                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                        }}
-                      />
-                      <Funnel
-                        dataKey="count"
-                        data={leadsByStage.map((stage, index) => ({
-                          ...stage,
-                          fill: `hsl(${index * 40 + 200}, 70%, 50%)`
-                        }))}
-                        isAnimationActive
-                      >
-                        <LabelList 
-                          position="center" 
-                          fill="#fff" 
-                          stroke="none" 
-                          fontSize={12}
-                          formatter={(value: number, entry: any) => `${entry.stage}: ${value}`}
-                        />
-                      </Funnel>
-                    </FunnelChart>
-                  </ResponsiveContainer>
-                </div>
-              ) : (
-                <div className="h-72 flex items-center justify-center text-muted-foreground">
-                  <p>No pipeline data available. Create some leads to see your funnel.</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              <Card className="bg-card border border-border shadow-soft">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground">Conversion Rate</p>
+                      <p className="text-3xl font-semibold text-foreground">{metrics.conversionRate.toFixed(1)}%</p>
+                    </div>
+                    <div className="h-10 w-10 bg-green-50 rounded-lg flex items-center justify-center">
+                      <TrendingUp className="h-5 w-5 text-green-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
-          {/* Real-time Activity Summary */}
-          <Card className="bg-card border border-border shadow-soft">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-normal text-foreground">
-                <BarChart3 className="h-5 w-5 text-green-600" />
-                Real-time Activity Summary
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Current system activity and performance
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-72 flex items-center justify-center">
-                <div className="grid grid-cols-2 gap-6 w-full">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-primary">{metrics.totalLeads}</p>
-                    <p className="text-sm text-muted-foreground">Total Leads</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-green-600">{metrics.activeLeads}</p>
-                    <p className="text-sm text-muted-foreground">Active Leads</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-blue-600">{formatCurrency(metrics.pipelineValue)}</p>
-                    <p className="text-sm text-muted-foreground">Pipeline Value</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-orange-600">{metrics.conversionRate.toFixed(1)}%</p>
-                    <p className="text-sm text-muted-foreground">Conversion Rate</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Additional Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
-          {/* Loan Type Distribution */}
-          <Card className="bg-card border border-border shadow-soft">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-normal text-foreground">
-                <PieChart className="h-5 w-5 text-orange-600" />
-                Loan Type Distribution
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Breakdown by loan categories
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {loanDistribution.length > 0 ? (
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RechartsPieChart>
-                      <Tooltip 
-                        formatter={(value, name) => [
-                          name === 'count' ? `${value} loans` : formatCurrency(value as number),
-                          name === 'count' ? 'Count' : 'Total Amount'
-                        ]}
-                        contentStyle={{
-                          backgroundColor: 'white',
-                          border: '1px solid #e5e7eb',
-                          borderRadius: '8px',
-                          fontSize: '12px',
-                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                        }}
-                      />
-                      <Pie
-                        data={loanDistribution}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        dataKey="count"
-                        label={({ loan_type, count }) => `${loan_type}: ${count}`}
-                      >
-                        {loanDistribution.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={`hsl(${index * 60 + 200}, 70%, 50%)`} />
-                        ))}
-                      </Pie>
-                    </RechartsPieChart>
-                  </ResponsiveContainer>
-                </div>
-              ) : (
-                <div className="h-64 flex items-center justify-center text-muted-foreground">
-                  <p>No loan data available. Create some leads with loan types to see distribution.</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Live Data Status */}
-          <Card className="bg-card border border-border shadow-soft">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-normal text-foreground">
-                <TrendingUp className="h-5 w-5 text-blue-600" />
-                Live Data Status
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Real-time system information
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-64 flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium">Real-time Data Active</span>
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Last updated: {new Date().toLocaleTimeString()}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    All charts show live data from your database
-                  </div>
-                  {loading && (
-                    <div className="text-xs text-blue-600">
-                      Refreshing data...
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Sales Funnel */}
+              <Card className="bg-card border border-border shadow-soft">
+                <CardHeader>
+                  <CardTitle className="text-lg font-normal text-foreground">Sales Funnel</CardTitle>
+                  <CardDescription className="text-muted-foreground">Leads by stage</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {leadsByStage.length > 0 ? (
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <FunnelChart>
+                          <Tooltip 
+                            formatter={(value, name) => [value, name === 'count' ? 'Leads' : 'Value']}
+                            contentStyle={{
+                              backgroundColor: 'white',
+                              border: '1px solid #e5e7eb',
+                              borderRadius: '8px',
+                              fontSize: '12px'
+                            }}
+                          />
+                          <Funnel
+                            dataKey="count"
+                            data={leadsByStage}
+                            isAnimationActive
+                            fill="hsl(var(--primary))"
+                          >
+                            <LabelList position="center" fill="white" stroke="none" fontSize="12" />
+                          </Funnel>
+                        </FunnelChart>
+                      </ResponsiveContainer>
+                    </div>
+                  ) : (
+                    <div className="h-64 flex items-center justify-center text-muted-foreground">
+                      <p>No funnel data available. Create leads with different stages to see the sales funnel.</p>
                     </div>
                   )}
+                </CardContent>
+              </Card>
+
+              {/* Loan Distribution */}
+              <Card className="bg-card border border-border shadow-soft">
+                <CardHeader>
+                  <CardTitle className="text-lg font-normal text-foreground">Loan Type Distribution</CardTitle>
+                  <CardDescription className="text-muted-foreground">Distribution by loan type</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {loanDistribution.length > 0 ? (
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RechartsPieChart>
+                          <Tooltip 
+                            formatter={(value, name) => [
+                              name === 'count' ? `${value} loans` : formatCurrency(value as number),
+                              name === 'count' ? 'Count' : 'Total Amount'
+                            ]}
+                            contentStyle={{
+                              backgroundColor: 'white',
+                              border: '1px solid #e5e7eb',
+                              borderRadius: '8px',
+                              fontSize: '12px'
+                            }}
+                          />
+                          <Pie
+                            data={loanDistribution}
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            dataKey="count"
+                            label={({ loan_type, count }) => `${loan_type}: ${count}`}
+                          >
+                            {loanDistribution.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={`hsl(${index * 60 + 200}, 70%, 50%)`} />
+                            ))}
+                          </Pie>
+                        </RechartsPieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  ) : (
+                    <div className="h-64 flex items-center justify-center text-muted-foreground">
+                      <p>No loan data available. Create leads with loan types to see distribution.</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Live Data Status */}
+            <Card className="bg-card border border-border shadow-soft">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg font-normal text-foreground">
+                  <TrendingUp className="h-5 w-5 text-blue-600" />
+                  Live Data Status
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Real-time system information
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <div>
+                      <div className="text-sm font-medium text-green-900">
+                        Connected to Live Database
+                      </div>
+                      <div className="text-xs text-green-700">
+                        All charts show live data from your database
+                      </div>
+                      {loading && (
+                        <div className="text-xs text-blue-600">
+                          Refreshing data...
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );
