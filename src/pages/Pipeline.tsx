@@ -156,56 +156,36 @@ export default function Pipeline() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Total Opportunities</p>
-                <p className="text-2xl font-bold text-primary">{overview.totalOpportunities}</p>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                <Target className="h-6 w-6 text-primary" />
-              </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Total Opportunities</p>
+              <p className="text-2xl font-bold text-primary">{overview.totalOpportunities}</p>
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Active Deals</p>
-                <p className="text-2xl font-bold text-primary">{overview.activeDeals}</p>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                <Activity className="h-6 w-6 text-secondary-foreground" />
-              </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Active Deals</p>
+              <p className="text-2xl font-bold text-primary">{overview.activeDeals}</p>
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
-                <p className="text-2xl font-bold text-primary">{formatCurrency(overview.totalValue)}</p>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                <DollarSign className="h-6 w-6 text-accent-foreground" />
-              </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
+              <p className="text-2xl font-bold text-primary">{formatCurrency(overview.totalValue)}</p>
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Avg Cycle Time</p>
-                <p className="text-2xl font-bold text-primary">{overview.avgCycleTime}d</p>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                <Timer className="h-6 w-6 text-muted-foreground" />
-              </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Avg Cycle Time</p>
+              <p className="text-2xl font-bold text-primary">{overview.avgCycleTime}d</p>
             </div>
           </CardContent>
         </Card>
@@ -215,43 +195,28 @@ export default function Pipeline() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">Conversion Rate</p>
                 <p className="text-2xl font-bold text-primary">{overview.conversionRate.toFixed(1)}%</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                <TrendingUp className="h-6 w-6 text-primary" />
-              </div>
-            </div>
           </CardContent>
         </Card>
 
         <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">Avg Deal Size</p>
                 <p className="text-2xl font-bold text-primary">{formatCurrency(overview.avgDealSize)}</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                <BarChart3 className="h-6 w-6 text-secondary-foreground" />
-              </div>
-            </div>
           </CardContent>
         </Card>
 
         <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">Closed Deals</p>
                 <p className="text-2xl font-bold text-primary">{overview.closedDeals}</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                <CheckCircle className="h-6 w-6 text-accent-foreground" />
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>

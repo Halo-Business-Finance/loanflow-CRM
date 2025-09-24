@@ -381,56 +381,36 @@ export default function Leads() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-muted-foreground">Total Leads</p>
-                        <p className="text-2xl font-bold text-primary">{overview.totalLeads}</p>
-                      </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                        <Users className="h-6 w-6 text-primary" />
-                      </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground">Total Leads</p>
+                      <p className="text-2xl font-bold text-primary">{overview.totalLeads}</p>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-muted-foreground">New Leads</p>
-                        <p className="text-2xl font-bold text-primary">{overview.newLeads}</p>
-                      </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                        <UserPlus className="h-6 w-6 text-secondary-foreground" />
-                      </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground">New Leads</p>
+                      <p className="text-2xl font-bold text-primary">{overview.newLeads}</p>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-muted-foreground">Hot Prospects</p>
-                        <p className="text-2xl font-bold text-primary">{overview.hotLeads}</p>
-                      </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                        <Target className="h-6 w-6 text-destructive" />
-                      </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground">Hot Prospects</p>
+                      <p className="text-2xl font-bold text-primary">{overview.hotLeads}</p>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
-                        <p className="text-2xl font-bold text-primary">{formatCurrency(overview.totalValue)}</p>
-                      </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
-                        <DollarSign className="h-6 w-6 text-accent-foreground" />
-                      </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
+                      <p className="text-2xl font-bold text-primary">{formatCurrency(overview.totalValue)}</p>
                     </div>
                   </CardContent>
                 </Card>
