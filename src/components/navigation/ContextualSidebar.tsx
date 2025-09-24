@@ -128,7 +128,7 @@ export function ContextualSidebar() {
           <SidebarGroupLabel className={cn("text-lg font-bold text-black px-4 mt-6 mb-2", collapsed && "sr-only")}>
             {getModuleName(currentModule)}
           </SidebarGroupLabel>
-          <SidebarGroupContent className="px-2">
+          <SidebarGroupContent className="px-4">
             <SidebarMenu className="space-y-1">
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.url}>
