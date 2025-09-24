@@ -164,7 +164,7 @@ export function TopNavigation() {
       </div>
 
       {/* Secondary Navigation - Module Tabs */}
-      <div className="bg-blue-800/50">
+      <div className="bg-blue-900">
         <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
           {/* Navigation Controls */}
           <div className="flex items-center gap-2 mr-4">
