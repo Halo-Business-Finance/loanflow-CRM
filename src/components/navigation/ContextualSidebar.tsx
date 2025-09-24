@@ -123,7 +123,7 @@ export function ContextualSidebar() {
 
   return (
     <Sidebar className={cn("border-r bg-card/60 backdrop-blur h-full", collapsed ? "w-16" : "w-72")} collapsible="icon">
-      <SidebarContent className="pt-32 pb-4 h-full">
+      <SidebarContent className="pt-36 pb-4 h-full">
         <SidebarGroup>
           <SidebarGroupLabel className={cn("text-lg font-bold text-black px-4 mb-2", collapsed && "sr-only")}>
             {getModuleName(currentModule)}
