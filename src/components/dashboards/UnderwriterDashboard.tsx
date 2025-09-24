@@ -174,7 +174,7 @@ export const UnderwriterDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Reviews</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatNumber(metrics.pendingReviews)}</div>
@@ -185,7 +185,7 @@ export const UnderwriterDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Approved Today</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{formatNumber(metrics.approvedToday)}</div>
@@ -196,7 +196,7 @@ export const UnderwriterDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Rejected Today</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-destructive" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">{formatNumber(metrics.rejectedToday)}</div>
@@ -207,7 +207,7 @@ export const UnderwriterDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avg. Review Time</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{metrics.avgReviewTime} days</div>
@@ -218,7 +218,7 @@ export const UnderwriterDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Approval Rate</CardTitle>
-            <FileCheck className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{metrics.approvalRate}%</div>

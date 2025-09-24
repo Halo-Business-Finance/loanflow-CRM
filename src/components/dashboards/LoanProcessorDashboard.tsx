@@ -205,7 +205,7 @@ export const LoanProcessorDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Applications</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatNumber(metrics.pendingApplications)}</div>
@@ -216,7 +216,7 @@ export const LoanProcessorDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Processed Today</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatNumber(metrics.processedToday)}</div>
@@ -227,7 +227,7 @@ export const LoanProcessorDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avg. Processing Time</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{metrics.averageProcessingTime} days</div>
@@ -238,7 +238,7 @@ export const LoanProcessorDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Past Due</CardTitle>
-            <AlertCircle className="h-4 w-4 text-destructive" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">{formatNumber(metrics.applicationsPastDue)}</div>
@@ -249,7 +249,7 @@ export const LoanProcessorDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">This Week</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatNumber(metrics.totalThisWeek)}</div>

@@ -497,7 +497,7 @@ export default function ExistingBorrowers() {
                 <div>
                   <Label className="text-xs font-medium text-muted-foreground">Total Borrowers</Label>
                   <div className="flex items-center gap-2 mt-1">
-                    <Users className="h-4 w-4 text-muted-foreground" />
+                    
                     <p className="text-2xl font-bold">{clients.length}</p>
                   </div>
                 </div>
@@ -515,7 +515,7 @@ export default function ExistingBorrowers() {
                   <p className="text-sm font-medium text-muted-foreground">Active Borrowers</p>
                   <p className="text-2xl font-bold text-primary">{activeClients}</p>
                 </div>
-                <CheckCircle2 className="w-8 h-8 text-primary" />
+                
               </div>
             </CardContent>
           </Card>
@@ -527,7 +527,6 @@ export default function ExistingBorrowers() {
                   <p className="text-sm font-medium text-muted-foreground">Total Loan Value</p>
                   <p className="text-2xl font-bold text-primary">{formatCurrency(totalLoanValue)}</p>
                 </div>
-                <DollarSign className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -539,7 +538,7 @@ export default function ExistingBorrowers() {
                   <p className="text-sm font-medium text-muted-foreground">Avg Loan Size</p>
                   <p className="text-2xl font-bold text-primary">{formatCurrency(avgLoanSize)}</p>
                 </div>
-                <DollarSign className="w-8 h-8 text-primary" />
+                
               </div>
             </CardContent>
           </Card>

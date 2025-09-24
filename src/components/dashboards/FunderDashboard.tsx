@@ -181,7 +181,7 @@ export function FunderDashboard() {
             <CardTitle className="text-sm font-medium">
               Total Funded
             </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -199,7 +199,7 @@ export function FunderDashboard() {
             <CardTitle className="text-sm font-medium">
               Avg Funding Time
             </CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{funderStats.avgFundingTime} days</div>
@@ -215,7 +215,7 @@ export function FunderDashboard() {
             <CardTitle className="text-sm font-medium">
               Funding Volume
             </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -233,7 +233,7 @@ export function FunderDashboard() {
             <CardTitle className="text-sm font-medium">
               Active Fundings
             </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{funderStats.activeFundings}</div>
@@ -248,7 +248,7 @@ export function FunderDashboard() {
             <CardTitle className="text-sm font-medium">
               Success Rate
             </CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{funderStats.successRate}%</div>
