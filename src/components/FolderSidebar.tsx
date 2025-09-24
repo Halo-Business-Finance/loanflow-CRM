@@ -227,7 +227,7 @@ export function FolderSidebar({ isOpen, onClose, activeFolder }: FolderSidebarPr
             <Button
               variant="ghost"
               className={cn(
-                "w-full justify-start text-left font-medium rounded-lg transition-all duration-200 mb-1",
+                "w-full justify-start text-left text-xs font-medium rounded-lg transition-all duration-200 mb-1",
                 level === 0 ? "text-foreground hover:bg-muted hover:text-blue-600" : "text-muted-foreground hover:bg-muted/50"
               )}
               style={{ paddingLeft }}
@@ -256,7 +256,7 @@ export function FolderSidebar({ isOpen, onClose, activeFolder }: FolderSidebarPr
         to={item.path || '#'}
         onClick={handleItemClick}
         className={cn(
-          "flex items-center w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 mb-1",
+          "flex items-center w-full py-2.5 text-xs font-medium rounded-lg transition-all duration-200 mb-1",
           isActivePath(item.path || '')
             ? "bg-blue-600 text-white shadow-lg"
             : level === 0 
@@ -277,7 +277,7 @@ export function FolderSidebar({ isOpen, onClose, activeFolder }: FolderSidebarPr
     <div className="w-80 bg-background border-r border-border shadow-lg sticky top-0 h-screen overflow-hidden flex flex-col">
       {/* Header - Fixed at top */}
       <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-to-r from-blue-600 to-blue-700 flex-shrink-0">
-        <h2 className="text-lg font-semibold text-white capitalize">
+        <h2 className="text-sm font-semibold text-white capitalize">
           {activeFolder} Menu
         </h2>
         <Button
