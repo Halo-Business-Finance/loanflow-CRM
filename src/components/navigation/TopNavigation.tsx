@@ -72,7 +72,7 @@ export function TopNavigation() {
   }
 
   return (
-    <header className="border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/90 sticky top-0 z-50 shadow-medium">
+    <header className="border-b bg-card/95 sticky top-0 z-40 shadow-medium">
       {/* Primary Header */}
       <div className="flex h-16 items-center px-6 gap-4">
         {/* Sidebar Toggle & Logo */}
