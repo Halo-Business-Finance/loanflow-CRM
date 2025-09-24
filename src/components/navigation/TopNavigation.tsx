@@ -75,9 +75,8 @@ export function TopNavigation() {
     <header className="border-b bg-card/95 sticky top-0 z-40 shadow-medium">
       {/* Primary Header */}
       <div className="flex h-16 items-center px-6 gap-4">
-        {/* Sidebar Toggle & Logo */}
+        {/* Logo */}
         <div className="flex items-center gap-3">
-          <SidebarTrigger className="h-8 w-8" />
           <Link to="/" className="flex items-center">
             <BrandLogo size={24} showText={true} />
           </Link>
@@ -155,7 +154,11 @@ export function TopNavigation() {
 
       {/* Secondary Navigation - Module Tabs */}
       <div className="border-t bg-muted/20">
-        <nav className="flex items-center justify-center px-6 overflow-x-auto scrollbar-hide">
+        <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
+          {/* Sidebar Toggle Button on far left */}
+          <div className="mr-4">
+            <SidebarTrigger className="h-8 w-8" />
+          </div>
           {mainModules.map((module) => (
             <Link
               key={module.path}
