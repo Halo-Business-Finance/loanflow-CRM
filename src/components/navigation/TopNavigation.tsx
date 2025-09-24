@@ -155,7 +155,7 @@ export function TopNavigation() {
 
       {/* Secondary Navigation - Module Tabs */}
       <div className="border-t bg-muted/20">
-        <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
+        <nav className="flex items-center justify-center px-6 overflow-x-auto scrollbar-hide">
           {mainModules.map((module) => (
             <Link
               key={module.path}
