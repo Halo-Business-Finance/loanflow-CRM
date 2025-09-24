@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useLocation, useNavigate, Link } from "react-router-dom"
-import { Search, Bell, Settings, LogOut, User, HelpCircle } from "lucide-react"
+import { Search, Bell, Settings, LogOut, User, HelpCircle, ChevronLeft, ChevronRight } from "lucide-react"
 import { BrandLogo } from "@/components/BrandLogo"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { SidebarTrigger } from "@/components/ui/sidebar"
@@ -155,8 +155,26 @@ export function TopNavigation() {
       {/* Secondary Navigation - Module Tabs */}
       <div className="border-t bg-muted/20">
         <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
-          {/* Sidebar Toggle Button on far left */}
-          <div className="mr-4">
+          {/* Navigation Controls */}
+          <div className="flex items-center gap-2 mr-4">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8" 
+              onClick={() => window.history.back()}
+              title="Go back"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8" 
+              onClick={() => window.history.forward()}
+              title="Go forward"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
             <SidebarTrigger className="h-8 w-8" />
           </div>
           {mainModules.map((module) => (
