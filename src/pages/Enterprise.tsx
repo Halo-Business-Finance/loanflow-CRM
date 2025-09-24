@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
-import SimpleLayout from "@/components/SimpleLayout";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -26,19 +26,19 @@ export default function Enterprise() {
 
   if (!hasRole('admin')) {
     return (
-      <SimpleLayout>
-        <div className="flex items-center justify-center min-h-96">
-          <Card className="text-center">
-            <CardHeader>
-              <Shield className="h-12 w-12 mx-auto text-muted-foreground" />
-              <CardTitle>Access Restricted</CardTitle>
-              <CardDescription>
-                Only administrators can access enterprise features.
-              </CardDescription>
-            </CardHeader>
-          </Card>
+        <div className="container mx-auto px-6 py-12">
+          <div className="flex items-center justify-center min-h-96">
+            <Card className="text-center">
+              <CardHeader>
+                <Shield className="h-12 w-12 mx-auto text-muted-foreground" />
+                <CardTitle>Access Restricted</CardTitle>
+                <CardDescription>
+                  Only administrators can access enterprise features.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
         </div>
-      </SimpleLayout>
     );
   }
 
@@ -82,7 +82,6 @@ export default function Enterprise() {
   ];
 
   return (
-    <SimpleLayout>
       <div className="container mx-auto p-6 space-y-6">
         {/* Header Section */}
         <div className="flex items-center gap-2 mb-6">
@@ -210,6 +209,6 @@ export default function Enterprise() {
           </TabsContent>
         </Tabs>
       </div>
-    </SimpleLayout>
+    
   );
 }
