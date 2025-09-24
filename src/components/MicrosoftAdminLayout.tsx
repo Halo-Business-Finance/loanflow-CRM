@@ -8,8 +8,19 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { TopNavigation } from "./navigation/TopNavigation"
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { ContextualSidebar } from "./navigation/ContextualSidebar"
+import { 
+  SidebarProvider, 
+  SidebarInset, 
+  Sidebar, 
+  SidebarContent, 
+  SidebarGroup, 
+  SidebarGroupContent, 
+  SidebarGroupLabel, 
+  SidebarMenu, 
+  SidebarMenuButton, 
+  SidebarMenuItem,
+  useSidebar 
+} from "@/components/ui/sidebar"
 
 interface MicrosoftAdminLayoutProps {
   children: React.ReactNode
@@ -67,8 +78,11 @@ const navigationGroups = [
   }
 ]
 
-export default function MicrosoftAdminLayout({ children }: MicrosoftAdminLayoutProps) {
+// Microsoft Admin Sidebar Component
+function MicrosoftAdminSidebar() {
+  const { state } = useSidebar()
   const location = useLocation()
+  const collapsed = state === "collapsed"
 
   const isActivePath = (path: string) => {
     if (path === "/" && location.pathname === "/") return true
@@ -77,15 +91,70 @@ export default function MicrosoftAdminLayout({ children }: MicrosoftAdminLayoutP
   }
 
   return (
+    <Sidebar className={cn("bg-card/60 backdrop-blur border-r", collapsed ? "w-16" : "w-72")} collapsible="icon">
+      <SidebarContent className="pt-20 pb-4 h-full">
+        {navigationGroups.map((group, groupIndex) => (
+          <SidebarGroup key={group.label}>
+            <SidebarGroupLabel className={cn("text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2", collapsed && "sr-only")}>
+              {group.label}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="space-y-1">
+                {group.items.map((item) => (
+                  <SidebarMenuItem key={item.url}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        to={item.url}
+                        className={cn(
+                          "flex items-start gap-3 px-3 py-2.5 text-xs rounded-lg transition-all duration-200 group",
+                          isActivePath(item.url)
+                            ? "bg-primary/10 text-primary border-l-2 border-primary"
+                            : "text-foreground hover:bg-muted/60 hover:text-primary"
+                        )}
+                      >
+                        <item.icon 
+                          className={cn(
+                            "h-4 w-4 flex-shrink-0 mt-0.5",
+                            isActivePath(item.url) ? "text-primary" : "text-muted-foreground"
+                          )} 
+                        />
+                        {!collapsed && (
+                          <div className="flex-1 min-w-0">
+                            <div className={cn(
+                              "text-xs font-medium",
+                              isActivePath(item.url) ? "text-primary" : "text-foreground"
+                            )}>
+                              {item.title}
+                            </div>
+                            <div className="text-xs text-muted-foreground truncate">
+                              {item.description}
+                            </div>
+                          </div>
+                        )}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </SidebarContent>
+    </Sidebar>
+  )
+}
+
+export default function MicrosoftAdminLayout({ children }: MicrosoftAdminLayoutProps) {
+  return (
     <SidebarProvider>
       <div className="h-screen flex flex-col w-full bg-background">
-        {/* Top Navigation - Preserved as requested */}
+        {/* Top Navigation */}
         <TopNavigation />
         
         {/* Main Content Area */}
         <div className="flex flex-1 overflow-hidden">
-          {/* Contextual Sidebar - Collapsible */}
-          <ContextualSidebar />
+          {/* Microsoft Admin Sidebar - Collapsible */}
+          <MicrosoftAdminSidebar />
 
           {/* Main Content */}
           <SidebarInset>
