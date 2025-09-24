@@ -143,17 +143,42 @@ export default function Pipeline() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Header Section */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Pipeline Management Center</h1>
-        <p className="text-muted-foreground mt-2">
-          Advanced sales pipeline tracking, opportunity management, and revenue forecasting
-        </p>
+    <div className="min-h-screen bg-background">
+      {/* Modern Header */}
+      <div className="bg-card border-b border-border sticky top-0 z-10">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-xl font-semibold text-foreground">
+                    Pipeline Management
+                  </h1>
+                  <Badge variant="default" className="text-xs font-medium px-2 py-1">
+                    {overview.totalOpportunities} Opportunities
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Advanced sales pipeline tracking, opportunity management, and revenue forecasting
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Button onClick={fetchPipelineOverview} variant="outline" size="sm" className="h-8 text-xs font-medium">
+                <RefreshCw className="h-3 w-3 mr-2" />
+                Refresh
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Pipeline Overview Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Content Area */}
+      <div className="p-6 space-y-6">
+
+        {/* Pipeline Overview Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
           <CardContent className="p-6">
             <div className="space-y-2">
@@ -191,8 +216,8 @@ export default function Pipeline() {
         </Card>
       </div>
 
-      {/* Additional Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Additional Metrics Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
           <CardContent className="p-6">
               <div className="space-y-2">
@@ -221,25 +246,17 @@ export default function Pipeline() {
         </Card>
       </div>
 
-      {/* Performance Alerts */}
-      {overview.conversionRate < 20 && (
-        <Alert className="border-l-4 border-l-destructive bg-destructive/10 mb-6">
-          <AlertTriangle className="h-4 w-4 text-destructive" />
-          <AlertDescription className="text-destructive">
-            Pipeline conversion rate is below target ({overview.conversionRate.toFixed(1)}%). Consider reviewing qualification criteria and follow-up processes.
-          </AlertDescription>
-        </Alert>
-      )}
+        {/* Performance Alerts */}
+        {overview.conversionRate < 20 && (
+          <Alert className="border-l-4 border-l-destructive bg-destructive/10">
+            <AlertTriangle className="h-4 w-4 text-destructive" />
+            <AlertDescription className="text-destructive">
+              Pipeline conversion rate is below target ({overview.conversionRate.toFixed(1)}%). Consider reviewing qualification criteria and follow-up processes.
+            </AlertDescription>
+          </Alert>
+        )}
 
-      {/* Action Button */}
-      <div className="flex justify-end mb-6">
-        <Button onClick={fetchPipelineOverview} className="flex items-center gap-2" variant="outline">
-          <RefreshCw className="h-4 w-4" />
-          Refresh Pipeline
-        </Button>
-      </div>
-
-      <Tabs defaultValue="visual" className="space-y-6">
+        <Tabs defaultValue="visual" className="space-y-6">
         <TabsList className="grid w-full grid-cols-7 bg-muted/50">
           <TabsTrigger value="visual">Visual Pipeline</TabsTrigger>
           <TabsTrigger value="analytics">Performance</TabsTrigger>
@@ -432,7 +449,8 @@ export default function Pipeline() {
         <TabsContent value="automation" className="space-y-6">
           <WorkflowAutomation />
         </TabsContent>
-      </Tabs>
+        </Tabs>
+      </div>
     </div>
   );
 }
