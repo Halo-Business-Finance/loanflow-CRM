@@ -206,7 +206,7 @@ export default function Dashboard() {
                           <span className="text-xs text-muted-foreground">vs last month</span>
                         </div>
                       </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
                         <DollarSign className="h-6 w-6 text-primary" />
                       </div>
                     </div>
@@ -229,7 +229,7 @@ export default function Dashboard() {
                           <span className="text-xs text-muted-foreground">vs last month</span>
                         </div>
                       </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/20">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
                         <Users className="h-6 w-6 text-accent-foreground" />
                       </div>
                     </div>
@@ -252,7 +252,7 @@ export default function Dashboard() {
                           <span className="text-xs text-muted-foreground">vs last month</span>
                         </div>
                       </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/20">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
                         <Target className="h-6 w-6 text-secondary-foreground" />
                       </div>
                     </div>
@@ -275,7 +275,7 @@ export default function Dashboard() {
                           <span className="text-xs text-muted-foreground">vs last month</span>
                         </div>
                       </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/20">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full">
                         <Activity className="h-6 w-6 text-accent-foreground" />
                       </div>
                     </div>
