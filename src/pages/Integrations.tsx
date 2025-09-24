@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import HorizontalLayout from "@/components/HorizontalLayout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -311,8 +310,7 @@ export default function Integrations() {
   ]
 
   return (
-    <HorizontalLayout>
-      <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-6 space-y-6">
         {/* Header Section */}
         <div className="flex items-center gap-2 mb-6">
           <Workflow className="h-6 w-6" />
@@ -878,6 +876,5 @@ export default function Integrations() {
             </DialogContent>
           </Dialog>
       </div>
-    </HorizontalLayout>
   )
 }
