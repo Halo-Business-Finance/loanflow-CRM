@@ -12,8 +12,7 @@ import { SecurityManager } from "@/components/security/SecurityManager";
 import { GeoSecurityCheck } from "@/components/GeoSecurityCheck";
 import { AsyncErrorBoundary } from "@/components/AsyncErrorBoundary";
 import { CSPHeaders } from "@/components/security/CSPHeaders";
-import { MasterSecurityDashboard } from "@/components/security/MasterSecurityDashboard";
-import { MilitaryGradeSecurityDashboard } from "@/components/security/MilitaryGradeSecurityDashboard";
+import { EnterpriseSecurityDashboard } from "@/components/security/EnterpriseSecurityDashboard";
 
 import HybridLayout from "@/components/HybridLayout";
 import { SecurityEnhancementProvider } from "@/components/security/SecurityEnhancementProvider";
@@ -142,15 +141,12 @@ function AuthenticatedApp() {
             <Route path="/settings/users" element={<HybridLayout><SettingsUsers /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/settings/system" element={<HybridLayout><SettingsSystem /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
-            {/* Debug route */}
-            <Route path="/users-debug" element={<div>Users route test</div>} errorElement={<RouteErrorBoundary />} />
-            
             <Route path="/security" element={<HybridLayout><Security /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/security/access" element={<HybridLayout><SecurityAccess /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/security/audit" element={<HybridLayout><SecurityAudit /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/security/threats" element={<HybridLayout><SecurityThreats /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/security/compliance" element={<HybridLayout><SecurityCompliance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/military" element={<HybridLayout><MilitaryGradeSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/enterprise" element={<HybridLayout><EnterpriseSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/enterprise" element={<HybridLayout><Enterprise /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/integrations" element={<HybridLayout><Integrations /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
@@ -185,7 +181,7 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CSPHeaders />
-          {/* ProductionSecurityHeaders now included in MasterSecurityDashboard */}
+          {/* Security enhancement providers temporarily disabled */}
           <AuthProvider>
             {/* Temporarily disabled security enhancement providers to prevent auto-refresh */}
             {/* <SecurityEnhancementProvider>

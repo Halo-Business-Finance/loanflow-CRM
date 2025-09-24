@@ -56,7 +56,7 @@ interface MilitarySecurityMetrics {
   };
 }
 
-export function MilitaryGradeSecurityDashboard() {
+export function EnterpriseSecurityDashboard() {
   const [metrics, setMetrics] = useState<MilitarySecurityMetrics>({
     threatLevel: 'DEFCON-3',
     quantumResistance: 98.7,
