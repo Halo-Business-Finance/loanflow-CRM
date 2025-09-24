@@ -157,7 +157,7 @@ export function TopNavigation() {
         <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
           {/* Navigation Controls */}
           <div className="flex items-center gap-2 mr-4">
-            <SidebarTrigger className="h-12 w-12" />
+            <SidebarTrigger className="h-12 w-12 [&>svg]:h-6 [&>svg]:w-6" />
             <Button 
               variant="ghost" 
               size="icon" 
