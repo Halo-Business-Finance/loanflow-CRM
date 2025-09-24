@@ -78,7 +78,7 @@ export function TopNavigation() {
         {/* Logo */}
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center">
-            <BrandLogo size={32} showText={true} />
+            <BrandLogo size={48} showText={true} />
           </Link>
         </div>
 
