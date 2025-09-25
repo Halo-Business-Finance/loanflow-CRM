@@ -74,7 +74,7 @@ export function TopNavigation() {
   return (
     <header className="bg-blue-900 sticky top-0 z-40 shadow-medium">
       {/* Primary Header */}
-      <div className="flex h-16 items-center px-6 gap-4 relative">
+      <div className="flex h-20 items-center px-8 gap-6 relative">
         {/* Logo and Navigation Controls */}
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center">
