@@ -180,7 +180,7 @@ export function GlobalSearch() {
               placeholder="Search leads, clients, loans..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 text-center text-white placeholder:text-white/70"
               autoFocus
             />
           </div>
