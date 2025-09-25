@@ -281,7 +281,7 @@ function Dashboard() {
             <p className="text-lg text-black mt-1 text-left">Welcome back, {getUserDisplayName()}</p>
             
             {/* Navigation Controls */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 pl-4">
               {/* Sidebar Toggle */}
               <SidebarTrigger className="h-8 w-8 [&>svg]:h-4 [&>svg]:w-4 text-gray-600 hover:bg-gray-100" />
               
