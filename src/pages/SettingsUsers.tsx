@@ -119,7 +119,7 @@ export default function SettingsUsers() {
   }
 
   const getStatusColor = (isActive: boolean) => {
-    return isActive ? 'text-green-600' : 'text-gray-600'
+    return isActive ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'
   }
 
   const getStatusText = (isActive: boolean) => {
@@ -133,282 +133,374 @@ export default function SettingsUsers() {
   const inactiveUsers = totalUsers - activeUsers
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-          <p className="text-muted-foreground">
-            Manage user accounts, roles, and permissions
-          </p>
-        </div>
-        <div className="flex gap-2">
+    <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="space-y-2">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+              User Management
+            </h1>
+            <p className="text-sm md:text-base text-muted-foreground">
+              Manage user accounts, roles, and permissions across your organization
+            </p>
+          </div>
           <Button 
             variant="outline" 
             onClick={refreshUserData}
             disabled={loading}
             size="sm"
+            className="self-end sm:self-auto"
           >
             <RotateCcw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          <Button onClick={() => navigate('/settings/users')}>
-            <UserCheck className="h-4 w-4 mr-2" />
-            Full User Management
-          </Button>
         </div>
-      </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+        {/* Statistics Cards */}
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <Card className="border-border/50 hover:border-border transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
+              <Users className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{totalUsers}</div>
+              <p className="text-xs text-muted-foreground">
+                Registered accounts
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50 hover:border-border transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Administrators</CardTitle>
+              <Shield className="h-4 w-4 text-destructive" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{adminCount}</div>
+              <p className="text-xs text-muted-foreground">
+                Admin privileges
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50 hover:border-border transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Active Users</CardTitle>
+              <Settings className="h-4 w-4 text-green-600 dark:text-green-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{activeUsers}</div>
+              <p className="text-xs text-muted-foreground">
+                Currently active
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50 hover:border-border transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Inactive Users</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{inactiveUsers}</div>
+              <p className="text-xs text-muted-foreground">
+                Need attention
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* User Directory Section */}
+        <Card className="border-border/50">
+          <CardHeader className="pb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <CardTitle className="text-lg font-semibold">User Directory</CardTitle>
+                <CardDescription className="text-sm">
+                  Manage all user accounts and permissions
+                </CardDescription>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Users className="h-4 w-4" />
+                <span>{filteredUsers.length} of {totalUsers} users</span>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalUsers}</div>
-            <p className="text-xs text-muted-foreground">
-              Registered accounts
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Administrators</CardTitle>
-            <Shield className="h-4 w-4 text-red-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{adminCount}</div>
-            <p className="text-xs text-muted-foreground">
-              Admin privileges
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-            <Settings className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{activeUsers}</div>
-            <p className="text-xs text-muted-foreground">
-              Currently active
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Inactive Users</CardTitle>
-            <Users className="h-4 w-4 text-gray-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{inactiveUsers}</div>
-            <p className="text-xs text-muted-foreground">
-              Need attention
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>User Directory</CardTitle>
-          <CardDescription>Manage all user accounts and permissions</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+          <CardContent className="space-y-6">
             {/* Search Input */}
-            <div className="relative">
+            <div className="relative max-w-sm">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search users..."
+                placeholder="Search users by name or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
 
-            {/* Table Header */}
-            <div className="grid grid-cols-6 gap-4 font-medium text-sm border-b pb-2">
-              <span>Name</span>
-              <span>Email</span>
-              <span>Role</span>
-              <span>Status</span>
-              <span>Created</span>
-              <span>Actions</span>
-            </div>
-            
             {/* Loading State */}
             {loading && (
-              <div className="text-center py-8">
-                <div className="text-muted-foreground">Loading users...</div>
+              <div className="flex items-center justify-center py-12">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                  <span>Loading users...</span>
+                </div>
               </div>
             )}
 
-            {/* Users List */}
+            {/* Empty State */}
             {!loading && filteredUsers.length === 0 && (
-              <div className="text-center py-8">
-                <div className="text-muted-foreground">No users found</div>
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <Users className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                <h3 className="font-medium text-foreground mb-2">No users found</h3>
+                <p className="text-sm text-muted-foreground">
+                  {searchTerm ? 'Try adjusting your search terms' : 'No users available in the system'}
+                </p>
               </div>
             )}
 
-            {!loading && (
-              <div>
-                <p>Number of filtered users: {filteredUsers.length}</p>
+            {/* Users Table - Desktop View */}
+            {!loading && filteredUsers.length > 0 && (
+              <div className="hidden lg:block">
+                {/* Table Header */}
+                <div className="grid grid-cols-6 gap-4 font-medium text-sm text-muted-foreground border-b border-border pb-3 mb-4">
+                  <span>User</span>
+                  <span>Email</span>
+                  <span>Role</span>
+                  <span>Status</span>
+                  <span>Created</span>
+                  <span>Actions</span>
+                </div>
+                
+                {/* Table Body */}
+                <div className="space-y-2">
+                  {filteredUsers.map((user) => (
+                    <div key={user.id} className="grid grid-cols-6 gap-4 text-sm p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src="" />
+                          <AvatarFallback className="text-xs font-medium bg-primary/10 text-primary">
+                            {user.first_name?.charAt(0)?.toUpperCase() || user.email.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium text-foreground">{formatUserName(user)}</span>
+                      </div>
+                      <span className="text-muted-foreground truncate">{user.email}</span>
+                      <Badge variant={getRoleBadgeVariant(user.role)} className="w-fit">
+                        {user.role.replace('_', ' ')}
+                      </Badge>
+                      <span className={getStatusColor(user.is_active)}>
+                        {getStatusText(user.is_active)}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {new Date(user.created_at).toLocaleDateString()}
+                      </span>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          setEditingUser(user);
+                          setEditDialogOpen(true);
+                        }}
+                        className="w-fit"
+                      >
+                        <Edit3 className="h-3 w-3 mr-1" />
+                        Edit
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Users Cards - Mobile View */}
+            {!loading && filteredUsers.length > 0 && (
+              <div className="lg:hidden space-y-3">
                 {filteredUsers.map((user) => (
-              <div key={user.id} className="grid grid-cols-6 gap-4 text-sm p-3 border rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage src="" />
-                    <AvatarFallback className="text-xs">
-                      {user.first_name?.charAt(0) || user.email.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="font-medium">{formatUserName(user)}</span>
-                </div>
-                <span className="text-muted-foreground">{user.email}</span>
-                <Badge variant={getRoleBadgeVariant(user.role)} className="w-fit">
-                  {user.role.replace('_', ' ')}
-                </Badge>
-                <span className={getStatusColor(user.is_active)}>
-                  {getStatusText(user.is_active)}
-                </span>
-                <span className="text-muted-foreground">
-                  {new Date(user.created_at).toLocaleDateString()}
-                </span>
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={() => {
-                    console.log('Edit button clicked for user:', user.id);
-                    setEditingUser(user);
-                    setEditDialogOpen(true);
-                  }}
-                >
-                  Edit
-                </Button>
-              </div>
-            ))}
+                  <Card key={user.id} className="border-border/50">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src="" />
+                            <AvatarFallback className="text-sm font-medium bg-primary/10 text-primary">
+                              {user.first_name?.charAt(0)?.toUpperCase() || user.email.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <h3 className="font-medium text-foreground">{formatUserName(user)}</h3>
+                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                          </div>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            setEditingUser(user);
+                            setEditDialogOpen(true);
+                          }}
+                        >
+                          <Edit3 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-1">
+                            <span className="text-muted-foreground">Role:</span>
+                            <Badge variant={getRoleBadgeVariant(user.role)} className="text-xs">
+                              {user.role.replace('_', ' ')}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-muted-foreground">Status:</span>
+                            <span className={getStatusColor(user.is_active)}>
+                              {getStatusText(user.is_active)}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(user.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Edit User Dialog */}
-      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
-          </DialogHeader>
-          {editingUser && (
-            <EditUserForm 
-              user={editingUser}
-              onSave={(updatedUser) => {
-                setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
-                setEditDialogOpen(false);
-                setEditingUser(null);
-                toast({
-                  title: "User Updated",
-                  description: "User information has been updated successfully.",
-                });
-              }}
-              onCancel={() => {
-                setEditDialogOpen(false);
-                setEditingUser(null);
-              }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>User Roles</CardTitle>
-            <CardDescription>Manage role definitions and permissions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <p className="font-medium">Super Administrator</p>
-                  <p className="text-sm text-muted-foreground">Full system access and control</p>
-                </div>
-                <Button size="sm" variant="outline">Configure</Button>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <p className="font-medium">Administrator</p>
-                  <p className="text-sm text-muted-foreground">System administration access</p>
-                </div>
-                <Button size="sm" variant="outline">Configure</Button>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <p className="font-medium">Manager</p>
-                  <p className="text-sm text-muted-foreground">Team and lead management</p>
-                </div>
-                <Button size="sm" variant="outline">Configure</Button>
-              </div>
-
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <p className="font-medium">Agent</p>
-                  <p className="text-sm text-muted-foreground">Basic user access</p>
-                </div>
-                <Button size="sm" variant="outline">Configure</Button>
-              </div>
-            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Stats</CardTitle>
-            <CardDescription>User activity overview</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <p className="font-medium">Active Users Today</p>
-                  <p className="text-sm text-muted-foreground">Users who logged in today</p>
+        {/* Edit User Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
+            <DialogHeader className="pb-4">
+              <DialogTitle className="text-xl font-semibold">
+                Edit User Profile
+              </DialogTitle>
+              {editingUser && (
+                <p className="text-sm text-muted-foreground">
+                  Editing profile for {formatUserName(editingUser)}
+                </p>
+              )}
+            </DialogHeader>
+            {editingUser && (
+              <EditUserForm 
+                user={editingUser}
+                onSave={(updatedUser) => {
+                  setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
+                  setEditDialogOpen(false);
+                  setEditingUser(null);
+                  toast({
+                    title: "User Updated",
+                    description: "User information has been updated successfully.",
+                  });
+                }}
+                onCancel={() => {
+                  setEditDialogOpen(false);
+                  setEditingUser(null);
+                }}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Additional Information Grid */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Card className="border-border/50">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">Role Overview</CardTitle>
+              <CardDescription>System role definitions and access levels</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/30 transition-colors">
+                  <div className="space-y-1">
+                    <p className="font-medium text-foreground">Super Administrator</p>
+                    <p className="text-sm text-muted-foreground">Full system access and control</p>
+                  </div>
+                  <Badge variant="destructive" className="text-xs">
+                    Level 4
+                  </Badge>
                 </div>
-                <div className="text-2xl font-bold text-green-600">{activeUsers}</div>
+                
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/30 transition-colors">
+                  <div className="space-y-1">
+                    <p className="font-medium text-foreground">Administrator</p>
+                    <p className="text-sm text-muted-foreground">System administration access</p>
+                  </div>
+                  <Badge variant="default" className="text-xs">
+                    Level 3
+                  </Badge>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/30 transition-colors">
+                  <div className="space-y-1">
+                    <p className="font-medium text-foreground">Manager</p>
+                    <p className="text-sm text-muted-foreground">Team and lead management</p>
+                  </div>
+                  <Badge variant="secondary" className="text-xs">
+                    Level 2
+                  </Badge>
+                </div>
+
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/30 transition-colors">
+                  <div className="space-y-1">
+                    <p className="font-medium text-foreground">Loan Specialists</p>
+                    <p className="text-sm text-muted-foreground">Loan processing and underwriting</p>
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    Level 1
+                  </Badge>
+                </div>
               </div>
-              
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <p className="font-medium">Total Roles</p>
-                  <p className="text-sm text-muted-foreground">Different user roles</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">Activity Overview</CardTitle>
+              <CardDescription>User engagement and system statistics</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+                  <div className="space-y-1">
+                    <p className="font-medium text-foreground">Active Users</p>
+                    <p className="text-sm text-muted-foreground">Currently active accounts</p>
+                  </div>
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">{activeUsers}</div>
                 </div>
-                <div className="text-2xl font-bold text-blue-600">
-                  {new Set(users.map(u => u.role)).size}
+                
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+                  <div className="space-y-1">
+                    <p className="font-medium text-foreground">Role Diversity</p>
+                    <p className="text-sm text-muted-foreground">Different user roles in system</p>
+                  </div>
+                  <div className="text-2xl font-bold text-primary">
+                    {new Set(users.map(u => u.role)).size}
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+                  <div className="space-y-1">
+                    <p className="font-medium text-foreground">New This Month</p>
+                    <p className="text-sm text-muted-foreground">Recently registered users</p>
+                  </div>
+                  <div className="text-2xl font-bold text-accent-foreground">
+                    {users.filter(u => {
+                      const created = new Date(u.created_at)
+                      const now = new Date()
+                      const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+                      return created >= thisMonth
+                    }).length}
+                  </div>
                 </div>
               </div>
-              
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div>
-                  <p className="font-medium">User Growth</p>
-                  <p className="text-sm text-muted-foreground">New users this month</p>
-                </div>
-                <div className="text-2xl font-bold text-purple-600">
-                  {users.filter(u => {
-                    const created = new Date(u.created_at)
-                    const now = new Date()
-                    const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-                    return created >= thisMonth
-                  }).length}
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
@@ -608,92 +700,109 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="first_name">First Name</Label>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Basic Information Section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium text-foreground">Basic Information</h3>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="first_name" className="text-sm font-medium">First Name</Label>
+            <Input
+              id="first_name"
+              value={formData.first_name}
+              onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+              placeholder="Enter first name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="last_name" className="text-sm font-medium">Last Name</Label>
+            <Input
+              id="last_name"
+              value={formData.last_name}
+              onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+              placeholder="Enter last name"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
           <Input
-            id="first_name"
-            value={formData.first_name}
-            onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            disabled
+            className="bg-muted"
+          />
+          <p className="text-xs text-muted-foreground">Email addresses cannot be modified</p>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
+          <Input
+            id="phone"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="Enter phone number"
           />
         </div>
-        <div>
-          <Label htmlFor="last_name">Last Name</Label>
-          <Input
-            id="last_name"
-            value={formData.last_name}
-            onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-          />
+      </div>
+
+      {/* Role and Status Section */}
+      <div className="space-y-4 border-t border-border pt-6">
+        <h3 className="text-lg font-medium text-foreground">Access Control</h3>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="role" className="text-sm font-medium">User Role</Label>
+            <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="super_admin">Super Admin</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="manager">Manager</SelectItem>
+                <SelectItem value="loan_originator">Loan Originator</SelectItem>
+                <SelectItem value="loan_processor">Loan Processor</SelectItem>
+                <SelectItem value="underwriter">Underwriter</SelectItem>
+                <SelectItem value="funder">Funder</SelectItem>
+                <SelectItem value="closer">Closer</SelectItem>
+                <SelectItem value="agent">Agent</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="status" className="text-sm font-medium">Account Status</Label>
+            <Select 
+              value={formData.is_active ? "active" : "inactive"} 
+              onValueChange={(value) => setFormData({ ...formData, is_active: value === "active" })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </div>
-
-      <div>
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          disabled // Email usually shouldn't be editable
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="phone">Phone</Label>
-        <Input
-          id="phone"
-          value={formData.phone}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="role">Role</Label>
-        <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select a role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="super_admin">Super Admin</SelectItem>
-            <SelectItem value="admin">Admin</SelectItem>
-            <SelectItem value="manager">Manager</SelectItem>
-            <SelectItem value="loan_originator">Loan Originator</SelectItem>
-            <SelectItem value="loan_processor">Loan Processor</SelectItem>
-            <SelectItem value="underwriter">Underwriter</SelectItem>
-            <SelectItem value="funder">Funder</SelectItem>
-            <SelectItem value="closer">Closer</SelectItem>
-            <SelectItem value="agent">Agent</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div>
-        <Label htmlFor="status">Status</Label>
-        <Select 
-          value={formData.is_active ? "active" : "inactive"} 
-          onValueChange={(value) => setFormData({ ...formData, is_active: value === "active" })}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="inactive">Inactive</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Password Reset Section */}
-      <div className="border-t pt-4 space-y-4">
-        <div>
-          <Label className="text-base font-medium">Reset Password</Label>
-          <p className="text-sm text-muted-foreground">Set a new password for this user</p>
+      <div className="space-y-4 border-t border-border pt-6">
+        <div className="space-y-1">
+          <h3 className="text-lg font-medium text-foreground">Security</h3>
+          <p className="text-sm text-muted-foreground">Reset the user's password for security purposes</p>
         </div>
         
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="new_password">New Password</Label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="new_password" className="text-sm font-medium">New Password</Label>
             <Input
               id="new_password"
               type="password"
@@ -702,8 +811,8 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
               placeholder="Enter new password"
             />
           </div>
-          <div>
-            <Label htmlFor="confirm_password">Confirm Password</Label>
+          <div className="space-y-2">
+            <Label htmlFor="confirm_password" className="text-sm font-medium">Confirm Password</Label>
             <Input
               id="confirm_password"
               type="password"
@@ -721,16 +830,17 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
           disabled={resettingPassword || !newPassword || !confirmPassword}
           className="w-full"
         >
-          {resettingPassword ? "Resetting Password..." : "Reset Password"}
+          {resettingPassword ? "Resetting Password..." : "Reset User Password"}
         </Button>
       </div>
 
-      <div className="flex justify-end space-x-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row justify-end gap-3 border-t border-border pt-6">
+        <Button type="button" variant="outline" onClick={onCancel} className="order-2 sm:order-1">
           Cancel
         </Button>
-        <Button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save Changes"}
+        <Button type="submit" disabled={saving} className="order-1 sm:order-2">
+          {saving ? "Saving Changes..." : "Save Changes"}
         </Button>
       </div>
     </form>
