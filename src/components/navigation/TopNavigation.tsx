@@ -75,11 +75,34 @@ export function TopNavigation() {
     <header className="bg-blue-900 sticky top-0 z-40 shadow-medium">
       {/* Primary Header */}
       <div className="flex h-16 items-center px-6 gap-4 relative">
-        {/* Logo */}
+        {/* Logo and Navigation Controls */}
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center">
             <BrandLogo size={48} showText={true} className="[&>span]:text-white" />
           </Link>
+          
+          {/* Sidebar Toggle */}
+          <SidebarTrigger className="h-8 w-8 [&>svg]:h-4 [&>svg]:w-4 text-white hover:bg-blue-700" />
+          
+          {/* Navigation Controls */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 text-white hover:bg-blue-700" 
+            onClick={() => window.history.back()}
+            title="Go back"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 text-white hover:bg-blue-700" 
+            onClick={() => window.history.forward()}
+            title="Go forward"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
 
         {/* Centered Search Bar */}
@@ -166,28 +189,6 @@ export function TopNavigation() {
       {/* Secondary Navigation - Module Tabs */}
       <div className="bg-blue-900">
         <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
-          {/* Navigation Controls */}
-          <div className="flex items-center gap-2 mr-4">
-            <SidebarTrigger className="h-12 w-12 [&>svg]:h-6 [&>svg]:w-6 text-white hover:bg-blue-700" />
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-8 w-8 text-white hover:bg-blue-700" 
-              onClick={() => window.history.back()}
-              title="Go back"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-8 w-8 text-white hover:bg-blue-700" 
-              onClick={() => window.history.forward()}
-              title="Go forward"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
           {/* Navigation Menu - Centered */}
           <div className="flex-1 flex justify-center">
             {mainModules.map((module) => (
