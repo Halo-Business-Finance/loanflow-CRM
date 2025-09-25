@@ -13,7 +13,9 @@ import {
   Activity,
   ArrowUpRight,
   ArrowDownRight,
-  Download
+  Download,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -34,6 +36,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 // Real-time dashboard data interfaces
 interface DashboardMetrics {
@@ -274,8 +277,34 @@ function Dashboard() {
       {/* Microsoft-style Dashboard Header */}
       <div className="bg-white border-b border-border pl-0 pr-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex-1 pl-6">
+          <div className="flex-1 pl-6 flex items-center gap-4">
             <p className="text-lg text-black mt-1 text-left">Welcome back, {getUserDisplayName()}</p>
+            
+            {/* Navigation Controls */}
+            <div className="flex items-center gap-2">
+              {/* Sidebar Toggle */}
+              <SidebarTrigger className="h-8 w-8 [&>svg]:h-4 [&>svg]:w-4 text-gray-600 hover:bg-gray-100" />
+              
+              {/* Navigation Controls */}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-gray-600 hover:bg-gray-100" 
+                onClick={() => window.history.back()}
+                title="Go back"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-gray-600 hover:bg-gray-100" 
+                onClick={() => window.history.forward()}
+                title="Go forward"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" onClick={fetchDashboardData} disabled={loading}>
