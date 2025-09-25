@@ -186,28 +186,6 @@ export function TopNavigation() {
         </div>
       </div>
 
-      {/* Secondary Navigation - Module Tabs */}
-      <div className="bg-blue-900">
-        <nav className="flex items-center px-6 overflow-x-auto scrollbar-hide">
-          {/* Navigation Menu - Centered */}
-          <div className="flex-1 flex justify-center">
-            {mainModules.map((module) => (
-              <Link
-                key={module.path}
-                to={module.path}
-                className={cn(
-                  "flex items-center px-6 py-3 text-sm font-normal border-b-2 whitespace-nowrap transition-all duration-200",
-                  isActiveModule(module.path, module.exact)
-                    ? "border-white text-white bg-blue-700/50" 
-                    : "border-transparent text-white hover:text-white hover:bg-blue-700/30 hover:border-blue-300"
-                )}
-              >
-                {module.name}
-              </Link>
-            ))}
-          </div>
-        </nav>
-      </div>
     </header>
   )
 }
