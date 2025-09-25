@@ -76,33 +76,36 @@ export function TopNavigation() {
       {/* Primary Header */}
       <div className="flex h-20 items-center px-8 gap-6 relative">
         {/* Logo and Navigation Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center">
             <BrandLogo size={48} showText={true} className="[&>span]:text-white" />
           </Link>
           
-          {/* Sidebar Toggle */}
-          <SidebarTrigger className="h-8 w-8 [&>svg]:h-4 [&>svg]:w-4 text-white hover:bg-blue-700" />
-          
-          {/* Navigation Controls */}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-8 w-8 text-white hover:bg-blue-700" 
-            onClick={() => window.history.back()}
-            title="Go back"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-8 w-8 text-white hover:bg-blue-700" 
-            onClick={() => window.history.forward()}
-            title="Go forward"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+          {/* Navigation Controls - Moved right with margin */}
+          <div className="flex items-center gap-2 ml-6">
+            {/* Sidebar Toggle */}
+            <SidebarTrigger className="h-8 w-8 [&>svg]:h-4 [&>svg]:w-4 text-white hover:bg-blue-700" />
+            
+            {/* Navigation Controls */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 text-white hover:bg-blue-700" 
+              onClick={() => window.history.back()}
+              title="Go back"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 text-white hover:bg-blue-700" 
+              onClick={() => window.history.forward()}
+              title="Go forward"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Centered Search Bar */}
