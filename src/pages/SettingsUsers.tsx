@@ -190,16 +190,31 @@ export default function SettingsUsers() {
               Manage user accounts, roles, and permissions across your organization
             </p>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={refreshUserData}
-            disabled={loading}
-            size="sm"
-            className="self-end sm:self-auto"
-          >
-            <RotateCcw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="default" 
+              size="sm"
+              onClick={() => {
+                // Add user functionality - opens add user dialog
+                toast({
+                  title: "Add User",
+                  description: "Add user functionality coming soon",
+                })
+              }}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add User
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={refreshUserData}
+              disabled={loading}
+              size="sm"
+            >
+              <RotateCcw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+          </div>
         </div>
 
         {/* Statistics Cards */}
@@ -340,7 +355,7 @@ export default function SettingsUsers() {
                         {getStatusText(user.is_active)}
                       </span>
                       <span className="text-muted-foreground">
-                        {new Date(user.created_at).toLocaleDateString()}
+                        {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
                       </span>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -369,9 +384,19 @@ export default function SettingsUsers() {
                             <Lock className="h-4 w-4 mr-2" />
                             Lock Account
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive focus:text-destructive">
-                            <Archive className="h-4 w-4 mr-2" />
-                            Archive User
+                          <DropdownMenuItem 
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to delete user ${formatUserName(user)}? This action cannot be undone.`)) {
+                                toast({
+                                  title: "Delete User",
+                                  description: "Delete user functionality coming soon",
+                                })
+                              }
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete User
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -427,9 +452,19 @@ export default function SettingsUsers() {
                               <Lock className="h-4 w-4 mr-2" />
                               Lock Account
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive focus:text-destructive">
-                              <Archive className="h-4 w-4 mr-2" />
-                              Archive User
+                            <DropdownMenuItem 
+                              className="text-destructive focus:text-destructive"
+                              onClick={() => {
+                                if (confirm(`Are you sure you want to delete user ${formatUserName(user)}? This action cannot be undone.`)) {
+                                  toast({
+                                    title: "Delete User",
+                                    description: "Delete user functionality coming soon",
+                                  })
+                                }
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete User
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -450,7 +485,7 @@ export default function SettingsUsers() {
                           </div>
                         </div>
                         <span className="text-xs text-muted-foreground">
-                          {new Date(user.created_at).toLocaleDateString()}
+                          {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
                         </span>
                       </div>
                     </CardContent>
