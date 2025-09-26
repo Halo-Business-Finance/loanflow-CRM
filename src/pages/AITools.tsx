@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
-import HorizontalLayout from "@/components/HorizontalLayout"
+import SimpleLayout from "@/components/SimpleLayout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -394,7 +394,7 @@ export default function AITools() {
   }
 
   return (
-    <HorizontalLayout>
+    <SimpleLayout>
       <div className="container mx-auto p-6 space-y-6">
         {/* Header Section */}
         <div className="flex items-center gap-2 mb-6">
@@ -574,6 +574,6 @@ export default function AITools() {
           </TabsContent>
         </Tabs>
       </div>
-    </HorizontalLayout>
+    </SimpleLayout>
   )
 }

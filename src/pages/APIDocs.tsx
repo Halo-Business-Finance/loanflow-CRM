@@ -1,5 +1,5 @@
 import { useState } from "react"
-import HorizontalLayout from "@/components/HorizontalLayout"
+import SimpleLayout from "@/components/SimpleLayout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -135,7 +135,7 @@ export default function APIDocs() {
   const categories = [...new Set(apiEndpoints.map(ep => ep.category))]
 
   return (
-    <HorizontalLayout>
+    <SimpleLayout>
       <div className="container mx-auto p-6 space-y-6">
         {/* Header Section */}
         <div className="flex items-center gap-2 mb-6">
@@ -587,6 +587,6 @@ leads = api.get_leads(stage='New', limit=10)`)}
             </TabsContent>
           </Tabs>
       </div>
-    </HorizontalLayout>
+    </SimpleLayout>
   )
 }
