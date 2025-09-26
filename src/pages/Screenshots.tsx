@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Download, ExternalLink } from "lucide-react";
-import HorizontalLayout from "@/components/HorizontalLayout";
+import HybridLayout from "@/components/HybridLayout";
 
 const Screenshots = () => {
   const pages = [
@@ -59,7 +59,7 @@ const Screenshots = () => {
   };
 
   return (
-    <HorizontalLayout>
+    <HybridLayout>
       <div className="container mx-auto p-6 space-y-6">
         {/* Header Section */}
         <div className="flex items-center gap-2 mb-6">
@@ -207,7 +207,7 @@ const Screenshots = () => {
         </Card>
       </div>
     </div>
-    </HorizontalLayout>
+    </HybridLayout>
   );
 };
 

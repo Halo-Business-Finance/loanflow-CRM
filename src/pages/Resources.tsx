@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import HorizontalLayout from "@/components/HorizontalLayout";
+import HybridLayout from "@/components/HybridLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -82,7 +82,7 @@ export default function Resources() {
   };
 
   return (
-    <HorizontalLayout>
+    <HybridLayout>
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center gap-2 mb-6">
           <BookOpen className="h-6 w-6" />
@@ -454,6 +454,6 @@ export default function Resources() {
           </TabsContent>
         </Tabs>
       </div>
-    </HorizontalLayout>
+    </HybridLayout>
   );
 }

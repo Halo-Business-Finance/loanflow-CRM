@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
-import HorizontalLayout from "@/components/HorizontalLayout"
+import HybridLayout from "@/components/HybridLayout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -153,26 +153,26 @@ export default function LeadDocuments() {
 
   if (loading) {
     return (
-      <HorizontalLayout>
+      <HybridLayout>
         <div className="flex items-center justify-center h-64">
           <div className="text-lg">Loading documents...</div>
         </div>
-      </HorizontalLayout>
+      </HybridLayout>
     )
   }
 
   if (!lead) {
     return (
-      <HorizontalLayout>
+      <HybridLayout>
         <div className="flex items-center justify-center h-64">
           <div className="text-lg">Lead not found</div>
         </div>
-      </HorizontalLayout>
+      </HybridLayout>
     )
   }
 
   return (
-    <HorizontalLayout>
+    <HybridLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -470,6 +470,6 @@ export default function LeadDocuments() {
           }}
         />
       </div>
-    </HorizontalLayout>
+    </HybridLayout>
   )
 }

@@ -1,13 +1,13 @@
 import React from 'react';
-import HorizontalLayout from '@/components/HorizontalLayout';
+import HybridLayout from '@/components/HybridLayout';
 import { CollaborativeCRM as CollaborativeCRMComponent } from '@/components/collaboration/CollaborativeCRM';
 
 export default function CollaborativeCRM() {
   return (
-    <HorizontalLayout>
+    <HybridLayout>
       <div className="space-y-6">
         <CollaborativeCRMComponent />
       </div>
-    </HorizontalLayout>
+    </HybridLayout>
   );
 }
