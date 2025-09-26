@@ -150,7 +150,7 @@ export default function Dashboard() {
               <div>
                 <div className="flex items-center gap-3">
                   <h1 className="text-2xl font-bold text-foreground">
-                    Home
+                    Welcome to your CRM
                   </h1>
                   <Badge variant="secondary" className="text-xs font-medium px-2.5 py-1">
                     Overview
