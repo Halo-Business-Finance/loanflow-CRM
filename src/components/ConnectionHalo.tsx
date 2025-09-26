@@ -37,11 +37,11 @@ export function ConnectionHalo() {
             {/* Text inside cloud */}
             <text 
               x="48" 
-              y="42"
+              y="40"
               dy=".3em"
               textAnchor="middle" 
               dominantBaseline="middle" 
-              className="text-[8px] font-semibold fill-navy dark:fill-navy-light"
+              className="text-[9px] font-bold fill-gray-700 dark:fill-gray-600"
               style={{ fontFamily: 'system-ui, sans-serif' }}
             >
               Applications
