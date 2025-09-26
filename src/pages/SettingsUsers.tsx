@@ -517,12 +517,6 @@ export default function SettingsUsers() {
                           checked={selectedUsers.has(user.user_id)}
                           onCheckedChange={(checked) => handleSelectUser(user.user_id, checked as boolean)}
                         />
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src="" />
-                          <AvatarFallback className="text-xs font-medium bg-primary/10 text-primary">
-                            {user.first_name?.charAt(0)?.toUpperCase() || user.email.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
                         <span className="font-medium text-foreground">{formatUserName(user)}</span>
                       </div>
                       <span className="text-muted-foreground truncate">{user.email}</span>
@@ -597,12 +591,6 @@ export default function SettingsUsers() {
                             checked={selectedUsers.has(user.user_id)}
                             onCheckedChange={(checked) => handleSelectUser(user.user_id, checked as boolean)}
                           />
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src="" />
-                            <AvatarFallback className="text-sm font-medium bg-primary/10 text-primary">
-                              {user.first_name?.charAt(0)?.toUpperCase() || user.email.charAt(0).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
                           <div>
                             <h3 className="font-medium text-foreground">{formatUserName(user)}</h3>
                             <p className="text-sm text-muted-foreground">{user.email}</p>
