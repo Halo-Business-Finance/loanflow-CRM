@@ -40,7 +40,7 @@ const navigationGroups = [
     items: [
       { title: "Leads", url: "/leads", icon: Users, description: "Manage your lead pipeline" },
       { title: "Pipeline", url: "/pipeline", icon: TrendingUp, description: "Sales pipeline management" },
-      { title: "Clients", url: "/clients", icon: Building, description: "Client management" },
+      { title: "Existing Borrowers", url: "/existing-borrowers", icon: Building, description: "Existing borrower management" },
       { title: "Activities", url: "/activities", icon: Activity, description: "Tasks and calendar" },
     ]
   },
