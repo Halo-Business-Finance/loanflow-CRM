@@ -80,7 +80,8 @@ export default function SettingsUsers() {
             ...profile,
             user_id: profile.id,
             phone: profile.phone_number || '',
-            role: profile.role || 'agent'
+            role: profile.role || 'agent',
+            is_active: profile.is_active !== false // Ensure boolean
           }))
           
           setUsers(transformedUsers)
@@ -330,7 +331,10 @@ export default function SettingsUsers() {
             </Button>
             <Button 
               variant="outline" 
-              onClick={refreshUserData}
+              onClick={() => {
+                console.log('Force refreshing user data...')
+                fetchUsers()
+              }}
               disabled={loading}
               size="sm"
             >

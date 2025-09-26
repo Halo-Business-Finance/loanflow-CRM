@@ -163,6 +163,11 @@ Deno.serve(async (req) => {
 
     console.log(`Returning ${transformedUsers.length} transformed users with roles`)
     
+    // Log each user's role for debugging
+    transformedUsers.forEach(user => {
+      console.log(`User ${user.email}: role=${user.role}, is_active=${user.is_active}`)
+    })
+    
     // Log role distribution for debugging
     const roleDistribution = {}
     transformedUsers.forEach(user => {
