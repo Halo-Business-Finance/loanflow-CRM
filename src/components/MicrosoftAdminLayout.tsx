@@ -31,8 +31,6 @@ const navigationGroups = [
   {
     label: "Main",
     items: [
-      { title: "Home", url: "/", icon: Home, description: "Overview and quick actions" },
-      { title: "Overview", url: "/dashboard", icon: BarChart3, description: "Performance dashboard" },
       { title: "Dashboard", url: "/dashboard", icon: BarChart3, description: "Main dashboard and analytics" },
     ]
   },
