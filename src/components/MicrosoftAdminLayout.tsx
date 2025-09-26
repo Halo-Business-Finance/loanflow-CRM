@@ -94,7 +94,7 @@ function MicrosoftAdminSidebar() {
       <SidebarContent className="pt-20 pb-4 h-full">
         {navigationGroups.map((group, groupIndex) => (
           <SidebarGroup key={group.label}>
-            <SidebarGroupLabel className={cn("text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2", collapsed && "sr-only")}>
+            <SidebarGroupLabel className={cn("text-[10px] font-semibold text-black uppercase tracking-wider px-2", collapsed && "sr-only")}>
               {group.label}
             </SidebarGroupLabel>
             <SidebarGroupContent>
