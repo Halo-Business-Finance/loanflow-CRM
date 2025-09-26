@@ -76,14 +76,21 @@ export default function SettingsUsers() {
         }
 
         if (edgeResponse?.users) {
-          const transformedUsers = edgeResponse.users.map((profile: any) => ({
-            ...profile,
-            user_id: profile.id,
-            phone: profile.phone_number || '',
-            role: profile.role || 'agent',
-            is_active: profile.is_active !== false // Ensure boolean
-          }))
+          console.log('Raw edge response users:', edgeResponse.users)
+          const transformedUsers = edgeResponse.users.map((profile: any) => {
+            console.log('Transforming profile:', profile)
+            const transformed = {
+              ...profile,
+              user_id: profile.id,
+              phone: profile.phone_number || '',
+              role: profile.role || 'agent',
+              is_active: profile.is_active !== false // Ensure boolean
+            }
+            console.log('Transformed user:', transformed)
+            return transformed
+          })
           
+          console.log('Final transformed users:', transformedUsers)
           setUsers(transformedUsers)
           return
         }

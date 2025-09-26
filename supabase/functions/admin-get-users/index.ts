@@ -119,8 +119,8 @@ Deno.serve(async (req) => {
     }
 
     // Create a map of user roles with priority for highest role
-    const rolesMap = new Map()
-    const rolePriority = {
+    const rolesMap = new Map<string, string>()
+    const rolePriority: Record<string, number> = {
       'super_admin': 5,
       'admin': 4,
       'manager': 3,
@@ -135,14 +135,14 @@ Deno.serve(async (req) => {
     
     if (allUserRoles) {
       allUserRoles.forEach((ur: any) => {
-        if (ur.is_active) {
+        if (ur.is_active && ur.role) {
           const currentRole = rolesMap.get(ur.user_id)
           const currentPriority = currentRole ? (rolePriority[currentRole] || 0) : -1
-          const newPriority = rolePriority[ur.role] || 0
+          const newPriority = rolePriority[ur.role as string] || 0
           
           // Only update if this role has higher priority or no role exists yet
           if (!currentRole || newPriority > currentPriority) {
-            rolesMap.set(ur.user_id, ur.role)
+            rolesMap.set(ur.user_id, ur.role as string)
           }
         }
       })
@@ -169,9 +169,11 @@ Deno.serve(async (req) => {
     })
     
     // Log role distribution for debugging
-    const roleDistribution = {}
+    const roleDistribution: Record<string, number> = {}
     transformedUsers.forEach(user => {
-      roleDistribution[user.role] = (roleDistribution[user.role] || 0) + 1
+      if (user.role) {
+        roleDistribution[user.role] = (roleDistribution[user.role] || 0) + 1
+      }
     })
     console.log('Role distribution:', roleDistribution)
 
@@ -182,12 +184,13 @@ Deno.serve(async (req) => {
       }
     )
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Edge function error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error',
-        details: error.message 
+        details: errorMessage 
       }),
       { 
         status: 500, 
