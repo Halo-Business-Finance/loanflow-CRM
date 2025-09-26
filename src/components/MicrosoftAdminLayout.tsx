@@ -125,9 +125,6 @@ function MicrosoftAdminSidebar() {
                             )}>
                               {item.title}
                             </div>
-                            <div className="text-[9px] text-muted-foreground truncate">
-                              {item.description}
-                            </div>
                           </div>
                         )}
                       </Link>
