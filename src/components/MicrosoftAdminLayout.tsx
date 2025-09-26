@@ -119,7 +119,7 @@ function MicrosoftAdminSidebar() {
                         {!collapsed && (
                           <div className="flex-1 min-w-0">
                             <div className={cn(
-                              "text-[12px] font-medium",
+                              "text-[13px] font-medium",
                               isActivePath(item.url) ? "text-primary" : "text-foreground"
                             )}>
                               {item.title}
