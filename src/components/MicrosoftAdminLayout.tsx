@@ -113,8 +113,7 @@ function MicrosoftAdminSidebar() {
                       >
                         <item.icon 
                           className={cn(
-                            "h-4 w-4 flex-shrink-0 mt-0.5",
-                            isActivePath(item.url) ? "text-primary" : "text-muted-foreground"
+                            "h-4 w-4 flex-shrink-0 mt-0.5 text-blue-700"
                           )} 
                         />
                         {!collapsed && (
