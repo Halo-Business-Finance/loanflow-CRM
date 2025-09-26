@@ -44,7 +44,7 @@ export function ConnectionHalo() {
               y="26" 
               textAnchor="middle" 
               dominantBaseline="middle" 
-              className="text-[7px] font-medium fill-current"
+              className="text-[8px] font-semibold fill-navy dark:fill-navy-light"
               style={{ fontFamily: 'system-ui, sans-serif' }}
             >
               Halo Apps
