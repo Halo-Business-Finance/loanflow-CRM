@@ -617,41 +617,13 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
         });
 
         if (adminError) {
-          throw adminError;
+          console.error('Admin update profile error:', adminError);
+          throw new Error(`Failed to update profile: ${adminError.message}`);
         }
 
         console.log('Profile updated successfully via admin function:', updateResult);
-      } catch (adminFunctionError) {
-        console.warn('Admin function failed, falling back to direct update:', adminFunctionError);
-        
-        // Fallback to direct update with phone_number field
-        const updateData: any = {};
-        
-        if (formData.first_name !== user.first_name) {
-          updateData.first_name = formData.first_name;
-        }
-        if (formData.last_name !== user.last_name) {
-          updateData.last_name = formData.last_name;
-        }
-        // Use phone_number field instead of phone
-        if (formData.phone !== user.phone) {
-          updateData.phone_number = formData.phone;
-        }
-        if (formData.is_active !== user.is_active) {
-          updateData.is_active = formData.is_active;
-        }
-
-        if (Object.keys(updateData).length > 0) {
-          const { error: directError } = await supabase
-            .from('profiles')
-            .update(updateData)
-            .eq('id', user.id);
-
-          if (directError) {
-            console.error('Direct profile update error:', directError);
-            throw new Error(`Profile update failed: ${directError.message}`);
-          }
-        }
+      } catch (error) {
+        throw error;
       }
 
       // Handle role separately if it changed
