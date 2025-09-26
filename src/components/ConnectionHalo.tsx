@@ -14,28 +14,31 @@ export function ConnectionHalo() {
   const HaloButton = () => {
     console.log('HaloButton rendering')
     return (
-      <div className="flex flex-col items-center gap-1 -ml-2">
+      <div className="flex flex-col items-center gap-1">
         <button
           onClick={() => {
             console.log('Halo button clicked!')
             setIsOpen(true)
           }}
-          className="relative w-32 h-16 px-2 group transition-colors duration-200 flex items-center justify-center"
+          className="relative w-36 h-16 px-2 group transition-colors duration-200 flex items-center justify-center"
           aria-label="Open connections"
         >
           {/* Custom cloud icon with integrated text */}
           <svg 
-            className="block w-24 h-16 text-white group-hover:text-white/90" 
-            viewBox="-2 -2 68 52"
+            className="block w-28 h-14 text-white group-hover:text-white/90" 
+            viewBox="-8 -8 80 64"
             preserveAspectRatio="xMidYMid meet"
             fill="currentColor"
           >
             {/* Cloud shape */}
-            <path d="M16 32c-4.4 0-8-3.6-8-8s3.6-8 8-8c1.5-4.4 5.6-8 10.7-8 6.1 0 11.3 4.9 11.3 11 0 0.3 0 0.6-0.1 0.9C40.3 20.3 42 22 42 24c2.2 0 4 1.8 4 4s-1.8 4-4 4H16z"/>
+            <g transform="translate(0,1)">
+              <path d="M16 32c-4.4 0-8-3.6-8-8s3.6-8 8-8c1.5-4.4 5.6-8 10.7-8 6.1 0 11.3 4.9 11.3 11 0 0.3 0 0.6-0.1 0.9C40.3 20.3 42 22 42 24c2.2 0 4 1.8 4 4s-1.8 4-4 4H16z"/>
+            </g>
             {/* Text inside cloud */}
             <text 
               x="32" 
               y="24" 
+              dy=".3em"
               textAnchor="middle" 
               dominantBaseline="middle" 
               className="text-[8px] font-semibold fill-navy dark:fill-navy-light"
