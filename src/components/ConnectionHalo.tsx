@@ -20,7 +20,7 @@ export function ConnectionHalo() {
             console.log('Halo button clicked!')
             setIsOpen(true)
           }}
-          className="relative w-20 h-12 group transition-colors duration-200 flex flex-col items-center justify-center"
+          className="relative w-20 h-16 group transition-colors duration-200 flex flex-col items-center justify-center"
           style={{
             clipPath: `polygon(
               0% 20%, 20% 20%, 20% 0%, 40% 0%, 40% 20%, 60% 20%, 60% 0%, 80% 0%, 80% 20%, 100% 20%,
@@ -30,10 +30,10 @@ export function ConnectionHalo() {
           }}
           aria-label="Open connections"
         >
-          {/* Cloud icon */}
-          <Cloud className="w-5 h-5 text-white group-hover:text-white/90 mb-0.5" />
-          {/* Halo Apps text inside */}
-          <span className="text-[8px] font-medium text-white group-hover:text-white/90 leading-none">
+          {/* Cloud icon - larger size */}
+          <Cloud className="w-8 h-8 text-white group-hover:text-white/90 mb-1" />
+          {/* Halo Apps text inside the cloud icon area */}
+          <span className="text-[9px] font-medium text-white group-hover:text-white/90 leading-none">
             Halo Apps
           </span>
         </button>
