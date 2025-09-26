@@ -20,12 +20,12 @@ export function ConnectionHalo() {
             console.log('Halo button clicked!')
             setIsOpen(true)
           }}
-          className="relative w-48 h-20 px-2 group transition-colors duration-200 flex items-center justify-center"
+          className="relative w-52 h-20 px-2 group transition-colors duration-200 flex items-center justify-center"
           aria-label="Open connections"
         >
           {/* Custom cloud icon with integrated text */}
           <svg 
-            className="block w-36 h-[72px] text-white group-hover:text-white/90" 
+            className="block w-40 h-20 text-white group-hover:text-white/90" 
             viewBox="-32 -12 160 80"
             preserveAspectRatio="xMidYMid meet"
             fill="currentColor"
@@ -37,7 +37,7 @@ export function ConnectionHalo() {
             {/* Text inside cloud */}
             <text 
               x="48" 
-              y="32"
+              y="42"
               dy=".3em"
               textAnchor="middle" 
               dominantBaseline="middle" 
