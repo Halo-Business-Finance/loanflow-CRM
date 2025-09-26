@@ -29,9 +29,9 @@ interface MicrosoftAdminLayoutProps {
 // Microsoft 365 admin center style navigation
 const navigationGroups = [
   {
-    label: "Main",
+    label: "Dashboard",
     items: [
-      { title: "Dashboard", url: "/dashboard", icon: BarChart3, description: "Main dashboard and analytics" },
+      { title: "Overview", url: "/dashboard", icon: BarChart3, description: "Main dashboard and analytics" },
     ]
   },
   {
