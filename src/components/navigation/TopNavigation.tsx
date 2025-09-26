@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom"
 import { Search, Bell, Settings, LogOut, User, HelpCircle, ChevronLeft, ChevronRight } from "lucide-react"
 import { BrandLogo } from "@/components/BrandLogo"
 import { ThemeToggle } from "@/components/ThemeToggle"
+import { ConnectionHalo } from "@/components/ConnectionHalo"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -75,11 +76,15 @@ export function TopNavigation() {
     <header className="bg-blue-900 sticky top-0 z-40 shadow-medium">
       {/* Primary Header */}
       <div className="flex h-20 items-center px-8 gap-6 relative">
-        {/* Logo */}
-        <div className="flex items-center">
+        {/* Logo & Cloud Applications */}
+        <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center">
             <BrandLogo size={48} showText={true} className="[&>span]:text-white" />
           </Link>
+          {/* Cloud Applications Button */}
+          <div className="flex items-center">
+            <ConnectionHalo />
+          </div>
         </div>
 
         {/* Centered Search Bar */}

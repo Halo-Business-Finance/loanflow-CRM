@@ -34,7 +34,6 @@ import {
 } from "lucide-react"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { ThemeToggle } from "@/components/ThemeToggle"
-import { ConnectionHalo } from "@/components/ConnectionHalo"
 
 const homeItems = [
   { name: "Dashboard", path: "/", icon: Home },
@@ -148,17 +147,13 @@ export function HorizontalNav({ onFolderClick, sidebarOpen = false, activeFolder
       {/* Microsoft-style Top Header */}
       <div className="px-6 py-3">
         <div className="flex items-center justify-between">
-          {/* Left Side - App Logo, Name & Cloud Applications */}
-          <div className="flex items-center gap-6">
+          {/* Left Side - App Logo & Name */}
+          <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 bg-white rounded-sm flex items-center justify-center">
                 <div className="h-6 w-6 bg-primary rounded-sm"></div>
               </div>
               <h1 className="text-white font-normal text-lg">Halo Business Finance</h1>
-            </div>
-            {/* Cloud Applications Button */}
-            <div className="flex items-center">
-              <ConnectionHalo />
             </div>
           </div>
 
