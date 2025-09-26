@@ -51,7 +51,7 @@ const getNavigationGroups = (roleAccess: any) => [
     ]
   },
   {
-    label: "Core CRM",
+    label: "Loan Originations",
     items: [
       { title: "Leads", url: "/leads", icon: Users, description: "Manage your lead pipeline" },
       { title: "Loan Pipeline", url: "/pipeline", icon: TrendingUp, description: "Sales pipeline management" },
