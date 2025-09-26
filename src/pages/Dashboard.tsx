@@ -157,7 +157,7 @@ export default function Dashboard() {
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Welcome to your CRM dashboard. Monitor performance and manage your business.
+                  Welcome to your CRM dashboard. Monitor the performance and manage your loan pipeline.
                 </p>
               </div>
             </div>
