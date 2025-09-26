@@ -19,10 +19,10 @@ All colors MUST be HSL.
     --popover-foreground: 222 84% 4.9%;
 
     /* Primary - Royal Blue */
-    --primary: 225 73% 52%;
+    --primary: 240 100% 50%;
     --primary-foreground: 210 40% 98%;
-    --primary-glow: 225 78% 62%;
-    --royal-blue: 225 73% 52%;
+    --primary-glow: 240 100% 60%;
+    --royal-blue: 240 100% 50%;
 
     --secondary: 210 40% 96%;
     --secondary-foreground: 222 84% 4.9%;
@@ -102,10 +102,10 @@ All colors MUST be HSL.
     --popover: 222 84% 7%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 225 78% 62%;
+    --primary: 240 100% 60%;
     --primary-foreground: 222 84% 4.9%;
-    --primary-glow: 225 83% 72%;
-    --royal-blue: 225 78% 62%;
+    --primary-glow: 240 100% 70%;
+    --royal-blue: 240 100% 60%;
     
     --navy: 217 91% 60%;
     --navy-light: 217 70% 72%;
