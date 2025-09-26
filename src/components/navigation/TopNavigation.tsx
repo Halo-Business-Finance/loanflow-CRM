@@ -78,7 +78,7 @@ export function TopNavigation() {
       <div className="flex h-20 items-center px-8 gap-6 relative">
         {/* Logo & Cloud Applications */}
         <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center">
+          <Link to="/dashboard" className="flex items-center">
             <BrandLogo size={48} showText={true} className="[&>span]:text-white" />
           </Link>
           {/* Cloud Applications Button */}
