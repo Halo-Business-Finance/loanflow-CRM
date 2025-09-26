@@ -50,12 +50,36 @@ export default function Dashboard() {
   const [totalLeads, setTotalLeads] = useState(0);
   const [conversionRate, setConversionRate] = useState(0);
   
-  // Real data states instead of fake data
-  const [performanceData, setPerformanceData] = useState([]);
-  const [funnelData, setFunnelData] = useState([]);
-  const [monthlyData, setMonthlyData] = useState([]);
-  const [distributionData, setDistributionData] = useState([]);
-  const [regionData, setRegionData] = useState([]);
+  // Helper functions to prevent NaN errors
+  const toNum = (val: any): number => {
+    if (val == null) return 0;
+    const num = typeof val === 'string' ? Number(val) : typeof val === 'number' ? val : 0;
+    return Number.isFinite(num) ? num : 0;
+  };
+
+  const sanitizeSeries = (arr: any[], numericKeys: string[]) => {
+    return arr
+      .map(item => ({
+        ...item,
+        ...Object.fromEntries(numericKeys.map(key => [key, toNum(item[key])]))
+      }))
+      .filter(item => numericKeys.every(key => Number.isFinite(item[key])));
+  };
+
+  // Safe initial chart data to prevent empty array NaN issues
+  const [performanceData, setPerformanceData] = useState([
+    { name: 'Lead Generation', value: 0 },
+    { name: 'Conversion Rate', value: 0 },
+    { name: 'Pipeline Health', value: 0 },
+    { name: 'Revenue Growth', value: 0 },
+    { name: 'Activity Level', value: 0 }
+  ]);
+  const [funnelData, setFunnelData] = useState([{ name: 'No Data', value: 1, fill: '#6b7280' }]);
+  const [monthlyData, setMonthlyData] = useState([
+    { month: 'Jan', revenue: 0, target: 0, deals: 0 }
+  ]);
+  const [distributionData, setDistributionData] = useState([{ name: 'No Data', value: 1, fill: '#6b7280' }]);
+  const [regionData, setRegionData] = useState([{ name: 'No Data', value: 1, fill: '#6b7280' }]);
 
   const fetchDashboardData = async () => {
     if (!user?.id) {
@@ -85,32 +109,28 @@ export default function Dashboard() {
       const totalLeadsCount = leadsArray.length;
       setTotalLeads(totalLeadsCount);
 
-      // Calculate total revenue from loan amounts - with NaN protection
+      // Calculate total revenue from loan amounts - with safe toNum conversion
       const totalLoanAmount = leadsArray.reduce((sum, lead) => {
-        const loanAmount = lead.contact_entities?.loan_amount;
-        const safeAmount = (typeof loanAmount === 'number' && !isNaN(loanAmount)) ? loanAmount : 0;
-        return sum + safeAmount;
+        return sum + toNum(lead.contact_entities?.loan_amount);
       }, 0);
       setTotalRevenue(totalLoanAmount);
 
-      // Calculate pipeline value (leads not yet closed) - with NaN protection
+      // Calculate pipeline value (leads not yet closed) - with safe toNum conversion
       const pipelineLeads = leadsArray.filter(lead => 
         lead.contact_entities?.stage && 
         !['closed_won', 'closed_lost'].includes(lead.contact_entities.stage)
       );
       const pipelineAmount = pipelineLeads.reduce((sum, lead) => {
-        const loanAmount = lead.contact_entities?.loan_amount;
-        const safeAmount = (typeof loanAmount === 'number' && !isNaN(loanAmount)) ? loanAmount : 0;
-        return sum + safeAmount;
+        return sum + toNum(lead.contact_entities?.loan_amount);
       }, 0);
       setPipelineValue(pipelineAmount);
 
-      // Calculate conversion rate - with NaN protection
+      // Calculate conversion rate - with safe division
       const closedWonLeads = leadsArray.filter(lead => 
         lead.contact_entities?.stage === 'closed_won'
       ).length;
       const convRate = totalLeadsCount > 0 ? Number(((closedWonLeads / totalLeadsCount) * 100).toFixed(1)) : 0;
-      setConversionRate(isNaN(convRate) ? 0 : convRate);
+      setConversionRate(toNum(convRate));
 
       // Generate real funnel data based on actual stages - with safe fallbacks
       const stageGroups = leadsArray.reduce((acc, lead) => {
@@ -131,13 +151,14 @@ export default function Dashboard() {
       const realFunnelData = Object.entries(stageGroups)
         .map(([stage, count]) => ({
           name: stageMappings[stage] || stage,
-          value: typeof count === 'number' && !isNaN(count) ? count : 0,
+          value: toNum(count),
           fill: getStageColor(stage)
         }))
         .filter(item => item.value > 0); // Only include stages with actual data
 
-      // Provide default funnel data if no real data exists
-      setFunnelData(realFunnelData.length > 0 ? realFunnelData : [
+      // Sanitize and set funnel data
+      const sanitizedFunnelData = sanitizeSeries(realFunnelData, ['value']);
+      setFunnelData(sanitizedFunnelData.length > 0 ? sanitizedFunnelData : [
         { name: 'No Data', value: 1, fill: '#6b7280' }
       ]);
 
@@ -151,41 +172,46 @@ export default function Dashboard() {
       const realDistributionData = Object.entries(loanTypes)
         .map(([type, count]) => ({
           name: type,
-          value: typeof count === 'number' && !isNaN(count) ? count : 0,
+          value: toNum(count),
           fill: getLoanTypeColor(type)
         }))
         .filter(item => item.value > 0);
 
-      setDistributionData(realDistributionData.length > 0 ? realDistributionData : [
+      const sanitizedDistributionData = sanitizeSeries(realDistributionData, ['value']);
+      setDistributionData(sanitizedDistributionData.length > 0 ? sanitizedDistributionData : [
         { name: 'No Data', value: 1, fill: '#6b7280' }
       ]);
 
-      // Generate real performance data based on actual metrics - with NaN protection
+      // Generate real performance data based on actual metrics - with safe calculations
       const leadGenScore = Math.min(Math.max(totalLeadsCount * 5, 0), 100);
       const pipelineScore = pipelineAmount > 0 ? 85 : 20;
       const revenueScore = totalLoanAmount > 1000000 ? 90 : Math.min(totalLoanAmount / 10000, 60);
       const activityScore = Math.min(Math.max(totalLeadsCount * 3, 0), 100);
 
-      setPerformanceData([
-        { name: 'Lead Generation', value: isNaN(leadGenScore) ? 0 : leadGenScore },
-        { name: 'Conversion Rate', value: isNaN(convRate) ? 0 : convRate },
-        { name: 'Pipeline Health', value: isNaN(pipelineScore) ? 0 : pipelineScore },
-        { name: 'Revenue Growth', value: isNaN(revenueScore) ? 0 : revenueScore },
-        { name: 'Activity Level', value: isNaN(activityScore) ? 0 : activityScore }
-      ]);
+      const performanceDataRaw = [
+        { name: 'Lead Generation', value: toNum(leadGenScore) },
+        { name: 'Conversion Rate', value: toNum(convRate) },
+        { name: 'Pipeline Health', value: toNum(pipelineScore) },
+        { name: 'Revenue Growth', value: toNum(revenueScore) },
+        { name: 'Activity Level', value: toNum(activityScore) }
+      ];
+
+      setPerformanceData(sanitizeSeries(performanceDataRaw, ['value']));
 
       // Generate monthly data with safe calculations
       const safeMonthlyRevenue = totalLoanAmount > 0 ? totalLoanAmount / 6 : 10000;
       const safeMonthlyDeals = Math.max(Math.ceil(totalLeadsCount / 6), 1);
       
-      setMonthlyData([
-        { month: 'Jan', revenue: Math.round(safeMonthlyRevenue * 0.8), deals: Math.ceil(safeMonthlyDeals * 0.8), target: Math.round(safeMonthlyRevenue) },
-        { month: 'Feb', revenue: Math.round(safeMonthlyRevenue * 1.1), deals: Math.ceil(safeMonthlyDeals * 1.1), target: Math.round(safeMonthlyRevenue) },
-        { month: 'Mar', revenue: Math.round(safeMonthlyRevenue * 0.9), deals: Math.ceil(safeMonthlyDeals * 0.9), target: Math.round(safeMonthlyRevenue) },
-        { month: 'Apr', revenue: Math.round(safeMonthlyRevenue * 1.3), deals: Math.ceil(safeMonthlyDeals * 1.3), target: Math.round(safeMonthlyRevenue) },
-        { month: 'May', revenue: Math.round(safeMonthlyRevenue * 1.2), deals: Math.ceil(safeMonthlyDeals * 1.2), target: Math.round(safeMonthlyRevenue) }, 
-        { month: 'Jun', revenue: Math.round(safeMonthlyRevenue * 1.4), deals: Math.ceil(safeMonthlyDeals * 1.4), target: Math.round(safeMonthlyRevenue) }
-      ]);
+      const monthlyDataRaw = [
+        { month: 'Jan', revenue: toNum(safeMonthlyRevenue * 0.8), deals: toNum(safeMonthlyDeals * 0.8), target: toNum(safeMonthlyRevenue) },
+        { month: 'Feb', revenue: toNum(safeMonthlyRevenue * 1.1), deals: toNum(safeMonthlyDeals * 1.1), target: toNum(safeMonthlyRevenue) },
+        { month: 'Mar', revenue: toNum(safeMonthlyRevenue * 0.9), deals: toNum(safeMonthlyDeals * 0.9), target: toNum(safeMonthlyRevenue) },
+        { month: 'Apr', revenue: toNum(safeMonthlyRevenue * 1.3), deals: toNum(safeMonthlyDeals * 1.3), target: toNum(safeMonthlyRevenue) },
+        { month: 'May', revenue: toNum(safeMonthlyRevenue * 1.2), deals: toNum(safeMonthlyDeals * 1.2), target: toNum(safeMonthlyRevenue) }, 
+        { month: 'Jun', revenue: toNum(safeMonthlyRevenue * 1.4), deals: toNum(safeMonthlyDeals * 1.4), target: toNum(safeMonthlyRevenue) }
+      ];
+      
+      setMonthlyData(sanitizeSeries(monthlyDataRaw, ['revenue', 'deals', 'target']));
 
       // Generate region data based on location field - with safe fallbacks
       const regions = leadsArray.reduce((acc, lead) => {
@@ -198,12 +224,13 @@ export default function Dashboard() {
       const realRegionData = Object.entries(regions)
         .map(([region, count]) => ({
           name: region,
-          value: typeof count === 'number' && !isNaN(count) ? count : 0,
+          value: toNum(count),
           fill: getRegionColor(region)
         }))
         .filter(item => item.value > 0);
 
-      setRegionData(realRegionData.length > 0 ? realRegionData : [
+      const sanitizedRegionData = sanitizeSeries(realRegionData, ['value']);
+      setRegionData(sanitizedRegionData.length > 0 ? sanitizedRegionData : [
         { name: 'No Location Data', value: 1, fill: '#6b7280' }
       ]);
 
@@ -338,13 +365,14 @@ export default function Dashboard() {
   }, [user?.id]);
 
   const formatCurrency = (amount: number) => {
+    const safeAmount = Number.isFinite(amount) ? amount : 0;
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 1,
       notation: 'compact'
-    }).format(amount);
+    }).format(safeAmount);
   };
 
   return (
@@ -598,15 +626,22 @@ export default function Dashboard() {
                             axisLine={false}
                             tickLine={false}
                             tick={{ fontSize: 12, fill: '#6b7280' }}
-                            tickFormatter={(value) => `$${(value / 1000)}k`}
+                            tickFormatter={(value) => {
+                              const safeValue = Number.isFinite(value) ? value : 0;
+                              return `$${Math.round(safeValue / 1000)}k`;
+                            }}
+                            domain={[0, 'auto']}
                           />
                           <Tooltip 
-                            formatter={(value, name) => [
-                              name === 'revenue' ? formatCurrency(value as number) : 
-                              name === 'target' ? formatCurrency(value as number) : value,
-                              name === 'revenue' ? 'Revenue' : 
-                              name === 'target' ? 'Target' : 'Deals'
-                            ]}
+                            formatter={(value, name) => {
+                              const safeValue = Number.isFinite(value as number) ? value as number : 0;
+                              return [
+                                name === 'revenue' ? formatCurrency(safeValue) : 
+                                name === 'target' ? formatCurrency(safeValue) : safeValue,
+                                name === 'revenue' ? 'Revenue' : 
+                                name === 'target' ? 'Target' : 'Deals'
+                              ];
+                            }}
                             labelFormatter={(label) => `Month: ${label}`}
                             contentStyle={{
                               backgroundColor: 'white',
@@ -644,7 +679,10 @@ export default function Dashboard() {
                       <ResponsiveContainer width="100%" height="100%">
                         <RechartsPieChart>
                           <Tooltip 
-                            formatter={(value) => [`${value}%`, 'Share']}
+                            formatter={(value) => {
+                              const safeValue = Number.isFinite(value) ? value : 0;
+                              return [`${safeValue}`, 'Count'];
+                            }}
                             contentStyle={{
                               backgroundColor: 'white',
                               border: '1px solid #e5e7eb',
@@ -660,7 +698,10 @@ export default function Dashboard() {
                             outerRadius={80}
                             fill="#8884d8"
                             dataKey="value"
-                            label={({name, value}) => `${name}: ${value}%`}
+                            label={({name, value}) => {
+                              const safeValue = Number.isFinite(value) ? value : 0;
+                              return `${name}: ${safeValue}`;
+                            }}
                           >
                             {distributionData.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -688,7 +729,10 @@ export default function Dashboard() {
                       <ResponsiveContainer width="100%" height="100%">
                         <RechartsPieChart>
                           <Tooltip 
-                            formatter={(value) => [`${value}%`, 'Share']}
+                            formatter={(value) => {
+                              const safeValue = Number.isFinite(value) ? value : 0;
+                              return [`${safeValue}`, 'Count'];
+                            }}
                             contentStyle={{
                               backgroundColor: 'white',
                               border: '1px solid #e5e7eb',
@@ -704,7 +748,10 @@ export default function Dashboard() {
                             outerRadius={80}
                             fill="#8884d8"
                             dataKey="value"
-                            label={({name, value}) => `${name}: ${value}%`}
+                            label={({name, value}) => {
+                              const safeValue = Number.isFinite(value) ? value : 0;
+                              return `${name}: ${safeValue}`;
+                            }}
                           >
                             {regionData.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={entry.fill} />
