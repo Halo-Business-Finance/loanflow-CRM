@@ -14,13 +14,13 @@ export function ConnectionHalo() {
   const HaloButton = () => {
     console.log('HaloButton rendering')
     return (
-      <div className="flex flex-col items-center gap-1">
+      <div className="flex flex-col items-center gap-1 ml-2">
         <button
           onClick={() => {
             console.log('Halo button clicked!')
             setIsOpen(true)
           }}
-          className="relative w-12 h-12 bg-blue-700 hover:bg-blue-600 group transition-colors duration-200"
+          className="relative w-12 h-12 bg-white/20 hover:bg-white/30 group transition-colors duration-200"
           style={{
             clipPath: `polygon(
               0% 20%, 20% 20%, 20% 0%, 40% 0%, 40% 20%, 60% 20%, 60% 0%, 80% 0%, 80% 20%, 100% 20%,
@@ -37,7 +37,7 @@ export function ConnectionHalo() {
         </button>
         
         {/* Cloud Applications text */}
-        <span className="text-xs font-medium text-blue-700 hover:text-blue-600 cursor-pointer" onClick={() => setIsOpen(true)}>
+        <span className="text-xs font-medium text-white hover:text-white/80 cursor-pointer" onClick={() => setIsOpen(true)}>
           Cloud Applications
         </span>
       </div>
