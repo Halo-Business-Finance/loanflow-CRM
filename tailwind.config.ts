@@ -108,6 +108,9 @@ export default {
 					dark: 'hsl(var(--navy-dark))',
 					600: 'hsl(220 80% 45%)'
 				},
+				'royal-blue': {
+					DEFAULT: 'hsl(var(--royal-blue))'
+				},
 				'field-accent': {
 					DEFAULT: 'hsl(var(--field-accent))'
 				}
