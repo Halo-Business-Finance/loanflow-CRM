@@ -6,7 +6,7 @@ import {
   Calendar, CheckSquare, PieChart, Activity, Target, Database,
   UserCheck, AlertTriangle, Clock, Award, Zap, BookOpen, 
   Monitor, ShieldCheck, LineChart, DollarSign, FileCheck,
-  Gauge, ShieldAlert, TrendingDown
+  Gauge, ShieldAlert, TrendingDown, ChevronRight
 } from "lucide-react"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { cn } from "@/lib/utils"
@@ -139,52 +139,33 @@ function MicrosoftAdminSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-1">
                   {group.items.map((item) => (
-                    <SidebarMenuItem key={item.url}>
+                    <SidebarMenuItem key={item.url} className="border-b border-border/30 last:border-b-0">
                       {item.subItems ? (
                         <>
                           <div className={cn(
-                            "flex items-start gap-3 px-3 py-2.5 text-[10px] rounded-lg transition-all duration-200 group",
-                            "text-foreground font-medium"
+                            "flex items-center px-4 py-3 text-sm transition-colors hover:bg-muted/50",
+                            "text-foreground"
                           )}>
-                            <item.icon 
-                              className={cn(
-                                "h-4 w-4 flex-shrink-0 mt-0.5 text-blue-700"
-                              )} 
-                            />
+                            <ChevronRight className="h-4 w-4 mr-4 text-muted-foreground" />
                             {!collapsed && (
-                              <div className="flex-1 min-w-0">
-                                <div className="text-[13px] font-medium text-foreground">
-                                  {item.title}
-                                </div>
-                              </div>
+                              <span className="font-medium">{item.title}</span>
                             )}
                           </div>
                           {!collapsed && (
-                            <div className="ml-7 space-y-1">
+                            <div className="pl-8 space-y-0">
                               {item.subItems.map((subItem) => (
                                 <SidebarMenuButton key={subItem.url} asChild>
                                   <Link
                                     to={subItem.url}
                                     className={cn(
-                                      "flex items-start gap-3 px-3 py-2 text-[10px] rounded-lg transition-all duration-200 group",
+                                      "flex items-center px-4 py-2 text-sm border-b border-border/20 last:border-b-0 transition-colors hover:bg-muted/30",
                                       isActivePath(subItem.url)
-                                        ? "bg-primary/10 text-primary border-l-2 border-primary"
-                                        : "text-muted-foreground hover:bg-muted/60 hover:text-primary"
+                                        ? "bg-primary/5 text-primary"
+                                        : "text-muted-foreground"
                                     )}
                                   >
-                                    <subItem.icon 
-                                      className={cn(
-                                        "h-3 w-3 flex-shrink-0 mt-0.5"
-                                      )} 
-                                    />
-                                    <div className="flex-1 min-w-0">
-                                      <div className={cn(
-                                        "text-[12px]",
-                                        isActivePath(subItem.url) ? "text-primary font-medium" : "text-muted-foreground"
-                                      )}>
-                                        {subItem.title}
-                                      </div>
-                                    </div>
+                                    <ChevronRight className="h-3 w-3 mr-4" />
+                                    <span>{subItem.title}</span>
                                   </Link>
                                 </SidebarMenuButton>
                               ))}
@@ -196,26 +177,15 @@ function MicrosoftAdminSidebar() {
                           <Link
                             to={item.url}
                             className={cn(
-                              "flex items-start gap-3 px-3 py-2.5 text-[10px] rounded-lg transition-all duration-200 group",
+                              "flex items-center px-4 py-3 text-sm transition-colors hover:bg-muted/50",
                               isActivePath(item.url)
-                                ? "bg-primary/10 text-primary border-l-2 border-primary"
-                                : "text-foreground hover:bg-muted/60 hover:text-primary"
+                                ? "bg-primary/5 text-primary"
+                                : "text-foreground"
                             )}
                           >
-                            <item.icon 
-                              className={cn(
-                                "h-4 w-4 flex-shrink-0 mt-0.5 text-blue-700"
-                              )} 
-                            />
+                            <ChevronRight className="h-4 w-4 mr-4 text-muted-foreground" />
                             {!collapsed && (
-                              <div className="flex-1 min-w-0">
-                                <div className={cn(
-                                  "text-[13px] font-medium",
-                                  isActivePath(item.url) ? "text-primary" : "text-foreground"
-                                )}>
-                                  {item.title}
-                                </div>
-                              </div>
+                              <span className="font-medium">{item.title}</span>
                             )}
                           </Link>
                         </SidebarMenuButton>
