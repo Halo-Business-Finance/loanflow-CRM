@@ -19,6 +19,7 @@ import { SecurityEnhancementProvider } from "@/components/security/SecurityEnhan
 import { SecurityProvider as EnhancedSecurityProvider } from "@/components/security/SecurityProvider";
 import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
 
 
 import Leads from "./pages/Leads";
@@ -103,6 +104,7 @@ function AuthenticatedApp() {
         {user ? (
           <>
             <Route path="/" element={<HybridLayout><Index /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/dashboard" element={<HybridLayout><Dashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/leads" element={<HybridLayout><Leads /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/leads/new" element={<HybridLayout><NewLead /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
