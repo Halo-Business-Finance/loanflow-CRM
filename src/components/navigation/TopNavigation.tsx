@@ -76,8 +76,7 @@ export function TopNavigation() {
     <header className="bg-blue-900 sticky top-0 z-40 shadow-medium">
       {/* Primary Header */}
       <div className="flex h-20 items-center px-8 gap-6 relative">
-        {/* Logo & Cloud Applications */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 shrink-0">
           <Link to="/dashboard" className="flex items-center">
             <BrandLogo size={48} showText={true} className="[&>span]:text-white" />
           </Link>
@@ -87,8 +86,8 @@ export function TopNavigation() {
           </div>
         </div>
 
-        {/* Centered Search Bar */}
-        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        {/* Search Bar - centered within available space without overlapping */}
+        <div className="flex-1 flex justify-center">
           <form onSubmit={handleSearch} className="w-80">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-200" />
@@ -101,9 +100,6 @@ export function TopNavigation() {
             </div>
           </form>
         </div>
-
-        {/* Spacer */}
-        <div className="flex-1" />
 
         {/* Actions */}
         <div className="flex items-center gap-3">
