@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Users, Plus, Settings, Shield, Search, Edit3, Trash2, RotateCcw, UserCheck } from "lucide-react"
+import { Users, Plus, Settings, Shield, Search, Edit3, Trash2, RotateCcw, UserCheck, MoreHorizontal, Lock, Archive } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { useToast } from "@/hooks/use-toast"
@@ -96,6 +97,50 @@ export default function SettingsUsers() {
 
   const refreshUserData = () => {
     fetchUsers()
+  }
+
+  const handleToggleUserStatus = async (userId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase.rpc('admin_update_profile', {
+        p_user_id: userId,
+        p_is_active: !currentStatus
+      })
+
+      if (error) throw error
+
+      await fetchUsers()
+      toast({
+        title: "Status Updated",
+        description: `User has been ${!currentStatus ? 'activated' : 'deactivated'}.`,
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update user status.",
+        variant: "destructive"
+      })
+    }
+  }
+
+  const handleResetPassword = async (userId: string, email: string) => {
+    try {
+      const { error } = await supabase.functions.invoke('admin-reset-password', {
+        body: { userId, email }
+      })
+
+      if (error) throw error
+
+      toast({
+        title: "Password Reset",
+        description: "Password reset email has been sent to the user.",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to reset password.",
+        variant: "destructive"
+      })
+    }
   }
 
   const filteredUsers = users.filter(user =>
@@ -297,18 +342,39 @@ export default function SettingsUsers() {
                       <span className="text-muted-foreground">
                         {new Date(user.created_at).toLocaleDateString()}
                       </span>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => {
-                          setEditingUser(user);
-                          setEditDialogOpen(true);
-                        }}
-                        className="w-fit"
-                      >
-                        <Edit3 className="h-3 w-3 mr-1" />
-                        Edit
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem onClick={() => {
+                            setEditingUser(user);
+                            setEditDialogOpen(true);
+                          }}>
+                            <Edit3 className="h-4 w-4 mr-2" />
+                            Edit Profile
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleToggleUserStatus(user.user_id, user.is_active)}>
+                            <UserCheck className="h-4 w-4 mr-2" />
+                            {user.is_active ? 'Deactivate' : 'Activate'} User
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleResetPassword(user.user_id, user.email)}>
+                            <RotateCcw className="h-4 w-4 mr-2" />
+                            Reset Password
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive focus:text-destructive">
+                            <Lock className="h-4 w-4 mr-2" />
+                            Lock Account
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive focus:text-destructive">
+                            <Archive className="h-4 w-4 mr-2" />
+                            Archive User
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   ))}
                 </div>
@@ -334,16 +400,39 @@ export default function SettingsUsers() {
                             <p className="text-sm text-muted-foreground">{user.email}</p>
                           </div>
                         </div>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => {
-                            setEditingUser(user);
-                            setEditDialogOpen(true);
-                          }}
-                        >
-                          <Edit3 className="h-3 w-3" />
-                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem onClick={() => {
+                              setEditingUser(user);
+                              setEditDialogOpen(true);
+                            }}>
+                              <Edit3 className="h-4 w-4 mr-2" />
+                              Edit Profile
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleToggleUserStatus(user.user_id, user.is_active)}>
+                              <UserCheck className="h-4 w-4 mr-2" />
+                              {user.is_active ? 'Deactivate' : 'Activate'} User
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleResetPassword(user.user_id, user.email)}>
+                              <RotateCcw className="h-4 w-4 mr-2" />
+                              Reset Password
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive focus:text-destructive">
+                              <Lock className="h-4 w-4 mr-2" />
+                              Lock Account
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive focus:text-destructive">
+                              <Archive className="h-4 w-4 mr-2" />
+                              Archive User
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-4">
