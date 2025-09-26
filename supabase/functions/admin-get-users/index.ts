@@ -118,12 +118,32 @@ Deno.serve(async (req) => {
       console.error('Error fetching user roles:', allRolesError)
     }
 
-    // Create a map of user roles for easy lookup
+    // Create a map of user roles with priority for highest role
     const rolesMap = new Map()
+    const rolePriority = {
+      'super_admin': 5,
+      'admin': 4,
+      'manager': 3,
+      'loan_processor': 2,
+      'underwriter': 2,
+      'funder': 2,
+      'closer': 2,
+      'loan_originator': 2,
+      'agent': 1,
+      'viewer': 0
+    }
+    
     if (allUserRoles) {
       allUserRoles.forEach((ur: any) => {
-        if (!rolesMap.has(ur.user_id) || ur.is_active) {
-          rolesMap.set(ur.user_id, ur.role)
+        if (ur.is_active) {
+          const currentRole = rolesMap.get(ur.user_id)
+          const currentPriority = currentRole ? (rolePriority[currentRole] || 0) : -1
+          const newPriority = rolePriority[ur.role] || 0
+          
+          // Only update if this role has higher priority or no role exists yet
+          if (!currentRole || newPriority > currentPriority) {
+            rolesMap.set(ur.user_id, ur.role)
+          }
         }
       })
     }
@@ -141,7 +161,14 @@ Deno.serve(async (req) => {
       role: rolesMap.get(profile.id) || 'agent'
     })) || []
 
-    console.log(`Returning ${transformedUsers.length} transformed users`)
+    console.log(`Returning ${transformedUsers.length} transformed users with roles`)
+    
+    // Log role distribution for debugging
+    const roleDistribution = {}
+    transformedUsers.forEach(user => {
+      roleDistribution[user.role] = (roleDistribution[user.role] || 0) + 1
+    })
+    console.log('Role distribution:', roleDistribution)
 
     return new Response(
       JSON.stringify({ users: transformedUsers }),

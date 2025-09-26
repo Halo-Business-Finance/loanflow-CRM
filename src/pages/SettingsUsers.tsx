@@ -268,6 +268,13 @@ export default function SettingsUsers() {
       case 'super_admin': return 'destructive'
       case 'admin': return 'default'
       case 'manager': return 'secondary'
+      case 'loan_processor': return 'secondary'
+      case 'underwriter': return 'secondary'
+      case 'funder': return 'secondary'
+      case 'closer': return 'secondary'
+      case 'loan_originator': return 'secondary'
+      case 'agent': return 'outline'
+      case 'viewer': return 'outline'
       default: return 'outline'
     }
   }
@@ -520,8 +527,8 @@ export default function SettingsUsers() {
                         <span className="font-medium text-foreground">{formatUserName(user)}</span>
                       </div>
                       <span className="text-muted-foreground truncate">{user.email}</span>
-                      <Badge variant={getRoleBadgeVariant(user.role)} className="w-fit">
-                        {user.role.replace('_', ' ')}
+                      <Badge variant={getRoleBadgeVariant(user.role || 'agent')} className="w-fit">
+                        {(user.role || 'agent').replace('_', ' ')}
                       </Badge>
                       <span className={getStatusColor(user.is_active)}>
                         {getStatusText(user.is_active)}
@@ -644,8 +651,8 @@ export default function SettingsUsers() {
                         <div className="flex items-center gap-4">
                           <div className="flex items-center gap-1">
                             <span className="text-muted-foreground">Role:</span>
-                            <Badge variant={getRoleBadgeVariant(user.role)} className="text-xs">
-                              {user.role.replace('_', ' ')}
+                            <Badge variant={getRoleBadgeVariant(user.role || 'agent')} className="text-xs">
+                              {(user.role || 'agent').replace('_', ' ')}
                             </Badge>
                           </div>
                           <div className="flex items-center gap-1">
