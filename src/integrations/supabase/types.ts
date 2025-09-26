@@ -4050,6 +4050,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_update_profile: {
+        Args: {
+          p_first_name?: string
+          p_is_active?: boolean
+          p_last_name?: string
+          p_phone?: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
       anonymize_user_data: {
         Args: { p_user_id: string }
         Returns: boolean
