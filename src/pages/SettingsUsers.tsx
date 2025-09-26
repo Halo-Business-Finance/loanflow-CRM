@@ -509,7 +509,7 @@ export default function SettingsUsers() {
             {!loading && filteredUsers.length > 0 && (
               <div className="hidden lg:block">
                 {/* Table Header */}
-                <div className="grid grid-cols-7 gap-4 font-medium text-sm text-muted-foreground border-b border-border pb-3 mb-4">
+                <div className="grid grid-cols-7 gap-6 font-medium text-sm text-muted-foreground border-b border-border pb-3 mb-4">
                   <div className="flex items-center gap-2">
                     <Checkbox
                       checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
@@ -531,7 +531,7 @@ export default function SettingsUsers() {
                    {filteredUsers.map((user) => {
                      console.log('Rendering user:', user.email, 'role:', user.role, 'is_active:', user.is_active)
                      return (
-                     <div key={user.id} className="grid grid-cols-7 gap-4 text-sm p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                     <div key={user.id} className="grid grid-cols-7 gap-6 text-sm p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
                        <div className="flex items-center gap-3">
                          <Checkbox
                            checked={selectedUsers.has(user.user_id)}
