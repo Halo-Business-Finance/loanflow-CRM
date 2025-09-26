@@ -14,7 +14,7 @@ export function ConnectionHalo() {
   const HaloButton = () => {
     console.log('HaloButton rendering')
     return (
-      <div className="flex flex-col items-center gap-1 -ml-6">
+      <div className="flex flex-col items-center gap-1 -ml-2">
         <button
           onClick={() => {
             console.log('Halo button clicked!')
