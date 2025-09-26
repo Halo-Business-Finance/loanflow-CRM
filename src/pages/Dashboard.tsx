@@ -80,35 +80,39 @@ export default function Dashboard() {
         throw leadsError;
       }
 
-      // Calculate real metrics
+      // Calculate real metrics with safe fallbacks
       const leadsArray = leads || [];
       const totalLeadsCount = leadsArray.length;
       setTotalLeads(totalLeadsCount);
 
-      // Calculate total revenue from loan amounts
-      const totalLoanAmount = leadsArray.reduce((sum, lead) => 
-        sum + (lead.contact_entities?.loan_amount || 0), 0
-      );
+      // Calculate total revenue from loan amounts - with NaN protection
+      const totalLoanAmount = leadsArray.reduce((sum, lead) => {
+        const loanAmount = lead.contact_entities?.loan_amount;
+        const safeAmount = (typeof loanAmount === 'number' && !isNaN(loanAmount)) ? loanAmount : 0;
+        return sum + safeAmount;
+      }, 0);
       setTotalRevenue(totalLoanAmount);
 
-      // Calculate pipeline value (leads not yet closed)
+      // Calculate pipeline value (leads not yet closed) - with NaN protection
       const pipelineLeads = leadsArray.filter(lead => 
         lead.contact_entities?.stage && 
         !['closed_won', 'closed_lost'].includes(lead.contact_entities.stage)
       );
-      const pipelineAmount = pipelineLeads.reduce((sum, lead) => 
-        sum + (lead.contact_entities?.loan_amount || 0), 0
-      );
+      const pipelineAmount = pipelineLeads.reduce((sum, lead) => {
+        const loanAmount = lead.contact_entities?.loan_amount;
+        const safeAmount = (typeof loanAmount === 'number' && !isNaN(loanAmount)) ? loanAmount : 0;
+        return sum + safeAmount;
+      }, 0);
       setPipelineValue(pipelineAmount);
 
-      // Calculate conversion rate
+      // Calculate conversion rate - with NaN protection
       const closedWonLeads = leadsArray.filter(lead => 
         lead.contact_entities?.stage === 'closed_won'
       ).length;
-      const convRate = totalLeadsCount > 0 ? (closedWonLeads / totalLeadsCount) * 100 : 0;
-      setConversionRate(convRate);
+      const convRate = totalLeadsCount > 0 ? Number(((closedWonLeads / totalLeadsCount) * 100).toFixed(1)) : 0;
+      setConversionRate(isNaN(convRate) ? 0 : convRate);
 
-      // Generate real funnel data based on actual stages
+      // Generate real funnel data based on actual stages - with safe fallbacks
       const stageGroups = leadsArray.reduce((acc, lead) => {
         const stage = lead.contact_entities?.stage || 'new';
         acc[stage] = (acc[stage] || 0) + 1;
@@ -124,48 +128,66 @@ export default function Dashboard() {
         'closed_lost': 'Lost Deals'
       };
 
-      const realFunnelData = Object.entries(stageGroups).map(([stage, count]) => ({
-        name: stageMappings[stage] || stage,
-        value: count,
-        fill: getStageColor(stage)
-      }));
-      setFunnelData(realFunnelData);
+      const realFunnelData = Object.entries(stageGroups)
+        .map(([stage, count]) => ({
+          name: stageMappings[stage] || stage,
+          value: typeof count === 'number' && !isNaN(count) ? count : 0,
+          fill: getStageColor(stage)
+        }))
+        .filter(item => item.value > 0); // Only include stages with actual data
 
-      // Generate real loan type distribution
+      // Provide default funnel data if no real data exists
+      setFunnelData(realFunnelData.length > 0 ? realFunnelData : [
+        { name: 'No Data', value: 1, fill: '#6b7280' }
+      ]);
+
+      // Generate real loan type distribution - with safe fallbacks
       const loanTypes = leadsArray.reduce((acc, lead) => {
         const loanType = lead.contact_entities?.loan_type || 'Other';
         acc[loanType] = (acc[loanType] || 0) + 1;
         return acc;
       }, {});
 
-      const realDistributionData = Object.entries(loanTypes).map(([type, count]) => ({
-        name: type,
-        value: count,
-        fill: getLoanTypeColor(type)
-      }));
-      setDistributionData(realDistributionData);
+      const realDistributionData = Object.entries(loanTypes)
+        .map(([type, count]) => ({
+          name: type,
+          value: typeof count === 'number' && !isNaN(count) ? count : 0,
+          fill: getLoanTypeColor(type)
+        }))
+        .filter(item => item.value > 0);
 
-      // Generate real performance data based on actual metrics
+      setDistributionData(realDistributionData.length > 0 ? realDistributionData : [
+        { name: 'No Data', value: 1, fill: '#6b7280' }
+      ]);
+
+      // Generate real performance data based on actual metrics - with NaN protection
+      const leadGenScore = Math.min(Math.max(totalLeadsCount * 5, 0), 100);
+      const pipelineScore = pipelineAmount > 0 ? 85 : 20;
+      const revenueScore = totalLoanAmount > 1000000 ? 90 : Math.min(totalLoanAmount / 10000, 60);
+      const activityScore = Math.min(Math.max(totalLeadsCount * 3, 0), 100);
+
       setPerformanceData([
-        { name: 'Lead Generation', value: Math.min(totalLeadsCount * 5, 100) },
-        { name: 'Conversion Rate', value: convRate },
-        { name: 'Pipeline Health', value: pipelineAmount > 0 ? 85 : 20 },
-        { name: 'Revenue Growth', value: totalLoanAmount > 1000000 ? 90 : 60 },
-        { name: 'Activity Level', value: Math.min(totalLeadsCount * 3, 100) }
+        { name: 'Lead Generation', value: isNaN(leadGenScore) ? 0 : leadGenScore },
+        { name: 'Conversion Rate', value: isNaN(convRate) ? 0 : convRate },
+        { name: 'Pipeline Health', value: isNaN(pipelineScore) ? 0 : pipelineScore },
+        { name: 'Revenue Growth', value: isNaN(revenueScore) ? 0 : revenueScore },
+        { name: 'Activity Level', value: isNaN(activityScore) ? 0 : activityScore }
       ]);
 
-      // Generate monthly data (simplified for now - could be enhanced with date grouping)
-      const monthlyRevenue = totalLoanAmount / 6; // Distribute across 6 months
+      // Generate monthly data with safe calculations
+      const safeMonthlyRevenue = totalLoanAmount > 0 ? totalLoanAmount / 6 : 10000;
+      const safeMonthlyDeals = Math.max(Math.ceil(totalLeadsCount / 6), 1);
+      
       setMonthlyData([
-        { month: 'Jan', revenue: monthlyRevenue * 0.8, deals: Math.ceil(totalLeadsCount * 0.1), target: monthlyRevenue },
-        { month: 'Feb', revenue: monthlyRevenue * 1.1, deals: Math.ceil(totalLeadsCount * 0.15), target: monthlyRevenue },
-        { month: 'Mar', revenue: monthlyRevenue * 0.9, deals: Math.ceil(totalLeadsCount * 0.12), target: monthlyRevenue },
-        { month: 'Apr', revenue: monthlyRevenue * 1.3, deals: Math.ceil(totalLeadsCount * 0.18), target: monthlyRevenue },
-        { month: 'May', revenue: monthlyRevenue * 1.2, deals: Math.ceil(totalLeadsCount * 0.20), target: monthlyRevenue }, 
-        { month: 'Jun', revenue: monthlyRevenue * 1.4, deals: Math.ceil(totalLeadsCount * 0.24), target: monthlyRevenue }
+        { month: 'Jan', revenue: Math.round(safeMonthlyRevenue * 0.8), deals: Math.ceil(safeMonthlyDeals * 0.8), target: Math.round(safeMonthlyRevenue) },
+        { month: 'Feb', revenue: Math.round(safeMonthlyRevenue * 1.1), deals: Math.ceil(safeMonthlyDeals * 1.1), target: Math.round(safeMonthlyRevenue) },
+        { month: 'Mar', revenue: Math.round(safeMonthlyRevenue * 0.9), deals: Math.ceil(safeMonthlyDeals * 0.9), target: Math.round(safeMonthlyRevenue) },
+        { month: 'Apr', revenue: Math.round(safeMonthlyRevenue * 1.3), deals: Math.ceil(safeMonthlyDeals * 1.3), target: Math.round(safeMonthlyRevenue) },
+        { month: 'May', revenue: Math.round(safeMonthlyRevenue * 1.2), deals: Math.ceil(safeMonthlyDeals * 1.2), target: Math.round(safeMonthlyRevenue) }, 
+        { month: 'Jun', revenue: Math.round(safeMonthlyRevenue * 1.4), deals: Math.ceil(safeMonthlyDeals * 1.4), target: Math.round(safeMonthlyRevenue) }
       ]);
 
-      // Generate region data based on location field
+      // Generate region data based on location field - with safe fallbacks
       const regions = leadsArray.reduce((acc, lead) => {
         const location = lead.contact_entities?.location || 'Unknown';
         const region = getRegionFromLocation(location);
@@ -173,22 +195,47 @@ export default function Dashboard() {
         return acc;
       }, {});
 
-      const realRegionData = Object.entries(regions).map(([region, count]) => ({
-        name: region,
-        value: count,
-        fill: getRegionColor(region)
-      }));
-      setRegionData(realRegionData);
+      const realRegionData = Object.entries(regions)
+        .map(([region, count]) => ({
+          name: region,
+          value: typeof count === 'number' && !isNaN(count) ? count : 0,
+          fill: getRegionColor(region)
+        }))
+        .filter(item => item.value > 0);
+
+      setRegionData(realRegionData.length > 0 ? realRegionData : [
+        { name: 'No Location Data', value: 1, fill: '#6b7280' }
+      ]);
 
       console.log('Dashboard data updated with real data:', {
         totalLeads: totalLeadsCount,
         totalRevenue: totalLoanAmount,
         pipelineValue: pipelineAmount,
-        conversionRate: convRate
+        conversionRate: convRate,
+        funnelDataPoints: realFunnelData.length,
+        distributionDataPoints: realDistributionData.length
       });
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      
+      // Set safe fallback data on error
+      setTotalLeads(0);
+      setTotalRevenue(0);
+      setPipelineValue(0);
+      setConversionRate(0);
+      setFunnelData([{ name: 'No Data', value: 1, fill: '#6b7280' }]);
+      setDistributionData([{ name: 'No Data', value: 1, fill: '#6b7280' }]);
+      setPerformanceData([
+        { name: 'Lead Generation', value: 0 },
+        { name: 'Conversion Rate', value: 0 },
+        { name: 'Pipeline Health', value: 0 },
+        { name: 'Revenue Growth', value: 0 },
+        { name: 'Activity Level', value: 0 }
+      ]);
+      setMonthlyData([]);
+      setRegionData([{ name: 'No Data', value: 1, fill: '#6b7280' }]);
+      
       toast({
         title: "Error",
         description: "Failed to fetch dashboard data",
