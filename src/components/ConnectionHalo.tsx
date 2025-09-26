@@ -35,11 +35,6 @@ export function ConnectionHalo() {
             <Cloud className="w-6 h-6 text-white group-hover:text-white/90" />
           </div>
         </button>
-        
-        {/* Cloud Applications text */}
-        <span className="text-xs font-medium text-white hover:text-white/80 cursor-pointer" onClick={() => setIsOpen(true)}>
-          Cloud Applications
-        </span>
       </div>
     )
   }
