@@ -94,7 +94,7 @@ function MicrosoftAdminSidebar() {
       <SidebarContent className="pt-20 pb-4 h-full">
         {navigationGroups.map((group, groupIndex) => (
           <SidebarGroup key={group.label}>
-            <SidebarGroupLabel className={cn("text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2", collapsed && "sr-only")}>
+            <SidebarGroupLabel className={cn("text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2", collapsed && "sr-only")}>
               {group.label}
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -105,7 +105,7 @@ function MicrosoftAdminSidebar() {
                       <Link
                         to={item.url}
                         className={cn(
-                          "flex items-start gap-3 px-3 py-2.5 text-xs rounded-lg transition-all duration-200 group",
+                          "flex items-start gap-3 px-3 py-2.5 text-[10px] rounded-lg transition-all duration-200 group",
                           isActivePath(item.url)
                             ? "bg-primary/10 text-primary border-l-2 border-primary"
                             : "text-foreground hover:bg-muted/60 hover:text-primary"
@@ -120,12 +120,12 @@ function MicrosoftAdminSidebar() {
                         {!collapsed && (
                           <div className="flex-1 min-w-0">
                             <div className={cn(
-                              "text-xs font-medium",
+                              "text-[10px] font-medium",
                               isActivePath(item.url) ? "text-primary" : "text-foreground"
                             )}>
                               {item.title}
                             </div>
-                            <div className="text-xs text-muted-foreground truncate">
+                            <div className="text-[9px] text-muted-foreground truncate">
                               {item.description}
                             </div>
                           </div>
