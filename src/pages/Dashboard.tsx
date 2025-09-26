@@ -167,10 +167,6 @@ export default function Dashboard() {
                 <Calendar className="h-3 w-3" />
                 Last 30 days
               </Button>
-              <Button variant="outline" size="sm" className="h-8 text-xs font-medium gap-2">
-                <Download className="h-3 w-3" />
-                Export
-              </Button>
               <Button 
                 onClick={fetchDashboardData} 
                 variant="default" 

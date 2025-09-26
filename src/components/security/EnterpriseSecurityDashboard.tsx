@@ -26,7 +26,8 @@ import {
   Satellite,
   Fingerprint,
   Cpu,
-  Radio
+  Radio,
+  Download
 } from "lucide-react";
 
 interface MilitarySecurityMetrics {
@@ -131,6 +132,30 @@ export function EnterpriseSecurityDashboard() {
     }
   };
 
+  const exportSecurityReport = () => {
+    const reportData = {
+      timestamp: new Date().toISOString(),
+      threatLevel: metrics.threatLevel,
+      zeroTrustScore: metrics.zeroTrustScore,
+      quantumResistance: metrics.quantumResistance,
+      behavioralAnalytics: metrics.behavioralAnalytics,
+      complianceFrameworks: metrics.complianceFrameworks,
+      emergencyProtocols: metrics.emergencyProtocols,
+      cryptographicStatus: metrics.cryptographicStatus,
+      alerts: realTimeAlerts
+    };
+
+    const dataStr = JSON.stringify(reportData, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `security-report-${new Date().toISOString().split('T')[0]}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  };
+
   useEffect(() => {
     // Simulate real-time updates
     const interval = setInterval(() => {
@@ -154,9 +179,20 @@ export function EnterpriseSecurityDashboard() {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
           ENTERPRISE SECURITY COMMAND CENTER
         </h1>
-        <Badge variant="destructive" className="ml-auto text-lg px-4 py-2">
-          {metrics.threatLevel}
-        </Badge>
+        <div className="ml-auto flex items-center gap-3">
+          <Button 
+            onClick={exportSecurityReport}
+            variant="outline" 
+            size="sm"
+            className="h-8 text-xs font-medium gap-2 text-white border-white/20 hover:bg-white/10"
+          >
+            <Download className="h-3 w-3" />
+            Export Security Report
+          </Button>
+          <Badge variant="destructive" className="text-lg px-4 py-2">
+            {metrics.threatLevel}
+          </Badge>
+        </div>
       </div>
 
       {/* Critical Status Overview */}
