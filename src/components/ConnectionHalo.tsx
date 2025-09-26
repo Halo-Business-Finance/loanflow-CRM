@@ -14,13 +14,13 @@ export function ConnectionHalo() {
   const HaloButton = () => {
     console.log('HaloButton rendering')
     return (
-      <div className="flex flex-col items-center gap-1 ml-2">
+      <div className="flex flex-col items-center gap-1 -ml-4">
         <button
           onClick={() => {
             console.log('Halo button clicked!')
             setIsOpen(true)
           }}
-          className="relative w-24 h-16 group transition-colors duration-200 flex items-center justify-center -ml-2"
+          className="relative w-28 h-18 group transition-colors duration-200 flex items-center justify-center"
           style={{
             clipPath: `polygon(
               0% 20%, 20% 20%, 20% 0%, 40% 0%, 40% 20%, 60% 20%, 60% 0%, 80% 0%, 80% 20%, 100% 20%,
@@ -32,7 +32,7 @@ export function ConnectionHalo() {
         >
           {/* Custom cloud icon with integrated text */}
           <svg 
-            className="w-20 h-14 text-white group-hover:text-white/90" 
+            className="w-24 h-16 text-white group-hover:text-white/90" 
             viewBox="0 0 64 48"
             fill="currentColor"
           >
