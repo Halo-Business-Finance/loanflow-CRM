@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail, Phone, Cloud, Building } from "lucide-react"
+import { Mail, Phone, Building, Cloud } from "lucide-react"
 import { EmailSetup } from "@/components/EmailSetup"
 import { RingCentralSetup } from "@/components/RingCentralSetup"
 
@@ -30,12 +30,26 @@ export function ConnectionHalo() {
           }}
           aria-label="Open connections"
         >
-          {/* Cloud icon - larger size */}
-          <Cloud className="w-8 h-8 text-white group-hover:text-white/90 mb-1" />
-          {/* Halo Apps text inside the cloud icon area */}
-          <span className="text-[9px] font-medium text-white group-hover:text-white/90 leading-none">
-            Halo Apps
-          </span>
+          {/* Custom cloud icon with integrated text */}
+          <svg 
+            className="w-16 h-12 text-white group-hover:text-white/90" 
+            viewBox="0 0 64 48" 
+            fill="currentColor"
+          >
+            {/* Cloud shape */}
+            <path d="M16 32c-4.4 0-8-3.6-8-8s3.6-8 8-8c1.5-4.4 5.6-8 10.7-8 6.1 0 11.3 4.9 11.3 11 0 0.3 0 0.6-0.1 0.9C40.3 20.3 42 22 42 24c2.2 0 4 1.8 4 4s-1.8 4-4 4H16z"/>
+            {/* Text inside cloud */}
+            <text 
+              x="32" 
+              y="26" 
+              textAnchor="middle" 
+              dominantBaseline="middle" 
+              className="text-[7px] font-medium fill-current"
+              style={{ fontFamily: 'system-ui, sans-serif' }}
+            >
+              Halo Apps
+            </text>
+          </svg>
         </button>
       </div>
     )
