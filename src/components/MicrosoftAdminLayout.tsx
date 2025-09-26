@@ -4,8 +4,11 @@ import {
   Home, BarChart3, Users, FileText, Settings, Search, CreditCard,
   HelpCircle, Shield, Key, Building, Workflow, Brain, TrendingUp,
   Calendar, CheckSquare, PieChart, Activity, Target, Database,
-  UserCheck, AlertTriangle, Clock, Award, Zap, BookOpen
+  UserCheck, AlertTriangle, Clock, Award, Zap, BookOpen, 
+  Monitor, ShieldCheck, LineChart, DollarSign, FileCheck,
+  Gauge, ShieldAlert, TrendingDown
 } from "lucide-react"
+import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { cn } from "@/lib/utils"
 import { TopNavigation } from "./navigation/TopNavigation"
 import { 
@@ -26,8 +29,21 @@ interface MicrosoftAdminLayoutProps {
   children: React.ReactNode
 }
 
+interface NavigationItem {
+  title: string
+  url: string
+  icon: any
+  description: string
+  subItems?: NavigationItem[]
+}
+
+interface NavigationGroup {
+  label: string
+  items: NavigationItem[]
+}
+
 // Microsoft 365 admin center style navigation
-const navigationGroups = [
+const getNavigationGroups = (roleAccess: any) => [
   {
     label: "Dashboard",
     items: [
@@ -73,6 +89,27 @@ const navigationGroups = [
       { title: "Security", url: "/security", icon: Shield, description: "Security management" },
       { title: "Settings", url: "/settings", icon: Settings, description: "System configuration" },
       { title: "Users", url: "/settings/users", icon: Users, description: "User management" },
+      ...(roleAccess.canCloseLoans || roleAccess.canFundLoans || roleAccess.canProcessLoans || 
+          roleAccess.canUnderwriteLoans || roleAccess.canAccessAdminFeatures || roleAccess.hasMinimumRole('manager') ? 
+        [{
+          title: "Dashboards", 
+          url: "#", 
+          icon: Monitor, 
+          description: "Role-based dashboards",
+          subItems: [
+            ...(roleAccess.canCloseLoans ? [{ title: "Closer Dashboard", url: "/dashboards/closer", icon: FileCheck, description: "Loan closing management" }] : []),
+            ...(roleAccess.canFundLoans ? [{ title: "Funder Dashboard", url: "/dashboards/funder", icon: DollarSign, description: "Funding management" }] : []),
+            ...(roleAccess.canProcessLoans ? [{ title: "Processor Dashboard", url: "/dashboards/processor", icon: Workflow, description: "Loan processing" }] : []),
+            ...(roleAccess.canUnderwriteLoans ? [{ title: "Underwriter Dashboard", url: "/dashboards/underwriter", icon: ShieldCheck, description: "Loan underwriting" }] : []),
+            ...(roleAccess.canAccessAdminFeatures ? [
+              { title: "Enhanced Security", url: "/dashboards/security-enhanced", icon: Shield, description: "Advanced security monitoring" },
+              { title: "Security Compliance", url: "/dashboards/security-compliance", icon: ShieldAlert, description: "Compliance monitoring" },
+              { title: "Threat Monitoring", url: "/dashboards/threat-monitoring", icon: AlertTriangle, description: "Threat detection" },
+              { title: "Data Integrity", url: "/dashboards/data-integrity", icon: Database, description: "Data integrity monitoring" }
+            ] : []),
+            ...(roleAccess.hasMinimumRole('manager') ? [{ title: "Forecasting", url: "/dashboards/forecasting", icon: TrendingUp, description: "Revenue forecasting" }] : [])
+          ]
+        }] : [])
     ]
   }
 ]
@@ -82,6 +119,8 @@ function MicrosoftAdminSidebar() {
   const { state } = useSidebar()
   const location = useLocation()
   const collapsed = state === "collapsed"
+  const roleAccess = useRoleBasedAccess()
+  const navigationGroups = getNavigationGroups(roleAccess)
 
   const isActivePath = (path: string) => {
     if (path === "/" && location.pathname === "/") return true
@@ -101,33 +140,86 @@ function MicrosoftAdminSidebar() {
                 <SidebarMenu className="space-y-1">
                   {group.items.map((item) => (
                     <SidebarMenuItem key={item.url}>
-                      <SidebarMenuButton asChild>
-                        <Link
-                          to={item.url}
-                          className={cn(
+                      {item.subItems ? (
+                        <>
+                          <div className={cn(
                             "flex items-start gap-3 px-3 py-2.5 text-[10px] rounded-lg transition-all duration-200 group",
-                            isActivePath(item.url)
-                              ? "bg-primary/10 text-primary border-l-2 border-primary"
-                              : "text-foreground hover:bg-muted/60 hover:text-primary"
-                          )}
-                        >
-                          <item.icon 
-                            className={cn(
-                              "h-4 w-4 flex-shrink-0 mt-0.5 text-blue-700"
-                            )} 
-                          />
-                          {!collapsed && (
-                            <div className="flex-1 min-w-0">
-                              <div className={cn(
-                                "text-[13px] font-medium",
-                                isActivePath(item.url) ? "text-primary" : "text-foreground"
-                              )}>
-                                {item.title}
+                            "text-foreground font-medium"
+                          )}>
+                            <item.icon 
+                              className={cn(
+                                "h-4 w-4 flex-shrink-0 mt-0.5 text-blue-700"
+                              )} 
+                            />
+                            {!collapsed && (
+                              <div className="flex-1 min-w-0">
+                                <div className="text-[13px] font-medium text-foreground">
+                                  {item.title}
+                                </div>
                               </div>
+                            )}
+                          </div>
+                          {!collapsed && (
+                            <div className="ml-7 space-y-1">
+                              {item.subItems.map((subItem) => (
+                                <SidebarMenuButton key={subItem.url} asChild>
+                                  <Link
+                                    to={subItem.url}
+                                    className={cn(
+                                      "flex items-start gap-3 px-3 py-2 text-[10px] rounded-lg transition-all duration-200 group",
+                                      isActivePath(subItem.url)
+                                        ? "bg-primary/10 text-primary border-l-2 border-primary"
+                                        : "text-muted-foreground hover:bg-muted/60 hover:text-primary"
+                                    )}
+                                  >
+                                    <subItem.icon 
+                                      className={cn(
+                                        "h-3 w-3 flex-shrink-0 mt-0.5"
+                                      )} 
+                                    />
+                                    <div className="flex-1 min-w-0">
+                                      <div className={cn(
+                                        "text-[12px]",
+                                        isActivePath(subItem.url) ? "text-primary font-medium" : "text-muted-foreground"
+                                      )}>
+                                        {subItem.title}
+                                      </div>
+                                    </div>
+                                  </Link>
+                                </SidebarMenuButton>
+                              ))}
                             </div>
                           )}
-                        </Link>
-                      </SidebarMenuButton>
+                        </>
+                      ) : (
+                        <SidebarMenuButton asChild>
+                          <Link
+                            to={item.url}
+                            className={cn(
+                              "flex items-start gap-3 px-3 py-2.5 text-[10px] rounded-lg transition-all duration-200 group",
+                              isActivePath(item.url)
+                                ? "bg-primary/10 text-primary border-l-2 border-primary"
+                                : "text-foreground hover:bg-muted/60 hover:text-primary"
+                            )}
+                          >
+                            <item.icon 
+                              className={cn(
+                                "h-4 w-4 flex-shrink-0 mt-0.5 text-blue-700"
+                              )} 
+                            />
+                            {!collapsed && (
+                              <div className="flex-1 min-w-0">
+                                <div className={cn(
+                                  "text-[13px] font-medium",
+                                  isActivePath(item.url) ? "text-primary" : "text-foreground"
+                                )}>
+                                  {item.title}
+                                </div>
+                              </div>
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                      )}
                     </SidebarMenuItem>
                   ))}
                 </SidebarMenu>

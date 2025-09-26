@@ -13,6 +13,15 @@ import { GeoSecurityCheck } from "@/components/GeoSecurityCheck";
 import { AsyncErrorBoundary } from "@/components/AsyncErrorBoundary";
 import { CSPHeaders } from "@/components/security/CSPHeaders";
 import { EnterpriseSecurityDashboard } from "@/components/security/EnterpriseSecurityDashboard";
+import { EnhancedSecurityDashboard } from "@/components/security/EnhancedSecurityDashboard";
+import { SecurityComplianceDashboard } from "@/components/security/SecurityComplianceDashboard";
+import { ThreatMonitoringDashboard } from "@/components/security/ThreatMonitoringDashboard";
+import { CloserDashboard } from "@/components/dashboards/CloserDashboard";
+import { FunderDashboard } from "@/components/dashboards/FunderDashboard";
+import { LoanProcessorDashboard } from "@/components/dashboards/LoanProcessorDashboard";
+import { UnderwriterDashboard } from "@/components/dashboards/UnderwriterDashboard";
+import { ForecastingDashboard } from "@/components/enterprise/ForecastingDashboard";
+import { DataIntegrityDashboard } from "@/components/DataIntegrityDashboard";
 
 import HybridLayout from "@/components/HybridLayout";
 import { SecurityEnhancementProvider } from "@/components/security/SecurityEnhancementProvider";
@@ -63,6 +72,7 @@ import SettingsUsers from "./pages/SettingsUsers";
 import SettingsSystem from "./pages/SettingsSystem";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useEnhancedSecurity } from "@/hooks/useEnhancedSecurity";
+import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +88,15 @@ function SecurityProvider() {
 
 function AuthenticatedApp() {
   const { user, loading, userRole } = useAuth();
+  const {
+    hasRole,
+    hasMinimumRole,
+    canProcessLoans,
+    canFundLoans,
+    canUnderwriteLoans,
+    canCloseLoans,
+    canAccessAdminFeatures
+  } = useRoleBasedAccess();
   
   // Removed logging for production security
 
@@ -148,6 +167,21 @@ function AuthenticatedApp() {
             <Route path="/security/threats" element={<HybridLayout><SecurityThreats /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/security/compliance" element={<HybridLayout><SecurityCompliance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/security/enterprise" element={<HybridLayout><EnterpriseSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            {/* Role-based Dashboard Routes */}
+            {canCloseLoans && <Route path="/dashboards/closer" element={<HybridLayout><CloserDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canFundLoans && <Route path="/dashboards/funder" element={<HybridLayout><FunderDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canProcessLoans && <Route path="/dashboards/processor" element={<HybridLayout><LoanProcessorDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canUnderwriteLoans && <Route path="/dashboards/underwriter" element={<HybridLayout><UnderwriterDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            
+            {/* Security Dashboard Routes */}
+            {canAccessAdminFeatures && <Route path="/dashboards/security-enhanced" element={<HybridLayout><EnhancedSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canAccessAdminFeatures && <Route path="/dashboards/security-compliance" element={<HybridLayout><SecurityComplianceDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canAccessAdminFeatures && <Route path="/dashboards/threat-monitoring" element={<HybridLayout><ThreatMonitoringDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            
+            {/* Enterprise Dashboard Routes */}
+            {hasMinimumRole('manager') && <Route path="/dashboards/forecasting" element={<HybridLayout><ForecastingDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canAccessAdminFeatures && <Route path="/dashboards/data-integrity" element={<HybridLayout><DataIntegrityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
             
             <Route path="/enterprise" element={<HybridLayout><Enterprise /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/integrations" element={<HybridLayout><Integrations /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
