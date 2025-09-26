@@ -150,7 +150,7 @@ export default function Dashboard() {
               <div>
                 <div className="flex items-center gap-3">
                   <h1 className="text-2xl font-bold text-foreground">
-                    Welcome {user?.user_metadata?.first_name || 'to your CRM'}
+                    Welcome {user?.user_metadata?.first_name || user?.email?.split('@')[0] || 'User'}
                   </h1>
                   <Badge variant="secondary" className="text-xs font-medium px-2.5 py-1">
                     Overview
