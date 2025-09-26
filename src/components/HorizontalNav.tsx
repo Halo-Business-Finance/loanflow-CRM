@@ -144,7 +144,7 @@ export function HorizontalNav({ onFolderClick, sidebarOpen = false, activeFolder
   }
 
   return (
-    <div className="bg-royal-blue shadow-sm sticky top-0 z-50">
+    <div className="shadow-sm sticky top-0 z-50" style={{ backgroundColor: 'hsl(240, 100%, 50%)' }}>
       {/* Microsoft-style Top Header */}
       <div className="px-6 py-3">
         <div className="flex items-center justify-between">
