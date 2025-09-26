@@ -136,7 +136,7 @@ function MicrosoftAdminSidebar() {
               </SidebarGroupContent>
             </SidebarGroup>
             {groupIndex < navigationGroups.length - 1 && (
-              <SidebarSeparator className="my-4" />
+              <SidebarSeparator className="my-4 bg-black" />
             )}
           </React.Fragment>
         ))}
