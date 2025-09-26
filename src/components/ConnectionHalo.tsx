@@ -33,19 +33,18 @@ export function ConnectionHalo() {
             {/* Cloud shape */}
             <g transform="translate(-8,10)">
               <path d="M16 32c-4.4 0-8-3.6-8-8s3.6-8 8-8c1.5-4.4 5.6-8 10.7-8 6.1 0 11.3 4.9 11.3 11 0 0.3 0 0.6-0.1 0.9C40.3 20.3 42 22 42 24c2.2 0 4 1.8 4 4s-1.8 4-4 4H16z"/>
+              <text 
+                x="32" 
+                y="24"
+                dy=".3em"
+                textAnchor="middle" 
+                dominantBaseline="middle" 
+                className="text-[9px] font-bold fill-gray-700 dark:fill-gray-600"
+                style={{ fontFamily: 'system-ui, sans-serif' }}
+              >
+                Apps
+              </text>
             </g>
-            {/* Text inside cloud */}
-            <text 
-              x="30" 
-              y="32"
-              dy=".3em"
-              textAnchor="middle" 
-              dominantBaseline="middle" 
-              className="text-[9px] font-bold fill-gray-700 dark:fill-gray-600"
-              style={{ fontFamily: 'system-ui, sans-serif' }}
-            >
-              Apps
-            </text>
           </svg>
         </button>
       </div>
