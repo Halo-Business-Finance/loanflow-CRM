@@ -50,3 +50,10 @@ verify_jwt = true
 
 [functions.webhook-security]
 verify_jwt = false
+
+# Explicitly configure critical admin functions
+[functions.admin-get-users]
+verify_jwt = true
+
+[functions.admin-reset-password]
+verify_jwt = true
