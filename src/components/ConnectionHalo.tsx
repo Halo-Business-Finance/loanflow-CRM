@@ -32,9 +32,14 @@ export function ConnectionHalo() {
         >
           {/* Center cloud icon */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <Cloud className="w-6 h-6 text-white group-hover:text-white/90" />
+            <Cloud className="w-7 h-7 text-white group-hover:text-white/90" />
           </div>
         </button>
+        
+        {/* Halo Apps text */}
+        <span className="text-xs font-medium text-white hover:text-white/80 cursor-pointer" onClick={() => setIsOpen(true)}>
+          Halo Apps
+        </span>
       </div>
     )
   }
