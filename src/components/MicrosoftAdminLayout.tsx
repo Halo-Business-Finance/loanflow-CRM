@@ -19,7 +19,6 @@ import {
   SidebarMenu, 
   SidebarMenuButton, 
   SidebarMenuItem,
-  SidebarSeparator,
   useSidebar 
 } from "@/components/ui/sidebar"
 
@@ -94,7 +93,6 @@ function MicrosoftAdminSidebar() {
     <Sidebar className={cn("bg-card/60 backdrop-blur border-r", collapsed ? "w-16" : "w-72")} collapsible="icon">
       <SidebarContent className="pt-20 pb-4 h-full">
         {navigationGroups.map((group, groupIndex) => (
-          <React.Fragment key={group.label}>
             <SidebarGroup className="border border-gray-200 rounded-lg mx-2 p-2 mb-2">
               <SidebarGroupLabel className={cn("text-[10px] font-semibold text-black uppercase tracking-wider px-2", collapsed && "sr-only")}>
                 {group.label}
@@ -135,10 +133,6 @@ function MicrosoftAdminSidebar() {
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
-            {groupIndex < navigationGroups.length - 1 && (
-              <SidebarSeparator className="my-4 bg-black h-px" />
-            )}
-          </React.Fragment>
         ))}
       </SidebarContent>
     </Sidebar>
