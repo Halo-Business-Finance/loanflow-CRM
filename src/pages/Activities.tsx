@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { StandardPageLayout } from '@/components/StandardPageLayout'
+import { StandardPageHeader } from '@/components/StandardPageHeader'
+import { StandardKPICard } from '@/components/StandardKPICard'
+import { StandardContentCard } from '@/components/StandardContentCard'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -152,15 +156,15 @@ export default function Activities() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background p-6">
-        <div className="space-y-6">
-          <div className="animate-fade-in">
-            <div className="h-8 bg-muted rounded w-64 mb-2"></div>
-            <div className="h-4 bg-muted rounded w-96"></div>
-          </div>
+      <StandardPageLayout>
+        <StandardPageHeader 
+          title="Activity Command Center"
+          description="Monitor system notifications, user activities, and important updates in real-time"
+        />
+        <div className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse border border-border shadow-sm bg-card rounded-lg p-6">
+              <div key={i} className="animate-pulse bg-card border-2 border-border/60 rounded-lg p-6">
                 <div className="h-6 bg-muted rounded w-24 mb-4"></div>
                 <div className="h-8 bg-muted rounded w-16 mb-2"></div>
                 <div className="h-8 w-8 bg-muted rounded"></div>
@@ -168,78 +172,49 @@ export default function Activities() {
             ))}
           </div>
         </div>
-      </div>
+      </StandardPageLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="space-y-6 animate-fade-in">
-        {/* Header Section */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Activity Command Center</h1>
-          <p className="text-muted-foreground mt-2">
-            Monitor system notifications, user activities, and important updates in real-time
-          </p>
-        </div>
-
-        {/* Metrics Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <Card className="bg-card border-0 shadow-lg hover-scale">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Activities</p>
-                  <p className="text-2xl font-bold text-foreground">{activities.length}</p>
-                </div>
-                <Activity className="w-8 h-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-0 shadow-lg hover-scale">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Notifications</p>
-                  <p className="text-2xl font-bold text-foreground">{notifications.length}</p>
-                </div>
-                <Bell className="w-8 h-8 text-yellow-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-0 shadow-lg hover-scale">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Today's Actions</p>
-                  <p className="text-2xl font-bold text-foreground">12</p>
-                </div>
-                <TrendingUp className="w-8 h-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-0 shadow-lg hover-scale">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Active Users</p>
-                  <p className="text-2xl font-bold text-foreground">8</p>
-                </div>
-                <Users className="w-8 h-8 text-purple-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Action Button */}
-        <div className="flex justify-end mb-6">
+    <StandardPageLayout>
+      <StandardPageHeader 
+        title="Activity Command Center"
+        description="Monitor system notifications, user activities, and important updates in real-time"
+        actions={
           <Button onClick={fetchData} className="flex items-center gap-2" variant="outline">
             <RefreshCw className="h-4 w-4" />
             Refresh Data
           </Button>
+        }
+      />
+      
+      <div className="p-6 space-y-6">
+        {/* Metrics Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <StandardKPICard
+            title="Total Activities"
+            value={activities.length}
+            icon={Activity}
+          />
+          
+          <StandardKPICard
+            title="Notifications"
+            value={notifications.length}
+            icon={Bell}
+          />
+          
+          <StandardKPICard
+            title="Today's Actions"
+            value="12"
+            icon={TrendingUp}
+          />
+          
+          <StandardKPICard
+            title="Active Users"
+            value="8"
+            icon={Users}
+          />
         </div>
 
         {/* Main Content Grid */}
@@ -315,50 +290,42 @@ export default function Activities() {
         </div>
 
         {/* Activity Timeline */}
-        <Card className="border border-border shadow-sm">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
-              <Clock className="h-5 w-5 text-green-600" />
-              Activity Timeline
-            </CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Chronological view of all system activities and notifications
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {[...activities, ...notifications.map(n => ({
-                id: n.id,
-                action: 'System Notification',
-                details: n.message,
-                timestamp: n.timestamp,
-                user: 'System'
-              }))].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, 8).map((item, index) => (
-                <div key={item.id} className="flex items-center space-x-4 relative">
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                      {getActionIcon(item.action)}
-                    </div>
+        <StandardContentCard 
+          title="Activity Timeline"
+          headerActions={<Clock className="h-5 w-5 text-green-600" />}
+        >
+          <div className="space-y-6">
+            {[...activities, ...notifications.map(n => ({
+              id: n.id,
+              action: 'System Notification',
+              details: n.message,
+              timestamp: n.timestamp,
+              user: 'System'
+            }))].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, 8).map((item, index) => (
+              <div key={item.id} className="flex items-center space-x-4 relative">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                    {getActionIcon(item.action)}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground">{item.action}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(item.timestamp)} ago
-                      </p>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{item.details}</p>
-                    <Badge variant="secondary" className="text-xs mt-1">{item.user}</Badge>
-                  </div>
-                  {index < 7 && (
-                    <div className="absolute left-4 top-8 w-px h-6 bg-border"></div>
-                  )}
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium text-foreground">{item.action}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDistanceToNow(item.timestamp)} ago
+                    </p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{item.details}</p>
+                  <Badge variant="secondary" className="text-xs mt-1">{item.user}</Badge>
+                </div>
+                {index < 7 && (
+                  <div className="absolute left-4 top-8 w-px h-6 bg-border"></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </StandardContentCard>
       </div>
-    </div>
+    </StandardPageLayout>
   )
 }

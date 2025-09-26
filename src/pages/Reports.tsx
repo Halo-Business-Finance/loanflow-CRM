@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-
+import { StandardPageLayout } from '@/components/StandardPageLayout';
+import { StandardPageHeader } from '@/components/StandardPageHeader';
+import { StandardKPICard } from '@/components/StandardKPICard';
+import { StandardContentCard } from '@/components/StandardContentCard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -54,66 +57,38 @@ export default function Reports() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center gap-2 mb-6">
-          <BarChart3 className="h-6 w-6" />
-          <h1 className="text-3xl font-bold">Business Intelligence Center</h1>
-          <p className="text-muted-foreground ml-4">
-            Advanced analytics, reporting, and performance insights
-          </p>
-        </div>
-
+    <StandardPageLayout>
+      <StandardPageHeader 
+        title="Business Intelligence Center"
+        description="Advanced analytics, reporting, and performance insights"
+      />
+      
+      <div className="p-6 space-y-6">
         {/* Reports Overview Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-l-4 border-l-primary">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Reports</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <FileText className="w-5 h-5" />
-                    <p className="text-lg font-bold">{overview.totalReports}</p>
-                  </div>
-                </div>
-                <Badge variant="default">
-                  AVAILABLE
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Data Accuracy</p>
-                  <p className="text-2xl font-bold text-primary">{overview.dataAccuracy}%</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Processing Time</p>
-                  <p className="text-2xl font-bold text-primary">{overview.processingTime}s</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Compliance Score</p>
-                  <p className="text-2xl font-bold text-primary">{overview.complianceScore}%</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <StandardKPICard
+            title="Total Reports"
+            value={overview.totalReports}
+            icon={FileText}
+          />
+          
+          <StandardKPICard
+            title="Data Accuracy"
+            value={`${overview.dataAccuracy}%`}
+            icon={BarChart3}
+          />
+          
+          <StandardKPICard
+            title="Processing Time"
+            value={`${overview.processingTime}s`}
+            icon={Activity}
+          />
+          
+          <StandardKPICard
+            title="Compliance Score"
+            value={`${overview.complianceScore}%`}
+            icon={CheckCircle}
+          />
         </div>
 
         {/* Performance Alerts */}
@@ -360,5 +335,6 @@ export default function Reports() {
           </TabsContent>
         </Tabs>
       </div>
+    </StandardPageLayout>
   );
 }

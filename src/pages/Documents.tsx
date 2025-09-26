@@ -1,4 +1,8 @@
 
+import { StandardPageLayout } from '@/components/StandardPageLayout'
+import { StandardPageHeader } from '@/components/StandardPageHeader'
+import { StandardKPICard } from '@/components/StandardKPICard'
+import { StandardContentCard } from '@/components/StandardContentCard'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -68,15 +72,15 @@ export default function Documents() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="space-y-6">
-          <div className="animate-fade-in">
-            <div className="h-8 bg-muted rounded w-64 mb-2"></div>
-            <div className="h-4 bg-muted rounded w-96"></div>
-          </div>
+      <StandardPageLayout>
+        <StandardPageHeader 
+          title="Document Command Center"
+          description="Enterprise-grade secure document management with advanced upload and verification for SBA and Commercial loan CRM"
+        />
+        <div className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse border border-border shadow-sm bg-white rounded-lg p-6">
+              <div key={i} className="animate-pulse bg-card border-2 border-border/60 rounded-lg p-6">
                 <div className="h-6 bg-muted rounded w-24 mb-4"></div>
                 <div className="h-8 bg-muted rounded w-16 mb-2"></div>
                 <div className="h-8 w-8 bg-muted rounded"></div>
@@ -84,7 +88,7 @@ export default function Documents() {
             ))}
           </div>
         </div>
-      </div>
+      </StandardPageLayout>
     )
   }
 
@@ -112,105 +116,70 @@ export default function Documents() {
     <>
       <DocumentTest />
       
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="space-y-6 animate-fade-in">
-          {/* Header Section */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">Document Command Center</h1>
-            <p className="text-muted-foreground mt-2">
-              Enterprise-grade secure document management with advanced upload and verification for SBA and Commercial loan CRM
-            </p>
-          </div>
-
-          {/* Document Metrics Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <Card className="bg-card border-0 shadow-lg hover-scale">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Documents</p>
-                    <p className="text-2xl font-bold text-foreground">{statusCounts.total}</p>
-                  </div>
-                  <FileText className="w-8 h-8 text-blue-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card border-0 shadow-lg hover-scale">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Verified</p>
-                    <p className="text-2xl font-bold text-foreground">{statusCounts.verified}</p>
-                  </div>
-                  <CheckCircle className="w-8 h-8 text-green-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card border-0 shadow-lg hover-scale">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Pending Review</p>
-                    <p className="text-2xl font-bold text-foreground">{statusCounts.pending}</p>
-                  </div>
-                  <Calendar className="w-8 h-8 text-yellow-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card border-0 shadow-lg hover-scale">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Rejected</p>
-                    <p className="text-2xl font-bold text-foreground">{statusCounts.rejected}</p>
-                  </div>
-                  <Trash2 className="w-8 h-8 text-red-600" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Action Controls */}
-          <div className="flex justify-between items-center mb-6">
-            <Button className="flex items-center gap-2" variant="outline">
-              <RefreshCw className="h-4 w-4" />
-              Refresh Documents
-            </Button>
+      <StandardPageLayout>
+        <StandardPageHeader 
+          title="Document Command Center"
+          description="Enterprise-grade secure document management with advanced upload and verification for SBA and Commercial loan CRM"
+          actions={
             <Button onClick={() => setShowUploadModal(true)} className="gap-2">
               <Upload className="h-4 w-4" />
               Upload Document
             </Button>
+          }
+        />
+        
+        <div className="p-6 space-y-6">
+          {/* Document Metrics Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <StandardKPICard
+              title="Total Documents"
+              value={statusCounts.total}
+              icon={FileText}
+            />
+            
+            <StandardKPICard
+              title="Verified"
+              value={statusCounts.verified}
+              icon={CheckCircle}
+            />
+            
+            <StandardKPICard
+              title="Pending Review"
+              value={statusCounts.pending}
+              icon={Calendar}
+            />
+            
+            <StandardKPICard
+              title="Rejected"
+              value={statusCounts.rejected}
+              icon={Trash2}
+            />
           </div>
 
           {/* Search and Filters */}
-          <Card className="border border-border shadow-sm bg-white">
-            <CardContent className="p-6">
-              <div className="flex gap-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search documents, leads, or document types..."
-                    className="pl-10"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-border rounded-md bg-background"
-                >
-                  <option value="all">All Status</option>
-                  <option value="pending">Pending</option>
-                  <option value="verified">Verified</option>
-                  <option value="rejected">Rejected</option>
-                </select>
+          <StandardContentCard>
+            <div className="flex gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search documents, leads, or document types..."
+                  className="pl-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
-            </CardContent>
-          </Card>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-border rounded-md bg-background"
+              >
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="verified">Verified</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+          </StandardContentCard>
 
           {/* Documents List */}
           <div className="grid gap-6">
@@ -418,7 +387,27 @@ export default function Documents() {
             }}
           />
         </div>
-      </div>
+      </StandardPageLayout>
+
+      {/* Modals */}
+      {showUploadModal && (
+        <DocumentUploadModal
+          isOpen={showUploadModal}
+          onClose={() => setShowUploadModal(false)}
+          onUpload={uploadDocument}
+        />
+      )}
+
+      {showDocumentViewer && selectedDocument && (
+        <DocumentViewer
+          document={selectedDocument}
+          isOpen={showDocumentViewer}
+          onClose={() => {
+            setShowDocumentViewer(false)
+            setSelectedDocument(null)
+          }}
+        />
+      )}
     </>
   )
 }

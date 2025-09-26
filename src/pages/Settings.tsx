@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
+import { StandardPageLayout } from '@/components/StandardPageLayout'
+import { StandardPageHeader } from '@/components/StandardPageHeader'
+import { StandardKPICard } from '@/components/StandardKPICard'
+import { StandardContentCard } from '@/components/StandardContentCard'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -180,73 +184,44 @@ export default function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="space-y-6 animate-fade-in">
-        {/* Header Section */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Configuration Command Center</h1>
-          <p className="text-muted-foreground mt-2">
-            System configuration, user preferences, and account management for enterprise security CRM
-          </p>
-        </div>
-
-        {/* Settings Metrics Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <Card className="bg-card border-0 shadow-lg hover-scale">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Profile Settings</p>
-                  <p className="text-2xl font-bold text-foreground">Active</p>
-                </div>
-                <User className="w-8 h-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-0 shadow-lg hover-scale">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Notifications</p>
-                  <p className="text-2xl font-bold text-foreground">3</p>
-                </div>
-                <Bell className="w-8 h-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-0 shadow-lg hover-scale">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Security Level</p>
-                  <p className="text-2xl font-bold text-foreground">High</p>
-                </div>
-                <Shield className="w-8 h-8 text-red-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-0 shadow-lg hover-scale">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Integrations</p>
-                  <p className="text-2xl font-bold text-foreground">4</p>
-                </div>
-                <Lock className="w-8 h-8 text-purple-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Action Button */}
-        <div className="flex justify-end mb-6">
+    <StandardPageLayout>
+      <StandardPageHeader 
+        title="Configuration Command Center"
+        description="System configuration, user preferences, and account management for enterprise security CRM"
+        actions={
           <Button className="flex items-center gap-2" variant="outline">
             <RefreshCw className="h-4 w-4" />
             Refresh Settings
           </Button>
+        }
+      />
+      
+      <div className="p-6 space-y-6">
+        {/* Settings Metrics Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <StandardKPICard
+            title="Profile Settings"
+            value="Active"
+            icon={User}
+          />
+          
+          <StandardKPICard
+            title="Notifications"
+            value="3"
+            icon={Bell}
+          />
+          
+          <StandardKPICard
+            title="Security Level"
+            value="High"
+            icon={Shield}
+          />
+          
+          <StandardKPICard
+            title="Integrations"
+            value="4"
+            icon={Lock}
+          />
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
@@ -516,6 +491,6 @@ export default function Settings() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </StandardPageLayout>
   )
 }
