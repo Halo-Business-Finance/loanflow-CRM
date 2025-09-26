@@ -44,7 +44,7 @@ export function ConnectionHalo() {
               className="text-[9px] font-bold fill-gray-700 dark:fill-gray-600"
               style={{ fontFamily: 'system-ui, sans-serif' }}
             >
-              Applications
+              Apps
             </text>
           </svg>
         </button>
