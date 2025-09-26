@@ -527,73 +527,75 @@ export default function SettingsUsers() {
                 </div>
                 
                 {/* Table Body */}
-                <div className="space-y-2">
-                  {filteredUsers.map((user) => (
-                    <div key={user.id} className="grid grid-cols-7 gap-4 text-sm p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <Checkbox
-                          checked={selectedUsers.has(user.user_id)}
-                          onCheckedChange={(checked) => handleSelectUser(user.user_id, checked as boolean)}
-                        />
-                        <span className="font-medium text-foreground">{formatUserName(user)}</span>
-                      </div>
-                      <span className="text-muted-foreground truncate">{user.email}</span>
-                      <Badge variant={getRoleBadgeVariant(user.role || 'agent')} className="w-fit">
-                        {(user.role || 'agent').replace('_', ' ')}
-                      </Badge>
-                      <span className={getStatusColor(user.is_active)}>
-                        {getStatusText(user.is_active)}
-                      </span>
-                      <span className="text-muted-foreground">
-                        {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
-                      </span>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem onClick={() => {
-                            setEditingUser(user);
-                            setEditDialogOpen(true);
-                          }}>
-                            <Edit3 className="h-4 w-4 mr-2" />
-                            Edit Profile
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleToggleUserStatus(user.user_id, user.is_active)}>
-                            <UserCheck className="h-4 w-4 mr-2" />
-                            {user.is_active ? 'Deactivate' : 'Activate'} User
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => handleResetPassword(user.user_id, user.email)}>
-                            <RotateCcw className="h-4 w-4 mr-2" />
-                            Reset Password
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive focus:text-destructive">
-                            <Lock className="h-4 w-4 mr-2" />
-                            Lock Account
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="text-destructive focus:text-destructive"
-                            onClick={() => {
-                              if (confirm(`Are you sure you want to delete user ${formatUserName(user)}? This action cannot be undone.`)) {
-                                toast({
-                                  title: "Delete User",
-                                  description: "Delete user functionality coming soon",
-                                })
-                              }
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete User
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                      <span></span>
-                    </div>
-                  ))}
-                </div>
+                 <div className="space-y-2">
+                   {filteredUsers.map((user) => {
+                     console.log('Rendering user:', user.email, 'role:', user.role, 'is_active:', user.is_active)
+                     return (
+                     <div key={user.id} className="grid grid-cols-7 gap-4 text-sm p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                       <div className="flex items-center gap-3">
+                         <Checkbox
+                           checked={selectedUsers.has(user.user_id)}
+                           onCheckedChange={(checked) => handleSelectUser(user.user_id, checked as boolean)}
+                         />
+                         <span className="font-medium text-foreground">{formatUserName(user)}</span>
+                       </div>
+                       <span className="text-muted-foreground truncate">{user.email}</span>
+                       <Badge variant={getRoleBadgeVariant(user.role || 'agent')} className="w-fit">
+                         {(user.role || 'agent').replace('_', ' ')}
+                       </Badge>
+                       <span className={getStatusColor(user.is_active)}>
+                         {getStatusText(user.is_active)}
+                       </span>
+                       <span className="text-muted-foreground">
+                         {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                       </span>
+                       <DropdownMenu>
+                         <DropdownMenuTrigger asChild>
+                           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                             <MoreHorizontal className="h-4 w-4" />
+                           </Button>
+                         </DropdownMenuTrigger>
+                         <DropdownMenuContent align="end" className="w-48">
+                           <DropdownMenuItem onClick={() => {
+                             setEditingUser(user);
+                             setEditDialogOpen(true);
+                           }}>
+                             <Edit3 className="h-4 w-4 mr-2" />
+                             Edit Profile
+                           </DropdownMenuItem>
+                           <DropdownMenuItem onClick={() => handleToggleUserStatus(user.user_id, user.is_active)}>
+                             <UserCheck className="h-4 w-4 mr-2" />
+                             {user.is_active ? 'Deactivate' : 'Activate'} User
+                           </DropdownMenuItem>
+                           <DropdownMenuSeparator />
+                           <DropdownMenuItem onClick={() => handleResetPassword(user.user_id, user.email)}>
+                             <RotateCcw className="h-4 w-4 mr-2" />
+                             Reset Password
+                           </DropdownMenuItem>
+                           <DropdownMenuItem className="text-destructive focus:text-destructive">
+                             <Lock className="h-4 w-4 mr-2" />
+                             Lock Account
+                           </DropdownMenuItem>
+                           <DropdownMenuItem 
+                             className="text-destructive focus:text-destructive"
+                             onClick={() => {
+                               if (confirm(`Are you sure you want to delete user ${formatUserName(user)}? This action cannot be undone.`)) {
+                                 toast({
+                                   title: "Delete User",
+                                   description: "Delete user functionality coming soon",
+                                 })
+                               }
+                             }}
+                           >
+                             <Trash2 className="h-4 w-4 mr-2" />
+                             Delete User
+                           </DropdownMenuItem>
+                         </DropdownMenuContent>
+                       </DropdownMenu>
+                       <span></span>
+                     </div>
+                   )})}
+                 </div>
               </div>
             )}
 
