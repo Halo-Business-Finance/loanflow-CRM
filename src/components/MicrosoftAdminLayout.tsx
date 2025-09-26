@@ -95,7 +95,7 @@ function MicrosoftAdminSidebar() {
       <SidebarContent className="pt-20 pb-4 h-full">
         {navigationGroups.map((group, groupIndex) => (
           <React.Fragment key={group.label}>
-            <SidebarGroup>
+            <SidebarGroup className="border border-gray-200 rounded-lg mx-2 p-2 mb-2">
               <SidebarGroupLabel className={cn("text-[10px] font-semibold text-black uppercase tracking-wider px-2", collapsed && "sr-only")}>
                 {group.label}
               </SidebarGroupLabel>
