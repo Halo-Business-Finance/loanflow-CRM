@@ -19,6 +19,7 @@ import {
   SidebarMenu, 
   SidebarMenuButton, 
   SidebarMenuItem,
+  SidebarSeparator,
   useSidebar 
 } from "@/components/ui/sidebar"
 
@@ -93,46 +94,51 @@ function MicrosoftAdminSidebar() {
     <Sidebar className={cn("bg-card/60 backdrop-blur border-r", collapsed ? "w-16" : "w-72")} collapsible="icon">
       <SidebarContent className="pt-20 pb-4 h-full">
         {navigationGroups.map((group, groupIndex) => (
-          <SidebarGroup key={group.label}>
-            <SidebarGroupLabel className={cn("text-[10px] font-semibold text-black uppercase tracking-wider px-2", collapsed && "sr-only")}>
-              {group.label}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.url}>
-                    <SidebarMenuButton asChild>
-                      <Link
-                        to={item.url}
-                        className={cn(
-                          "flex items-start gap-3 px-3 py-2.5 text-[10px] rounded-lg transition-all duration-200 group",
-                          isActivePath(item.url)
-                            ? "bg-primary/10 text-primary border-l-2 border-primary"
-                            : "text-foreground hover:bg-muted/60 hover:text-primary"
-                        )}
-                      >
-                        <item.icon 
+          <React.Fragment key={group.label}>
+            <SidebarGroup>
+              <SidebarGroupLabel className={cn("text-[10px] font-semibold text-black uppercase tracking-wider px-2", collapsed && "sr-only")}>
+                {group.label}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-1">
+                  {group.items.map((item) => (
+                    <SidebarMenuItem key={item.url}>
+                      <SidebarMenuButton asChild>
+                        <Link
+                          to={item.url}
                           className={cn(
-                            "h-4 w-4 flex-shrink-0 mt-0.5 text-blue-700"
-                          )} 
-                        />
-                        {!collapsed && (
-                          <div className="flex-1 min-w-0">
-                            <div className={cn(
-                              "text-[13px] font-medium",
-                              isActivePath(item.url) ? "text-primary" : "text-foreground"
-                            )}>
-                              {item.title}
+                            "flex items-start gap-3 px-3 py-2.5 text-[10px] rounded-lg transition-all duration-200 group",
+                            isActivePath(item.url)
+                              ? "bg-primary/10 text-primary border-l-2 border-primary"
+                              : "text-foreground hover:bg-muted/60 hover:text-primary"
+                          )}
+                        >
+                          <item.icon 
+                            className={cn(
+                              "h-4 w-4 flex-shrink-0 mt-0.5 text-blue-700"
+                            )} 
+                          />
+                          {!collapsed && (
+                            <div className="flex-1 min-w-0">
+                              <div className={cn(
+                                "text-[13px] font-medium",
+                                isActivePath(item.url) ? "text-primary" : "text-foreground"
+                              )}>
+                                {item.title}
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+                          )}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            {groupIndex < navigationGroups.length - 1 && (
+              <SidebarSeparator className="my-4" />
+            )}
+          </React.Fragment>
         ))}
       </SidebarContent>
     </Sidebar>
