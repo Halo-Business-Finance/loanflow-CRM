@@ -14,26 +14,20 @@ export function ConnectionHalo() {
   const HaloButton = () => {
     console.log('HaloButton rendering')
     return (
-      <div className="flex flex-col items-center gap-1 -ml-4">
+      <div className="flex flex-col items-center gap-1 -ml-6">
         <button
           onClick={() => {
             console.log('Halo button clicked!')
             setIsOpen(true)
           }}
-          className="relative w-28 h-18 group transition-colors duration-200 flex items-center justify-center"
-          style={{
-            clipPath: `polygon(
-              0% 20%, 20% 20%, 20% 0%, 40% 0%, 40% 20%, 60% 20%, 60% 0%, 80% 0%, 80% 20%, 100% 20%,
-              100% 40%, 80% 40%, 80% 60%, 100% 60%, 100% 80%, 80% 80%, 80% 100%, 60% 100%, 60% 80%,
-              40% 80%, 40% 100%, 20% 100%, 20% 80%, 0% 80%, 0% 60%, 20% 60%, 20% 40%, 0% 40%
-            )`
-          }}
+          className="relative w-28 h-16 group transition-colors duration-200 flex items-center justify-center"
           aria-label="Open connections"
         >
           {/* Custom cloud icon with integrated text */}
           <svg 
-            className="w-24 h-16 text-white group-hover:text-white/90" 
+            className="block w-24 h-16 text-white group-hover:text-white/90" 
             viewBox="0 0 64 48"
+            preserveAspectRatio="xMidYMid meet"
             fill="currentColor"
           >
             {/* Cloud shape */}
@@ -41,10 +35,10 @@ export function ConnectionHalo() {
             {/* Text inside cloud */}
             <text 
               x="32" 
-              y="26" 
+              y="24" 
               textAnchor="middle" 
               dominantBaseline="middle" 
-              className="text-[8px] font-semibold fill-navy dark:fill-navy-light"
+              className="text-[10px] font-semibold fill-navy dark:fill-navy-light"
               style={{ fontFamily: 'system-ui, sans-serif' }}
             >
               Halo Apps
