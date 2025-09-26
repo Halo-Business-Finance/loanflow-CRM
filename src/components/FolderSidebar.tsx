@@ -37,9 +37,9 @@ const folderMenuItems: Record<string, MenuItem[]> = {
       name: "Lead Operations", 
       icon: Settings,
       children: [
-        { name: "Import Leads", path: "/leads/import", icon: Download },
-        { name: "Export Data", path: "/leads/export", icon: RefreshCw },
-        { name: "Bulk Actions", path: "/leads/bulk", icon: Edit },
+        { name: "View All Leads", path: "/leads", icon: Eye },
+        { name: "Lead Statistics", path: "/leads/stats", icon: BarChart3 },
+        { name: "Assignment", path: "/leads/assignment", icon: Target },
       ]
     },
   ],
@@ -57,9 +57,9 @@ const folderMenuItems: Record<string, MenuItem[]> = {
       name: "Loan Processing", 
       icon: FileText,
       children: [
-        { name: "Active Loans", path: "/existing-borrowers/active", icon: Activity },
-        { name: "Completed Loans", path: "/existing-borrowers/completed", icon: CheckCircle },
-        { name: "Loan Documents", path: "/existing-borrowers/documents", icon: FileText },
+        { name: "View All Borrowers", path: "/existing-borrowers", icon: Building2 },
+        { name: "Borrower Details", path: "/existing-borrowers/details", icon: User },
+        { name: "Loan History", path: "/existing-borrowers/history", icon: FileText },
       ]
     },
   ],
@@ -77,9 +77,9 @@ const folderMenuItems: Record<string, MenuItem[]> = {
       name: "Pipeline Tools", 
       icon: Settings,
       children: [
-        { name: "Forecasting", path: "/pipeline/forecast", icon: BarChart3 },
-        { name: "Conversion Rates", path: "/pipeline/conversion", icon: Target },
-        { name: "Performance", path: "/pipeline/performance", icon: Activity },
+        { name: "Pipeline View", path: "/pipeline", icon: Target },
+        { name: "Analytics", path: "/pipeline/analytics", icon: BarChart3 },
+        { name: "Stage Management", path: "/pipeline/stages", icon: Settings },
       ]
     },
   ],
@@ -97,10 +97,9 @@ const folderMenuItems: Record<string, MenuItem[]> = {
       name: "Document Management", 
       icon: FileText,
       children: [
-        { name: "All Documents", path: "/documents", icon: FileText },
-        { name: "Upload Documents", path: "/documents/upload", icon: Plus },
-        { name: "Document Templates", path: "/documents/templates", icon: FileText },
-        { name: "Compliance Check", path: "/documents/compliance", icon: Shield },
+        { name: "Document Review", path: "/underwriter/documents", icon: FileText },
+        { name: "Risk Assessment", path: "/underwriter/risk", icon: Activity },
+        { name: "Underwriter Dashboard", path: "/underwriter", icon: Shield },
       ]
     },
   ],
@@ -118,9 +117,9 @@ const folderMenuItems: Record<string, MenuItem[]> = {
       name: "Scheduling", 
       icon: Calendar,
       children: [
-        { name: "Appointments", path: "/activities/appointments", icon: Calendar },
-        { name: "Reminders", path: "/activities/reminders", icon: Bell },
-        { name: "Follow-ups", path: "/activities/followups", icon: RefreshCw },
+        { name: "All Activities", path: "/activities", icon: Activity },
+        { name: "Calendar View", path: "/activities/calendar", icon: Calendar },
+        { name: "Task Management", path: "/activities/tasks", icon: FileText },
       ]
     },
   ],

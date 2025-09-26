@@ -60,7 +60,6 @@ const pipelineItems = [
 
 const underwriterItems = [
   { name: "Underwriter Dashboard", path: "/underwriter", icon: Shield },
-  { name: "Documents", path: "/documents", icon: FileText },
   { name: "Document Review", path: "/underwriter/documents", icon: FileText },
   { name: "Risk Assessment", path: "/underwriter/risk", icon: Activity },
 ]
