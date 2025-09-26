@@ -20,7 +20,7 @@ export function ConnectionHalo() {
             console.log('Halo button clicked!')
             setIsOpen(true)
           }}
-          className="relative w-12 h-12 bg-white/20 hover:bg-white/30 group transition-colors duration-200"
+          className="relative w-12 h-12 group transition-colors duration-200"
           style={{
             clipPath: `polygon(
               0% 20%, 20% 20%, 20% 0%, 40% 0%, 40% 20%, 60% 20%, 60% 0%, 80% 0%, 80% 20%, 100% 20%,
