@@ -83,7 +83,7 @@ export default function SettingsUsers() {
               ...profile,
               user_id: profile.id,
               phone: profile.phone_number || '',
-              role: profile.role || 'agent',
+              role: normalizeRole(profile.role || 'agent'),
               is_active: profile.is_active !== false // Ensure boolean
             }
             console.log('Transformed user:', transformed)
@@ -287,6 +287,20 @@ export default function SettingsUsers() {
     }
   }
 
+  const normalizeRole = (role: unknown): string => {
+    const allowed = new Set([
+      'super_admin','admin','manager','loan_processor','underwriter','funder','closer','loan_originator','agent','viewer'
+    ])
+    const r = typeof role === 'string' ? role.toLowerCase().trim() : ''
+    if (allowed.has(r)) return r
+    // Guard against status strings or unexpected values showing in the role column
+    if (r === 'active' || r === 'inactive') return 'agent'
+    return 'agent'
+  }
+
+  const displayRole = (role: string) => {
+    return normalizeRole(role).replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  }
   const formatUserName = (user: UserProfile) => {
     if (user.first_name && user.last_name) {
       return `${user.first_name} ${user.last_name}`
@@ -540,9 +554,9 @@ export default function SettingsUsers() {
                          <span className="font-medium text-foreground">{formatUserName(user)}</span>
                        </div>
                        <span className="text-muted-foreground truncate">{user.email}</span>
-                       <Badge variant={getRoleBadgeVariant(user.role || 'agent')} className="w-fit">
-                         {(user.role || 'agent').replace('_', ' ')}
-                       </Badge>
+                        <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="w-fit">
+                          {displayRole(user.role || 'agent')}
+                        </Badge>
                        <span className={getStatusColor(user.is_active)}>
                          {getStatusText(user.is_active)}
                        </span>
@@ -664,8 +678,8 @@ export default function SettingsUsers() {
                         <div className="flex items-center gap-4">
                           <div className="flex items-center gap-1">
                             <span className="text-muted-foreground">Role:</span>
-                            <Badge variant={getRoleBadgeVariant(user.role || 'agent')} className="text-xs">
-                              {(user.role || 'agent').replace('_', ' ')}
+                            <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="text-xs">
+                              {displayRole(user.role || 'agent')}
                             </Badge>
                           </div>
                           <div className="flex items-center gap-1">
