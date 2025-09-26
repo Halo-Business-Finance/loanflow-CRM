@@ -10,7 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Users, Plus, Settings, Shield, Search, Edit3, Trash2, RotateCcw, UserCheck, MoreHorizontal, Lock, Archive } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
+import { Users, Plus, Settings, Shield, Search, Edit3, Trash2, RotateCcw, UserCheck, MoreHorizontal, Lock, Archive, Filter, Download, RefreshCw, Building2, TrendingUp, Activity, Eye } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { useToast } from "@/hooks/use-toast"
@@ -420,50 +421,72 @@ export default function SettingsUsers() {
           </Card>
         </div>
 
-        {/* User Directory Section */}
-        <Card className="border-border/50">
-          <CardHeader className="pb-4">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <CardTitle className="text-lg font-semibold">User Directory</CardTitle>
-                <CardDescription className="text-sm">
-                  Manage all user accounts and permissions
-                </CardDescription>
+        {/* Enterprise User Directory */}
+        <Card className="border-0 shadow-xl bg-white/50 dark:bg-slate-900/50 backdrop-blur">
+          <CardHeader className="pb-6 border-b border-border/50">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700">
+                  <Eye className="h-6 w-6 text-slate-700 dark:text-slate-300" />
+                </div>
+                <div>
+                  <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100">User Directory</CardTitle>
+                  <CardDescription className="text-base text-slate-600 dark:text-slate-400">
+                    Comprehensive user management and access control
+                  </CardDescription>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Users className="h-4 w-4" />
-                <span>{filteredUsers.length} of {totalUsers} users</span>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800">
+                  <Users className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                    {filteredUsers.length} of {totalUsers} users
+                  </span>
+                </div>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Search Input */}
-            <div className="relative max-w-sm">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search users by name or email..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+          <CardContent className="p-6 space-y-8">
+            {/* Enterprise Control Bar */}
+            <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+              <div className="flex flex-col sm:flex-row gap-4 flex-1">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search users by name, email, or role..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400"
+                  />
+                </div>
+                <Button variant="outline" size="default" className="shrink-0">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filters
+                </Button>
+              </div>
             </div>
             
-            {/* Bulk Actions Bar */}
+            {/* Enterprise Bulk Actions Bar */}
             {selectedUsers.size > 0 && (
-              <div className="bg-muted/50 border border-border rounded-lg p-4 mb-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">
-                      {selectedUsers.size} user{selectedUsers.size > 1 ? 's' : ''} selected
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setSelectedUsers(new Set())}
-                      className="h-6 px-2 text-xs"
-                    >
-                      Clear selection
-                    </Button>
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 border border-blue-200 dark:border-blue-800 rounded-xl p-6 shadow-lg">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/50">
+                      <UserCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-900 dark:text-slate-100">
+                        {selectedUsers.size} user{selectedUsers.size > 1 ? 's' : ''} selected
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedUsers(new Set())}
+                        className="h-auto p-0 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                      >
+                        Clear selection
+                      </Button>
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
@@ -471,8 +494,9 @@ export default function SettingsUsers() {
                       variant="outline"
                       onClick={handleBulkActivate}
                       disabled={bulkOperationLoading}
+                      className="bg-white dark:bg-slate-900 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-950/50"
                     >
-                      <UserCheck className="h-4 w-4 mr-1" />
+                      <UserCheck className="h-4 w-4 mr-2" />
                       Activate
                     </Button>
                     <Button
@@ -480,17 +504,19 @@ export default function SettingsUsers() {
                       variant="outline"
                       onClick={handleBulkDeactivate}
                       disabled={bulkOperationLoading}
+                      className="bg-white dark:bg-slate-900 border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-950/50"
                     >
-                      <UserCheck className="h-4 w-4 mr-1" />
+                      <Archive className="h-4 w-4 mr-2" />
                       Deactivate
                     </Button>
                     <Button
                       size="sm"
-                      variant="destructive"
+                      variant="outline"
                       onClick={handleBulkDelete}
                       disabled={bulkOperationLoading}
+                      className="bg-white dark:bg-slate-900 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/50"
                     >
-                      <Trash2 className="h-4 w-4 mr-1" />
+                      <Trash2 className="h-4 w-4 mr-2" />
                       Delete
                     </Button>
                   </div>
@@ -519,97 +545,134 @@ export default function SettingsUsers() {
               </div>
             )}
 
-            {/* Users Table - Desktop View */}
+            {/* Enterprise Data Table - Desktop View */}
             {!loading && filteredUsers.length > 0 && (
               <div className="hidden lg:block">
-                {/* Table Header */}
-                <div className="grid grid-cols-7 gap-6 font-medium text-sm text-muted-foreground border-b border-border pb-3 mb-4">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
-                      onCheckedChange={handleSelectAll}
-                      disabled={filteredUsers.length === 0}
-                    />
-                    <span>User</span>
+                {/* Professional Table Header */}
+                <div className="bg-slate-50 dark:bg-slate-900/50 rounded-t-xl p-4 border-b border-slate-200 dark:border-slate-700">
+                  <div className="grid grid-cols-7 gap-6 font-semibold text-sm text-slate-700 dark:text-slate-300">
+                    <div className="flex items-center gap-3">
+                      <Checkbox
+                        checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
+                        onCheckedChange={handleSelectAll}
+                        disabled={filteredUsers.length === 0}
+                        className="border-slate-300 dark:border-slate-600"
+                      />
+                      <span>User</span>
+                    </div>
+                    <span>Email Address</span>
+                    <span>Role & Permissions</span>
+                    <span>Account Status</span>
+                    <span>Created Date</span>
+                    <span>Actions</span>
+                    <span className="sr-only">Menu</span>
                   </div>
-                  <span>Email</span>
-                  <span>Role</span>
-                  <span>Status</span>
-                  <span>Created</span>
-                  <span>Actions</span>
-                  <span></span>
                 </div>
                 
-                {/* Table Body */}
-                 <div className="space-y-2">
-                   {filteredUsers.map((user) => {
-                     console.log('Rendering user:', user.email, 'role:', user.role, 'is_active:', user.is_active)
-                     return (
-                     <div key={user.id} className="grid grid-cols-7 gap-6 text-sm p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
-                       <div className="flex items-center gap-3">
-                         <Checkbox
-                           checked={selectedUsers.has(user.user_id)}
-                           onCheckedChange={(checked) => handleSelectUser(user.user_id, checked as boolean)}
-                         />
-                         <span className="font-medium text-foreground">{formatUserName(user)}</span>
-                       </div>
-                       <span className="text-muted-foreground truncate">{user.email}</span>
-                        <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="w-fit">
+                {/* Enterprise Table Body */}
+                <div className="bg-white dark:bg-slate-950 rounded-b-xl overflow-hidden">
+                  {filteredUsers.map((user, index) => {
+                    console.log('Rendering user:', user.email, 'role:', user.role, 'is_active:', user.is_active)
+                    return (
+                    <div key={user.id} className={`grid grid-cols-7 gap-6 text-sm p-6 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 ${index !== filteredUsers.length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
+                      <div className="flex items-center gap-4">
+                        <Checkbox
+                          checked={selectedUsers.has(user.user_id)}
+                          onCheckedChange={(checked) => handleSelectUser(user.user_id, checked as boolean)}
+                          className="border-slate-300 dark:border-slate-600"
+                        />
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10 border-2 border-slate-200 dark:border-slate-700">
+                            <AvatarImage src="" alt={formatUserName(user)} />
+                            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-semibold">
+                              {formatUserName(user).split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-semibold text-slate-900 dark:text-slate-100">{formatUserName(user)}</div>
+                            <div className="text-xs text-slate-500 dark:text-slate-400">ID: {user.user_id.slice(0, 8)}...</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col justify-center">
+                        <span className="text-slate-700 dark:text-slate-300 font-medium">{user.email}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">Primary Contact</span>
+                      </div>
+                      <div className="flex flex-col justify-center">
+                        <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="w-fit mb-1">
                           {displayRole(user.role || 'agent')}
                         </Badge>
-                       <span className={getStatusColor(user.is_active)}>
-                         {getStatusText(user.is_active)}
-                       </span>
-                       <span className="text-muted-foreground">
-                         {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
-                       </span>
-                       <DropdownMenu>
-                         <DropdownMenuTrigger asChild>
-                           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                             <MoreHorizontal className="h-4 w-4" />
-                           </Button>
-                         </DropdownMenuTrigger>
-                         <DropdownMenuContent align="end" className="w-48">
-                           <DropdownMenuItem onClick={() => {
-                             setEditingUser(user);
-                             setEditDialogOpen(true);
-                           }}>
-                             <Edit3 className="h-4 w-4 mr-2" />
-                             Edit Profile
-                           </DropdownMenuItem>
-                           <DropdownMenuItem onClick={() => handleToggleUserStatus(user.user_id, user.is_active)}>
-                             <UserCheck className="h-4 w-4 mr-2" />
-                             {user.is_active ? 'Deactivate' : 'Activate'} User
-                           </DropdownMenuItem>
-                           <DropdownMenuSeparator />
-                           <DropdownMenuItem onClick={() => handleResetPassword(user.user_id, user.email)}>
-                             <RotateCcw className="h-4 w-4 mr-2" />
-                             Reset Password
-                           </DropdownMenuItem>
-                           <DropdownMenuItem className="text-destructive focus:text-destructive">
-                             <Lock className="h-4 w-4 mr-2" />
-                             Lock Account
-                           </DropdownMenuItem>
-                           <DropdownMenuItem 
-                             className="text-destructive focus:text-destructive"
-                             onClick={() => {
-                               if (confirm(`Are you sure you want to delete user ${formatUserName(user)}? This action cannot be undone.`)) {
-                                 toast({
-                                   title: "Delete User",
-                                   description: "Delete user functionality coming soon",
-                                 })
-                               }
-                             }}
-                           >
-                             <Trash2 className="h-4 w-4 mr-2" />
-                             Delete User
-                           </DropdownMenuItem>
-                         </DropdownMenuContent>
-                       </DropdownMenu>
-                       <span></span>
-                     </div>
-                   )})}
-                 </div>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">System Role</span>
+                      </div>
+                      <div className="flex flex-col justify-center">
+                        <div className={`flex items-center gap-2 ${getStatusColor(user.is_active)}`}>
+                          <div className={`h-2 w-2 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-orange-500'}`} />
+                          {getStatusText(user.is_active)}
+                        </div>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">Account State</span>
+                      </div>
+                      <div className="flex flex-col justify-center">
+                        <span className="text-slate-700 dark:text-slate-300 font-medium">
+                          {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                        </span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">Registration</span>
+                      </div>
+                      <div className="flex items-center justify-center">
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setEditingUser(user);
+                              setEditDialogOpen(true);
+                            }}
+                            className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+                          >
+                            <Edit3 className="h-4 w-4" />
+                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline" size="sm" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-xl">
+                              <DropdownMenuItem onClick={() => handleToggleUserStatus(user.user_id, user.is_active)} className="hover:bg-slate-50 dark:hover:bg-slate-800">
+                                <UserCheck className="h-4 w-4 mr-3" />
+                                {user.is_active ? 'Deactivate' : 'Activate'} User
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
+                              <DropdownMenuItem onClick={() => handleResetPassword(user.user_id, user.email)} className="hover:bg-slate-50 dark:hover:bg-slate-800">
+                                <RotateCcw className="h-4 w-4 mr-3" />
+                                Reset Password
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/50">
+                                <Lock className="h-4 w-4 mr-3" />
+                                Lock Account
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
+                              <DropdownMenuItem 
+                                className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50"
+                                onClick={() => {
+                                  if (confirm(`Are you sure you want to delete user ${formatUserName(user)}? This action cannot be undone.`)) {
+                                    toast({
+                                      title: "Delete User",
+                                      description: "Delete user functionality coming soon",
+                                    })
+                                  }
+                                }}
+                              >
+                                <Trash2 className="h-4 w-4 mr-3" />
+                                Delete User
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </div>
+                      <span className="sr-only">End of row</span>
+                    </div>
+                  )})}
+                </div>
               </div>
             )}
 
