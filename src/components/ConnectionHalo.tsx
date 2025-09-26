@@ -36,8 +36,8 @@ export function ConnectionHalo() {
             </g>
             {/* Text inside cloud */}
             <text 
-              x="48" 
-              y="40"
+              x="32" 
+              y="32"
               dy=".3em"
               textAnchor="middle" 
               dominantBaseline="middle" 
