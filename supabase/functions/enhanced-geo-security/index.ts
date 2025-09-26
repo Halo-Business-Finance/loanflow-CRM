@@ -116,15 +116,13 @@ serve(async (req) => {
       // Log new IP for future reference
       await supabase
         .from('ip_restrictions')
-        .insert({
+        .upsert({
           ip_address: clientIP,
           is_allowed: riskScore < 50, // Auto-allow low risk IPs
           risk_level: riskScore >= 60 ? 'high' : riskScore >= 30 ? 'medium' : 'low',
           country_code: 'US', // Default assumption
           notes: `First seen with risk score: ${riskScore}`
         })
-        .onConflict('ip_address')
-        .ignoreDuplicates()
     }
 
     // Determine security level

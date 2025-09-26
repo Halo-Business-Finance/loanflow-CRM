@@ -14,6 +14,12 @@ interface AIBot {
   sensitivity_level: string
   configuration: any
   last_activity: string
+  performance_metrics?: {
+    scans_completed?: number
+    alerts_generated?: number
+    last_scan?: string
+    uptime_percentage?: number
+  }
 }
 
 interface ThreatIndicator {
@@ -68,7 +74,7 @@ class AISecurityEngine {
         confidence: 95.0,
         details: {
           failed_attempts: failedLogins.length,
-          unique_ips: [...new Set(failedLogins.map(f => f.ip_address))].length,
+          unique_ips: [...new Set(failedLogins.map((f: any) => f.ip_address))].length,
           timeframe: '5 minutes',
           auto_response: 'IP blocking recommended'
         }
@@ -89,7 +95,7 @@ class AISecurityEngine {
         confidence: 88.0,
         details: {
           events: privilegeEvents.length,
-          users_involved: [...new Set(privilegeEvents.map(e => e.user_id))].length,
+          users_involved: [...new Set(privilegeEvents.map((e: any) => e.user_id))].length,
           recent_attempts: privilegeEvents.slice(-3)
         }
       })
@@ -109,7 +115,7 @@ class AISecurityEngine {
         confidence: 92.0,
         details: {
           access_count: dataAccess.length,
-          tables_accessed: [...new Set(dataAccess.map(d => d.table_name))],
+          tables_accessed: [...new Set(dataAccess.map((d: any) => d.table_name))],
           rapid_access_detected: true,
           auto_response: 'Account lockdown recommended'
         }
@@ -130,7 +136,7 @@ class AISecurityEngine {
         confidence: 85.0,
         details: {
           anomaly_count: geoEvents.length,
-          locations: geoEvents.map(e => e.details?.location || 'Unknown'),
+          locations: geoEvents.map((e: any) => e.details?.location || 'Unknown'),
           suspicious_travel_patterns: true
         }
       })
@@ -224,7 +230,7 @@ class AISecurityEngine {
         confidence: 90.0,
         details: {
           violations: rateLimits.length,
-          endpoints: [...new Set(rateLimits.map(r => r.endpoint))],
+          endpoints: [...new Set(rateLimits.map((r: any) => r.endpoint))],
           suspected_ddos: rateLimits.length >= 10
         }
       })
@@ -244,7 +250,7 @@ class AISecurityEngine {
         confidence: 75.0,
         details: {
           bot_requests: botActivity.length,
-          user_agents: [...new Set(botActivity.map(b => b.user_agent))],
+          user_agents: [...new Set(botActivity.map((b: any) => b.user_agent))],
           pattern: 'automated_access_pattern'
         }
       })
@@ -295,8 +301,8 @@ class AISecurityEngine {
         confidence: 95.0,
         details: {
           operations: bulkOps.length,
-          tables: [...new Set(bulkOps.map(op => op.table_name))],
-          actions: [...new Set(bulkOps.map(op => op.action))],
+          tables: [...new Set(bulkOps.map((op: any) => op.table_name))],
+          actions: [...new Set(bulkOps.map((op: any) => op.action))],
           immediate_review_required: true
         }
       })
@@ -560,12 +566,13 @@ serve(async (req) => {
         throw new Error('Invalid action specified');
     }
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('AI Security Engine error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error'
     return new Response(
       JSON.stringify({ 
         error: 'AI Security monitoring failed',
-        message: error.message,
+        message,
         timestamp: new Date().toISOString()
       }),
       {

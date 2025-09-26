@@ -291,12 +291,13 @@ serve(async (req) => {
       }
     )
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Encryption function error:', error)
+    const message = error instanceof Error ? error.message : 'Unknown error'
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error',
-        message: error.message 
+        message 
       }),
       { 
         status: 500, 

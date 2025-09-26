@@ -62,10 +62,11 @@ serve(async (req) => {
   } catch (error) {
     console.error('Security Enhanced Error:', error)
     
+    const message = error instanceof Error ? error.message : 'Unknown error'
     return new Response(
       JSON.stringify({ 
         error: 'Security system error',
-        details: error.message 
+        details: message 
       }),
       { 
         status: 500, 
@@ -183,7 +184,7 @@ async function scanDatabaseSecurity(supabase: any) {
 }
 
 async function scanSessionSecurity(supabase: any, userId: string) {
-  const threats = []
+  const threats: Array<{type: string, severity: 'low' | 'medium' | 'high' | 'critical', description: string, recommendation: string}> = []
   let penaltyPoints = 0
 
   try {

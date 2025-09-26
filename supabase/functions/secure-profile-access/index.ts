@@ -69,10 +69,12 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('=== ERROR in secure profile access ===')
     console.error('Error:', error)
-    console.error('Stack:', error.stack)
+    const stack = error instanceof Error ? error.stack : 'No stack trace'
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Stack:', stack)
     return new Response(
       JSON.stringify({ 
-        error: error.message,
+        error: message,
         details: 'Check function logs for more information'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
