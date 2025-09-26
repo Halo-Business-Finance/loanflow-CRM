@@ -160,12 +160,14 @@ function MicrosoftAdminSidebar() {
                                     className={cn(
                                       "flex items-center px-4 py-2 text-sm border-b border-border/20 last:border-b-0 transition-colors hover:bg-muted/30",
                                       isActivePath(subItem.url)
-                                        ? "text-primary border-b-2 border-b-blue-700"
+                                        ? "text-primary"
                                         : "text-muted-foreground"
                                     )}
                                   >
                                     <ChevronRight className="h-3 w-3 mr-4" />
-                                    <span>{subItem.title}</span>
+                                    <span className={cn(
+                                      isActivePath(subItem.url) && "border-b-2 border-b-blue-700"
+                                    )}>{subItem.title}</span>
                                   </Link>
                                 </SidebarMenuButton>
                               ))}
@@ -179,13 +181,16 @@ function MicrosoftAdminSidebar() {
                             className={cn(
                               "flex items-center px-4 py-3 text-sm transition-colors hover:bg-muted/50",
                               isActivePath(item.url)
-                                ? "text-primary border-b-2 border-b-blue-700"
+                                ? "text-primary"
                                 : "text-foreground"
                             )}
                           >
                             <ChevronRight className="h-4 w-4 mr-4 text-muted-foreground" />
                             {!collapsed && (
-                              <span className="font-medium">{item.title}</span>
+                              <span className={cn(
+                                "font-medium",
+                                isActivePath(item.url) && "border-b-2 border-b-blue-700"
+                              )}>{item.title}</span>
                             )}
                           </Link>
                         </SidebarMenuButton>
