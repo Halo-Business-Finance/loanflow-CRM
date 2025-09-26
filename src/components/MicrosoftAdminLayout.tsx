@@ -160,7 +160,7 @@ function MicrosoftAdminSidebar() {
                                     className={cn(
                                       "flex items-center px-4 py-2 text-sm border-b border-border/20 last:border-b-0 transition-colors hover:bg-muted/30",
                                       isActivePath(subItem.url)
-                                        ? "bg-primary/5 text-primary"
+                                        ? "text-primary"
                                         : "text-muted-foreground"
                                     )}
                                   >
@@ -179,7 +179,7 @@ function MicrosoftAdminSidebar() {
                             className={cn(
                               "flex items-center px-4 py-3 text-sm transition-colors hover:bg-muted/50",
                               isActivePath(item.url)
-                                ? "bg-primary/5 text-primary"
+                                ? "text-primary"
                                 : "text-foreground"
                             )}
                           >
