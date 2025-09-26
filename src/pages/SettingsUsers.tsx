@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Users, Plus, Settings, Shield, Search, Edit3, Trash2, RotateCcw, UserCheck, MoreHorizontal, Lock, Archive } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
@@ -33,6 +34,8 @@ export default function SettingsUsers() {
   const [loading, setLoading] = useState(true)
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set())
+  const [bulkOperationLoading, setBulkOperationLoading] = useState(false)
   const { user, hasRole } = useAuth()
   const { toast } = useToast()
   const navigate = useNavigate()
@@ -140,6 +143,119 @@ export default function SettingsUsers() {
         description: "Failed to reset password.",
         variant: "destructive"
       })
+    }
+  }
+
+  // Bulk selection functions
+  const handleSelectUser = (userId: string, checked: boolean) => {
+    const newSelected = new Set(selectedUsers)
+    if (checked) {
+      newSelected.add(userId)
+    } else {
+      newSelected.delete(userId)
+    }
+    setSelectedUsers(newSelected)
+  }
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedUsers(new Set(filteredUsers.map(user => user.user_id)))
+    } else {
+      setSelectedUsers(new Set())
+    }
+  }
+
+  // Bulk operations
+  const handleBulkActivate = async () => {
+    if (selectedUsers.size === 0) return
+    
+    setBulkOperationLoading(true)
+    try {
+      const promises = Array.from(selectedUsers).map(userId => 
+        supabase.rpc('admin_update_profile', {
+          p_user_id: userId,
+          p_is_active: true
+        })
+      )
+      
+      await Promise.all(promises)
+      await fetchUsers()
+      setSelectedUsers(new Set())
+      
+      toast({
+        title: "Users Activated",
+        description: `${selectedUsers.size} users have been activated.`,
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to activate users.",
+        variant: "destructive"
+      })
+    } finally {
+      setBulkOperationLoading(false)
+    }
+  }
+
+  const handleBulkDeactivate = async () => {
+    if (selectedUsers.size === 0) return
+    
+    setBulkOperationLoading(true)
+    try {
+      const promises = Array.from(selectedUsers).map(userId => 
+        supabase.rpc('admin_update_profile', {
+          p_user_id: userId,
+          p_is_active: false
+        })
+      )
+      
+      await Promise.all(promises)
+      await fetchUsers()
+      setSelectedUsers(new Set())
+      
+      toast({
+        title: "Users Deactivated",
+        description: `${selectedUsers.size} users have been deactivated.`,
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to deactivate users.",
+        variant: "destructive"
+      })
+    } finally {
+      setBulkOperationLoading(false)
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedUsers.size === 0) return
+    
+    const selectedUserNames = filteredUsers
+      .filter(u => selectedUsers.has(u.user_id))
+      .map(u => formatUserName(u))
+      .join(', ')
+
+    if (!confirm(`Are you sure you want to delete ${selectedUsers.size} users (${selectedUserNames})? This action cannot be undone.`)) {
+      return
+    }
+
+    setBulkOperationLoading(true)
+    try {
+      // For now, just show a toast as delete functionality is not implemented
+      toast({
+        title: "Bulk Delete",
+        description: `Bulk delete functionality for ${selectedUsers.size} users coming soon`,
+      })
+      setSelectedUsers(new Set())
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete users.",
+        variant: "destructive"
+      })
+    } finally {
+      setBulkOperationLoading(false)
     }
   }
 
@@ -299,6 +415,56 @@ export default function SettingsUsers() {
                 className="pl-10"
               />
             </div>
+            
+            {/* Bulk Actions Bar */}
+            {selectedUsers.size > 0 && (
+              <div className="bg-muted/50 border border-border rounded-lg p-4 mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">
+                      {selectedUsers.size} user{selectedUsers.size > 1 ? 's' : ''} selected
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedUsers(new Set())}
+                      className="h-6 px-2 text-xs"
+                    >
+                      Clear selection
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleBulkActivate}
+                      disabled={bulkOperationLoading}
+                    >
+                      <UserCheck className="h-4 w-4 mr-1" />
+                      Activate
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleBulkDeactivate}
+                      disabled={bulkOperationLoading}
+                    >
+                      <UserCheck className="h-4 w-4 mr-1" />
+                      Deactivate
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={handleBulkDelete}
+                      disabled={bulkOperationLoading}
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Loading State */}
             {loading && (
@@ -325,20 +491,32 @@ export default function SettingsUsers() {
             {!loading && filteredUsers.length > 0 && (
               <div className="hidden lg:block">
                 {/* Table Header */}
-                <div className="grid grid-cols-6 gap-4 font-medium text-sm text-muted-foreground border-b border-border pb-3 mb-4">
-                  <span>User</span>
+                <div className="grid grid-cols-7 gap-4 font-medium text-sm text-muted-foreground border-b border-border pb-3 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
+                      onCheckedChange={handleSelectAll}
+                      disabled={filteredUsers.length === 0}
+                    />
+                    <span>User</span>
+                  </div>
                   <span>Email</span>
                   <span>Role</span>
                   <span>Status</span>
                   <span>Created</span>
                   <span>Actions</span>
+                  <span></span>
                 </div>
                 
                 {/* Table Body */}
                 <div className="space-y-2">
                   {filteredUsers.map((user) => (
-                    <div key={user.id} className="grid grid-cols-6 gap-4 text-sm p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div key={user.id} className="grid grid-cols-7 gap-4 text-sm p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-3">
+                        <Checkbox
+                          checked={selectedUsers.has(user.user_id)}
+                          onCheckedChange={(checked) => handleSelectUser(user.user_id, checked as boolean)}
+                        />
                         <Avatar className="h-8 w-8">
                           <AvatarImage src="" />
                           <AvatarFallback className="text-xs font-medium bg-primary/10 text-primary">
@@ -400,6 +578,7 @@ export default function SettingsUsers() {
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
+                      <span></span>
                     </div>
                   ))}
                 </div>
@@ -414,6 +593,10 @@ export default function SettingsUsers() {
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
+                          <Checkbox
+                            checked={selectedUsers.has(user.user_id)}
+                            onCheckedChange={(checked) => handleSelectUser(user.user_id, checked as boolean)}
+                          />
                           <Avatar className="h-10 w-10">
                             <AvatarImage src="" />
                             <AvatarFallback className="text-sm font-medium bg-primary/10 text-primary">
