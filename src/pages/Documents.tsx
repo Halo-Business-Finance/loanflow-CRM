@@ -134,25 +134,21 @@ export default function Documents() {
             <StandardKPICard
               title="Total Documents"
               value={statusCounts.total}
-              icon={FileText}
             />
             
             <StandardKPICard
               title="Verified"
               value={statusCounts.verified}
-              icon={CheckCircle}
             />
             
             <StandardKPICard
               title="Pending Review"
               value={statusCounts.pending}
-              icon={Calendar}
             />
             
             <StandardKPICard
               title="Rejected"
               value={statusCounts.rejected}
-              icon={Trash2}
             />
           </div>
 

@@ -146,10 +146,10 @@ function AuthenticatedApp() {
             <Route path="/underwriter/documents" element={<HybridLayout><UnderwriterDocuments /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/underwriter/risk" element={<HybridLayout><UnderwriterRisk /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
-            {/* Documents routes now redirect to Underwriter */}
-            <Route path="/documents" element={<HybridLayout><Underwriter /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/documents/upload" element={<HybridLayout><Underwriter /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/documents/templates" element={<HybridLayout><Underwriter /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            {/* Documents routes */}
+            <Route path="/documents" element={<HybridLayout><Documents /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents/upload" element={<HybridLayout><DocumentUpload /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents/templates" element={<HybridLayout><DocumentTemplates /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/activities" element={<HybridLayout><Activities /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/activities/calendar" element={<HybridLayout><ActivitiesCalendar /></HybridLayout>} errorElement={<RouteErrorBoundary />} />

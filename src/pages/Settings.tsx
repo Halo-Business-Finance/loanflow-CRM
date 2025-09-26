@@ -202,25 +202,21 @@ export default function Settings() {
           <StandardKPICard
             title="Profile Settings"
             value="Active"
-            icon={User}
           />
           
           <StandardKPICard
             title="Notifications"
             value="3"
-            icon={Bell}
           />
           
           <StandardKPICard
             title="Security Level"
             value="High"
-            icon={Shield}
           />
           
           <StandardKPICard
             title="Integrations"
             value="4"
-            icon={Lock}
           />
         </div>
 

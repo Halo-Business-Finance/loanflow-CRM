@@ -64,30 +64,25 @@ export default function Reports() {
       />
       
       <div className="p-6 space-y-6">
-        {/* Reports Overview Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StandardKPICard
             title="Total Reports"
             value={overview.totalReports}
-            icon={FileText}
           />
           
           <StandardKPICard
             title="Data Accuracy"
             value={`${overview.dataAccuracy}%`}
-            icon={BarChart3}
           />
           
           <StandardKPICard
             title="Processing Time"
             value={`${overview.processingTime}s`}
-            icon={Activity}
           />
           
           <StandardKPICard
             title="Compliance Score"
             value={`${overview.complianceScore}%`}
-            icon={CheckCircle}
           />
         </div>
 

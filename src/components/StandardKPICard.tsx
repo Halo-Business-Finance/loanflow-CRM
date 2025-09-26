@@ -1,12 +1,10 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { LucideIcon } from 'lucide-react';
 
 interface StandardKPICardProps {
   title: string;
   value: string | number;
-  icon?: LucideIcon;
   trend?: {
     value: string;
     direction: 'up' | 'down' | 'neutral';
@@ -18,7 +16,6 @@ interface StandardKPICardProps {
 export function StandardKPICard({ 
   title, 
   value, 
-  icon: Icon, 
   trend, 
   className,
   onClick 
@@ -50,11 +47,6 @@ export function StandardKPICard({
               </div>
             )}
           </div>
-          {Icon && (
-            <div className="p-3 bg-primary/10 rounded-lg">
-              <Icon className="h-6 w-6 text-primary" />
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>
