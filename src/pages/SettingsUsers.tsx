@@ -1022,36 +1022,54 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
       if (formData.role !== user.role) {
         console.log('Updating role from', user.role, 'to', formData.role);
         
-        // Use the secure role assignment function
-        const { data: roleResult, error: roleError } = await supabase.rpc('assign_user_role', {
-          p_target_user_id: user.id,
-          p_new_role: formData.role as 'admin' | 'agent' | 'closer' | 'funder' | 'loan_originator' | 'loan_processor' | 'manager' | 'super_admin' | 'tech' | 'underwriter' | 'viewer',
-          p_reason: 'Admin role update via user management',
-          p_mfa_verified: false // MFA only required for admin/super_admin changes
-        });
+        try {
+          // Use the secure role assignment function
+          const { data: roleResult, error: roleError } = await supabase.rpc('assign_user_role', {
+            p_target_user_id: user.id,
+            p_new_role: formData.role as 'admin' | 'agent' | 'closer' | 'funder' | 'loan_originator' | 'loan_processor' | 'manager' | 'super_admin' | 'tech' | 'underwriter' | 'viewer',
+            p_reason: 'Admin role update via user management',
+            p_mfa_verified: false // MFA only required for admin/super_admin changes
+          });
 
-        if (roleError) {
-          console.error('Role update error:', roleError);
+          if (roleError) {
+            console.error('Role update error:', roleError);
+            
+            // Show specific error message
+            toast({
+              title: "Role Update Failed",
+              description: roleError.message || "Failed to update user role. You may need admin privileges or MFA verification.",
+              variant: "destructive",
+            });
+            
+            // Don't throw - let the profile update succeed even if role fails
+            console.warn('Continuing with profile update despite role change failure');
+          } else {
+            // Check if the result indicates success
+            const resultData = roleResult as any;
+            
+            if (resultData && resultData.success === false) {
+              console.error('Role assignment returned failure:', resultData);
+              toast({
+                title: "Role Change Restricted",
+                description: resultData.error || "You don't have permission to assign this role.",
+                variant: "destructive",
+              });
+            } else {
+              console.log('Role updated successfully via secure function');
+              toast({
+                title: "Role Updated",
+                description: `User role changed to ${formData.role}`,
+              });
+            }
+          }
+        } catch (roleErr) {
+          console.error('Unexpected role update error:', roleErr);
           toast({
-            title: "Role Update Failed",
-            description: roleError.message || "Failed to update user role. Please try again.",
+            title: "Role Update Error",
+            description: "An unexpected error occurred while updating the role.",
             variant: "destructive",
           });
-          throw new Error(roleError.message);
         }
-
-        // Check if the result indicates MFA is required
-        const resultData = roleResult as any;
-        if (resultData && !resultData.success && resultData.error?.includes('MFA')) {
-          toast({
-            title: "MFA Required",
-            description: "Admin role changes require MFA verification. Please use the secure role manager.",
-            variant: "destructive",
-          });
-          throw new Error("MFA required for this role change");
-        }
-
-        console.log('Role updated successfully via secure function');
       }
 
       // Call onSave with updated user data
