@@ -240,31 +240,50 @@ export default function SettingsUsers() {
   }
 
   const handleDeleteUser = async (userId: string, userName: string) => {
-    if (!confirm(`Are you sure you want to archive user ${userName}? This will deactivate their account and archive their data.`)) {
+    if (!confirm(`⚠️ PERMANENT DELETION WARNING ⚠️\n\nAre you sure you want to permanently delete user ${userName}?\n\nThis action:\n- Cannot be undone\n- Removes ALL user data\n- Deletes the authentication account\n- Removes all associated records\n\nType 'DELETE' in the next prompt to confirm.`)) {
+      return
+    }
+
+    const confirmation = prompt('Type DELETE to confirm permanent deletion:')
+    if (confirmation !== 'DELETE') {
+      toast({
+        title: "Deletion Cancelled",
+        description: "User deletion was cancelled.",
+      })
       return
     }
 
     try {
-      const { data, error } = await supabase.rpc('archive_user', {
-        p_user_id: userId,
-        p_archived_by: user?.id,
-        p_reason: 'Archived by administrator via user management'
+      const { data: session } = await supabase.auth.getSession()
+      if (!session?.session?.access_token) {
+        throw new Error('No access token available')
+      }
+
+      const { data, error } = await supabase.functions.invoke('admin-delete-user', {
+        body: { userId },
+        headers: {
+          'Authorization': `Bearer ${session.session.access_token}`
+        }
       })
 
       if (error) throw error
 
+      if (!data?.success) {
+        throw new Error(data?.error || 'Failed to delete user')
+      }
+
       toast({
-        title: "User Archived",
-        description: `User ${userName} has been successfully archived.`,
+        title: "User Deleted",
+        description: `User ${userName} has been permanently deleted.`,
       })
 
       // Refresh users list
       await fetchUsers()
     } catch (error: any) {
-      console.error('Error archiving user:', error)
+      console.error('Error deleting user:', error)
       toast({
         title: "Error",
-        description: error.message || "Failed to archive user.",
+        description: error.message || "Failed to delete user.",
         variant: "destructive"
       })
     }
@@ -278,27 +297,42 @@ export default function SettingsUsers() {
       .map(u => formatUserName(u))
       .join(', ')
 
-    if (!confirm(`Are you sure you want to archive ${selectedUsers.size} users (${selectedUserNames})? This will deactivate their accounts and archive their data.`)) {
+    if (!confirm(`⚠️ PERMANENT DELETION WARNING ⚠️\n\nAre you sure you want to permanently delete ${selectedUsers.size} users?\n\nUsers: ${selectedUserNames}\n\nThis action:\n- Cannot be undone\n- Removes ALL user data\n- Deletes authentication accounts\n- Removes all associated records\n\nType 'DELETE' in the next prompt to confirm.`)) {
+      return
+    }
+
+    const confirmation = prompt('Type DELETE to confirm permanent bulk deletion:')
+    if (confirmation !== 'DELETE') {
+      toast({
+        title: "Deletion Cancelled",
+        description: "Bulk user deletion was cancelled.",
+      })
       return
     }
 
     setBulkOperationLoading(true)
     try {
-      const archivePromises = Array.from(selectedUsers).map(userId =>
-        supabase.rpc('archive_user', {
-          p_user_id: userId,
-          p_archived_by: user?.id,
-          p_reason: 'Bulk archived by administrator via user management'
+      const { data: session } = await supabase.auth.getSession()
+      if (!session?.session?.access_token) {
+        throw new Error('No access token available')
+      }
+
+      const deletePromises = Array.from(selectedUsers).map(userId =>
+        supabase.functions.invoke('admin-delete-user', {
+          body: { userId },
+          headers: {
+            'Authorization': `Bearer ${session.session.access_token}`
+          }
         })
       )
 
-      const results = await Promise.allSettled(archivePromises)
-      const successCount = results.filter(r => r.status === 'fulfilled').length
-      const failCount = results.filter(r => r.status === 'rejected').length
+      const results = await Promise.allSettled(deletePromises)
+      const successCount = results.filter(r => r.status === 'fulfilled' && r.value?.data?.success).length
+      const failCount = results.filter(r => r.status === 'rejected' || !r.value?.data?.success).length
 
       toast({
-        title: "Bulk Archive Complete",
-        description: `Successfully archived ${successCount} users${failCount > 0 ? `, ${failCount} failed` : ''}.`,
+        title: "Bulk Delete Complete",
+        description: `Successfully deleted ${successCount} users${failCount > 0 ? `, ${failCount} failed` : ''}.`,
         variant: failCount > 0 ? "destructive" : "default"
       })
 
@@ -307,7 +341,7 @@ export default function SettingsUsers() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to archive users.",
+        description: "Failed to delete users.",
         variant: "destructive"
       })
     } finally {
@@ -702,8 +736,8 @@ export default function SettingsUsers() {
                                 className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50"
                                 onClick={() => handleDeleteUser(user.user_id, formatUserName(user))}
                               >
-                                <Archive className="h-4 w-4 mr-3" />
-                                Archive User
+                                <Trash2 className="h-4 w-4 mr-3" />
+                                Delete User Permanently
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -764,8 +798,8 @@ export default function SettingsUsers() {
                               className="text-destructive focus:text-destructive"
                               onClick={() => handleDeleteUser(user.user_id, formatUserName(user))}
                             >
-                              <Archive className="h-4 w-4 mr-2" />
-                              Archive User
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete User Permanently
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
