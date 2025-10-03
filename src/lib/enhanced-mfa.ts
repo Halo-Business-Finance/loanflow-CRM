@@ -425,23 +425,52 @@ export class EnhancedMFA {
   }
 
   private static async generateTOTPCode(secret: string, time: number): Promise<string> {
-    // Simplified TOTP implementation - in production use a proper TOTP library
-    const timeBytes = new ArrayBuffer(8);
-    const timeView = new DataView(timeBytes);
-    timeView.setUint32(4, time, false);
-    
-    // This is a simplified implementation
-    // In production, use a proper HMAC-SHA1 implementation
-    const hash = await crypto.subtle.digest('SHA-256', timeBytes);
-    const hashArray = new Uint8Array(hash);
-    
-    const offset = hashArray[hashArray.length - 1] & 0xf;
-    const binary = ((hashArray[offset] & 0x7f) << 24) |
-                   ((hashArray[offset + 1] & 0xff) << 16) |
-                   ((hashArray[offset + 2] & 0xff) << 8) |
-                   (hashArray[offset + 3] & 0xff);
-    
-    const code = binary % 1000000;
-    return code.toString().padStart(6, '0');
+    // RFC 6238 (TOTP): HMAC-SHA1 with 30s time step and 6 digits
+    // 1) Base32-decode the shared secret
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    const clean = secret.replace(/\s+/g, '').toUpperCase();
+
+    const bytes: number[] = [];
+    let bits = 0;
+    let value = 0;
+    for (let i = 0; i < clean.length; i++) {
+      const idx = alphabet.indexOf(clean[i]);
+      if (idx === -1) continue; // skip padding or invalid chars
+      value = (value << 5) | idx;
+      bits += 5;
+      if (bits >= 8) {
+        bytes.push((value >>> (bits - 8)) & 0xff);
+        bits -= 8;
+      }
+    }
+    const keyBytes = new Uint8Array(bytes);
+
+    // 2) Create 8-byte time counter (big-endian)
+    const counter = new ArrayBuffer(8);
+    const view = new DataView(counter);
+    // high 4 bytes stay 0, set low 4 bytes
+    view.setUint32(4, time, false);
+
+    // 3) HMAC-SHA1(counter, key)
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      keyBytes,
+      { name: 'HMAC', hash: 'SHA-1' },
+      false,
+      ['sign']
+    );
+    const hmac = await crypto.subtle.sign('HMAC', cryptoKey, counter);
+    const h = new Uint8Array(hmac);
+
+    // 4) Dynamic truncation
+    const offset = h[h.length - 1] & 0x0f;
+    const binary = ((h[offset] & 0x7f) << 24) |
+                   ((h[offset + 1] & 0xff) << 16) |
+                   ((h[offset + 2] & 0xff) << 8) |
+                   (h[offset + 3] & 0xff);
+
+    // 5) Modulo to get 6 digits
+    const code = (binary % 1_000_000).toString().padStart(6, '0');
+    return code;
   }
 }
