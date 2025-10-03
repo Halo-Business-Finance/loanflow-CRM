@@ -38,8 +38,7 @@ export function ConnectionHalo() {
                 y="24"
                 textAnchor="middle" 
                 dominantBaseline="middle" 
-                className="text-[9px] font-medium fill-gray-700 dark:fill-gray-600"
-                style={{ fontFamily: 'system-ui, sans-serif' }}
+                className="text-[9px] font-medium fill-gray-700 dark:fill-gray-600 font-sans"
               >
                 Apps
               </text>

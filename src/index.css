@@ -198,7 +198,7 @@ All colors MUST be HSL.
   .card-title:not([class*="border-b"]),
   [class*="CardTitle"]:not([class*="border-b"]),
   [class*="card-title"]:not([class*="border-b"]) {
-    @apply font-thin !important;
+    @apply font-sans font-semibold !important;
     text-decoration: none !important;
   }
 
@@ -207,7 +207,7 @@ All colors MUST be HSL.
   .dialog-title,
   [class*="DialogTitle"],
   [class*="dialog-title"] {
-    @apply font-thin;
+    @apply font-sans font-semibold;
   }
 
   /* Sheet titles */
@@ -215,7 +215,7 @@ All colors MUST be HSL.
   .sheet-title,
   [class*="SheetTitle"],
   [class*="sheet-title"] {
-    @apply font-thin;
+    @apply font-sans font-semibold;
   }
 
   /* Alert dialog titles */
@@ -223,7 +223,7 @@ All colors MUST be HSL.
   .alertdialog-title,
   [class*="AlertDialogTitle"],
   [class*="alertdialog-title"] {
-    @apply font-thin;
+    @apply font-sans font-semibold;
   }
 
   /* Enhanced input field styling */
