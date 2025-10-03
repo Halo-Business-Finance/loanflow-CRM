@@ -598,11 +598,10 @@ export default function SettingsUsers() {
                         <span className="text-slate-700 dark:text-slate-300 font-medium">{user.email}</span>
                         <span className="text-xs text-slate-500 dark:text-slate-400">Primary Contact</span>
                       </div>
-                      <div className="flex flex-col justify-center">
-                        <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="w-fit mb-1">
+                      <div className="flex items-center">
+                        <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="w-fit">
                           {displayRole(user.role || 'agent')}
                         </Badge>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">Role Assignment</span>
                       </div>
                       <div className="flex flex-col justify-center">
                         <div className={`flex items-center gap-2 ${getStatusColor(user.is_active)}`}>
