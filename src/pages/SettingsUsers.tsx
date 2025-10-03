@@ -11,10 +11,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
-import { Users, Plus, Settings, Shield, Search, Edit3, Trash2, RotateCcw, UserCheck, MoreHorizontal, Lock, Archive, Filter, Download, RefreshCw, Building2, TrendingUp, Activity, Eye } from "lucide-react"
+import { Users, Plus, Settings, Shield, Search, Edit3, Trash2, RotateCcw, UserCheck, MoreHorizontal, Lock, Archive, Filter, Download, RefreshCw, Building2, TrendingUp, Activity, Eye, AlertTriangle } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { useToast } from "@/hooks/use-toast"
+import { useSecureRoleManagement } from "@/hooks/useSecureRoleManagement"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 interface UserProfile {
   id: string
@@ -918,7 +920,23 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [saving, setSaving] = useState(false);
   const [resettingPassword, setResettingPassword] = useState(false);
+  const [mfaCode, setMfaCode] = useState('');
+  const [showMfaInput, setShowMfaInput] = useState(false);
   const { toast } = useToast();
+  const { 
+    isLoading: mfaLoading, 
+    mfaToken, 
+    hasMfaVerification,
+    generateMfaVerification,
+    verifyMfaToken,
+    assignUserRole
+  } = useSecureRoleManagement();
+
+  // Check if role change requires MFA
+  const requiresMfa = (newRole: string) => {
+    return ['admin', 'super_admin'].includes(newRole) || 
+           ['admin', 'super_admin'].includes(user.role);
+  };
 
   const handlePasswordReset = async () => {
     if (!newPassword || !confirmPassword) {
@@ -992,6 +1010,21 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if role change requires MFA and it hasn't been verified yet
+    const roleChanged = formData.role !== user.role;
+    const needsMfa = roleChanged && requiresMfa(formData.role);
+    
+    if (needsMfa && !hasMfaVerification) {
+      setShowMfaInput(true);
+      toast({
+        title: "MFA Required",
+        description: "Admin and super admin role changes require MFA verification.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setSaving(true);
 
     try {
@@ -1018,57 +1051,19 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
         throw error;
       }
 
-      // Handle role separately if it changed
-      if (formData.role !== user.role) {
+      // Handle role separately if it changed - using secure role management
+      if (roleChanged) {
         console.log('Updating role from', user.role, 'to', formData.role);
         
-        try {
-          // Use the secure role assignment function
-          const { data: roleResult, error: roleError } = await supabase.rpc('assign_user_role', {
-            p_target_user_id: user.id,
-            p_new_role: formData.role as 'admin' | 'agent' | 'closer' | 'funder' | 'loan_originator' | 'loan_processor' | 'manager' | 'super_admin' | 'tech' | 'underwriter' | 'viewer',
-            p_reason: 'Admin role update via user management',
-            p_mfa_verified: false // MFA only required for admin/super_admin changes
-          });
+        const result = await assignUserRole(
+          user.id,
+          formData.role as any,
+          'Admin role update via user management',
+          hasMfaVerification
+        );
 
-          if (roleError) {
-            console.error('Role update error:', roleError);
-            
-            // Show specific error message
-            toast({
-              title: "Role Update Failed",
-              description: roleError.message || "Failed to update user role. You may need admin privileges or MFA verification.",
-              variant: "destructive",
-            });
-            
-            // Don't throw - let the profile update succeed even if role fails
-            console.warn('Continuing with profile update despite role change failure');
-          } else {
-            // Check if the result indicates success
-            const resultData = roleResult as any;
-            
-            if (resultData && resultData.success === false) {
-              console.error('Role assignment returned failure:', resultData);
-              toast({
-                title: "Role Change Restricted",
-                description: resultData.error || "You don't have permission to assign this role.",
-                variant: "destructive",
-              });
-            } else {
-              console.log('Role updated successfully via secure function');
-              toast({
-                title: "Role Updated",
-                description: `User role changed to ${formData.role}`,
-              });
-            }
-          }
-        } catch (roleErr) {
-          console.error('Unexpected role update error:', roleErr);
-          toast({
-            title: "Role Update Error",
-            description: "An unexpected error occurred while updating the role.",
-            variant: "destructive",
-          });
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to update role');
         }
       }
 
@@ -1099,6 +1094,23 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
       });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleGenerateMfa = async () => {
+    const result = await generateMfaVerification();
+    if (result.success) {
+      setShowMfaInput(true);
+    }
+  };
+
+  const handleVerifyMfa = async () => {
+    const verified = await verifyMfaToken(mfaCode);
+    if (verified) {
+      setShowMfaInput(false);
+      setMfaCode('');
+      // Now submit the form
+      handleSubmit(new Event('submit') as any);
     }
   };
 
@@ -1156,6 +1168,57 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
       {/* Role and Status Section */}
       <div className="space-y-4 border-t border-border pt-6">
         <h3 className="text-lg font-medium text-foreground">Access Control</h3>
+        
+        {/* MFA Warning for Admin Roles */}
+        {requiresMfa(formData.role) && formData.role !== user.role && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>MFA Verification Required</AlertTitle>
+            <AlertDescription>
+              Assigning admin or super admin roles requires multi-factor authentication verification.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* MFA Input Section */}
+        {showMfaInput && (
+          <div className="space-y-4 p-4 border border-orange-200 dark:border-orange-800 rounded-lg bg-orange-50 dark:bg-orange-950/20">
+            <div className="space-y-2">
+              <Label htmlFor="mfa_code" className="text-sm font-medium">MFA Verification Code</Label>
+              {mfaToken ? (
+                <>
+                  <div className="p-3 bg-white dark:bg-slate-900 rounded border">
+                    <p className="text-xs text-muted-foreground mb-2">Your MFA Token:</p>
+                    <code className="text-sm font-mono bg-muted px-2 py-1 rounded">{mfaToken}</code>
+                  </div>
+                  <Input
+                    id="mfa_code"
+                    value={mfaCode}
+                    onChange={(e) => setMfaCode(e.target.value)}
+                    placeholder="Enter the MFA code shown above"
+                  />
+                  <Button 
+                    type="button"
+                    onClick={handleVerifyMfa}
+                    disabled={!mfaCode || mfaLoading}
+                    className="w-full"
+                  >
+                    {mfaLoading ? 'Verifying...' : 'Verify MFA Code'}
+                  </Button>
+                </>
+              ) : (
+                <Button 
+                  type="button"
+                  onClick={handleGenerateMfa}
+                  disabled={mfaLoading}
+                  className="w-full"
+                >
+                  {mfaLoading ? 'Generating...' : 'Generate MFA Code'}
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
