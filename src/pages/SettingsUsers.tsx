@@ -1022,22 +1022,36 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
       if (formData.role !== user.role) {
         console.log('Updating role from', user.role, 'to', formData.role);
         
-        // Update role in user_roles table
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .update({ role: formData.role as any })
-          .eq('user_id', user.id);
+        // Use the secure role assignment function
+        const { data: roleResult, error: roleError } = await supabase.rpc('assign_user_role', {
+          p_target_user_id: user.id,
+          p_new_role: formData.role as 'admin' | 'agent' | 'closer' | 'funder' | 'loan_originator' | 'loan_processor' | 'manager' | 'super_admin' | 'tech' | 'underwriter' | 'viewer',
+          p_reason: 'Admin role update via user management',
+          p_mfa_verified: false // MFA only required for admin/super_admin changes
+        });
 
         if (roleError) {
           console.error('Role update error:', roleError);
           toast({
-            title: "Partial Update",
-            description: "Profile updated but role change failed. Please contact an administrator.",
+            title: "Role Update Failed",
+            description: roleError.message || "Failed to update user role. Please try again.",
             variant: "destructive",
           });
-        } else {
-          console.log('Role updated successfully');
+          throw new Error(roleError.message);
         }
+
+        // Check if the result indicates MFA is required
+        const resultData = roleResult as any;
+        if (resultData && !resultData.success && resultData.error?.includes('MFA')) {
+          toast({
+            title: "MFA Required",
+            description: "Admin role changes require MFA verification. Please use the secure role manager.",
+            variant: "destructive",
+          });
+          throw new Error("MFA required for this role change");
+        }
+
+        console.log('Role updated successfully via secure function');
       }
 
       // Call onSave with updated user data
