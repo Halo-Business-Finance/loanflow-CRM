@@ -239,6 +239,37 @@ export default function SettingsUsers() {
     }
   }
 
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    if (!confirm(`Are you sure you want to archive user ${userName}? This will deactivate their account and archive their data.`)) {
+      return
+    }
+
+    try {
+      const { data, error } = await supabase.rpc('archive_user', {
+        p_user_id: userId,
+        p_archived_by: user?.id,
+        p_reason: 'Archived by administrator via user management'
+      })
+
+      if (error) throw error
+
+      toast({
+        title: "User Archived",
+        description: `User ${userName} has been successfully archived.`,
+      })
+
+      // Refresh users list
+      await fetchUsers()
+    } catch (error: any) {
+      console.error('Error archiving user:', error)
+      toast({
+        title: "Error",
+        description: error.message || "Failed to archive user.",
+        variant: "destructive"
+      })
+    }
+  }
+
   const handleBulkDelete = async () => {
     if (selectedUsers.size === 0) return
     
@@ -247,22 +278,36 @@ export default function SettingsUsers() {
       .map(u => formatUserName(u))
       .join(', ')
 
-    if (!confirm(`Are you sure you want to delete ${selectedUsers.size} users (${selectedUserNames})? This action cannot be undone.`)) {
+    if (!confirm(`Are you sure you want to archive ${selectedUsers.size} users (${selectedUserNames})? This will deactivate their accounts and archive their data.`)) {
       return
     }
 
     setBulkOperationLoading(true)
     try {
-      // For now, just show a toast as delete functionality is not implemented
+      const archivePromises = Array.from(selectedUsers).map(userId =>
+        supabase.rpc('archive_user', {
+          p_user_id: userId,
+          p_archived_by: user?.id,
+          p_reason: 'Bulk archived by administrator via user management'
+        })
+      )
+
+      const results = await Promise.allSettled(archivePromises)
+      const successCount = results.filter(r => r.status === 'fulfilled').length
+      const failCount = results.filter(r => r.status === 'rejected').length
+
       toast({
-        title: "Bulk Delete",
-        description: `Bulk delete functionality for ${selectedUsers.size} users coming soon`,
+        title: "Bulk Archive Complete",
+        description: `Successfully archived ${successCount} users${failCount > 0 ? `, ${failCount} failed` : ''}.`,
+        variant: failCount > 0 ? "destructive" : "default"
       })
+
       setSelectedUsers(new Set())
+      await fetchUsers()
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to delete users.",
+        description: "Failed to archive users.",
         variant: "destructive"
       })
     } finally {
@@ -655,17 +700,10 @@ export default function SettingsUsers() {
                               <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
                               <DropdownMenuItem 
                                 className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50"
-                                onClick={() => {
-                                  if (confirm(`Are you sure you want to delete user ${formatUserName(user)}? This action cannot be undone.`)) {
-                                    toast({
-                                      title: "Delete User",
-                                      description: "Delete user functionality coming soon",
-                                    })
-                                  }
-                                }}
+                                onClick={() => handleDeleteUser(user.user_id, formatUserName(user))}
                               >
-                                <Trash2 className="h-4 w-4 mr-3" />
-                                Delete User
+                                <Archive className="h-4 w-4 mr-3" />
+                                Archive User
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -724,17 +762,10 @@ export default function SettingsUsers() {
                             </DropdownMenuItem>
                             <DropdownMenuItem 
                               className="text-destructive focus:text-destructive"
-                              onClick={() => {
-                                if (confirm(`Are you sure you want to delete user ${formatUserName(user)}? This action cannot be undone.`)) {
-                                  toast({
-                                    title: "Delete User",
-                                    description: "Delete user functionality coming soon",
-                                  })
-                                }
-                              }}
+                              onClick={() => handleDeleteUser(user.user_id, formatUserName(user))}
                             >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete User
+                              <Archive className="h-4 w-4 mr-2" />
+                              Archive User
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
