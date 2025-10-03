@@ -167,10 +167,13 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    @apply bg-background text-foreground font-sans;
     font-weight: 400;
     letter-spacing: -0.01em;
+  }
+  
+  * {
+    @apply font-sans;
   }
 
   /* Enterprise typography */
