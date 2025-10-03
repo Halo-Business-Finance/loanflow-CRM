@@ -602,7 +602,7 @@ export default function SettingsUsers() {
                         <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="w-fit mb-1">
                           {displayRole(user.role || 'agent')}
                         </Badge>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">System Role</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">Role Assignment</span>
                       </div>
                       <div className="flex flex-col justify-center">
                         <div className={`flex items-center gap-2 ${getStatusColor(user.is_active)}`}>
