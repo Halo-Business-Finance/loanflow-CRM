@@ -1219,9 +1219,25 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
   };
 
   const handleGenerateMfa = async () => {
-    const result = await generateMfaVerification();
-    if (result.success) {
-      setShowMfaInput(true);
+    try {
+      console.log('Generating MFA verification token...');
+      const result = await generateMfaVerification();
+      console.log('MFA generation result:', result);
+      
+      if (!result.success) {
+        toast({
+          title: "MFA Generation Failed",
+          description: result.error || "Failed to generate MFA token. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      console.error('Error generating MFA:', error);
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred while generating MFA token.",
+        variant: "destructive",
+      });
     }
   };
 
