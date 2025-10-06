@@ -11,12 +11,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
-import { Users, Plus, Settings, Shield, Search, Edit3, Trash2, RotateCcw, UserCheck, MoreHorizontal, Lock, Archive, Filter, Download, RefreshCw, Building2, TrendingUp, Activity, Eye, AlertTriangle } from "lucide-react"
+import { Users, Plus, Settings, Shield, Search, Edit3, Trash2, RotateCcw, UserCheck, MoreHorizontal, Lock, Archive, Filter } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { useToast } from "@/hooks/use-toast"
 import { useSecureRoleManagement } from "@/hooks/useSecureRoleManagement"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { ConfirmDialog } from "@/components/ConfirmDialog"
+import { Eye, AlertTriangle } from "lucide-react"
 
 interface UserProfile {
   id: string
@@ -39,6 +41,9 @@ export default function SettingsUsers() {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set())
   const [bulkOperationLoading, setBulkOperationLoading] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null)
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false)
   const { user, hasRole } = useAuth()
   const { toast } = useToast()
   const navigate = useNavigate()
@@ -238,20 +243,27 @@ export default function SettingsUsers() {
       setBulkOperationLoading(false)
     }
   }
+  
+  // Deletion confirmation handlers
+  const openDeleteDialog = (userId: string, name: string) => {
+    setPendingDelete({ id: userId, name });
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (pendingDelete) {
+      await handleDeleteUser(pendingDelete.id, pendingDelete.name);
+      setDeleteDialogOpen(false);
+      setPendingDelete(null);
+    }
+  };
+
+  const confirmBulkDelete = async () => {
+    setBulkDeleteOpen(false);
+    await handleBulkDelete();
+  };
 
   const handleDeleteUser = async (userId: string, userName: string) => {
-    if (!confirm(`⚠️ PERMANENT DELETION WARNING ⚠️\n\nAre you sure you want to permanently delete user ${userName}?\n\nThis action:\n- Cannot be undone\n- Removes ALL user data\n- Deletes the authentication account\n- Removes all associated records\n\nType 'DELETE' in the next prompt to confirm.`)) {
-      return
-    }
-
-    const confirmation = prompt('Type DELETE to confirm permanent deletion:')
-    if (confirmation !== 'DELETE') {
-      toast({
-        title: "Deletion Cancelled",
-        description: "User deletion was cancelled.",
-      })
-      return
-    }
 
     try {
       const { data: session } = await supabase.auth.getSession()
@@ -290,25 +302,6 @@ export default function SettingsUsers() {
   }
 
   const handleBulkDelete = async () => {
-    if (selectedUsers.size === 0) return
-    
-    const selectedUserNames = filteredUsers
-      .filter(u => selectedUsers.has(u.user_id))
-      .map(u => formatUserName(u))
-      .join(', ')
-
-    if (!confirm(`⚠️ PERMANENT DELETION WARNING ⚠️\n\nAre you sure you want to permanently delete ${selectedUsers.size} users?\n\nUsers: ${selectedUserNames}\n\nThis action:\n- Cannot be undone\n- Removes ALL user data\n- Deletes authentication accounts\n- Removes all associated records\n\nType 'DELETE' in the next prompt to confirm.`)) {
-      return
-    }
-
-    const confirmation = prompt('Type DELETE to confirm permanent bulk deletion:')
-    if (confirmation !== 'DELETE') {
-      toast({
-        title: "Deletion Cancelled",
-        description: "Bulk user deletion was cancelled.",
-      })
-      return
-    }
 
     setBulkOperationLoading(true)
     try {
@@ -527,7 +520,7 @@ export default function SettingsUsers() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-6 space-y-8">
+          <CardContent className="p-8 space-y-8">
             {/* Enterprise Control Bar */}
             <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
               <div className="flex flex-col sm:flex-row gap-4 flex-1">
@@ -597,7 +590,7 @@ export default function SettingsUsers() {
                       type="button"
                       size="sm"
                       variant="outline"
-                      onClick={handleBulkDelete}
+                      onClick={() => setBulkDeleteOpen(true)}
                       disabled={bulkOperationLoading}
                       className="bg-white dark:bg-slate-900 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/50"
                     >
@@ -635,7 +628,7 @@ export default function SettingsUsers() {
               <div className="hidden lg:block">
                 {/* Professional Table Header */}
                 <div className="bg-slate-50 dark:bg-slate-900/50 rounded-t-xl p-4 border-b border-slate-200 dark:border-slate-700">
-                  <div className="grid grid-cols-7 gap-6 font-semibold text-sm text-slate-700 dark:text-slate-300">
+                  <div className="grid grid-cols-7 gap-8 font-semibold text-sm text-slate-700 dark:text-slate-300">
                     <div className="flex items-center gap-3">
                       <Checkbox
                         checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
@@ -659,7 +652,7 @@ export default function SettingsUsers() {
                   {filteredUsers.map((user, index) => {
                     console.log('Rendering user:', user.email, 'role:', user.role, 'is_active:', user.is_active)
                     return (
-                    <div key={user.id} className={`grid grid-cols-7 gap-6 text-sm p-6 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 ${index !== filteredUsers.length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
+                    <div key={user.id} className={`grid grid-cols-7 gap-8 text-sm p-7 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 ${index !== filteredUsers.length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
                       <div className="flex items-center gap-4">
                         <Checkbox
                           checked={selectedUsers.has(user.user_id)}
@@ -739,7 +732,10 @@ export default function SettingsUsers() {
                               <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
                               <DropdownMenuItem 
                                 className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50"
-                                onClick={() => handleDeleteUser(user.user_id, formatUserName(user))}
+                                onClick={() => {
+                                  setPendingDelete({ id: user.user_id, name: formatUserName(user) });
+                                  setDeleteDialogOpen(true);
+                                }}
                               >
                                 <Trash2 className="h-4 w-4 mr-3" />
                                 Delete User Permanently
@@ -757,7 +753,7 @@ export default function SettingsUsers() {
 
             {/* Users Cards - Mobile View */}
             {!loading && filteredUsers.length > 0 && (
-              <div className="lg:hidden space-y-3">
+              <div className="lg:hidden space-y-4">
                 {filteredUsers.map((user) => (
                   <Card key={user.id} className="border-border/50">
                     <CardContent className="p-4">
@@ -801,7 +797,10 @@ export default function SettingsUsers() {
                             </DropdownMenuItem>
                             <DropdownMenuItem 
                               className="text-destructive focus:text-destructive"
-                              onClick={() => handleDeleteUser(user.user_id, formatUserName(user))}
+                              onClick={() => {
+                                setPendingDelete({ id: user.user_id, name: formatUserName(user) });
+                                setDeleteDialogOpen(true);
+                              }}
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
                               Delete User Permanently
