@@ -39,6 +39,7 @@ export default function SettingsUsers() {
   const [loading, setLoading] = useState(true)
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set())
   const [bulkOperationLoading, setBulkOperationLoading] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -431,13 +432,7 @@ export default function SettingsUsers() {
             <Button 
               variant="default" 
               size="sm"
-              onClick={() => {
-                // Add user functionality - opens add user dialog
-                toast({
-                  title: "Add User",
-                  description: "Add user functionality coming soon",
-                })
-              }}
+              onClick={() => setAddDialogOpen(true)}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add User
@@ -873,6 +868,33 @@ export default function SettingsUsers() {
           variant="destructive"
           onConfirm={confirmBulkDelete}
         />
+
+        {/* Add User Dialog */}
+        <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+          <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
+            <DialogHeader className="pb-4">
+              <DialogTitle className="text-xl font-semibold">
+                Add New User
+              </DialogTitle>
+              <p className="text-sm text-muted-foreground">
+                Create a new user account with credentials and role
+              </p>
+            </DialogHeader>
+            <AddUserForm 
+              onSave={async (newUserData) => {
+                await fetchUsers();
+                setAddDialogOpen(false);
+                toast({
+                  title: "User Created",
+                  description: "New user account has been created successfully.",
+                });
+              }}
+              onCancel={() => {
+                setAddDialogOpen(false);
+              }}
+            />
+          </DialogContent>
+        </Dialog>
 
         {/* Edit User Dialog */}
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
@@ -1415,6 +1437,237 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
         </Button>
         <Button type="submit" disabled={saving} className="order-1 sm:order-2">
           {saving ? "Saving Changes..." : "Save Changes"}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+// Add User Form Component
+interface AddUserFormProps {
+  onSave: (userData: any) => void;
+  onCancel: () => void;
+}
+
+function AddUserForm({ onSave, onCancel }: AddUserFormProps) {
+  const [formData, setFormData] = useState({
+    email: '',
+    first_name: '',
+    last_name: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+    role: 'agent',
+    is_active: true
+  });
+  const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validation
+    if (!formData.email || !formData.password || !formData.confirmPassword) {
+      toast({
+        title: "Validation Error",
+        description: "Email and password are required.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Validation Error",
+        description: "Passwords don't match.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast({
+        title: "Validation Error",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      // Get the current session token
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.access_token) {
+        throw new Error('No access token available');
+      }
+
+      // Create user using admin edge function
+      const { data, error } = await supabase.functions.invoke('admin-create-user', {
+        body: {
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.first_name,
+          lastName: formData.last_name,
+          phone: formData.phone,
+          role: formData.role,
+          isActive: formData.is_active
+        },
+        headers: {
+          'Authorization': `Bearer ${session.session.access_token}`
+        }
+      });
+
+      if (error) throw error;
+
+      if (!data?.success) {
+        throw new Error(data?.error || 'Failed to create user');
+      }
+
+      onSave(data);
+    } catch (error: any) {
+      console.error('Error creating user:', error);
+      toast({
+        title: "Failed to Create User",
+        description: error.message || 'An unknown error occurred',
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Account Information */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium text-foreground">Account Information</h3>
+        
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-sm font-medium">Email Address *</Label>
+          <Input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            placeholder="user@example.com"
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-sm font-medium">Password *</Label>
+            <Input
+              id="password"
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              placeholder="Min. 6 characters"
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password *</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              placeholder="Confirm password"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Personal Information */}
+      <div className="space-y-4 border-t border-border pt-6">
+        <h3 className="text-lg font-medium text-foreground">Personal Information</h3>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="first_name" className="text-sm font-medium">First Name</Label>
+            <Input
+              id="first_name"
+              value={formData.first_name}
+              onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+              placeholder="Enter first name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="last_name" className="text-sm font-medium">Last Name</Label>
+            <Input
+              id="last_name"
+              value={formData.last_name}
+              onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+              placeholder="Enter last name"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
+          <Input
+            id="phone"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="Enter phone number"
+          />
+        </div>
+      </div>
+
+      {/* Role and Status */}
+      <div className="space-y-4 border-t border-border pt-6">
+        <h3 className="text-lg font-medium text-foreground">Access Control</h3>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="role" className="text-sm font-medium">User Role</Label>
+            <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="super_admin">Super Admin</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="manager">Manager</SelectItem>
+                <SelectItem value="loan_originator">Loan Originator</SelectItem>
+                <SelectItem value="loan_processor">Loan Processor</SelectItem>
+                <SelectItem value="underwriter">Underwriter</SelectItem>
+                <SelectItem value="funder">Funder</SelectItem>
+                <SelectItem value="closer">Closer</SelectItem>
+                <SelectItem value="agent">Agent</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="status" className="text-sm font-medium">Account Status</Label>
+            <Select 
+              value={formData.is_active ? "active" : "inactive"} 
+              onValueChange={(value) => setFormData({ ...formData, is_active: value === "active" })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row justify-end gap-3 border-t border-border pt-6">
+        <Button type="button" variant="outline" onClick={onCancel} className="order-2 sm:order-1">
+          Cancel
+        </Button>
+        <Button type="submit" disabled={saving} className="order-1 sm:order-2">
+          {saving ? "Creating User..." : "Create User"}
         </Button>
       </div>
     </form>
