@@ -560,6 +560,7 @@ export default function SettingsUsers() {
                         {selectedUsers.size} user{selectedUsers.size > 1 ? 's' : ''} selected
                       </div>
                       <Button
+                        type="button"
                         variant="ghost"
                         size="sm"
                         onClick={() => setSelectedUsers(new Set())}
@@ -571,6 +572,7 @@ export default function SettingsUsers() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
+                      type="button"
                       size="sm"
                       variant="outline"
                       onClick={handleBulkActivate}
@@ -581,6 +583,7 @@ export default function SettingsUsers() {
                       Activate
                     </Button>
                     <Button
+                      type="button"
                       size="sm"
                       variant="outline"
                       onClick={handleBulkDeactivate}
@@ -591,6 +594,7 @@ export default function SettingsUsers() {
                       Deactivate
                     </Button>
                     <Button
+                      type="button"
                       size="sm"
                       variant="outline"
                       onClick={handleBulkDelete}
@@ -701,6 +705,7 @@ export default function SettingsUsers() {
                       <div className="flex items-center justify-center">
                         <div className="flex items-center space-x-2">
                           <Button
+                            type="button"
                             variant="outline"
                             size="sm"
                             onClick={() => {
@@ -713,9 +718,9 @@ export default function SettingsUsers() {
                           </Button>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="outline" size="sm" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
+                               <Button variant="outline" size="sm" type="button" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
+                                 <MoreHorizontal className="h-4 w-4" />
+                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56 z-50 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-xl">
                               <DropdownMenuItem onClick={() => handleToggleUserStatus(user.user_id, user.is_active)} className="hover:bg-slate-50 dark:hover:bg-slate-800">
@@ -769,9 +774,9 @@ export default function SettingsUsers() {
                         </div>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
+                             <Button variant="ghost" size="sm" type="button" className="h-8 w-8 p-0">
+                               <MoreHorizontal className="h-4 w-4" />
+                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48 z-50 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-xl">
                             <DropdownMenuItem onClick={() => {
