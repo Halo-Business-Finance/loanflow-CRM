@@ -683,6 +683,9 @@ export default function SettingsUsers() {
                         </div>
                       </div>
                       <div className="flex flex-col justify-center">
+                        {user.phone && (
+                          <span className="text-slate-700 dark:text-slate-300 font-medium mb-1">{user.phone}</span>
+                        )}
                         <span className="text-slate-700 dark:text-slate-300 font-medium">{user.email}</span>
                         <span className="text-xs text-slate-500 dark:text-slate-400">Primary Contact</span>
                       </div>
