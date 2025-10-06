@@ -671,17 +671,9 @@ export default function SettingsUsers() {
                           onCheckedChange={(checked) => handleSelectUser(user.user_id, checked as boolean)}
                           className="border-slate-300 dark:border-slate-600"
                         />
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-10 w-10 border-2 border-slate-200 dark:border-slate-700">
-                            <AvatarImage src="" alt={formatUserName(user)} />
-                            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-semibold">
-                              {formatUserName(user).split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-semibold text-slate-900 dark:text-slate-100">{formatUserName(user)}</div>
-                            <div className="text-xs text-slate-500 dark:text-slate-400">ID: {user.user_id.slice(0, 8)}...</div>
-                          </div>
+                        <div>
+                          <div className="font-semibold text-slate-900 dark:text-slate-100">{formatUserName(user)}</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">ID: {user.user_id.slice(0, 8)}...</div>
                         </div>
                       </div>
                       <div className="flex flex-col justify-center">
