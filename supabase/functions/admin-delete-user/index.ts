@@ -50,21 +50,21 @@ serve(async (req) => {
 
     console.log('User authenticated:', user.id, user.email);
 
-    // Verify admin role
-    const { data: userRoles, error: roleError } = await supabaseClient
+    // Verify admin role (handle multiple roles)
+    const { data: rolesData, error: roleError } = await supabaseClient
       .from('user_roles')
       .select('role')
-      .eq('user_id', user.id)
-      .single();
+      .eq('user_id', user.id);
 
-    if (roleError || !userRoles) {
-      console.error('Failed to fetch user role:', roleError);
+    if (roleError || !rolesData || rolesData.length === 0) {
+      console.error('Failed to fetch user roles:', roleError);
       throw new Error('Failed to verify admin access');
     }
 
-    console.log('User role:', userRoles.role);
+    const roleList = rolesData.map((r: { role: string }) => r.role);
+    console.log('User roles:', roleList);
 
-    if (!['admin', 'super_admin'].includes(userRoles.role)) {
+    if (!roleList.includes('admin') && !roleList.includes('super_admin')) {
       throw new Error('Admin access required');
     }
 
