@@ -675,14 +675,14 @@ export default function SettingsUsers() {
                           <div className="text-xs text-slate-500 dark:text-slate-400">
                             User ID: {user.user_number ? String(user.user_number).padStart(3, '0') : user.user_id.slice(0, 8) + '...'}
                           </div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                            {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                          </div>
                           <div className="flex items-center gap-2 mt-1">
                             <div className={`h-2 w-2 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-orange-500'}`} />
                             <span className={`text-xs ${getStatusColor(user.is_active)}`}>
                               {getStatusText(user.is_active)}
                             </span>
-                          </div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400">
-                            {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
                           </div>
                         </div>
                       </div>
