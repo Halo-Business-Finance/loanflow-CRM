@@ -642,7 +642,7 @@ export default function SettingsUsers() {
               <div className="hidden lg:block">
                 {/* Professional Table Header */}
                 <div className="bg-slate-50 dark:bg-slate-900/50 rounded-t-xl p-4 border-b border-slate-200 dark:border-slate-700">
-                  <div className="grid grid-cols-[280px_300px_220px_1fr] gap-4 font-semibold text-sm text-slate-700 dark:text-slate-300">
+                  <div className="grid grid-cols-[280px_300px_220px_200px] gap-4 font-semibold text-sm text-slate-700 dark:text-slate-300">
                     <div className="flex items-center gap-3">
                       <Checkbox
                         checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
@@ -663,7 +663,7 @@ export default function SettingsUsers() {
                   {filteredUsers.map((user, index) => {
                     console.log('Rendering user:', user.email, 'role:', user.role, 'is_active:', user.is_active)
                     return (
-                    <div key={user.id} className={`grid grid-cols-[280px_300px_220px_1fr] gap-4 text-sm p-6 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 ${index !== filteredUsers.length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
+                    <div key={user.id} className={`grid grid-cols-[280px_300px_220px_200px] gap-4 text-sm p-6 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 ${index !== filteredUsers.length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
                       <div className="flex items-center gap-4">
                         <Checkbox
                           checked={selectedUsers.has(user.user_id)}
