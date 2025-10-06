@@ -8,6 +8,7 @@ interface AuthContextType {
   user: User | null
   session: Session | null
   userRole: string | null
+  userRoles: string[]
   loading: boolean
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<void>
@@ -22,6 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [userRole, setUserRole] = useState<string | null>(null)
+  const [userRoles, setUserRoles] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const { toast } = useToast()
 
@@ -86,21 +88,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserRole = async (userId: string) => {
     try {
-      // Prefer secure RPC to avoid RLS issues on user_roles
-      const { data, error } = await supabase.rpc('get_user_role', { p_user_id: userId })
+      // Fetch ALL user roles instead of just one
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('is_active', true);
 
       if (error) {
-        console.error('get_user_role RPC error:', error)
+        console.error('Error fetching user roles:', error)
         setUserRole('agent')
+        setUserRoles(['agent'])
         return
       }
 
-      // Fallback to agent if no active role found
-      const role = (data as string | null) || 'agent'
-      setUserRole(role)
+      // Extract all roles
+      const roles = data?.map((r: { role: string }) => r.role) || []
+      
+      // Determine primary role (highest in hierarchy)
+      const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'agent', 'manager', 'admin', 'super_admin']
+      const primaryRole = roles.length > 0 
+        ? roles.reduce((highest, current) => {
+            const highestIndex = roleHierarchy.indexOf(highest)
+            const currentIndex = roleHierarchy.indexOf(current)
+            return currentIndex > highestIndex ? current : highest
+          }, roles[0])
+        : 'agent'
+
+      setUserRole(primaryRole)
+      setUserRoles(roles.length > 0 ? roles : ['agent'])
     } catch (error) {
-      console.error('Error fetching user role:', error)
+      console.error('Error fetching user roles:', error)
       setUserRole('agent')
+      setUserRoles(['agent'])
     }
   }
 
@@ -214,20 +234,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const hasRole = (role: string) => {
-    if (!userRole) return false
+    if (!userRoles || userRoles.length === 0) return false
     
-    // Super admin has access to everything
-    if (userRole === 'super_admin') return true
+    // Check if user has this specific role
+    if (userRoles.includes(role)) return true
+    
+    // Check if user has super_admin (has access to everything)
+    if (userRoles.includes('super_admin')) return true
     
     // If checking for super_admin specifically, only super_admin can have it
-    if (role === 'super_admin') return userRole === 'super_admin'
+    if (role === 'super_admin') return userRoles.includes('super_admin')
     
     // Role hierarchy: super_admin > admin > manager > agent/loan_originator/loan_processor/funder/underwriter/closer > tech
-    const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'agent', 'manager', 'admin']
-    const userRoleIndex = roleHierarchy.indexOf(userRole)
+    const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'agent', 'manager', 'admin', 'super_admin']
+    
+    // Find highest role user has
+    const highestUserRole = userRoles.reduce((highest, current) => {
+      const highestIndex = roleHierarchy.indexOf(highest)
+      const currentIndex = roleHierarchy.indexOf(current)
+      return currentIndex > highestIndex ? current : highest
+    }, userRoles[0])
+    
+    const userRoleIndex = roleHierarchy.indexOf(highestUserRole)
     const requiredRoleIndex = roleHierarchy.indexOf(role)
     
-    // If role not found in hierarchy, deny access (except for super_admin handled above)
+    // If role not found in hierarchy, deny access
     if (requiredRoleIndex === -1) return false
     
     return userRoleIndex >= requiredRoleIndex
@@ -260,6 +291,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     session,
     userRole,
+    userRoles,
     loading,
     signIn,
     signUp,
