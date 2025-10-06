@@ -320,12 +320,29 @@ export default function SettingsUsers() {
       )
 
       const results = await Promise.allSettled(deletePromises)
-      const successCount = results.filter(r => r.status === 'fulfilled' && r.value?.data?.success).length
-      const failCount = results.filter(r => r.status === 'rejected' || !r.value?.data?.success).length
+      const userIds = Array.from(selectedUsers)
+
+      let successCount = 0
+      let failCount = 0
+
+      results.forEach((r, idx) => {
+        if (r.status === 'fulfilled') {
+          const payload: any = r.value?.data
+          if (payload && payload.success === true) {
+            successCount++
+          } else {
+            failCount++
+            console.error('Bulk delete failed for user', userIds[idx], r.value?.error || payload)
+          }
+        } else {
+          failCount++
+          console.error('Bulk delete rejected for user', userIds[idx], r.reason)
+        }
+      })
 
       toast({
         title: "Bulk Delete Complete",
-        description: `Successfully deleted ${successCount} users${failCount > 0 ? `, ${failCount} failed` : ''}.`,
+        description: `Successfully deleted ${successCount} user${successCount === 1 ? '' : 's'}${failCount > 0 ? `, ${failCount} failed` : ''}.`,
         variant: failCount > 0 ? "destructive" : "default"
       })
 
