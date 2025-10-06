@@ -650,7 +650,7 @@ export default function SettingsUsers() {
                         disabled={filteredUsers.length === 0}
                         className="border-slate-300 dark:border-slate-600"
                       />
-                      <span>User</span>
+                      <span className="ml-2">User</span>
                     </div>
                     <span>Contact Information</span>
                     <span>User Role</span>
