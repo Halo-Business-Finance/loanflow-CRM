@@ -16,6 +16,7 @@ interface UserProfile {
   created_at: string
   updated_at: string
   role?: string
+  user_number?: number
 }
 
 Deno.serve(async (req) => {
@@ -159,7 +160,8 @@ Deno.serve(async (req) => {
       is_active: profile.is_active,
       created_at: profile.created_at,
       updated_at: profile.updated_at,
-      role: rolesMap.get(profile.id) || 'agent'
+      role: rolesMap.get(profile.id) || 'agent',
+      user_number: profile.user_number
     })) || []
 
     console.log(`Returning ${transformedUsers.length} transformed users with roles`)
