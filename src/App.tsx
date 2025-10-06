@@ -86,8 +86,8 @@ function SecurityProvider() {
   return null;
 }
 
-function RoleBasedRoutes() {
-  const { user } = useAuth();
+function AuthenticatedApp() {
+  const { user, loading } = useAuth();
   const {
     hasMinimumRole,
     canProcessLoans,
@@ -96,87 +96,7 @@ function RoleBasedRoutes() {
     canCloseLoans,
     canAccessAdminFeatures
   } = useRoleBasedAccess();
-
-  if (!user) {
-    return <Route path="*" element={<AuthPage />} errorElement={<RouteErrorBoundary />} />;
-  }
-
-  return (
-    <React.Fragment>
-      <Route path="/" element={<HybridLayout><Dashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/dashboard" element={<HybridLayout><Dashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      
-      <Route path="/leads" element={<HybridLayout><Leads /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/leads/new" element={<HybridLayout><NewLead /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/leads/stats" element={<HybridLayout><LeadStats /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/leads/assignment" element={<HybridLayout><LeadAssignment /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/leads/:id" element={<HybridLayout><LeadDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/leads/:leadId/documents" element={<HybridLayout><LeadDocuments /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      
-      <Route path="/existing-borrowers" element={<HybridLayout><Clients /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/existing-borrowers/details" element={<HybridLayout><BorrowerDetails /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/existing-borrowers/history" element={<HybridLayout><LoanHistory /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/existing-borrowers/:id" element={<HybridLayout><ClientDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/clients/:id" element={<HybridLayout><ClientDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      
-      <Route path="/pipeline" element={<HybridLayout><Pipeline /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/pipeline/analytics" element={<HybridLayout><PipelineAnalytics /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/pipeline/stages" element={<HybridLayout><StageManagement /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      
-      <Route path="/underwriter" element={<HybridLayout><Underwriter /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/underwriter/documents" element={<HybridLayout><UnderwriterDocuments /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/underwriter/risk" element={<HybridLayout><UnderwriterRisk /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      
-      <Route path="/documents" element={<HybridLayout><Documents /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/documents/upload" element={<HybridLayout><DocumentUpload /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/documents/templates" element={<HybridLayout><DocumentTemplates /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      
-      <Route path="/activities" element={<HybridLayout><Activities /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/activities/calendar" element={<HybridLayout><ActivitiesCalendar /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/activities/tasks" element={<HybridLayout><ActivitiesTasks /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      
-      <Route path="/reports" element={<HybridLayout><Reports /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      
-      <Route path="/settings" element={<HybridLayout><Settings /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/settings/users" element={<HybridLayout><SettingsUsers /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/settings/system" element={<HybridLayout><SettingsSystem /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      
-      <Route path="/security" element={<HybridLayout><Security /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/security/access" element={<HybridLayout><SecurityAccess /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/security/audit" element={<HybridLayout><SecurityAudit /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/security/threats" element={<HybridLayout><SecurityThreats /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/security/compliance" element={<HybridLayout><SecurityCompliance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/security/enterprise" element={<HybridLayout><EnterpriseSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      
-      {canCloseLoans && <Route path="/dashboards/closer" element={<HybridLayout><CloserDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-      {canFundLoans && <Route path="/dashboards/funder" element={<HybridLayout><FunderDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-      {canProcessLoans && <Route path="/dashboards/processor" element={<HybridLayout><LoanProcessorDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-      {canUnderwriteLoans && <Route path="/dashboards/underwriter" element={<HybridLayout><UnderwriterDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-      
-      {canAccessAdminFeatures && <Route path="/dashboards/security-enhanced" element={<HybridLayout><EnhancedSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-      {canAccessAdminFeatures && <Route path="/dashboards/security-compliance" element={<HybridLayout><SecurityComplianceDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-      {canAccessAdminFeatures && <Route path="/dashboards/threat-monitoring" element={<HybridLayout><ThreatMonitoringDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-      
-      {hasMinimumRole('manager') && <Route path="/dashboards/forecasting" element={<HybridLayout><ForecastingDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-      {canAccessAdminFeatures && <Route path="/dashboards/data-integrity" element={<HybridLayout><DataIntegrityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-      
-      <Route path="/enterprise" element={<HybridLayout><Enterprise /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/integrations" element={<HybridLayout><Integrations /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/ai-tools" element={<HybridLayout><AITools /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/screenshots" element={<HybridLayout><Screenshots /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/api-docs" element={<HybridLayout><APIDocs /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/resources" element={<HybridLayout><Resources /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="/emergency-maintenance" element={<HybridLayout><EmergencyMaintenance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-      <Route path="*" element={<HybridLayout><NotFound /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-    </React.Fragment>
-  );
-}
-
-function AuthenticatedApp() {
-  const { loading } = useAuth();
   
-  // Removed logging for production security
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -191,9 +111,90 @@ function AuthenticatedApp() {
       <KeyboardShortcutsProvider />
       <SecurityProvider />
       <Routes>
+        {/* Public routes - always accessible */}
         <Route path="/auth" element={<AuthPage />} errorElement={<RouteErrorBoundary />} />
         <Route path="/auth/callback" element={<CallbackHandler />} errorElement={<RouteErrorBoundary />} />
-        <RoleBasedRoutes />
+        
+        {/* Protected routes - require authentication */}
+        {user ? (
+          <>
+            <Route path="/" element={<HybridLayout><Dashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/dashboard" element={<HybridLayout><Dashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            <Route path="/leads" element={<HybridLayout><Leads /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/new" element={<HybridLayout><NewLead /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/stats" element={<HybridLayout><LeadStats /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/assignment" element={<HybridLayout><LeadAssignment /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/:id" element={<HybridLayout><LeadDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/:leadId/documents" element={<HybridLayout><LeadDocuments /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            <Route path="/existing-borrowers" element={<HybridLayout><Clients /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers/details" element={<HybridLayout><BorrowerDetails /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers/history" element={<HybridLayout><LoanHistory /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers/:id" element={<HybridLayout><ClientDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            {/* Redirect old client routes to existing borrowers */}
+            <Route path="/clients/:id" element={<HybridLayout><ClientDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            <Route path="/pipeline" element={<HybridLayout><Pipeline /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/pipeline/analytics" element={<HybridLayout><PipelineAnalytics /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/pipeline/stages" element={<HybridLayout><StageManagement /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            <Route path="/underwriter" element={<HybridLayout><Underwriter /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/underwriter/documents" element={<HybridLayout><UnderwriterDocuments /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/underwriter/risk" element={<HybridLayout><UnderwriterRisk /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            {/* Documents routes */}
+            <Route path="/documents" element={<HybridLayout><Documents /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents/upload" element={<HybridLayout><DocumentUpload /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents/templates" element={<HybridLayout><DocumentTemplates /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            <Route path="/activities" element={<HybridLayout><Activities /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/activities/calendar" element={<HybridLayout><ActivitiesCalendar /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/activities/tasks" element={<HybridLayout><ActivitiesTasks /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            <Route path="/reports" element={<HybridLayout><Reports /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            <Route path="/settings" element={<HybridLayout><Settings /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/settings/users" element={<HybridLayout><SettingsUsers /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/settings/system" element={<HybridLayout><SettingsSystem /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            <Route path="/security" element={<HybridLayout><Security /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/access" element={<HybridLayout><SecurityAccess /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/audit" element={<HybridLayout><SecurityAudit /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/threats" element={<HybridLayout><SecurityThreats /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/compliance" element={<HybridLayout><SecurityCompliance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/enterprise" element={<HybridLayout><EnterpriseSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            {/* Role-based Dashboard Routes */}
+            {canCloseLoans && <Route path="/dashboards/closer" element={<HybridLayout><CloserDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canFundLoans && <Route path="/dashboards/funder" element={<HybridLayout><FunderDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canProcessLoans && <Route path="/dashboards/processor" element={<HybridLayout><LoanProcessorDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canUnderwriteLoans && <Route path="/dashboards/underwriter" element={<HybridLayout><UnderwriterDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            
+            {/* Security Dashboard Routes */}
+            {canAccessAdminFeatures && <Route path="/dashboards/security-enhanced" element={<HybridLayout><EnhancedSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canAccessAdminFeatures && <Route path="/dashboards/security-compliance" element={<HybridLayout><SecurityComplianceDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canAccessAdminFeatures && <Route path="/dashboards/threat-monitoring" element={<HybridLayout><ThreatMonitoringDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            
+            {/* Enterprise Dashboard Routes */}
+            {hasMinimumRole('manager') && <Route path="/dashboards/forecasting" element={<HybridLayout><ForecastingDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canAccessAdminFeatures && <Route path="/dashboards/data-integrity" element={<HybridLayout><DataIntegrityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            
+            <Route path="/enterprise" element={<HybridLayout><Enterprise /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/integrations" element={<HybridLayout><Integrations /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/ai-tools" element={<HybridLayout><AITools /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/screenshots" element={<HybridLayout><Screenshots /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/api-docs" element={<HybridLayout><APIDocs /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/resources" element={<HybridLayout><Resources /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/emergency-maintenance" element={<HybridLayout><EmergencyMaintenance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="*" element={<HybridLayout><NotFound /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+          </>
+        ) : (
+          <>
+            {/* Redirect all other routes to auth when not logged in */}
+            <Route path="*" element={<AuthPage />} errorElement={<RouteErrorBoundary />} />
+          </>
+        )}
       </Routes>
     </BrowserRouter>
   );
