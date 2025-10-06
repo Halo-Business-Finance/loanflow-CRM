@@ -19,6 +19,7 @@ import { useSecureRoleManagement } from "@/hooks/useSecureRoleManagement"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { ConfirmDialog } from "@/components/ConfirmDialog"
 import { Eye, AlertTriangle } from "lucide-react"
+import { formatPhoneNumber } from "@/lib/utils"
 
 interface UserProfile {
   id: string
@@ -684,7 +685,9 @@ export default function SettingsUsers() {
                       </div>
                       <div className="flex flex-col justify-center">
                         {user.phone && (
-                          <span className="text-slate-700 dark:text-slate-300 font-medium mb-1">{user.phone}</span>
+                          <span className="text-slate-700 dark:text-slate-300 font-medium mb-1">
+                            {formatPhoneNumber(user.phone)}
+                          </span>
                         )}
                         <span className="text-slate-700 dark:text-slate-300 font-medium">{user.email}</span>
                         <span className="text-xs text-slate-500 dark:text-slate-400">Primary Contact</span>
