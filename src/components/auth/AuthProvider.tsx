@@ -300,12 +300,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     resetPassword,
   }
 
+  // Only render children when context value is fully available
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
+    // Log additional context for debugging
+    console.error('useAuth called outside AuthProvider context. Stack:', new Error().stack)
     throw new Error('useAuth must be used within an AuthProvider')
   }
   return context
