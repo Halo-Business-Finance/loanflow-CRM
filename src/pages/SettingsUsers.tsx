@@ -640,7 +640,7 @@ export default function SettingsUsers() {
               <div className="hidden lg:block">
                 {/* Professional Table Header */}
                 <div className="bg-slate-50 dark:bg-slate-900/50 rounded-t-xl p-4 border-b border-slate-200 dark:border-slate-700">
-                  <div className="grid grid-cols-[200px_250px_200px_150px_150px_120px_60px] gap-6 font-semibold text-sm text-slate-700 dark:text-slate-300">
+                  <div className="grid grid-cols-[180px_240px_180px_140px_140px_auto] gap-4 font-semibold text-sm text-slate-700 dark:text-slate-300">
                     <div className="flex items-center gap-3">
                       <Checkbox
                         checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
@@ -653,9 +653,7 @@ export default function SettingsUsers() {
                     <span>Email Address</span>
                     <span>Role & Permissions</span>
                     <span>Account Status</span>
-                    <span>Created Date</span>
                     <span>Actions</span>
-                    <span className="sr-only">Menu</span>
                   </div>
                 </div>
                 
@@ -664,7 +662,7 @@ export default function SettingsUsers() {
                   {filteredUsers.map((user, index) => {
                     console.log('Rendering user:', user.email, 'role:', user.role, 'is_active:', user.is_active)
                     return (
-                    <div key={user.id} className={`grid grid-cols-[200px_250px_200px_150px_150px_120px_60px] gap-6 text-sm p-7 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 ${index !== filteredUsers.length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
+                    <div key={user.id} className={`grid grid-cols-[180px_240px_180px_140px_140px_auto] gap-4 text-sm p-6 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 ${index !== filteredUsers.length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
                       <div className="flex items-center gap-4">
                         <Checkbox
                           checked={selectedUsers.has(user.user_id)}
@@ -699,8 +697,8 @@ export default function SettingsUsers() {
                         </span>
                         <span className="text-xs text-slate-500 dark:text-slate-400">Registration</span>
                       </div>
-                      <div className="flex items-center justify-center">
-                        <div className="flex items-center space-x-2">
+                      <div className="flex items-center gap-2 justify-end pr-4">
+                        <div className="flex items-center gap-2">
                           <Button
                             type="button"
                             variant="outline"
