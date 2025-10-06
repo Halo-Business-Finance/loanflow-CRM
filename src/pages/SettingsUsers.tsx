@@ -835,6 +835,28 @@ export default function SettingsUsers() {
           </CardContent>
         </Card>
 
+        {/* Confirm Delete Dialogs */}
+        <ConfirmDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          title="Permanently delete user?"
+          description={`This will permanently delete ${pendingDelete?.name || 'this user'}. This action cannot be undone.`}
+          confirmText="Delete"
+          cancelText="Cancel"
+          variant="destructive"
+          onConfirm={confirmDelete}
+        />
+        <ConfirmDialog
+          open={bulkDeleteOpen}
+          onOpenChange={setBulkDeleteOpen}
+          title="Delete selected users?"
+          description={`You are about to permanently delete ${selectedUsers.size} user(s). This action cannot be undone.`}
+          confirmText="Delete"
+          cancelText="Cancel"
+          variant="destructive"
+          onConfirm={confirmBulkDelete}
+        />
+
         {/* Edit User Dialog */}
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
           <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
