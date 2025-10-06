@@ -102,7 +102,7 @@ function RoleBasedRoutes() {
   }
 
   return (
-    <>
+    <React.Fragment>
       <Route path="/" element={<HybridLayout><Dashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
       <Route path="/dashboard" element={<HybridLayout><Dashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
       
@@ -168,7 +168,7 @@ function RoleBasedRoutes() {
       <Route path="/resources" element={<HybridLayout><Resources /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
       <Route path="/emergency-maintenance" element={<HybridLayout><EmergencyMaintenance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
       <Route path="*" element={<HybridLayout><NotFound /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-    </>
+    </React.Fragment>
   );
 }
 
