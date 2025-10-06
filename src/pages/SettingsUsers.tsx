@@ -651,7 +651,7 @@ export default function SettingsUsers() {
                       <span>User</span>
                     </div>
                     <span>Contact Information</span>
-                    <span>Role & Permissions</span>
+                    <span>User Role</span>
                     <span className="text-right pr-4">Actions</span>
                   </div>
                 </div>
