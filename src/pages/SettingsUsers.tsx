@@ -640,7 +640,7 @@ export default function SettingsUsers() {
               <div className="hidden lg:block">
                 {/* Professional Table Header */}
                 <div className="bg-slate-50 dark:bg-slate-900/50 rounded-t-xl p-4 border-b border-slate-200 dark:border-slate-700">
-                  <div className="grid grid-cols-[180px_240px_180px_140px_140px_auto] gap-4 font-semibold text-sm text-slate-700 dark:text-slate-300">
+                  <div className="grid grid-cols-[280px_280px_200px_auto] gap-4 font-semibold text-sm text-slate-700 dark:text-slate-300">
                     <div className="flex items-center gap-3">
                       <Checkbox
                         checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
@@ -652,8 +652,6 @@ export default function SettingsUsers() {
                     </div>
                     <span>Email Address</span>
                     <span>Role & Permissions</span>
-                    <span>Account Status</span>
-                    <span>Created Date</span>
                     <span>Actions</span>
                   </div>
                 </div>
@@ -663,16 +661,25 @@ export default function SettingsUsers() {
                   {filteredUsers.map((user, index) => {
                     console.log('Rendering user:', user.email, 'role:', user.role, 'is_active:', user.is_active)
                     return (
-                    <div key={user.id} className={`grid grid-cols-[180px_240px_180px_140px_140px_auto] gap-4 text-sm p-6 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 ${index !== filteredUsers.length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
+                    <div key={user.id} className={`grid grid-cols-[280px_280px_200px_auto] gap-4 text-sm p-6 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 ${index !== filteredUsers.length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
                       <div className="flex items-center gap-4">
                         <Checkbox
                           checked={selectedUsers.has(user.user_id)}
                           onCheckedChange={(checked) => handleSelectUser(user.user_id, checked as boolean)}
                           className="border-slate-300 dark:border-slate-600"
                         />
-                        <div>
+                        <div className="space-y-1">
                           <div className="font-semibold text-slate-900 dark:text-slate-100">{formatUserName(user)}</div>
                           <div className="text-xs text-slate-500 dark:text-slate-400">ID: {user.user_id.slice(0, 8)}...</div>
+                          <div className="flex items-center gap-2 mt-1">
+                            <div className={`h-2 w-2 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-orange-500'}`} />
+                            <span className={`text-xs ${getStatusColor(user.is_active)}`}>
+                              {getStatusText(user.is_active)}
+                            </span>
+                          </div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                            {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                          </div>
                         </div>
                       </div>
                       <div className="flex flex-col justify-center">
@@ -683,20 +690,6 @@ export default function SettingsUsers() {
                         <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="w-fit">
                           {displayRole(user.role || 'agent')}
                         </Badge>
-                        <span className="text-sm text-foreground">{displayRole(user.role || 'agent')}</span>
-                      </div>
-                      <div className="flex flex-col justify-center">
-                        <div className={`flex items-center gap-2 ${getStatusColor(user.is_active)}`}>
-                          <div className={`h-2 w-2 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-orange-500'}`} />
-                          {getStatusText(user.is_active)}
-                        </div>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">Account State</span>
-                      </div>
-                      <div className="flex flex-col justify-center">
-                        <span className="text-slate-700 dark:text-slate-300 font-medium">
-                          {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
-                        </span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">Registration</span>
                       </div>
                       <div className="flex items-center gap-2 justify-end pr-4">
                         <div className="flex items-center gap-2">
