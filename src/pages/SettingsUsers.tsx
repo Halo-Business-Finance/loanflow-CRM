@@ -653,6 +653,7 @@ export default function SettingsUsers() {
                     <span>Email Address</span>
                     <span>Role & Permissions</span>
                     <span>Account Status</span>
+                    <span>Created Date</span>
                     <span>Actions</span>
                   </div>
                 </div>
