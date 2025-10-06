@@ -650,7 +650,7 @@ export default function SettingsUsers() {
                       />
                       <span>User</span>
                     </div>
-                    <span>Email Address</span>
+                    <span>Contact Information</span>
                     <span>Role & Permissions</span>
                     <span className="text-right pr-4">Actions</span>
                   </div>
