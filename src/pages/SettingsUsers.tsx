@@ -32,6 +32,7 @@ interface UserProfile {
   is_active: boolean
   created_at: string
   updated_at: string
+  user_number?: number
 }
 
 export default function SettingsUsers() {
@@ -671,7 +672,9 @@ export default function SettingsUsers() {
                         />
                         <div className="space-y-1">
                           <div className="font-semibold text-slate-900 dark:text-slate-100">{formatUserName(user)}</div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400">ID: {user.user_id.slice(0, 8)}...</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                            User ID: {user.user_number ? String(user.user_number).padStart(3, '0') : user.user_id.slice(0, 8) + '...'}
+                          </div>
                           <div className="flex items-center gap-2 mt-1">
                             <div className={`h-2 w-2 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-orange-500'}`} />
                             <span className={`text-xs ${getStatusColor(user.is_active)}`}>

@@ -2921,6 +2921,7 @@ export type Database = {
           status_change_notifications: boolean | null
           timezone: string | null
           updated_at: string
+          user_number: number | null
         }
         Insert: {
           archive_reason?: string | null
@@ -2941,6 +2942,7 @@ export type Database = {
           status_change_notifications?: boolean | null
           timezone?: string | null
           updated_at?: string
+          user_number?: number | null
         }
         Update: {
           archive_reason?: string | null
@@ -2961,6 +2963,7 @@ export type Database = {
           status_change_notifications?: boolean | null
           timezone?: string | null
           updated_at?: string
+          user_number?: number | null
         }
         Relationships: []
       }
