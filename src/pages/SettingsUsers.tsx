@@ -690,6 +690,7 @@ export default function SettingsUsers() {
                         <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="w-fit">
                           {displayRole(user.role || 'agent')}
                         </Badge>
+                        <span className="text-sm text-foreground">{displayRole(user.role || 'agent')}</span>
                       </div>
                       <div className="flex items-center gap-2 justify-end pr-4">
                         <div className="flex items-center gap-2">
