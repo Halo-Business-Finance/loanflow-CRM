@@ -135,10 +135,7 @@ export function TopNavigation() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-9 px-3 gap-2 font-medium text-white hover:bg-blue-800">
-                <div className="h-7 w-7 rounded-full bg-white text-blue-900 flex items-center justify-center text-sm font-semibold">
-                  {getUserDisplayName().charAt(0).toUpperCase()}
-                </div>
-                <span className="text-sm font-medium hidden sm:inline text-white">
+                <span className="text-sm font-medium text-white">
                   {getUserDisplayName()}
                 </span>
               </Button>
