@@ -229,7 +229,7 @@ export default function LeadDetail() {
         bank_lender_name: editableFields.bank_lender_name,
         annual_revenue: editableFields.annual_revenue ? parseFloat(editableFields.annual_revenue) : null,
         interest_rate: editableFields.interest_rate ? parseFloat(editableFields.interest_rate) : null,
-        maturity_date: editableFields.maturity_date,
+        maturity_date: editableFields.maturity_date || null,
         existing_loan_amount: editableFields.existing_loan_amount ? parseFloat(editableFields.existing_loan_amount) : null,
         bdo_name: editableFields.bdo_name,
         bdo_telephone: editableFields.bdo_telephone,
