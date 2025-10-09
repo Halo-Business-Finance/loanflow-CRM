@@ -19,7 +19,8 @@ import {
   Filter,
   TrendingUp,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  Trash2
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -64,9 +65,9 @@ export default function Leads() {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [showNewLeadForm, setShowNewLeadForm] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
   const { hasRole } = useRoleBasedAccess();
   const hasAdminRole = hasRole('admin') || hasRole('super_admin');
 
@@ -100,6 +101,51 @@ export default function Leads() {
       realtimeRefetch();
     }
   }, [user, realtimeRefetch]);
+
+  // Selection handlers
+  const handleSelectAll = (selected: boolean) => {
+    if (selected) {
+      setSelectedLeads(filteredLeads.map(lead => lead.id));
+    } else {
+      setSelectedLeads([]);
+    }
+  };
+
+  const handleSelectLead = (leadId: string, selected: boolean) => {
+    if (selected) {
+      setSelectedLeads(prev => [...prev, leadId]);
+    } else {
+      setSelectedLeads(prev => prev.filter(id => id !== leadId));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedLeads.length === 0) return;
+    
+    try {
+      const { error } = await supabase
+        .from('leads')
+        .delete()
+        .in('id', selectedLeads);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `${selectedLeads.length} leads deleted successfully`,
+      });
+
+      setSelectedLeads([]);
+      realtimeRefetch();
+    } catch (error) {
+      console.error('Error deleting leads:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete selected leads",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Function to update overview based on leads data
   const updateOverview = (leads: Lead[]) => {
@@ -435,6 +481,36 @@ export default function Leads() {
           </TabsList>
 
           <TabsContent value="active" className="space-y-6">
+            {selectedLeads.length > 0 && (
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg border">
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">{selectedLeads.length} selected</Badge>
+                  <span className="text-sm text-muted-foreground">
+                    {selectedLeads.length === 1 ? '1 lead' : `${selectedLeads.length} leads`} selected
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedLeads([])}
+                  >
+                    Clear Selection
+                  </Button>
+                  {hasAdminRole && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleBulkDelete}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete Selected
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className="flex gap-4 mb-6">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -453,13 +529,15 @@ export default function Leads() {
             
             <LeadsList 
               leads={filteredLeads}
-              viewMode={viewMode}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onConvert={handleConvert}
               onRefresh={realtimeRefetch}
               hasAdminRole={hasAdminRole}
               currentUserId={user?.id}
+              selectedLeads={selectedLeads}
+              onSelectAll={handleSelectAll}
+              onSelectLead={handleSelectLead}
             />
           </TabsContent>
 
