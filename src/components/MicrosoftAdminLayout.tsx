@@ -47,7 +47,7 @@ const getNavigationGroups = (roleAccess: any) => [
   {
     label: "Dashboard",
     items: [
-      { title: "Overview", url: "/dashboard", icon: BarChart3, description: "Main dashboard and analytics" },
+      { title: "Dashboard", url: "/dashboard", icon: BarChart3, description: "Main dashboard and analytics" },
     ]
   },
   {
