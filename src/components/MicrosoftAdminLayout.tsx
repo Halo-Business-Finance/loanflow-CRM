@@ -146,7 +146,6 @@ function MicrosoftAdminSidebar() {
                             "flex items-center px-4 py-3 text-sm transition-colors hover:bg-muted/50",
                             "text-foreground"
                           )}>
-                            <ChevronRight className="h-4 w-4 mr-4 text-muted-foreground" />
                             {!collapsed && (
                               <span className="font-medium">{item.title}</span>
                             )}
@@ -164,7 +163,6 @@ function MicrosoftAdminSidebar() {
                                         : "text-muted-foreground"
                                     )}
                                   >
-                                    <ChevronRight className="h-3 w-3 mr-4" />
                                     <span className={cn(
                                       isActivePath(subItem.url) && "border-b-2 border-b-blue-700"
                                     )}>{subItem.title}</span>
@@ -185,7 +183,6 @@ function MicrosoftAdminSidebar() {
                                 : "text-foreground"
                             )}
                           >
-                            <ChevronRight className="h-4 w-4 mr-4 text-muted-foreground" />
                             {!collapsed && (
                               <span className={cn(
                                 "font-medium",
