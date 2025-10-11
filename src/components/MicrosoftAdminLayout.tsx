@@ -144,7 +144,7 @@ function MicrosoftAdminSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-0">
                   {group.items.map((item) => (
-                    <SidebarMenuItem key={item.url} className="border-b border-border/30 last:border-b-0">
+                    <SidebarMenuItem key={item.url}>
                       {item.subItems ? (
                         <>
                           <button
