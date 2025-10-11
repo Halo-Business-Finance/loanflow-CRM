@@ -140,7 +140,7 @@ function MicrosoftAdminSidebar() {
     <Sidebar className={cn("bg-card/60 backdrop-blur border-r overflow-hidden", collapsed ? "w-16" : "w-72")} collapsible="icon">
       <SidebarContent className="pt-32 pb-4 pl-4 h-full overflow-y-auto overflow-x-hidden">
         {navigationGroups.map((group, groupIndex) => (
-            <SidebarGroup className="mx-2 mb-0">
+            <SidebarGroup className="mx-2">
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-0">
                   {group.items.map((item) => (
