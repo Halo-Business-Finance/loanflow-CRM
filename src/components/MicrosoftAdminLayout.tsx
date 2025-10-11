@@ -6,7 +6,7 @@ import {
   Calendar, CheckSquare, PieChart, Activity, Target, Database,
   UserCheck, AlertTriangle, Clock, Award, Zap, BookOpen, 
   Monitor, ShieldCheck, LineChart, DollarSign, FileCheck,
-  Gauge, ShieldAlert, TrendingDown, ChevronRight
+  Gauge, ShieldAlert, TrendingDown, ChevronRight, ChevronDown
 } from "lucide-react"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { cn } from "@/lib/utils"
@@ -121,6 +121,14 @@ function MicrosoftAdminSidebar() {
   const collapsed = state === "collapsed"
   const roleAccess = useRoleBasedAccess()
   const navigationGroups = getNavigationGroups(roleAccess)
+  const [expandedItems, setExpandedItems] = React.useState<Record<string, boolean>>({})
+
+  const toggleItem = (title: string) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [title]: !prev[title]
+    }))
+  }
 
   const isActivePath = (path: string) => {
     if (path === "/" && location.pathname === "/") return true
@@ -139,15 +147,25 @@ function MicrosoftAdminSidebar() {
                     <SidebarMenuItem key={item.url} className="border-b border-border/30 last:border-b-0">
                       {item.subItems ? (
                         <>
-                          <div className={cn(
-                            "flex items-center px-4 py-3 text-sm transition-colors hover:bg-muted/50",
-                            "text-foreground"
-                          )}>
-                            {!collapsed && (
-                              <span className="font-medium">{item.title}</span>
+                          <button
+                            onClick={() => toggleItem(item.title)}
+                            className={cn(
+                              "w-full flex items-center justify-between px-4 py-3 text-sm transition-colors hover:bg-muted/50",
+                              "text-foreground"
                             )}
-                          </div>
-                          {!collapsed && (
+                          >
+                            {!collapsed && (
+                              <>
+                                <span className="font-medium">{item.title}</span>
+                                {expandedItems[item.title] ? (
+                                  <ChevronDown className="h-4 w-4" />
+                                ) : (
+                                  <ChevronRight className="h-4 w-4" />
+                                )}
+                              </>
+                            )}
+                          </button>
+                          {!collapsed && expandedItems[item.title] && (
                             <div className="pl-8 space-y-0">
                               {item.subItems.map((subItem) => (
                                 <SidebarMenuButton key={subItem.url} asChild>
