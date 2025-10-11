@@ -133,9 +133,6 @@ function MicrosoftAdminSidebar() {
       <SidebarContent className="pt-32 pb-4 pl-4 h-full overflow-y-auto overflow-x-hidden">
         {navigationGroups.map((group, groupIndex) => (
             <SidebarGroup className="mx-2 mb-6">
-              <SidebarGroupLabel className={cn("text-[12px] font-semibold text-black uppercase tracking-wider px-2", collapsed && "sr-only")}>
-                {group.label}
-              </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-1">
                   {group.items.map((item) => (
