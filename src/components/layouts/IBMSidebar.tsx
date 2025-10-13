@@ -42,9 +42,9 @@ interface NavItemProps extends NavItemData {
 }
 
 const navItems: NavItemData[] = [
-  { icon: LayoutDashboard, label: 'Dashboard', to: '/dashboard' },
   { icon: Users, label: 'Leads', to: '/leads' },
   { icon: GitBranch, label: 'Pipeline', to: '/pipeline' },
+  { icon: LayoutDashboard, label: 'Dashboard', to: '/dashboard' },
   { icon: Briefcase, label: 'Existing Borrowers', to: '/existing-borrowers' },
   { icon: CheckSquare, label: 'Underwriter', to: '/underwriter' },
   { icon: Activity, label: 'Activities', to: '/activities' },
