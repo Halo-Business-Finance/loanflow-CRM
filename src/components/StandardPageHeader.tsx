@@ -15,7 +15,7 @@ export function StandardPageHeader({
   className 
 }: StandardPageHeaderProps) {
   return (
-    <div className={cn("bg-card border-b border-border sticky top-0 z-10", className)}>
+    <div className={cn("bg-card sticky top-0 z-10", className)}>
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">

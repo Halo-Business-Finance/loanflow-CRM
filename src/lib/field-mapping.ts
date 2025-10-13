@@ -7,6 +7,8 @@ import { Lead, Client, ContactEntity } from "@/types/lead"
 export function mapLeadFields(lead: any): Lead {
   const mappedLead: Lead = {
     ...lead,
+    // Preserve lead_number
+    lead_number: lead.lead_number,
     // Map contact entity fields to lead for convenience
     name: lead.contact_entity?.name || lead.name || '',
     email: lead.contact_entity?.email || lead.email || '',
