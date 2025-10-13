@@ -1,5 +1,5 @@
 import React from "react"
-import MicrosoftAdminLayout from "./MicrosoftAdminLayout"
+import { IBMCloudLayout } from "./layouts/IBMCloudLayout"
 
 interface HybridLayoutProps {
   children: React.ReactNode
@@ -7,8 +7,8 @@ interface HybridLayoutProps {
 
 export default function HybridLayout({ children }: HybridLayoutProps) {
   return (
-    <MicrosoftAdminLayout>
+    <IBMCloudLayout>
       {children}
-    </MicrosoftAdminLayout>
+    </IBMCloudLayout>
   )
 }
