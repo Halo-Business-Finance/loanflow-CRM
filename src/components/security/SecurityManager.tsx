@@ -17,7 +17,7 @@ import { DarkWebSecurityBot } from "./DarkWebSecurityBot";
 import { ThreatDetectionMonitor } from "./ThreatDetectionMonitor";
 import { DataIntegrityDashboard } from "@/components/DataIntegrityDashboard";
 import { EnhancedSecurityMonitor } from "./EnhancedSecurityMonitor";
-import HybridLayout from "@/components/HybridLayout";
+// import HybridLayout from "@/components/HybridLayout";
 
 interface SecurityNotification {
   id: string;
@@ -308,8 +308,7 @@ export function SecurityManager() {
   }
 
   return (
-    <HybridLayout>
-      <div className="container mx-auto space-y-6">
+    <div className="container mx-auto space-y-6 p-6">
         <div className="flex items-center space-x-2">
           <Shield className="h-6 w-6" />
           <h1 className="text-2xl font-bold text-foreground">Security Center</h1>
@@ -874,6 +873,6 @@ export function SecurityManager() {
 
       </Tabs>
       </div>
-    </HybridLayout>
+    </div>
   );
 }

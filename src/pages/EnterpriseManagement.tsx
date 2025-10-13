@@ -1,5 +1,5 @@
 import React from 'react';
-import HybridLayout from '@/components/HybridLayout';
+// import HybridLayout from '@/components/HybridLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BankPartnerCollaboration } from '@/components/partnerships/BankPartnerCollaboration';
@@ -17,8 +17,7 @@ import {
 
 export default function Enterprise() {
   return (
-    <HybridLayout>
-      <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center gap-2 mb-6">
           <Building2 className="h-6 w-6" />
           <h1 className="text-3xl font-bold">Enterprise Management Center</h1>
@@ -105,6 +104,5 @@ export default function Enterprise() {
           </TabsContent>
         </Tabs>
       </div>
-    </HybridLayout>
   );
 }

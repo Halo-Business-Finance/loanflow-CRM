@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
-import HybridLayout from "@/components/HybridLayout"
+// import HybridLayout from "@/components/HybridLayout"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -486,31 +486,26 @@ export default function ClientDetail() {
 
   if (loading) {
     return (
-      <HybridLayout>
-        <div className="flex items-center justify-center min-h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
-        </HybridLayout>
+      <div className="flex items-center justify-center min-h-64 p-6">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
     )
   }
 
   if (!client) {
     return (
-      <HybridLayout>
-        <div className="text-center py-12">
-          <h2 className="text-2xl font-bold">Client not found</h2>
-          <Button onClick={() => navigate('/clients')} className="mt-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Clients
-          </Button>
-        </div>
-        </HybridLayout>
+      <div className="text-center py-12 p-6">
+        <h2 className="text-2xl font-bold">Client not found</h2>
+        <Button onClick={() => navigate('/clients')} className="mt-4">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Clients
+        </Button>
+      </div>
     )
   }
 
   return (
-    <HybridLayout>
-      <div className="space-y-6">
+    <div className="space-y-6 p-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -1490,7 +1485,7 @@ export default function ClientDetail() {
           onClose={() => setShowReminderDialog(false)}
         />
       )}
-    </HybridLayout>
+    </div>
   )
 }
 
