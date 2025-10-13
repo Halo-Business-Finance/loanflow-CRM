@@ -80,10 +80,6 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
 
         <div className="h-6 w-px bg-[#393939] mx-2" />
 
-        <div className="text-white text-sm px-2 whitespace-nowrap">Halo Business Finance</div>
-
-        <div className="h-6 w-px bg-[#393939] mx-2" />
-
         <ThemeToggle />
 
         <Button
