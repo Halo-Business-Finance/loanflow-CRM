@@ -425,7 +425,7 @@ export default function Leads() {
             <div className="p-6 space-y-6">
               {/* Key Metrics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+                <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
                   <CardContent className="p-6">
                     <div className="space-y-2">
                       <p className="text-sm font-medium text-muted-foreground">Total Leads</p>
@@ -434,7 +434,7 @@ export default function Leads() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+                <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
                   <CardContent className="p-6">
                     <div className="space-y-2">
                       <p className="text-sm font-medium text-muted-foreground">New Leads</p>
@@ -443,7 +443,7 @@ export default function Leads() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+                <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
                   <CardContent className="p-6">
                     <div className="space-y-2">
                       <p className="text-sm font-medium text-muted-foreground">Hot Prospects</p>
@@ -452,7 +452,7 @@ export default function Leads() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+                <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
                   <CardContent className="p-6">
                     <div className="space-y-2">
                       <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>

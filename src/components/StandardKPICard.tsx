@@ -23,7 +23,7 @@ export function StandardKPICard({
   return (
     <Card 
       className={cn(
-        "bg-card border-2 border-border/60 hover:border-border hover:shadow-lg transition-all duration-200 hover:scale-[1.02]",
+        "bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]",
         onClick && "cursor-pointer",
         className
       )}

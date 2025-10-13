@@ -80,7 +80,7 @@ export default function Documents() {
         <div className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse bg-card border-2 border-border/60 rounded-lg p-6">
+              <div key={i} className="animate-pulse bg-card rounded-lg p-6">
                 <div className="h-6 bg-muted rounded w-24 mb-4"></div>
                 <div className="h-8 bg-muted rounded w-16 mb-2"></div>
                 <div className="h-8 w-8 bg-muted rounded"></div>
