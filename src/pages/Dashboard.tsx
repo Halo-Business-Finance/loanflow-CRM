@@ -86,7 +86,6 @@ export default function Dashboard() {
       <IBMPageHeader
         title="Dashboard"
         subtitle="Overview of your loan pipeline and key metrics"
-        hasDropdown
         actions={
           <>
             <Button variant="ghost" size="sm">
