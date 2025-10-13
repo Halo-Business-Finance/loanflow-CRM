@@ -58,14 +58,6 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
 
       {/* Right section with actions */}
       <div className="flex items-center gap-1 px-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-9 text-white hover:bg-white/10 text-sm px-3"
-        >
-          Catalog
-        </Button>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
