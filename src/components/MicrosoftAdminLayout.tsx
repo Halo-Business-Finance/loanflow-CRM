@@ -52,35 +52,15 @@ const getNavigationGroups = (roleAccess: any) => [
       { title: "Loan Pipeline", url: "/pipeline", icon: TrendingUp, description: "Sales pipeline management" },
       { title: "Existing Borrowers", url: "/existing-borrowers", icon: Building, description: "Existing borrower management" },
       { title: "Activities", url: "/activities", icon: Activity, description: "Tasks and calendar" },
-    ]
-  },
-  {
-    label: "Loan Processing",
-    items: [
       { title: "Underwriter", url: "/underwriter", icon: Shield, description: "Loan underwriting tools" },
       { title: "Documents", url: "/documents", icon: FileText, description: "Document management" },
       { title: "Borrower Details", url: "/existing-borrowers", icon: UserCheck, description: "Existing borrower information" },
-    ]
-  },
-  {
-    label: "Analytics & Reports",
-    items: [
       { title: "Reports", url: "/reports", icon: PieChart, description: "Business intelligence" },
       { title: "Analytics", url: "/pipeline/analytics", icon: BarChart3, description: "Advanced analytics" },
       { title: "Lead Stats", url: "/leads/stats", icon: Target, description: "Lead performance metrics" },
-    ]
-  },
-  {
-    label: "Enterprise Tools",
-    items: [
       { title: "AI Tools", url: "/ai-tools", icon: Brain, description: "Artificial intelligence features" },
       { title: "Integrations", url: "/integrations", icon: Workflow, description: "Third-party integrations" },
       { title: "API Docs", url: "/api-docs", icon: BookOpen, description: "Developer resources" },
-    ]
-  },
-  {
-    label: "Administration",
-    items: [
       { title: "Security", url: "/security", icon: Shield, description: "Security management" },
       { title: "Settings", url: "/settings", icon: Settings, description: "System configuration" },
       { title: "Users", url: "/settings/users", icon: Users, description: "User management" },
