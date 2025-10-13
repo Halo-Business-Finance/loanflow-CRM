@@ -29,9 +29,9 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
   };
 
   return (
-    <header className="h-14 bg-[#161616] border-b border-[#393939] flex items-center flex-shrink-0 w-full">
+    <header className="h-14 bg-[#161616] border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full">
       {/* Left section with hamburger and brand */}
-      <div className="flex items-center h-full" style={{ width: sidebarCollapsed ? '48px' : '240px' }}>
+      <div className="flex items-center h-full flex-1" style={{ minWidth: sidebarCollapsed ? '48px' : '240px' }}>
         <Button
           variant="ghost"
           size="icon"
@@ -46,7 +46,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
       </div>
 
       {/* Center search bar */}
-      <div className="px-4">
+      <div className="flex justify-center">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
@@ -58,7 +58,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
       </div>
 
       {/* Right section with actions */}
-      <div className="flex items-center gap-1 px-4 ml-auto">
+      <div className="flex items-center gap-1 px-4 flex-1 justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
