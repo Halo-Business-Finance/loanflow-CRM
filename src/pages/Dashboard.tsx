@@ -84,7 +84,7 @@ export default function Dashboard() {
   return (
     <div className="bg-white min-h-full">
       <IBMPageHeader
-        title="Dashboard"
+        title="Dashboard Overview"
         subtitle="Overview of your loan pipeline and key metrics"
         actions={
           <>
