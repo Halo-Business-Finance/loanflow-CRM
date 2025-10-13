@@ -88,6 +88,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           variant="ghost"
           size="icon"
           className="h-9 w-9 text-white hover:bg-white/10"
+          onClick={() => navigate('/resources')}
         >
           <HelpCircle className="h-5 w-5" />
         </Button>
