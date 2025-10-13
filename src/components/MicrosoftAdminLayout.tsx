@@ -45,14 +45,9 @@ interface NavigationGroup {
 // Microsoft 365 admin center style navigation
 const getNavigationGroups = (roleAccess: any) => [
   {
-    label: "Dashboard",
+    label: "Main",
     items: [
       { title: "Dashboard", url: "/dashboard", icon: BarChart3, description: "Main dashboard and analytics" },
-    ]
-  },
-  {
-    label: "Loan Originations",
-    items: [
       { title: "Leads", url: "/leads", icon: Users, description: "Manage your lead pipeline" },
       { title: "Loan Pipeline", url: "/pipeline", icon: TrendingUp, description: "Sales pipeline management" },
       { title: "Existing Borrowers", url: "/existing-borrowers", icon: Building, description: "Existing borrower management" },
