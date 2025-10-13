@@ -137,7 +137,7 @@ function MicrosoftAdminSidebar() {
   }
 
   return (
-    <Sidebar className={cn("bg-card/60 backdrop-blur border-r overflow-hidden", collapsed ? "w-16" : "w-72")} collapsible="icon">
+    <Sidebar className={cn("bg-card/60 backdrop-blur overflow-hidden", collapsed ? "w-16" : "w-72")} collapsible="icon">
       <SidebarContent className="pt-32 pb-4 pl-4 h-full overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {navigationGroups.map((group, groupIndex) => (
             <SidebarGroup className="mx-2">
