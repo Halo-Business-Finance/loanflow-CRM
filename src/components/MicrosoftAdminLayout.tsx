@@ -231,7 +231,7 @@ export default function MicrosoftAdminLayout({ children }: MicrosoftAdminLayoutP
           <MicrosoftAdminSidebar />
 
           {/* Main Content */}
-          <SidebarInset>
+          <SidebarInset className="border-l-0">
             <main className="flex-1 overflow-y-auto bg-background p-6">
               <div className="h-full">
                 {children}
