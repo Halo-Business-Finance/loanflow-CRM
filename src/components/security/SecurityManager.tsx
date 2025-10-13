@@ -872,7 +872,6 @@ export function SecurityManager() {
         )}
 
       </Tabs>
-      </div>
     </div>
   );
 }

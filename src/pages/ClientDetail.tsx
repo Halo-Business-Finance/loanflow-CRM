@@ -1473,7 +1473,6 @@ export default function ClientDetail() {
             </CardContent>
           </Card>
         </div>
-      </div>
 
       {/* Action Reminder Dialog */}
       {client && (
