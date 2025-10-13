@@ -10,6 +10,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom"
 import { Lead } from "@/types/lead"
+import { formatPhoneNumber } from "@/lib/utils"
 
 // Use Lead type from centralized types but alias as LeadData for backwards compatibility
 type LeadData = Lead
@@ -299,7 +300,7 @@ export function InteractivePipeline() {
               {selectedLead.phone && (
                 <div>
                   <label className="text-sm font-medium dark:text-white">Phone:</label>
-                  <p className="text-sm text-muted-foreground dark:text-white">{selectedLead.phone}</p>
+                  <p className="text-sm text-muted-foreground dark:text-white">{formatPhoneNumber(selectedLead.phone)}</p>
                 </div>
               )}
               

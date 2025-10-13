@@ -18,6 +18,7 @@ import { PhoneDialer } from "@/components/PhoneDialer"
 import { EmailComposer } from "@/components/EmailComposer"
 import { LoanManager } from "@/components/LoanManager"
 import LoanRequestManager from "@/components/LoanRequestManager"
+import { formatPhoneNumber } from "@/lib/utils"
 import { formatNumber, formatCurrency } from "@/lib/utils"
 import { 
   ArrowLeft, 
@@ -698,7 +699,7 @@ export default function ClientDetail() {
                           placeholder="Enter phone number"
                         />
                       ) : (
-                        <p className="font-medium">{client.phone || 'N/A'}</p>
+                        <p className="font-medium">{client.phone ? formatPhoneNumber(client.phone) : 'N/A'}</p>
                       )}
                     </div>
                   </div>

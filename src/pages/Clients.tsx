@@ -18,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search, Phone, Mail, MapPin, Calendar, DollarSign, Filter, ChevronDown, ChevronUp, Trash2, Bell, MessageSquare, ShoppingCart, FileText, Eye, Plus, Loader2, Users, CheckCircle2 } from "lucide-react"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { formatPhoneNumber } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import { ActionReminder } from "@/components/ActionReminder"
 import { LoanManager } from "@/components/LoanManager"
@@ -613,7 +614,7 @@ export default function ExistingBorrowers() {
                               trigger={
                                 <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors">
                                   <Phone className="h-4 w-4" />
-                                  {client.phone}
+                                  {formatPhoneNumber(client.phone)}
                                 </button>
                               }
                             />

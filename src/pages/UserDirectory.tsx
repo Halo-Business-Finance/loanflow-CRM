@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SecureRoleManager } from '@/components/security/SecureRoleManager';
+import { formatPhoneNumber } from '@/lib/utils';
 
 interface UserProfile {
   id: string;
@@ -246,7 +247,9 @@ export default function UserDirectory() {
                         </div>
                       </TableCell>
                       <TableCell>{user.email || 'N/A'}</TableCell>
-                      <TableCell>{user.phone_number || 'N/A'}</TableCell>
+                      <TableCell>
+                        {user.phone_number ? formatPhoneNumber(user.phone_number) : 'N/A'}
+                      </TableCell>
                       <TableCell>
                         <Badge variant="secondary" className="text-xs">
                           {user.role}
@@ -306,7 +309,7 @@ export default function UserDirectory() {
                         {selectedUser.phone_number && (
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Phone className="h-3 w-3" />
-                            {selectedUser.phone_number}
+                            {formatPhoneNumber(selectedUser.phone_number)}
                           </div>
                         )}
                       </div>

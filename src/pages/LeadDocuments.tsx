@@ -11,6 +11,7 @@ import { useDocuments, LeadDocument } from "@/hooks/useDocuments"
 import { DocumentUploadModal } from "@/components/DocumentUploadModal"
 import { DocumentViewer } from "@/components/DocumentViewer"
 import { formatDistanceToNow } from "date-fns"
+import { formatPhoneNumber } from "@/lib/utils"
 import { 
   ArrowLeft, 
   Search, 
@@ -212,7 +213,9 @@ export default function LeadDocuments() {
               <div>
                 <div className="text-sm text-muted-foreground">Business</div>
                 <div className="font-medium">{lead.contact_entity?.business_name || 'Not specified'}</div>
-                <div className="text-sm text-muted-foreground">{lead.contact_entity?.phone}</div>
+                <div className="text-sm text-muted-foreground">
+                  {lead.contact_entity?.phone ? formatPhoneNumber(lead.contact_entity.phone) : 'No phone'}
+                </div>
               </div>
               <div>
                 <div className="text-sm text-muted-foreground">Loan Details</div>

@@ -582,7 +582,7 @@ export default function LeadDetail() {
                     />
                   ) : (
                     <div className="field-display mt-1">
-                      {editableFields.phone || 'N/A'}
+                      {editableFields.phone ? formatPhoneNumber(editableFields.phone) : 'N/A'}
                     </div>
                   )}
                 </div>

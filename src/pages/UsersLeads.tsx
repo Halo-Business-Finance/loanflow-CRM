@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { formatPhoneNumber } from "@/lib/utils"
 
 import { 
   Search, 
@@ -370,7 +371,7 @@ export default function UsersLeads() {
                                       {lead.phone && (
                                         <div className="flex items-center gap-2">
                                           <Phone className="h-3 w-3 text-muted-foreground" />
-                                          <span>{lead.phone}</span>
+                                          <span>{formatPhoneNumber(lead.phone)}</span>
                                         </div>
                                       )}
                                       {lead.location && (
