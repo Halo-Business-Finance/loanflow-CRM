@@ -65,7 +65,7 @@ function NavItem({ icon: Icon, label, to, collapsed }: NavItemProps) {
         <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
       )}
       <Icon className="h-4 w-4 flex-shrink-0" />
-      {!collapsed && <span className="ml-3 truncate">{label}</span>}
+      {!collapsed && <span className="ml-4 truncate">{label}</span>}
     </NavLink>
   );
 }
