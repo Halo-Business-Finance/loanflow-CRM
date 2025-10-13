@@ -12,6 +12,7 @@ import {
   Server,
   Briefcase,
   ChevronRight,
+  ChevronDown,
   BarChart3,
   Building2,
   UserCog,
@@ -32,7 +33,8 @@ interface IBMSidebarProps {
 interface NavItemData {
   icon: React.ElementType;
   label: string;
-  to: string;
+  to?: string;
+  subItems?: NavItemData[];
 }
 
 interface NavItemProps extends NavItemData {
@@ -49,23 +51,92 @@ const navItems: NavItemData[] = [
   { icon: FileText, label: 'Documents', to: '/documents' },
   { icon: BarChart3, label: 'Reports', to: '/reports' },
   { icon: UserCog, label: 'User Directory', to: '/user-directory' },
-  { icon: Building2, label: 'Enterprise', to: '/enterprise' },
-  { icon: Link2, label: 'Integrations', to: '/integrations' },
-  { icon: Sparkles, label: 'AI Tools', to: '/ai-tools' },
+  { 
+    icon: Building2, 
+    label: 'Enterprise', 
+    to: '/enterprise',
+    subItems: [
+      { icon: Link2, label: 'Integrations', to: '/integrations' },
+      { icon: Sparkles, label: 'AI Tools', to: '/ai-tools' },
+      { icon: BookOpen, label: 'Resources', to: '/resources' },
+      { icon: Code, label: 'API Docs', to: '/api-docs' },
+      { icon: Camera, label: 'Screenshots', to: '/screenshots' },
+    ]
+  },
   { icon: Shield, label: 'Security', to: '/security' },
-  { icon: BookOpen, label: 'Resources', to: '/resources' },
-  { icon: Code, label: 'API Docs', to: '/api-docs' },
-  { icon: Camera, label: 'Screenshots', to: '/screenshots' },
   { icon: Settings, label: 'Settings', to: '/settings' },
 ];
 
-function NavItem({ icon: Icon, label, to, collapsed }: NavItemProps) {
+function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
   const location = useLocation();
-  const isActive = location.pathname === to || location.pathname.startsWith(to + '/');
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const isActive = to ? (location.pathname === to || location.pathname.startsWith(to + '/')) : false;
+  const hasActiveSubItem = subItems?.some(item => 
+    item.to && (location.pathname === item.to || location.pathname.startsWith(item.to + '/'))
+  );
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (subItems && subItems.length > 0) {
+      e.preventDefault();
+      setIsOpen(!isOpen);
+    }
+  };
+
+  if (subItems && subItems.length > 0) {
+    return (
+      <div>
+        <div
+          onClick={handleClick}
+          className={cn(
+            'flex items-center h-8 text-sm transition-colors relative group cursor-pointer',
+            collapsed ? 'justify-center px-0' : 'px-4',
+            (isActive || hasActiveSubItem)
+              ? 'bg-[#e0e0e0] text-[#161616] font-medium'
+              : 'text-[#525252] hover:bg-[#e0e0e0] hover:text-[#161616]'
+          )}
+        >
+          {(isActive || hasActiveSubItem) && (
+            <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
+          )}
+          <Icon className="h-4 w-4 flex-shrink-0" />
+          {!collapsed && (
+            <>
+              <span className="ml-3 truncate flex-1">{label}</span>
+              {isOpen ? (
+                <ChevronDown className="h-3 w-3 ml-auto" />
+              ) : (
+                <ChevronRight className="h-3 w-3 ml-auto" />
+              )}
+            </>
+          )}
+        </div>
+        {!collapsed && isOpen && (
+          <div className="ml-4 border-l border-[#e0e0e0]">
+            {subItems.map((subItem) => (
+              <NavLink
+                key={subItem.to}
+                to={subItem.to!}
+                className={cn(
+                  'flex items-center h-8 text-sm transition-colors relative pl-4',
+                  location.pathname === subItem.to || location.pathname.startsWith(subItem.to! + '/')
+                    ? 'bg-[#f4f4f4] text-[#161616] font-medium'
+                    : 'text-[#525252] hover:bg-[#f4f4f4] hover:text-[#161616]'
+                )}
+              >
+                <subItem.icon className="h-3 w-3 flex-shrink-0 mr-2" />
+                <span className="truncate text-xs">{subItem.label}</span>
+              </NavLink>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <NavLink
-      to={to}
+      to={to!}
       className={cn(
         'flex items-center h-8 text-sm transition-colors relative group',
         collapsed ? 'justify-center px-0' : 'px-4',
@@ -93,7 +164,7 @@ export function IBMSidebar({ collapsed }: IBMSidebarProps) {
     >
       <nav className="py-2 space-y-0.5">
         {navItems.map((item) => (
-          <NavItem key={item.to} {...item} collapsed={collapsed} />
+          <NavItem key={item.to || item.label} {...item} collapsed={collapsed} />
         ))}
       </nav>
     </aside>
