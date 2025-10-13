@@ -2,6 +2,7 @@ export interface Lead {
   id: string
   contact_entity_id: string
   user_id: string
+  lead_number?: number
   last_contact: string
   created_at: string
   updated_at?: string

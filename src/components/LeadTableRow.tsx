@@ -102,7 +102,7 @@ export function LeadTableRow({
                 </span>
               </div>
               <div className="text-sm text-muted-foreground mb-1">
-                Lead ID: {lead.id.slice(0, 8)}
+                Lead ID: {String(lead.lead_number).padStart(3, '0')}
               </div>
               <div className="flex items-center gap-2">
                 {lead.is_converted_to_client ? (

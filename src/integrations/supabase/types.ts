@@ -2359,6 +2359,7 @@ export type Database = {
           id: string
           is_converted_to_client: boolean | null
           last_contact: string | null
+          lead_number: number
           updated_at: string
           user_id: string
         }
@@ -2369,6 +2370,7 @@ export type Database = {
           id?: string
           is_converted_to_client?: boolean | null
           last_contact?: string | null
+          lead_number?: number
           updated_at?: string
           user_id: string
         }
@@ -2379,6 +2381,7 @@ export type Database = {
           id?: string
           is_converted_to_client?: boolean | null
           last_contact?: string | null
+          lead_number?: number
           updated_at?: string
           user_id?: string
         }
