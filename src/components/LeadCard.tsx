@@ -208,7 +208,7 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Requested Amount</span>
                 <span className="text-sm font-bold text-primary">
-                  ${lead.loan_amount.toLocaleString()}
+                  {lead.loan_amount.toLocaleString()}
                 </span>
               </div>
             )}
