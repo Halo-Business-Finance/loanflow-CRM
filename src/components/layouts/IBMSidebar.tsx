@@ -36,7 +36,7 @@ const navItems: NavItemData[] = [
   { icon: LayoutDashboard, label: 'Dashboard', to: '/dashboard' },
   { icon: Users, label: 'Leads', to: '/leads' },
   { icon: GitBranch, label: 'Pipeline', to: '/pipeline' },
-  { icon: Briefcase, label: 'Clients', to: '/clients' },
+  { icon: Briefcase, label: 'Existing Borrowers', to: '/existing-borrowers' },
   { icon: Activity, label: 'Activities', to: '/activities' },
   { icon: FileText, label: 'Documents', to: '/documents' },
   { icon: BarChart3, label: 'Reports', to: '/reports' },
