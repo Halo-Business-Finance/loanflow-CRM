@@ -56,6 +56,8 @@ const getNavigationGroups = (roleAccess: any) => [
       { title: "Documents", url: "/documents", icon: FileText, description: "Document management" },
       { title: "Borrower Details", url: "/existing-borrowers", icon: UserCheck, description: "Existing borrower information" },
       { title: "Reports", url: "/reports", icon: PieChart, description: "Business intelligence" },
+      { title: "User Directory", url: "/user-directory", icon: Users, description: "User directory management" },
+      { title: "Resources", url: "/resources", icon: BookOpen, description: "Resource management center" },
       { title: "Analytics", url: "/pipeline/analytics", icon: BarChart3, description: "Advanced analytics" },
       { title: "Lead Stats", url: "/leads/stats", icon: Target, description: "Lead performance metrics" },
       { title: "AI Tools", url: "/ai-tools", icon: Brain, description: "Artificial intelligence features" },
@@ -63,7 +65,6 @@ const getNavigationGroups = (roleAccess: any) => [
       { title: "API Docs", url: "/api-docs", icon: BookOpen, description: "Developer resources" },
       { title: "Security", url: "/security", icon: Shield, description: "Security management" },
       { title: "Settings", url: "/settings", icon: Settings, description: "System configuration" },
-      { title: "Users", url: "/settings/users", icon: Users, description: "User management" },
       ...(roleAccess.canCloseLoans || roleAccess.canFundLoans || roleAccess.canProcessLoans || 
           roleAccess.canUnderwriteLoans || roleAccess.canAccessAdminFeatures || roleAccess.hasMinimumRole('manager') ? 
         [{
