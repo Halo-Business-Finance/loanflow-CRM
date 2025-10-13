@@ -129,7 +129,9 @@ export default function LeadDetail() {
       
       const mergedLead = {
         ...data,
-        ...data.contact_entity
+        ...data.contact_entity,
+        id: data.id, // Preserve the actual lead ID
+        contact_entity_id: data.contact_entity?.id // Store contact entity ID separately
       }
       setLead(mergedLead)
       setCallNotes(mergedLead.call_notes || "")
