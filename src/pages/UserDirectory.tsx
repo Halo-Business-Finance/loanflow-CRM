@@ -38,24 +38,45 @@ export default function UserDirectory() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      
-      // Use the admin edge function to fetch users with roles
-      const { data, error } = await supabase.functions.invoke('admin-get-users', {
-        method: 'POST'
+
+      // Primary path: invoke via Supabase client (adds auth automatically)
+      let { data, error } = await supabase.functions.invoke('admin-get-users', {
+        body: { action: 'list_users' },
+        headers: { 'Content-Type': 'application/json' },
       });
 
-      if (error) throw error;
+      // Fallback path: direct fetch to Edge Functions domain if invoke fails (network/env quirks)
+      if (error || !data?.users) {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const accessToken = sessionData?.session?.access_token || '';
+        const response = await fetch(
+          'https://gshxxsniwytjgcnthyfq.functions.supabase.co/admin-get-users',
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzaHh4c25pd3l0amdjbnRoeWZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM1ODYzMDYsImV4cCI6MjA2OTE2MjMwNn0.KZGdh-f2Z5DrNJ54lv3loaC8wrWvNfhQF7tqQ',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ action: 'list_users' }),
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`Edge Function HTTP ${response.status}`);
+        }
+        data = await response.json();
+      }
 
-      if (data?.users) {
+      if (data?.users && Array.isArray(data.users)) {
         setUsers(data.users);
       } else {
-        throw new Error('No users data returned');
+        throw new Error('No users data returned from edge function');
       }
     } catch (error: any) {
       console.error('Error fetching users:', error);
       toast({
         title: 'Error loading users',
-        description: error.message || 'Failed to load users',
+        description: error?.message || 'Failed to send a request to the Edge Function',
         variant: 'destructive',
       });
     } finally {
