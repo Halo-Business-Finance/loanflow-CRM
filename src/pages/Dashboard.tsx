@@ -130,7 +130,7 @@ export default function Dashboard() {
                 <span className="text-white/80 text-xs">5 min</span>
               </div>
             }
-            className="min-w-[400px] flex-shrink-0"
+            className="min-w-[280px] max-w-[280px] flex-shrink-0"
           />
           
           <IBMContentCard
@@ -143,7 +143,7 @@ export default function Dashboard() {
                 <span className="text-[#525252] text-xs">8 min</span>
               </div>
             }
-            className="min-w-[300px] flex-shrink-0"
+            className="min-w-[280px] max-w-[280px] flex-shrink-0"
           />
 
           <IBMContentCard
@@ -156,7 +156,7 @@ export default function Dashboard() {
                 <span className="text-[#525252] text-xs">10 min</span>
               </div>
             }
-            className="min-w-[300px] flex-shrink-0"
+            className="min-w-[280px] max-w-[280px] flex-shrink-0"
           />
 
           <IBMContentCard
@@ -169,7 +169,7 @@ export default function Dashboard() {
                 <span className="text-[#525252] text-xs">6 min</span>
               </div>
             }
-            className="min-w-[300px] flex-shrink-0"
+            className="min-w-[280px] max-w-[280px] flex-shrink-0"
           />
         </IBMCardCarousel>
 
