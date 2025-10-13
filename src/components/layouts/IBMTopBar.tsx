@@ -45,19 +45,20 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         )}
       </div>
 
-      {/* Center search bar - takes most of the space */}
-      <div className="flex-1 px-4 max-w-3xl">
+      {/* Center search bar */}
+      <div className="px-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
             placeholder="Search by the borrower or company name..."
-            className="w-full pl-10 h-9 bg-[#262626] border-[#393939] text-white placeholder:text-gray-400 focus:bg-[#393939] rounded-none"
+            className="pl-10 h-9 bg-[#262626] border-[#393939] text-white placeholder:text-gray-400 focus:bg-[#393939] rounded-none"
+            style={{ width: '420px' }}
           />
         </div>
       </div>
 
       {/* Right section with actions */}
-      <div className="flex items-center gap-1 px-4">
+      <div className="flex items-center gap-1 px-4 ml-auto">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
