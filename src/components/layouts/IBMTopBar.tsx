@@ -38,7 +38,7 @@ export function IBMTopBar({ onMenuClick }: IBMTopBarProps) {
         <Grid3x3 className="h-5 w-5" />
       </Button>
 
-      <div className="text-white font-medium text-sm">IBM Cloud</div>
+      <div className="text-white font-medium text-sm">LoanFlow CRM</div>
 
       <div className="flex-1 max-w-2xl">
         <div className="relative">
