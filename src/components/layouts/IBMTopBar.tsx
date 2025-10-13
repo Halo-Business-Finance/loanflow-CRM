@@ -28,33 +28,37 @@ export function IBMTopBar({ onMenuClick }: IBMTopBarProps) {
   };
 
   return (
-    <header className="h-16 bg-[#161616] border-b border-[#393939] flex items-center px-4 gap-4 flex-shrink-0">
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={onMenuClick}
-        className="h-8 w-8 text-white hover:bg-white/10"
-      >
-        <Grid3x3 className="h-5 w-5" />
-      </Button>
+    <header className="h-14 bg-[#161616] border-b border-[#393939] flex items-center flex-shrink-0">
+      {/* Left section with hamburger and brand */}
+      <div className="flex items-center border-r border-[#393939] h-full">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onMenuClick}
+          className="h-14 w-14 rounded-none text-white hover:bg-white/10"
+        >
+          <Grid3x3 className="h-5 w-5" />
+        </Button>
+        <div className="text-white font-medium text-sm px-4 whitespace-nowrap">LoanFlow CRM</div>
+      </div>
 
-      <div className="text-white font-medium text-sm">LoanFlow CRM</div>
-
-      <div className="flex-1 max-w-2xl">
+      {/* Center search bar - takes most of the space */}
+      <div className="flex-1 px-4 max-w-3xl">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
             placeholder="Search resources and products..."
-            className="w-full pl-10 h-8 bg-[#262626] border-[#393939] text-white placeholder:text-gray-400 focus:bg-[#393939]"
+            className="w-full pl-10 h-9 bg-[#262626] border-[#393939] text-white placeholder:text-gray-400 focus:bg-[#393939] rounded-none"
           />
         </div>
       </div>
 
-      <div className="flex items-center gap-2 ml-auto">
+      {/* Right section with actions */}
+      <div className="flex items-center gap-1 px-4">
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 text-white hover:bg-white/10 text-xs"
+          className="h-9 text-white hover:bg-white/10 text-sm px-3"
         >
           Catalog
         </Button>
@@ -64,7 +68,7 @@ export function IBMTopBar({ onMenuClick }: IBMTopBarProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 text-white hover:bg-white/10 text-xs"
+              className="h-9 text-white hover:bg-white/10 text-sm px-3"
             >
               Manage <ChevronDown className="ml-1 h-3 w-3" />
             </Button>
@@ -79,26 +83,28 @@ export function IBMTopBar({ onMenuClick }: IBMTopBarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <div className="h-6 w-px bg-[#393939]" />
+        <div className="h-6 w-px bg-[#393939] mx-2" />
 
-        <div className="text-white text-xs px-2">Halo Business Finance</div>
+        <div className="text-white text-sm px-2 whitespace-nowrap">Halo Business Finance</div>
+
+        <div className="h-6 w-px bg-[#393939] mx-2" />
 
         <ThemeToggle />
 
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-white hover:bg-white/10"
+          className="h-9 w-9 text-white hover:bg-white/10"
         >
-          <HelpCircle className="h-4 w-4" />
+          <HelpCircle className="h-5 w-5" />
         </Button>
 
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-white hover:bg-white/10"
+          className="h-9 w-9 text-white hover:bg-white/10"
         >
-          <Bell className="h-4 w-4" />
+          <Bell className="h-5 w-5" />
         </Button>
 
         <DropdownMenu>
@@ -106,9 +112,9 @@ export function IBMTopBar({ onMenuClick }: IBMTopBarProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-white hover:bg-white/10"
+              className="h-9 w-9 text-white hover:bg-white/10"
             >
-              <User className="h-4 w-4" />
+              <User className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
