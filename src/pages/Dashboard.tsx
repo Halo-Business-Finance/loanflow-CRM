@@ -378,7 +378,7 @@ export default function Dashboard() {
   return (
     <div className="h-full bg-background">
       {/* Microsoft-style Header */}
-      <div className="bg-card">
+      <div className="bg-card border-0 shadow-none rounded-none">
         <div className="px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -398,7 +398,7 @@ export default function Dashboard() {
             </div>
             
             <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" className="h-8 text-xs font-medium gap-2">
+              <Button variant="secondary" size="sm" className="h-8 text-xs font-medium gap-2">
                 <Calendar className="h-3 w-3" />
                 Last 30 days
               </Button>
