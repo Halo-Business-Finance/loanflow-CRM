@@ -28,7 +28,7 @@ export function IBMTopBar({ onMenuClick }: IBMTopBarProps) {
   };
 
   return (
-    <header className="h-12 bg-[#161616] border-b border-[#393939] flex items-center px-4 gap-4 flex-shrink-0">
+    <header className="h-16 bg-[#161616] border-b border-[#393939] flex items-center px-4 gap-4 flex-shrink-0">
       <Button
         variant="ghost"
         size="icon"
