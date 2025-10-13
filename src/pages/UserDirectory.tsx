@@ -1,11 +1,97 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { UserCog, Plus, Search, Filter, Download } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+
+interface UserProfile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
+  role: string | null;
+  created_at: string;
+}
 
 export default function UserDirectory() {
+  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch profiles with their roles
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select(`
+          id,
+          first_name,
+          last_name,
+          email,
+          created_at
+        `);
+
+      if (profilesError) throw profilesError;
+
+      // Fetch roles separately
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
+
+      if (rolesError) throw rolesError;
+
+      // Combine the data
+      const usersWithRoles = profiles?.map(profile => ({
+        ...profile,
+        role: roles?.find(r => r.user_id === profile.id)?.role || 'No role'
+      })) || [];
+
+      setUsers(usersWithRoles);
+    } catch (error: any) {
+      console.error('Error fetching users:', error);
+      toast({
+        title: 'Error loading users',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredUsers = users.filter(user => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      user.first_name?.toLowerCase().includes(searchLower) ||
+      user.last_name?.toLowerCase().includes(searchLower) ||
+      user.email?.toLowerCase().includes(searchLower) ||
+      user.role?.toLowerCase().includes(searchLower)
+    );
+  });
+
+  const totalUsers = users.length;
+  const activeUsers = users.length; // All fetched users are considered active
+  const pendingInvites = 0; // Would need a separate invites table
+  const uniqueRoles = new Set(users.map(u => u.role)).size;
   return (
     <div className="bg-white min-h-full">
       <IBMPageHeader
@@ -38,6 +124,8 @@ export default function UserDirectory() {
               <Input
                 placeholder="Search by name, email, or role..."
                 className="pl-10"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
@@ -48,28 +136,28 @@ export default function UserDirectory() {
           <Card className="border-[#e0e0e0]">
             <CardHeader className="pb-2">
               <CardDescription className="text-[#525252]">Total Users</CardDescription>
-              <CardTitle className="text-2xl text-[#161616]">156</CardTitle>
+              <CardTitle className="text-2xl text-[#161616]">{totalUsers}</CardTitle>
             </CardHeader>
           </Card>
 
           <Card className="border-[#e0e0e0]">
             <CardHeader className="pb-2">
               <CardDescription className="text-[#525252]">Active Users</CardDescription>
-              <CardTitle className="text-2xl text-[#161616]">142</CardTitle>
+              <CardTitle className="text-2xl text-[#161616]">{activeUsers}</CardTitle>
             </CardHeader>
           </Card>
 
           <Card className="border-[#e0e0e0]">
             <CardHeader className="pb-2">
               <CardDescription className="text-[#525252]">Pending Invites</CardDescription>
-              <CardTitle className="text-2xl text-[#161616]">8</CardTitle>
+              <CardTitle className="text-2xl text-[#161616]">{pendingInvites}</CardTitle>
             </CardHeader>
           </Card>
 
           <Card className="border-[#e0e0e0]">
             <CardHeader className="pb-2">
               <CardDescription className="text-[#525252]">Roles</CardDescription>
-              <CardTitle className="text-2xl text-[#161616]">12</CardTitle>
+              <CardTitle className="text-2xl text-[#161616]">{uniqueRoles}</CardTitle>
             </CardHeader>
           </Card>
         </div>
@@ -83,19 +171,59 @@ export default function UserDirectory() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-center py-12">
-              <UserCog className="h-12 w-12 text-[#525252] mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-[#161616] mb-2">
-                User Directory Management
-              </h3>
-              <p className="text-sm text-[#525252] mb-4">
-                User directory features will be implemented here
-              </p>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Add First User
-              </Button>
-            </div>
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0f62fe] mx-auto"></div>
+                <p className="text-sm text-[#525252] mt-4">Loading users...</p>
+              </div>
+            ) : filteredUsers.length === 0 ? (
+              <div className="text-center py-12">
+                <UserCog className="h-12 w-12 text-[#525252] mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-[#161616] mb-2">
+                  {searchTerm ? 'No users found' : 'No users yet'}
+                </h3>
+                <p className="text-sm text-[#525252] mb-4">
+                  {searchTerm ? 'Try adjusting your search terms' : 'Users will appear here once they sign up'}
+                </p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Joined</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredUsers.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell className="font-medium">
+                        {user.first_name && user.last_name
+                          ? `${user.first_name} ${user.last_name}`
+                          : 'N/A'}
+                      </TableCell>
+                      <TableCell>{user.email || 'N/A'}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="text-xs">
+                          {user.role}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {new Date(user.created_at).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm">
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </div>
