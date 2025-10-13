@@ -378,7 +378,7 @@ export default function Dashboard() {
   return (
     <div className="h-full bg-background">
       {/* Microsoft-style Header */}
-      <div className="bg-card border-b border-border/60">
+      <div className="bg-card">
         <div className="px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
