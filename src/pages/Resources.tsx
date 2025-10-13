@@ -83,14 +83,7 @@ export default function Resources() {
 
   return (
     <HybridLayout>
-      <div className="h-full flex flex-col space-y-6 p-6">
-        <div className="bg-white px-6 py-4 border-b border-[#e0e0e0]">
-          <div className="flex items-center gap-3">
-            <BookOpen className="h-6 w-6 text-[#0f62fe]" />
-            <h1 className="text-xl font-normal text-[#161616]">Resource Management Center</h1>
-          </div>
-        </div>
-
+      <div className="p-6 space-y-6">
         {/* Resource Overview Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="hover:shadow-md transition-shadow">
