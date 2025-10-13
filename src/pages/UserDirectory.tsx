@@ -39,38 +39,23 @@ export default function UserDirectory() {
     try {
       setLoading(true);
       
-      // Fetch profiles with their roles
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select(`
-          id,
-          first_name,
-          last_name,
-          email,
-          created_at
-        `);
+      // Use the admin edge function to fetch users with roles
+      const { data, error } = await supabase.functions.invoke('admin-get-users', {
+        method: 'POST'
+      });
 
-      if (profilesError) throw profilesError;
+      if (error) throw error;
 
-      // Fetch roles separately
-      const { data: roles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id, role');
-
-      if (rolesError) throw rolesError;
-
-      // Combine the data
-      const usersWithRoles = profiles?.map(profile => ({
-        ...profile,
-        role: roles?.find(r => r.user_id === profile.id)?.role || 'No role'
-      })) || [];
-
-      setUsers(usersWithRoles);
+      if (data?.users) {
+        setUsers(data.users);
+      } else {
+        throw new Error('No users data returned');
+      }
     } catch (error: any) {
       console.error('Error fetching users:', error);
       toast({
         title: 'Error loading users',
-        description: error.message,
+        description: error.message || 'Failed to load users',
         variant: 'destructive',
       });
     } finally {
