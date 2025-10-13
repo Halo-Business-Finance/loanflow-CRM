@@ -15,6 +15,12 @@ import {
   BarChart3,
   Building2,
   UserCog,
+  CheckSquare,
+  Link2,
+  Sparkles,
+  BookOpen,
+  Code,
+  Camera,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -38,12 +44,18 @@ const navItems: NavItemData[] = [
   { icon: Users, label: 'Leads', to: '/leads' },
   { icon: GitBranch, label: 'Pipeline', to: '/pipeline' },
   { icon: Briefcase, label: 'Existing Borrowers', to: '/existing-borrowers' },
+  { icon: CheckSquare, label: 'Underwriter', to: '/underwriter' },
   { icon: Activity, label: 'Activities', to: '/activities' },
   { icon: FileText, label: 'Documents', to: '/documents' },
   { icon: BarChart3, label: 'Reports', to: '/reports' },
   { icon: UserCog, label: 'User Directory', to: '/user-directory' },
   { icon: Building2, label: 'Enterprise', to: '/enterprise' },
+  { icon: Link2, label: 'Integrations', to: '/integrations' },
+  { icon: Sparkles, label: 'AI Tools', to: '/ai-tools' },
   { icon: Shield, label: 'Security', to: '/security' },
+  { icon: BookOpen, label: 'Resources', to: '/resources' },
+  { icon: Code, label: 'API Docs', to: '/api-docs' },
+  { icon: Camera, label: 'Screenshots', to: '/screenshots' },
   { icon: Settings, label: 'Settings', to: '/settings' },
 ];
 
