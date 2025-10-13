@@ -30,7 +30,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
   };
 
   return (
-    <header className="h-14 bg-[#161616] border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full">
+    <header className="h-14 bg-[#161616] border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full px-4">
       {/* Left section with hamburger and brand */}
       <div className="flex items-center h-full flex-1" style={{ minWidth: sidebarCollapsed ? '48px' : '240px' }}>
         <Button
@@ -42,7 +42,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           {sidebarCollapsed ? <Grid3x3 className="h-5 w-5" /> : <Grid3x3 className="h-5 w-5" />}
         </Button>
         {!sidebarCollapsed && (
-          <div className="text-white font-medium text-lg px-4 whitespace-nowrap">LoanFlow CRM</div>
+          <div className="text-white font-medium text-lg px-6 whitespace-nowrap">LoanFlow CRM</div>
         )}
       </div>
 
@@ -59,7 +59,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
       </div>
 
       {/* Right section with actions */}
-      <div className="flex items-center gap-1 px-4 flex-1 justify-end">
+      <div className="flex items-center gap-1 px-6 flex-1 justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
