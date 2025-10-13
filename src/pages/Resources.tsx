@@ -83,114 +83,127 @@ export default function Resources() {
 
   return (
     <HybridLayout>
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center gap-2 mb-6">
-          <BookOpen className="h-6 w-6" />
-          <h1 className="text-3xl font-bold">Resource Management Center</h1>
+      <div className="h-full flex flex-col space-y-6">
+        {/* Page Header */}
+        <div className="flex items-center gap-3 pb-4 border-b">
+          <BookOpen className="h-7 w-7 text-primary" />
+          <h1 className="text-2xl font-semibold">Resource Management Center</h1>
         </div>
 
         {/* Resource Overview Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-l-4 border-l-primary">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-5">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-muted-foreground">Total Resources</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <FileText className="w-5 h-5" />
-                    <p className="text-lg font-bold">{overview.totalResources}</p>
-                  </div>
+                  <FileText className="w-4 h-4 text-muted-foreground" />
                 </div>
-                <Badge variant="default">
-                  AVAILABLE
-                </Badge>
+                <p className="text-3xl font-bold">{overview.totalResources}</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-5">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-muted-foreground">Documentation Score</p>
-                  <p className="text-2xl font-bold text-primary">{overview.documentationScore}%</p>
+                  <BookOpen className="w-4 h-4 text-muted-foreground" />
                 </div>
-                <BookOpen className="w-8 h-8 text-primary" />
+                <p className="text-3xl font-bold text-primary">{overview.documentationScore}%</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-5">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-muted-foreground">Training Completed</p>
-                  <p className="text-2xl font-bold text-primary">{overview.trainingCompleted}%</p>
+                  <GraduationCap className="w-4 h-4 text-muted-foreground" />
                 </div>
-                <GraduationCap className="w-8 h-8 text-primary" />
+                <p className="text-3xl font-bold text-primary">{overview.trainingCompleted}%</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
+          <Card className="hover:shadow-md transition-shadow">
+            <CardContent className="p-5">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-muted-foreground">Support Tickets</p>
-                  <p className="text-2xl font-bold text-primary">{overview.supportTickets}</p>
+                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
                 </div>
-                <HelpCircle className="w-8 h-8 text-primary" />
+                <p className="text-3xl font-bold text-primary">{overview.supportTickets}</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Alerts */}
-        {overview.supportTickets > 0 && (
-          <Alert className="border-secondary">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              You have {overview.supportTickets} open support ticket(s) requiring attention.
-            </AlertDescription>
-          </Alert>
-        )}
+        <div className="space-y-3">
+          {overview.supportTickets > 0 && (
+            <Alert className="border-l-4 border-l-secondary">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                You have {overview.supportTickets} open support ticket(s) requiring attention.
+              </AlertDescription>
+            </Alert>
+          )}
 
-        {overview.trainingCompleted < 90 && (
-          <Alert className="border-secondary">
-            <GraduationCap className="h-4 w-4" />
-            <AlertDescription>
-              Training completion is at {overview.trainingCompleted}%. Consider completing remaining courses.
-            </AlertDescription>
-          </Alert>
-        )}
+          {overview.trainingCompleted < 90 && (
+            <Alert className="border-l-4 border-l-primary">
+              <GraduationCap className="h-4 w-4" />
+              <AlertDescription>
+                Training completion is at {overview.trainingCompleted}%. Consider completing remaining courses.
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
 
         {/* Main Resource Dashboard Tabs */}
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
+        <Tabs defaultValue="overview" className="w-full flex-1 flex flex-col">
+          <TabsList className="w-full justify-start bg-transparent border-b rounded-none h-auto p-0">
+            <TabsTrigger 
+              value="overview" 
+              className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+            >
               <BookOpen className="h-4 w-4" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="documentation" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="documentation" 
+              className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+            >
               <FileText className="h-4 w-4" />
               Documentation
             </TabsTrigger>
-            <TabsTrigger value="training" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="training" 
+              className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+            >
               <GraduationCap className="h-4 w-4" />
               Training
             </TabsTrigger>
-            <TabsTrigger value="support" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="support" 
+              className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+            >
               <HelpCircle className="h-4 w-4" />
               Support
             </TabsTrigger>
-            <TabsTrigger value="tools" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="tools" 
+              className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+            >
               <Settings className="h-4 w-4" />
               Tools
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-6 mt-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="overview" className="space-y-4 mt-6 flex-1">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Quick Actions */}
               <Card>
                 <CardHeader>
@@ -199,20 +212,20 @@ export default function Resources() {
                     Immediate access to essential resources
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button className="w-full justify-start" variant="outline" onClick={() => window.open('https://docs.lovable.dev/', '_blank')}>
+                <CardContent className="space-y-2">
+                  <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://docs.lovable.dev/', '_blank')}>
                     <Search className="w-4 h-4 mr-2" />
                     Search Knowledge Base
                   </Button>
-                  <Button className="w-full justify-start" variant="outline" onClick={() => window.open('https://www.youtube.com/playlist?list=PLbVHz4urQBZkJiAWdG8HWoJTdgEysigIO', '_blank')}>
+                  <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://www.youtube.com/playlist?list=PLbVHz4urQBZkJiAWdG8HWoJTdgEysigIO', '_blank')}>
                     <Video className="w-4 h-4 mr-2" />
                     Watch Video Tutorials
                   </Button>
-                  <Button className="w-full justify-start" variant="outline" onClick={() => window.open('https://docs.lovable.dev/user-guides/quickstart', '_blank')}>
+                  <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://docs.lovable.dev/user-guides/quickstart', '_blank')}>
                     <Download className="w-4 h-4 mr-2" />
                     Download User Guides
                   </Button>
-                  <Button className="w-full justify-start" variant="outline" onClick={() => window.open('https://discord.com/channels/1119885301872070706/1280461670979993613', '_blank')}>
+                  <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://discord.com/channels/1119885301872070706/1280461670979993613', '_blank')}>
                     <Users className="w-4 h-4 mr-2" />
                     Community Support
                   </Button>
@@ -227,37 +240,37 @@ export default function Resources() {
                     Real-time status of resource components
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Knowledge Base</span>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-muted-foreground">Knowledge Base</span>
                     <div className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-primary" />
                       <span className="text-sm font-medium">Online</span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Video Platform</span>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-muted-foreground">Video Platform</span>
                     <div className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-primary" />
                       <span className="text-sm font-medium">Available</span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Support Portal</span>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-muted-foreground">Support Portal</span>
                     <div className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-primary" />
                       <span className="text-sm font-medium">Operational</span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Community Forum</span>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-muted-foreground">Community Forum</span>
                     <div className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-primary" />
                       <span className="text-sm font-medium">Active</span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Download Center</span>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-muted-foreground">Download Center</span>
                     <div className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-primary" />
                       <span className="text-sm font-medium">Accessible</span>
@@ -276,32 +289,32 @@ export default function Resources() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg">
-                    <FileText className="w-4 h-4 text-primary" />
-                    <div className="flex-1">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3 p-3 hover:bg-muted/50 rounded-md transition-colors">
+                    <FileText className="w-4 h-4 text-primary flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">New documentation published</p>
-                      <p className="text-xs text-muted-foreground">API Integration Guide v2.1 • 2 hours ago</p>
+                      <p className="text-xs text-muted-foreground truncate">API Integration Guide v2.1 • 2 hours ago</p>
                     </div>
-                    <Badge variant="default">New</Badge>
+                    <Badge variant="default" className="flex-shrink-0">New</Badge>
                   </div>
                   
-                  <div className="flex items-center gap-3 p-3 bg-secondary/10 rounded-lg">
-                    <Video className="w-4 h-4 text-secondary" />
-                    <div className="flex-1">
+                  <div className="flex items-center gap-3 p-3 hover:bg-muted/50 rounded-md transition-colors">
+                    <Video className="w-4 h-4 text-primary flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">Training module completed</p>
-                      <p className="text-xs text-muted-foreground">Advanced Security Features • 5 hours ago</p>
+                      <p className="text-xs text-muted-foreground truncate">Advanced Security Features • 5 hours ago</p>
                     </div>
-                    <Badge variant="secondary">Completed</Badge>
+                    <Badge variant="secondary" className="flex-shrink-0">Completed</Badge>
                   </div>
                   
-                  <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                    <Download className="w-4 h-4 text-green-600" />
-                    <div className="flex-1">
+                  <div className="flex items-center gap-3 p-3 hover:bg-muted/50 rounded-md transition-colors">
+                    <Download className="w-4 h-4 text-primary flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">Resource downloaded</p>
-                      <p className="text-xs text-muted-foreground">Compliance Checklist Template • 1 day ago</p>
+                      <p className="text-xs text-muted-foreground truncate">Compliance Checklist Template • 1 day ago</p>
                     </div>
-                    <Badge variant="outline">Downloaded</Badge>
+                    <Badge variant="outline" className="flex-shrink-0">Downloaded</Badge>
                   </div>
                 </div>
               </CardContent>
