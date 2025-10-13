@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import HybridLayout from "@/components/HybridLayout";
+//
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -82,8 +82,7 @@ export default function Resources() {
   };
 
   return (
-    <HybridLayout>
-      <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6">
         {/* Resource Overview Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="hover:shadow-md transition-shadow">
@@ -461,6 +460,5 @@ export default function Resources() {
           </TabsContent>
         </Tabs>
       </div>
-    </HybridLayout>
   );
 }
