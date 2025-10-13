@@ -42,9 +42,9 @@ interface NavItemProps extends NavItemData {
 }
 
 const navItems: NavItemData[] = [
+  { icon: LayoutDashboard, label: 'Dashboard', to: '/dashboard' },
   { icon: Users, label: 'Leads', to: '/leads' },
   { icon: GitBranch, label: 'Pipeline', to: '/pipeline' },
-  { icon: LayoutDashboard, label: 'Dashboard', to: '/dashboard' },
   { icon: Briefcase, label: 'Existing Borrowers', to: '/existing-borrowers' },
   { icon: CheckSquare, label: 'Underwriter', to: '/underwriter' },
   { icon: Activity, label: 'Activities', to: '/activities' },
@@ -162,7 +162,7 @@ export function IBMSidebar({ collapsed }: IBMSidebarProps) {
         collapsed ? 'w-12' : 'w-60'
       )}
     >
-      <nav className="py-2 space-y-0.5">
+      <nav className="py-2 pt-8 space-y-0.5">
         {navItems.map((item) => (
           <NavItem key={item.to || item.label} {...item} collapsed={collapsed} />
         ))}
