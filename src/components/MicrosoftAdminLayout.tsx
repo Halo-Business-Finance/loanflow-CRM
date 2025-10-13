@@ -131,7 +131,7 @@ function MicrosoftAdminSidebar() {
                           >
                             {!collapsed && (
                               <>
-                                <span className="font-medium">{item.title}</span>
+                                <span>{item.title}</span>
                                 {expandedItems[item.title] ? (
                                   <ChevronDown className="h-4 w-4" />
                                 ) : (
@@ -175,7 +175,6 @@ function MicrosoftAdminSidebar() {
                           >
                             {!collapsed && (
                               <span className={cn(
-                                "font-medium",
                                 isActivePath(item.url) && "border-b-2 border-b-blue-700"
                               )}>{item.title}</span>
                             )}
