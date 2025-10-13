@@ -23,7 +23,7 @@ import { UnderwriterDashboard } from "@/components/dashboards/UnderwriterDashboa
 import { ForecastingDashboard } from "@/components/enterprise/ForecastingDashboard";
 import { DataIntegrityDashboard } from "@/components/DataIntegrityDashboard";
 
-import HybridLayout from "@/components/HybridLayout";
+import { IBMCloudLayout } from "@/components/layouts/IBMCloudLayout";
 import { SecurityEnhancementProvider } from "@/components/security/SecurityEnhancementProvider";
 import { SecurityProvider as EnhancedSecurityProvider } from "@/components/security/SecurityProvider";
 import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
@@ -118,76 +118,76 @@ function AuthenticatedApp() {
         {/* Protected routes - require authentication */}
         {user ? (
           <>
-            <Route path="/" element={<HybridLayout><Dashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/dashboard" element={<HybridLayout><Dashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/" element={<IBMCloudLayout><Dashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/dashboard" element={<IBMCloudLayout><Dashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/leads" element={<HybridLayout><Leads /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/leads/new" element={<HybridLayout><NewLead /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/leads/stats" element={<HybridLayout><LeadStats /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/leads/assignment" element={<HybridLayout><LeadAssignment /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/leads/:id" element={<HybridLayout><LeadDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/leads/:leadId/documents" element={<HybridLayout><LeadDocuments /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads" element={<IBMCloudLayout><Leads /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/new" element={<IBMCloudLayout><NewLead /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/stats" element={<IBMCloudLayout><LeadStats /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/assignment" element={<IBMCloudLayout><LeadAssignment /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/:id" element={<IBMCloudLayout><LeadDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/leads/:leadId/documents" element={<IBMCloudLayout><LeadDocuments /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/existing-borrowers" element={<HybridLayout><Clients /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/existing-borrowers/details" element={<HybridLayout><BorrowerDetails /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/existing-borrowers/history" element={<HybridLayout><LoanHistory /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/existing-borrowers/:id" element={<HybridLayout><ClientDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers" element={<IBMCloudLayout><Clients /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers/details" element={<IBMCloudLayout><BorrowerDetails /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers/history" element={<IBMCloudLayout><LoanHistory /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/existing-borrowers/:id" element={<IBMCloudLayout><ClientDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             {/* Redirect old client routes to existing borrowers */}
-            <Route path="/clients/:id" element={<HybridLayout><ClientDetail /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/clients/:id" element={<IBMCloudLayout><ClientDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/pipeline" element={<HybridLayout><Pipeline /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/pipeline/analytics" element={<HybridLayout><PipelineAnalytics /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/pipeline/stages" element={<HybridLayout><StageManagement /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/pipeline" element={<IBMCloudLayout><Pipeline /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/pipeline/analytics" element={<IBMCloudLayout><PipelineAnalytics /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/pipeline/stages" element={<IBMCloudLayout><StageManagement /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/underwriter" element={<HybridLayout><Underwriter /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/underwriter/documents" element={<HybridLayout><UnderwriterDocuments /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/underwriter/risk" element={<HybridLayout><UnderwriterRisk /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/underwriter" element={<IBMCloudLayout><Underwriter /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/underwriter/documents" element={<IBMCloudLayout><UnderwriterDocuments /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/underwriter/risk" element={<IBMCloudLayout><UnderwriterRisk /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
             {/* Documents routes */}
-            <Route path="/documents" element={<HybridLayout><Documents /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/documents/upload" element={<HybridLayout><DocumentUpload /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/documents/templates" element={<HybridLayout><DocumentTemplates /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents" element={<IBMCloudLayout><Documents /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents/upload" element={<IBMCloudLayout><DocumentUpload /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents/templates" element={<IBMCloudLayout><DocumentTemplates /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/activities" element={<HybridLayout><Activities /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/activities/calendar" element={<HybridLayout><ActivitiesCalendar /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/activities/tasks" element={<HybridLayout><ActivitiesTasks /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/activities" element={<IBMCloudLayout><Activities /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/activities/calendar" element={<IBMCloudLayout><ActivitiesCalendar /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/activities/tasks" element={<IBMCloudLayout><ActivitiesTasks /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/reports" element={<HybridLayout><Reports /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/reports" element={<IBMCloudLayout><Reports /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/settings" element={<HybridLayout><Settings /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/settings/users" element={<HybridLayout><SettingsUsers /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/settings/system" element={<HybridLayout><SettingsSystem /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/settings" element={<IBMCloudLayout><Settings /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/settings/users" element={<IBMCloudLayout><SettingsUsers /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/settings/system" element={<IBMCloudLayout><SettingsSystem /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/security" element={<HybridLayout><Security /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/access" element={<HybridLayout><SecurityAccess /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/audit" element={<HybridLayout><SecurityAudit /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/threats" element={<HybridLayout><SecurityThreats /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/compliance" element={<HybridLayout><SecurityCompliance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/security/enterprise" element={<HybridLayout><EnterpriseSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security" element={<IBMCloudLayout><Security /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/access" element={<IBMCloudLayout><SecurityAccess /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/audit" element={<IBMCloudLayout><SecurityAudit /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/threats" element={<IBMCloudLayout><SecurityThreats /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/compliance" element={<IBMCloudLayout><SecurityCompliance /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/security/enterprise" element={<IBMCloudLayout><EnterpriseSecurityDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
             {/* Role-based Dashboard Routes */}
-            {canCloseLoans && <Route path="/dashboards/closer" element={<HybridLayout><CloserDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-            {canFundLoans && <Route path="/dashboards/funder" element={<HybridLayout><FunderDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-            {canProcessLoans && <Route path="/dashboards/processor" element={<HybridLayout><LoanProcessorDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-            {canUnderwriteLoans && <Route path="/dashboards/underwriter" element={<HybridLayout><UnderwriterDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canCloseLoans && <Route path="/dashboards/closer" element={<IBMCloudLayout><CloserDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canFundLoans && <Route path="/dashboards/funder" element={<IBMCloudLayout><FunderDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canProcessLoans && <Route path="/dashboards/processor" element={<IBMCloudLayout><LoanProcessorDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canUnderwriteLoans && <Route path="/dashboards/underwriter" element={<IBMCloudLayout><UnderwriterDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             
             {/* Security Dashboard Routes */}
-            {canAccessAdminFeatures && <Route path="/dashboards/security-enhanced" element={<HybridLayout><EnhancedSecurityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-            {canAccessAdminFeatures && <Route path="/dashboards/security-compliance" element={<HybridLayout><SecurityComplianceDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-            {canAccessAdminFeatures && <Route path="/dashboards/threat-monitoring" element={<HybridLayout><ThreatMonitoringDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canAccessAdminFeatures && <Route path="/dashboards/security-enhanced" element={<IBMCloudLayout><EnhancedSecurityDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canAccessAdminFeatures && <Route path="/dashboards/security-compliance" element={<IBMCloudLayout><SecurityComplianceDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canAccessAdminFeatures && <Route path="/dashboards/threat-monitoring" element={<IBMCloudLayout><ThreatMonitoringDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             
             {/* Enterprise Dashboard Routes */}
-            {hasMinimumRole('manager') && <Route path="/dashboards/forecasting" element={<HybridLayout><ForecastingDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
-            {canAccessAdminFeatures && <Route path="/dashboards/data-integrity" element={<HybridLayout><DataIntegrityDashboard /></HybridLayout>} errorElement={<RouteErrorBoundary />} />}
+            {hasMinimumRole('manager') && <Route path="/dashboards/forecasting" element={<IBMCloudLayout><ForecastingDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canAccessAdminFeatures && <Route path="/dashboards/data-integrity" element={<IBMCloudLayout><DataIntegrityDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             
-            <Route path="/enterprise" element={<HybridLayout><Enterprise /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/integrations" element={<HybridLayout><Integrations /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/ai-tools" element={<HybridLayout><AITools /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/screenshots" element={<HybridLayout><Screenshots /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/api-docs" element={<HybridLayout><APIDocs /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/resources" element={<HybridLayout><Resources /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/emergency-maintenance" element={<HybridLayout><EmergencyMaintenance /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="*" element={<HybridLayout><NotFound /></HybridLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/enterprise" element={<IBMCloudLayout><Enterprise /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/integrations" element={<IBMCloudLayout><Integrations /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/ai-tools" element={<IBMCloudLayout><AITools /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/screenshots" element={<IBMCloudLayout><Screenshots /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/api-docs" element={<IBMCloudLayout><APIDocs /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/resources" element={<IBMCloudLayout><Resources /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/emergency-maintenance" element={<IBMCloudLayout><EmergencyMaintenance /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="*" element={<IBMCloudLayout><NotFound /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
           </>
         ) : (
           <>

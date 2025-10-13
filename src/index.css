@@ -8,27 +8,38 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Enterprise CRM Color Scheme - Professional Blues & Grays */
+    /* IBM Carbon Design System Colors */
     --background: 0 0% 100%;
-    --foreground: 222 84% 4.9%;
+    --foreground: 0 0% 9%; /* #161616 */
 
     --card: 0 0% 100%;
-    --card-foreground: 222 84% 4.9%;
+    --card-foreground: 0 0% 9%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222 84% 4.9%;
 
-    /* Primary - Royal Blue */
-    --primary: 240 100% 50%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 240 100% 60%;
-    --royal-blue: 240 100% 50%;
+    /* Primary - IBM Blue */
+    --primary: 217 91% 53%; /* #0f62fe */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 217 100% 47%; /* #0353e9 */
+    
+    /* IBM Carbon Gray Scale */
+    --ibm-gray-10: 0 0% 98%; /* #fafafa */
+    --ibm-gray-20: 0 0% 96%; /* #f4f4f4 */
+    --ibm-gray-30: 0 0% 88%; /* #e0e0e0 */
+    --ibm-gray-40: 0 0% 78%; /* #c6c6c6 */
+    --ibm-gray-50: 0 0% 64%; /* #a8a8a8 */
+    --ibm-gray-60: 0 0% 51%; /* #8d8d8d */
+    --ibm-gray-70: 0 0% 32%; /* #525252 */
+    --ibm-gray-80: 0 0% 22%; /* #393939 */
+    --ibm-gray-90: 0 0% 15%; /* #262626 */
+    --ibm-gray-100: 0 0% 9%; /* #161616 */
 
     --secondary: 210 40% 96%;
     --secondary-foreground: 222 84% 4.9%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 32%;
 
     --accent: 210 40% 94%;
     --accent-foreground: 222 84% 4.9%;
@@ -39,9 +50,9 @@ All colors MUST be HSL.
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214 32% 91%;
-    --input: 0 0% 100%;
-    --ring: 221 83% 53%;
+    --border: 0 0% 88%; /* #e0e0e0 */
+    --input: 0 0% 96%;
+    --ring: 217 91% 53%;
 
     /* Enhanced borders for enterprise look */
     --input-border: 214 32% 91%;
@@ -74,7 +85,7 @@ All colors MUST be HSL.
     --widget-pattern: radial-gradient(circle at 1px 1px, hsl(221 83% 53% / 0.03) 1px, transparent 0);
     --widget-pattern-size: 20px 20px;
 
-    --radius: 8px;
+    --radius: 0.25rem; /* IBM uses 4px border radius */
 
     /* Professional color variants */
     --navy: 222 84% 25%;
