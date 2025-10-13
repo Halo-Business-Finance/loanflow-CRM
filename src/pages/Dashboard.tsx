@@ -70,8 +70,18 @@ export default function Dashboard() {
       setTotalRevenue(2500000);
       setPipelineValue(4800000);
 
+      toast({
+        title: "Dashboard refreshed",
+        description: "All metrics have been updated successfully.",
+      });
+
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      toast({
+        title: "Error refreshing dashboard",
+        description: "Failed to update metrics. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
