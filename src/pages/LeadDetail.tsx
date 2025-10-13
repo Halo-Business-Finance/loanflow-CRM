@@ -410,7 +410,7 @@ export default function LeadDetail() {
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Lead ID: {lead.id?.slice(0, 8)}... • Created {format(new Date(lead.created_at), 'MMM dd, yyyy')}
+                    Lead ID: {lead.lead_number ? String(lead.lead_number).padStart(3, '0') : 'N/A'} • Created {format(new Date(lead.created_at), 'MMM dd, yyyy')}
                   </p>
                 </div>
               </div>
