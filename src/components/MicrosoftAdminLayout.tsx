@@ -150,7 +150,7 @@ function MicrosoftAdminSidebar() {
                           <button
                             onClick={() => toggleItem(item.title)}
                             className={cn(
-                              "w-full flex items-center justify-between px-4 py-3 text-sm transition-colors hover:bg-muted/50",
+                              "w-full flex items-center justify-between px-4 py-1.5 text-sm transition-colors hover:bg-muted/50",
                               "text-foreground"
                             )}
                           >
@@ -172,7 +172,7 @@ function MicrosoftAdminSidebar() {
                                   <Link
                                     to={subItem.url}
                                     className={cn(
-                                      "flex items-center px-4 py-2 text-sm border-b border-border/20 last:border-b-0 transition-colors hover:bg-muted/30",
+                                      "flex items-center px-4 py-1.5 text-sm border-b border-border/20 last:border-b-0 transition-colors hover:bg-muted/30",
                                       isActivePath(subItem.url)
                                         ? "text-primary"
                                         : "text-muted-foreground"
@@ -192,7 +192,7 @@ function MicrosoftAdminSidebar() {
                           <Link
                             to={item.url}
                             className={cn(
-                              "flex items-center px-4 py-3 text-sm transition-colors hover:bg-muted/50",
+                              "flex items-center px-4 py-1.5 text-sm transition-colors hover:bg-muted/50",
                               isActivePath(item.url)
                                 ? "text-primary"
                                 : "text-foreground"
