@@ -41,7 +41,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           {sidebarCollapsed ? <Grid3x3 className="h-5 w-5" /> : <Grid3x3 className="h-5 w-5" />}
         </Button>
         {!sidebarCollapsed && (
-          <div className="text-white font-medium text-sm px-4 whitespace-nowrap">LoanFlow CRM</div>
+          <div className="text-white font-medium text-base px-4 whitespace-nowrap">LoanFlow CRM</div>
         )}
       </div>
 
