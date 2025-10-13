@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Bell, HelpCircle, Grid3x3, User, ChevronDown } from 'lucide-react';
+import { Search, HelpCircle, Grid3x3, User, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { NotificationBell } from '@/components/NotificationBell';
 
 interface IBMTopBarProps {
   onMenuClick: () => void;
@@ -91,13 +92,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           <HelpCircle className="h-5 w-5" />
         </Button>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 text-white hover:bg-white/10"
-        >
-          <Bell className="h-5 w-5" />
-        </Button>
+        <NotificationBell />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
