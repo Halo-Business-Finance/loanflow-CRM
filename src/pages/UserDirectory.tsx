@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
-import { UserCog, Plus, Search, Filter, Download, Mail, Calendar, Phone } from 'lucide-react';
+import { UserCog, Plus, Search, Filter, Download, Mail, Calendar, Phone, Edit } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
@@ -25,6 +25,19 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SecureRoleManager } from '@/components/security/SecureRoleManager';
 import { formatPhoneNumber } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 
 interface UserProfile {
   id: string;
@@ -38,13 +51,32 @@ interface UserProfile {
   is_active?: boolean;
 }
 
+const userEditSchema = z.object({
+  firstName: z.string().min(1, 'First name is required').max(100, 'First name too long'),
+  lastName: z.string().min(1, 'Last name is required').max(100, 'Last name too long'),
+  phoneNumber: z.string().regex(/^\+?[\d\s\-()]+$/, 'Invalid phone number').optional().or(z.literal('')),
+  isActive: z.boolean(),
+});
+
 export default function UserDirectory() {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof userEditSchema>>({
+    resolver: zodResolver(userEditSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      isActive: true,
+    },
+  });
 
   useEffect(() => {
     fetchUsers();
@@ -113,6 +145,65 @@ export default function UserDirectory() {
   const handleViewUser = (user: UserProfile) => {
     setSelectedUser(user);
     setIsDialogOpen(true);
+    setIsEditing(false);
+    
+    // Reset form with user data
+    form.reset({
+      firstName: user.first_name || '',
+      lastName: user.last_name || '',
+      phoneNumber: user.phone_number || '',
+      isActive: user.is_active ?? true,
+    });
+  };
+
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+    if (!isEditing && selectedUser) {
+      // Reset form when starting to edit
+      form.reset({
+        firstName: selectedUser.first_name || '',
+        lastName: selectedUser.last_name || '',
+        phoneNumber: selectedUser.phone_number || '',
+        isActive: selectedUser.is_active ?? true,
+      });
+    }
+  };
+
+  const onSubmit = async (values: z.infer<typeof userEditSchema>) => {
+    if (!selectedUser) return;
+
+    try {
+      setIsSaving(true);
+      
+      const { data, error } = await supabase.functions.invoke('admin-update-user', {
+        body: {
+          userId: selectedUser.id,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          phone: values.phoneNumber || null,
+          isActive: values.isActive,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'User details updated successfully',
+      });
+
+      setIsEditing(false);
+      fetchUsers(); // Refresh the user list
+    } catch (error: any) {
+      console.error('Error updating user:', error);
+      toast({
+        title: 'Error',
+        description: error?.message || 'Failed to update user details',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleRoleChanged = () => {
@@ -280,61 +371,171 @@ export default function UserDirectory() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-3xl w-full max-h-[85vh]">
           <DialogHeader>
-            <DialogTitle>User Details</DialogTitle>
-            <DialogDescription>
-              View and manage user information and roles
-            </DialogDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <DialogTitle>User Details</DialogTitle>
+                <DialogDescription>
+                  View and manage user information and roles
+                </DialogDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleEditToggle}
+                disabled={isSaving}
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                {isEditing ? 'Cancel' : 'Edit'}
+              </Button>
+            </div>
           </DialogHeader>
 
           <ScrollArea className="max-h-[70vh] pr-4">
             {selectedUser && (
               <div className="space-y-6">
                 {/* User Info */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <UserCog className="h-6 w-6 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg">
-                        {selectedUser.first_name && selectedUser.last_name
-                          ? `${selectedUser.first_name} ${selectedUser.last_name}`
-                          : 'N/A'}
-                      </h3>
-                      <Badge variant="secondary" className="mb-2">{selectedUser.role}</Badge>
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Mail className="h-3 w-3" />
-                          {selectedUser.email || 'N/A'}
-                        </div>
-                        {selectedUser.phone_number && (
+                {!isEditing ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
+                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <UserCog className="h-6 w-6 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-lg">
+                          {selectedUser.first_name && selectedUser.last_name
+                            ? `${selectedUser.first_name} ${selectedUser.last_name}`
+                            : 'N/A'}
+                        </h3>
+                        <Badge variant="secondary" className="mb-2">{selectedUser.role}</Badge>
+                        <div className="space-y-1">
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Phone className="h-3 w-3" />
-                            {formatPhoneNumber(selectedUser.phone_number)}
+                            <Mail className="h-3 w-3" />
+                            {selectedUser.email || 'N/A'}
                           </div>
-                        )}
+                          {selectedUser.phone_number && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Phone className="h-3 w-3" />
+                              {formatPhoneNumber(selectedUser.phone_number)}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">User Number</p>
-                      <p className="text-sm font-mono">
-                        {selectedUser.user_number !== undefined && selectedUser.user_number !== null
-                          ? String(selectedUser.user_number).padStart(3, '0')
-                          : `${selectedUser.id.slice(0, 8)}...`}
-                      </p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Joined Date</p>
-                      <div className="flex items-center gap-1 text-sm">
-                        <Calendar className="h-3 w-3" />
-                        {new Date(selectedUser.created_at).toLocaleDateString()}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">User Number</p>
+                        <p className="text-sm font-mono">
+                          {selectedUser.user_number !== undefined && selectedUser.user_number !== null
+                            ? String(selectedUser.user_number).padStart(3, '0')
+                            : `${selectedUser.id.slice(0, 8)}...`}
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">Joined Date</p>
+                        <div className="flex items-center gap-1 text-sm">
+                          <Calendar className="h-3 w-3" />
+                          {new Date(selectedUser.created_at).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">Status</p>
+                        <p className="text-sm">
+                          {selectedUser.is_active ? (
+                            <span className="text-green-600">Active</span>
+                          ) : (
+                            <span className="text-gray-500">Inactive</span>
+                          )}
+                        </p>
                       </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                      <div className="p-4 bg-muted/50 rounded-lg space-y-4">
+                        <h4 className="font-semibold">Edit User Details</h4>
+                        
+                        <FormField
+                          control={form.control}
+                          name="firstName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>First Name</FormLabel>
+                              <FormControl>
+                                <Input placeholder="John" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="lastName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Last Name</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Doe" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="phoneNumber"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Phone Number</FormLabel>
+                              <FormControl>
+                                <Input placeholder="(555) 123-4567" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="isActive"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                              <div className="space-y-0.5">
+                                <FormLabel>Active Status</FormLabel>
+                                <div className="text-sm text-muted-foreground">
+                                  Enable or disable user account
+                                </div>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className="flex gap-2 pt-4">
+                          <Button type="submit" disabled={isSaving}>
+                            {isSaving ? 'Saving...' : 'Save Changes'}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleEditToggle}
+                            disabled={isSaving}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    </form>
+                  </Form>
+                )}
 
                 {/* Role Management */}
                 <div className="border-t pt-4">

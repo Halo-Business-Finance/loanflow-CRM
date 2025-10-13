@@ -1,0 +1,81 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
+    );
+
+    // Verify user is authenticated
+    const {
+      data: { user },
+      error: authError,
+    } = await supabaseClient.auth.getUser();
+
+    if (authError || !user) {
+      console.error('Authentication error:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { userId, firstName, lastName, phone, isActive } = await req.json();
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: 'User ID is required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Updating user profile:', { userId, firstName, lastName, phone, isActive });
+
+    // Call the admin_update_profile database function
+    const { data, error } = await supabaseClient.rpc('admin_update_profile', {
+      p_user_id: userId,
+      p_first_name: firstName || null,
+      p_last_name: lastName || null,
+      p_phone: phone || null,
+      p_is_active: isActive !== undefined ? isActive : null,
+    });
+
+    if (error) {
+      console.error('Error updating user profile:', error);
+      return new Response(
+        JSON.stringify({ error: error.message }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('User profile updated successfully:', data);
+
+    return new Response(
+      JSON.stringify({ success: true, data }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+});
