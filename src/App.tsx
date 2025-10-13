@@ -48,7 +48,7 @@ import Documents from "./pages/Documents";
 import Activities from "./pages/Activities";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
-import UsersLeads from "./pages/UsersLeads";
+import UserDirectory from "./pages/UserDirectory";
 import Resources from "./pages/Resources";
 import Enterprise from "./pages/Enterprise";
 import Integrations from "./pages/Integrations";
@@ -153,6 +153,7 @@ function AuthenticatedApp() {
             <Route path="/activities/tasks" element={<IBMCloudLayout><ActivitiesTasks /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/reports" element={<IBMCloudLayout><Reports /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/user-directory" element={<IBMCloudLayout><UserDirectory /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/settings" element={<IBMCloudLayout><Settings /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/settings/users" element={<IBMCloudLayout><SettingsUsers /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />

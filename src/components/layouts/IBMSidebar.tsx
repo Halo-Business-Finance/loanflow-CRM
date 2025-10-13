@@ -14,6 +14,7 @@ import {
   ChevronRight,
   BarChart3,
   Building2,
+  UserCog,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -40,6 +41,7 @@ const navItems: NavItemData[] = [
   { icon: Activity, label: 'Activities', to: '/activities' },
   { icon: FileText, label: 'Documents', to: '/documents' },
   { icon: BarChart3, label: 'Reports', to: '/reports' },
+  { icon: UserCog, label: 'User Directory', to: '/user-directory' },
   { icon: Building2, label: 'Enterprise', to: '/enterprise' },
   { icon: Shield, label: 'Security', to: '/security' },
   { icon: Settings, label: 'Settings', to: '/settings' },
