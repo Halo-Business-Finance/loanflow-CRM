@@ -7,7 +7,7 @@ export default function UnderwriterDocuments() {
   return (
     <div className="min-h-screen bg-background">
       {/* Modern Header */}
-      <div className="bg-card border-b border-border sticky top-0 z-10">
+      <div className="bg-card sticky top-0 z-10">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
