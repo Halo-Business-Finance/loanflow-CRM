@@ -34,6 +34,7 @@ interface UserProfile {
   role: string | null;
   created_at: string;
   user_number?: number | null;
+  is_active?: boolean;
 }
 
 export default function UserDirectory() {
@@ -233,9 +234,16 @@ export default function UserDirectory() {
                   {filteredUsers.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">
-                        {user.first_name && user.last_name
-                          ? `${user.first_name} ${user.last_name}`
-                          : 'N/A'}
+                        <div className="flex flex-col">
+                          <span>
+                            {user.first_name && user.last_name
+                              ? `${user.first_name} ${user.last_name}`
+                              : 'N/A'}
+                          </span>
+                          <span className={`text-xs ${user.is_active ? 'text-green-600' : 'text-gray-500'}`}>
+                            {user.is_active ? 'Active' : 'Inactive'}
+                          </span>
+                        </div>
                       </TableCell>
                       <TableCell>{user.email || 'N/A'}</TableCell>
                       <TableCell>{user.phone_number || 'N/A'}</TableCell>
