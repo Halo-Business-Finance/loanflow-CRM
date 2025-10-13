@@ -22,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { SecureRoleManager } from '@/components/security/SecureRoleManager';
 
 interface UserProfile {
@@ -261,67 +262,69 @@ export default function UserDirectory() {
 
       {/* User Detail Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="sm:max-w-3xl w-full max-h-[85vh]">
           <DialogHeader>
             <DialogTitle>User Details</DialogTitle>
             <DialogDescription>
               View and manage user information and roles
             </DialogDescription>
           </DialogHeader>
-          
-          {selectedUser && (
-            <div className="space-y-6">
-              {/* User Info */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
-                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <UserCog className="h-6 w-6 text-primary" />
+
+          <ScrollArea className="max-h-[70vh] pr-4">
+            {selectedUser && (
+              <div className="space-y-6">
+                {/* User Info */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <UserCog className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg">
+                        {selectedUser.first_name && selectedUser.last_name
+                          ? `${selectedUser.first_name} ${selectedUser.last_name}`
+                          : 'N/A'}
+                      </h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Mail className="h-3 w-3" />
+                        {selectedUser.email || 'N/A'}
+                      </div>
+                    </div>
+                    <Badge variant="secondary">{selectedUser.role}</Badge>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg">
-                      {selectedUser.first_name && selectedUser.last_name
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">User ID</p>
+                      <p className="text-sm font-mono">{selectedUser.id.slice(0, 8)}...</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Joined Date</p>
+                      <div className="flex items-center gap-1 text-sm">
+                        <Calendar className="h-3 w-3" />
+                        {new Date(selectedUser.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Role Management */}
+                <div className="border-t pt-4">
+                  <h4 className="font-semibold mb-4">Role Management</h4>
+                  <SecureRoleManager
+                    targetUserId={selectedUser.id}
+                    targetUserName={
+                      selectedUser.first_name && selectedUser.last_name
                         ? `${selectedUser.first_name} ${selectedUser.last_name}`
-                        : 'N/A'}
-                    </h3>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Mail className="h-3 w-3" />
-                      {selectedUser.email || 'N/A'}
-                    </div>
-                  </div>
-                  <Badge variant="secondary">{selectedUser.role}</Badge>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-muted-foreground">User ID</p>
-                    <p className="text-sm font-mono">{selectedUser.id.slice(0, 8)}...</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-muted-foreground">Joined Date</p>
-                    <div className="flex items-center gap-1 text-sm">
-                      <Calendar className="h-3 w-3" />
-                      {new Date(selectedUser.created_at).toLocaleDateString()}
-                    </div>
-                  </div>
+                        : selectedUser.email || 'User'
+                    }
+                    currentRole={selectedUser.role as any}
+                    onRoleChanged={handleRoleChanged}
+                  />
                 </div>
               </div>
-
-              {/* Role Management */}
-              <div className="border-t pt-4">
-                <h4 className="font-semibold mb-4">Role Management</h4>
-                <SecureRoleManager
-                  targetUserId={selectedUser.id}
-                  targetUserName={
-                    selectedUser.first_name && selectedUser.last_name
-                      ? `${selectedUser.first_name} ${selectedUser.last_name}`
-                      : selectedUser.email || 'User'
-                  }
-                  currentRole={selectedUser.role as any}
-                  onRoleChanged={handleRoleChanged}
-                />
-              </div>
-            </div>
-          )}
+            )}
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </div>
