@@ -95,11 +95,6 @@ export function LeadTableRow({
             className="flex items-center gap-3 flex-1 cursor-pointer"
             onClick={() => navigate(`/leads/${lead.id}`)}
           >
-            <Avatar className="h-12 w-12 border-2 border-border">
-              <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
-                {getInitials(lead.name)}
-              </AvatarFallback>
-            </Avatar>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-semibold text-base text-foreground truncate">
