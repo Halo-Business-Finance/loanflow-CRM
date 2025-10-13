@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
-import { UserCog, Plus, Search, Filter, Download, Mail, Calendar } from 'lucide-react';
+import { UserCog, Plus, Search, Filter, Download, Mail, Calendar, Phone } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,6 +30,7 @@ interface UserProfile {
   first_name: string | null;
   last_name: string | null;
   email: string | null;
+  phone_number: string | null;
   role: string | null;
   created_at: string;
   user_number?: number | null;
@@ -102,6 +103,7 @@ export default function UserDirectory() {
       user.first_name?.toLowerCase().includes(searchLower) ||
       user.last_name?.toLowerCase().includes(searchLower) ||
       user.email?.toLowerCase().includes(searchLower) ||
+      user.phone_number?.toLowerCase().includes(searchLower) ||
       user.role?.toLowerCase().includes(searchLower)
     );
   });
@@ -221,6 +223,7 @@ export default function UserDirectory() {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
                     <TableHead>Role</TableHead>
                     <TableHead>Joined</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -235,6 +238,7 @@ export default function UserDirectory() {
                           : 'N/A'}
                       </TableCell>
                       <TableCell>{user.email || 'N/A'}</TableCell>
+                      <TableCell>{user.phone_number || 'N/A'}</TableCell>
                       <TableCell>
                         <Badge variant="secondary" className="text-xs">
                           {user.role}
@@ -286,9 +290,17 @@ export default function UserDirectory() {
                           ? `${selectedUser.first_name} ${selectedUser.last_name}`
                           : 'N/A'}
                       </h3>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Mail className="h-3 w-3" />
-                        {selectedUser.email || 'N/A'}
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Mail className="h-3 w-3" />
+                          {selectedUser.email || 'N/A'}
+                        </div>
+                        {selectedUser.phone_number && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Phone className="h-3 w-3" />
+                            {selectedUser.phone_number}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <Badge variant="secondary">{selectedUser.role}</Badge>
