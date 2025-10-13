@@ -43,6 +43,7 @@ export function useRealtimeLeads() {
       // Transform the data to match Lead interface
       const transformedLeads: Lead[] = (data || []).map(lead => ({
         id: lead.id,
+        lead_number: lead.lead_number,
         name: lead.contact_entity?.name || '',
         email: lead.contact_entity?.email === '[SECURED]' ? '***@***.com' : (lead.contact_entity?.email || ''),
         phone: lead.contact_entity?.phone === '[SECURED]' ? '***-***-****' : (lead.contact_entity?.phone || ''),
