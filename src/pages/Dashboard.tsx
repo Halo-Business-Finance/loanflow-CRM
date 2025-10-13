@@ -111,7 +111,7 @@ export default function Dashboard() {
           <IBMContentCard
             featured
             icon={<Rocket className="h-8 w-8" />}
-            title="Get started with Halo CRM"
+            title="Get started with Loanflow CRM"
             description="Learn how to manage your loan pipeline, track leads, and close more deals with our powerful CRM platform."
             footer={
               <div className="flex gap-2">
