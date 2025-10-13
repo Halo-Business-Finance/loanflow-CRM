@@ -15,9 +15,10 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 
 interface IBMTopBarProps {
   onMenuClick: () => void;
+  sidebarCollapsed: boolean;
 }
 
-export function IBMTopBar({ onMenuClick }: IBMTopBarProps) {
+export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -28,18 +29,20 @@ export function IBMTopBar({ onMenuClick }: IBMTopBarProps) {
   };
 
   return (
-    <header className="h-14 bg-[#161616] border-b border-[#393939] flex items-center flex-shrink-0">
+    <header className="h-14 bg-[#161616] border-b border-[#393939] flex items-center flex-shrink-0 w-full">
       {/* Left section with hamburger and brand */}
-      <div className="flex items-center border-r border-[#393939] h-full">
+      <div className="flex items-center h-full" style={{ width: sidebarCollapsed ? '48px' : '240px' }}>
         <Button
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-14 w-14 rounded-none text-white hover:bg-white/10"
+          className="h-14 w-12 rounded-none text-white hover:bg-white/10 flex-shrink-0"
         >
-          <Grid3x3 className="h-5 w-5" />
+          {sidebarCollapsed ? <Grid3x3 className="h-5 w-5" /> : <Grid3x3 className="h-5 w-5" />}
         </Button>
-        <div className="text-white font-medium text-sm px-4 whitespace-nowrap">LoanFlow CRM</div>
+        {!sidebarCollapsed && (
+          <div className="text-white font-medium text-sm px-4 whitespace-nowrap">LoanFlow CRM</div>
+        )}
       </div>
 
       {/* Center search bar - takes most of the space */}
