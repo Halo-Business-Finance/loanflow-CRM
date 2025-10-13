@@ -106,6 +106,64 @@ export default function Dashboard() {
       />
 
       <div className="px-6 py-6 space-y-6">
+        {/* Featured Cards Carousel */}
+        <IBMCardCarousel>
+          <IBMContentCard
+            featured
+            icon={<Rocket className="h-8 w-8" />}
+            title="Get started with Halo CRM"
+            description="Learn how to manage your loan pipeline, track leads, and close more deals with our powerful CRM platform."
+            footer={
+              <div className="flex gap-2">
+                <Badge variant="secondary" className="bg-white/20 text-white border-white/20">
+                  Getting started
+                </Badge>
+                <span className="text-white/80 text-xs">5 min</span>
+              </div>
+            }
+            className="min-w-[400px] flex-shrink-0"
+          />
+          
+          <IBMContentCard
+            icon={<Users className="h-6 w-6" />}
+            title="Lead Management Best Practices"
+            description="Discover strategies to improve lead conversion and streamline your sales process."
+            footer={
+              <div className="flex gap-2">
+                <Badge variant="secondary" className="text-xs">Recommended</Badge>
+                <span className="text-[#525252] text-xs">8 min</span>
+              </div>
+            }
+            className="min-w-[300px] flex-shrink-0"
+          />
+
+          <IBMContentCard
+            icon={<BookOpen className="h-6 w-6" />}
+            title="Pipeline Analytics Guide"
+            description="Learn how to use analytics to identify bottlenecks and optimize your pipeline."
+            footer={
+              <div className="flex gap-2">
+                <Badge variant="secondary" className="text-xs">Popular</Badge>
+                <span className="text-[#525252] text-xs">10 min</span>
+              </div>
+            }
+            className="min-w-[300px] flex-shrink-0"
+          />
+
+          <IBMContentCard
+            icon={<Zap className="h-6 w-6" />}
+            title="Automation Features"
+            description="Automate repetitive tasks and focus on what matters most - closing deals."
+            footer={
+              <div className="flex gap-2">
+                <Badge variant="secondary" className="text-xs">New</Badge>
+                <span className="text-[#525252] text-xs">6 min</span>
+              </div>
+            }
+            className="min-w-[300px] flex-shrink-0"
+          />
+        </IBMCardCarousel>
+
         {/* Key Metrics */}
         <div>
           <div className="flex items-center justify-between mb-4">
