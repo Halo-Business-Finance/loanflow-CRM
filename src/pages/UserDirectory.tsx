@@ -32,6 +32,7 @@ interface UserProfile {
   email: string | null;
   role: string | null;
   created_at: string;
+  user_number?: number | null;
 }
 
 export default function UserDirectory() {
@@ -295,8 +296,12 @@ export default function UserDirectory() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">User ID</p>
-                      <p className="text-sm font-mono">{selectedUser.id.slice(0, 8)}...</p>
+                      <p className="text-sm font-medium text-muted-foreground">User Number</p>
+                      <p className="text-sm font-mono">
+                        {selectedUser.user_number !== undefined && selectedUser.user_number !== null
+                          ? String(selectedUser.user_number).padStart(3, '0')
+                          : `${selectedUser.id.slice(0, 8)}...`}
+                      </p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-sm font-medium text-muted-foreground">Joined Date</p>
