@@ -55,7 +55,8 @@ function NavItem({ icon: Icon, label, to, collapsed }: NavItemProps) {
     <NavLink
       to={to}
       className={cn(
-        'flex items-center h-8 px-3 text-sm transition-colors relative group',
+        'flex items-center h-8 text-sm transition-colors relative group',
+        collapsed ? 'justify-center px-0' : 'px-4',
         isActive
           ? 'bg-[#e0e0e0] text-[#161616] font-medium'
           : 'text-[#525252] hover:bg-[#e0e0e0] hover:text-[#161616]'
@@ -65,7 +66,7 @@ function NavItem({ icon: Icon, label, to, collapsed }: NavItemProps) {
         <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
       )}
       <Icon className="h-4 w-4 flex-shrink-0" />
-      {!collapsed && <span className="ml-4 truncate">{label}</span>}
+      {!collapsed && <span className="ml-3 truncate">{label}</span>}
     </NavLink>
   );
 }
