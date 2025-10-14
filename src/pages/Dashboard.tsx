@@ -107,11 +107,18 @@ export default function Dashboard() {
     try {
       setLoading(true);
       
-      // Get user's first name from metadata
-      console.log('User object:', user);
-      console.log('User metadata:', user?.user_metadata);
-      const firstName = user?.user_metadata?.first_name || '';
-      console.log('First name extracted:', firstName);
+      // Determine user's first name with robust fallbacks
+      const meta: any = user?.user_metadata || {};
+      const firstName =
+        meta.first_name ||
+        meta.firstName ||
+        meta.given_name ||
+        (typeof meta.full_name === 'string' ? meta.full_name.split(' ')[0] : '') ||
+        (typeof meta.name === 'string' ? meta.name.split(' ')[0] : '') ||
+        (user?.email ? user.email.split('@')[0] : '');
+      if (import.meta.env.DEV) {
+        console.info('[Dashboard] Greeting first name resolved:', firstName, meta);
+      }
       setUserName(firstName);
       
       const { data: leads } = await supabase
