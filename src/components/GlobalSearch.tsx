@@ -136,10 +136,10 @@ export function GlobalSearch() {
     if (result.type === 'lead') {
       navigate(`/leads/${result.id}`)
     } else if (result.type === 'client') {
-      navigate(`/clients/${result.id}`)
+      navigate(`/existing-borrowers/${result.id}`)
     } else if (result.type === 'loan') {
-      // Navigate to client who owns this loan
-      navigate('/clients') // Could be improved to navigate to specific client
+      // Navigate to existing borrowers list
+      navigate('/existing-borrowers')
     }
     setIsOpen(false)
     setQuery("")

@@ -133,8 +133,6 @@ function AuthenticatedApp() {
             <Route path="/existing-borrowers/details" element={<IBMCloudLayout><BorrowerDetails /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/existing-borrowers/history" element={<IBMCloudLayout><LoanHistory /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/existing-borrowers/:id" element={<IBMCloudLayout><ClientDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
-            {/* Redirect old client routes to existing borrowers */}
-            <Route path="/clients/:id" element={<IBMCloudLayout><ClientDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/pipeline" element={<IBMCloudLayout><Pipeline /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/pipeline/analytics" element={<IBMCloudLayout><PipelineAnalytics /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
