@@ -3,20 +3,26 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from './AuthProvider'
 import { LoginForm } from './LoginForm'
 import { SignUpForm } from './SignUpForm'
+import { VerificationPending } from './VerificationPending'
 
 export function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
   const navigate = useNavigate()
-  const { user, loading } = useAuth()
+  const { user, loading, isEmailVerified } = useAuth()
 
-  // Redirect authenticated users to dashboard
+  // Redirect verified users to dashboard
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && user && isEmailVerified) {
       navigate('/', { replace: true })
     }
-  }, [user, loading, navigate])
+  }, [user, loading, isEmailVerified, navigate])
 
   const toggleMode = () => setIsLogin(!isLogin)
+
+  // Show verification pending page if user is logged in but not verified
+  if (user && !isEmailVerified) {
+    return <VerificationPending />
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">

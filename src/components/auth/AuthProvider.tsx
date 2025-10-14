@@ -10,11 +10,13 @@ interface AuthContextType {
   userRole: string | null
   userRoles: string[]
   loading: boolean
+  isEmailVerified: boolean
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<void>
   signOut: () => Promise<void>
   hasRole: (role: string) => boolean
   resetPassword: (email: string) => Promise<void>
+  resendVerificationEmail: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -25,6 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userRole, setUserRole] = useState<string | null>(null)
   const [userRoles, setUserRoles] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
+  const [isEmailVerified, setIsEmailVerified] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -41,14 +44,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session)
         setUser(session?.user ?? null)
         if (session?.user) {
-          // Defer role fetching to avoid deadlock
+          // Defer role and verification fetching to avoid deadlock
           setTimeout(() => {
             if (mounted) {
               fetchUserRole(session.user.id)
+              checkEmailVerification(session.user.id)
             }
           }, 0)
         } else {
           setUserRole(null)
+          setIsEmailVerified(false)
         }
         setLoading(false)
       }
@@ -64,8 +69,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(session?.user ?? null)
           if (session?.user) {
             await fetchUserRole(session.user.id)
+            await checkEmailVerification(session.user.id)
           } else {
             setUserRole(null)
+            setIsEmailVerified(false)
           }
           setLoading(false)
         }
@@ -85,6 +92,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+
+  const checkEmailVerification = async (userId: string) => {
+    try {
+      const { data, error } = await supabase.rpc('is_email_verified', {
+        p_user_id: userId
+      })
+
+      if (error) {
+        console.error('Error checking email verification:', error)
+        setIsEmailVerified(false)
+        return
+      }
+
+      setIsEmailVerified(data === true)
+    } catch (error) {
+      console.error('Error in checkEmailVerification:', error)
+      setIsEmailVerified(false)
+    }
+  }
 
   const fetchUserRole = async (userId: string) => {
     try {
@@ -298,17 +324,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const resendVerificationEmail = async () => {
+    if (!user?.email) {
+      throw new Error('No user email found')
+    }
+
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: user.email
+      })
+
+      if (error) throw error
+
+      toast({
+        title: "Verification email sent",
+        description: "Please check your inbox for the verification link.",
+      })
+    } catch (error: any) {
+      console.error('Resend verification error:', error)
+      toast({
+        title: "Failed to resend email",
+        description: error.message,
+        variant: "destructive",
+      })
+      throw error
+    }
+  }
+
   const value = {
     user,
     session,
     userRole,
     userRoles,
     loading,
+    isEmailVerified,
     signIn,
     signUp,
     signOut,
     hasRole,
     resetPassword,
+    resendVerificationEmail,
   }
 
   // Only render children when context value is fully available

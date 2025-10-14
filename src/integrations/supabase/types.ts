@@ -2917,6 +2917,7 @@ export type Database = {
           daily_summary_reports: boolean | null
           email: string | null
           email_notifications: boolean | null
+          email_verified_at: string | null
           first_name: string | null
           id: string
           is_active: boolean | null
@@ -2925,6 +2926,10 @@ export type Database = {
           last_name: string | null
           new_application_alerts: boolean | null
           phone_number: string | null
+          phone_verification_attempts: number | null
+          phone_verification_code: string | null
+          phone_verification_expires_at: string | null
+          phone_verified_at: string | null
           state: string | null
           status_change_notifications: boolean | null
           timezone: string | null
@@ -2940,6 +2945,7 @@ export type Database = {
           daily_summary_reports?: boolean | null
           email?: string | null
           email_notifications?: boolean | null
+          email_verified_at?: string | null
           first_name?: string | null
           id: string
           is_active?: boolean | null
@@ -2948,6 +2954,10 @@ export type Database = {
           last_name?: string | null
           new_application_alerts?: boolean | null
           phone_number?: string | null
+          phone_verification_attempts?: number | null
+          phone_verification_code?: string | null
+          phone_verification_expires_at?: string | null
+          phone_verified_at?: string | null
           state?: string | null
           status_change_notifications?: boolean | null
           timezone?: string | null
@@ -2963,6 +2973,7 @@ export type Database = {
           daily_summary_reports?: boolean | null
           email?: string | null
           email_notifications?: boolean | null
+          email_verified_at?: string | null
           first_name?: string | null
           id?: string
           is_active?: boolean | null
@@ -2971,6 +2982,10 @@ export type Database = {
           last_name?: string | null
           new_application_alerts?: boolean | null
           phone_number?: string | null
+          phone_verification_attempts?: number | null
+          phone_verification_code?: string | null
+          phone_verification_expires_at?: string | null
+          phone_verified_at?: string | null
           state?: string | null
           status_change_notifications?: boolean | null
           timezone?: string | null
@@ -4303,6 +4318,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      generate_phone_verification_code: {
+        Args: { p_phone_number: string; p_user_id: string }
+        Returns: string
+      }
       generate_role_change_mfa_verification: {
         Args: Record<PropertyKey, never>
         Returns: Json
@@ -4545,6 +4564,10 @@ export type Database = {
         Args: { user_email: string }
         Returns: boolean
       }
+      is_email_verified: {
+        Args: { p_user_id: string }
+        Returns: boolean
+      }
       is_ip_allowed: {
         Args: { client_ip: unknown }
         Returns: boolean
@@ -4761,6 +4784,10 @@ export type Database = {
       }
       verify_data_integrity: {
         Args: { p_record_id?: string; p_table_name: string }
+        Returns: Json
+      }
+      verify_phone_code: {
+        Args: { p_code: string; p_user_id: string }
         Returns: Json
       }
       verify_role_change_mfa: {

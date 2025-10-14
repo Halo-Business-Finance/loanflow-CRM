@@ -97,7 +97,7 @@ serve(async (req) => {
 
     console.log('User created successfully:', newUser.user.id);
 
-    // Update profile with additional information
+    // Update profile with additional information and mark email as verified
     if (newUser.user) {
       const { error: profileError } = await supabaseAdmin
         .from('profiles')
@@ -107,7 +107,8 @@ serve(async (req) => {
           phone: phone || null,
           city: city || null,
           state: state || null,
-          is_active: isActive !== false
+          is_active: isActive !== false,
+          email_verified_at: new Date().toISOString() // Auto-verify for admin-created users
         })
         .eq('id', newUser.user.id);
 
@@ -136,6 +137,9 @@ serve(async (req) => {
         new_user_email: email,
         created_by: user.email,
         role: role || 'agent',
+        email_auto_confirmed: true,
+        email_auto_verified: true,
+        created_by_admin: true,
         timestamp: new Date().toISOString()
       }
     });
