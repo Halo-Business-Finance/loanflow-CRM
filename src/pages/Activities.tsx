@@ -40,8 +40,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
 
 interface Notification {
   id: string
@@ -236,7 +243,9 @@ export default function Activities() {
     setEditMessage(notification.message)
   }
 
-  const handleSaveEdit = async (notificationId: string) => {
+  const handleSaveEdit = async () => {
+    if (!editingNotificationId) return
+    
     try {
       const { error } = await supabase
         .from('notifications')
@@ -245,7 +254,7 @@ export default function Activities() {
           message: editMessage,
           updated_at: new Date().toISOString()
         })
-        .eq('id', notificationId)
+        .eq('id', editingNotificationId)
 
       if (error) throw error
 
@@ -255,6 +264,8 @@ export default function Activities() {
       })
 
       setEditingNotificationId(null)
+      setEditTitle('')
+      setEditMessage('')
       fetchData()
     } catch (error) {
       console.error('Error updating notification:', error)
@@ -367,73 +378,37 @@ export default function Activities() {
           >
             <div className="space-y-4">
               {notifications.slice(0, 5).map((notification) => (
-                <div key={notification.id}>
-                  {editingNotificationId === notification.id ? (
-                    <div className="flex flex-col gap-3 p-3 rounded-lg bg-muted/30 border border-primary">
-                      <Input
-                        value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        placeholder="Title"
-                        className="text-sm"
-                      />
-                      <Textarea
-                        value={editMessage}
-                        onChange={(e) => setEditMessage(e.target.value)}
-                        placeholder="Message"
-                        className="text-sm min-h-[60px]"
-                      />
-                      <div className="flex gap-2 justify-end">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={handleCancelEdit}
-                        >
-                          <X className="h-4 w-4 mr-1" />
-                          Cancel
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => handleSaveEdit(notification.id)}
-                        >
-                          <Check className="h-4 w-4 mr-1" />
-                          Save
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
-                      {getTypeIcon(notification.type)}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground">
-                          {notification.message}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {notification.scheduled_for && notification.scheduled_for > new Date() 
-                            ? `Scheduled for ${formatDistanceToNow(notification.scheduled_for)} from now`
-                            : `${formatDistanceToNow(notification.timestamp)} ago`
-                          }
-                        </p>
-                      </div>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-8 w-8 p-0"
-                          onClick={() => handleEditNotification(notification)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                          onClick={() => setDeleteConfirmId(notification.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  )}
+                <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
+                  {getTypeIcon(notification.type)}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground">
+                      {notification.message}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {notification.scheduled_for && notification.scheduled_for > new Date() 
+                        ? `Scheduled for ${formatDistanceToNow(notification.scheduled_for)} from now`
+                        : `${formatDistanceToNow(notification.timestamp)} ago`
+                      }
+                    </p>
+                  </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0"
+                      onClick={() => handleEditNotification(notification)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                      onClick={() => setDeleteConfirmId(notification.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -507,6 +482,54 @@ export default function Activities() {
           </div>
         </StandardContentCard>
       </div>
+
+      {/* Edit Notification Dialog */}
+      <Dialog open={!!editingNotificationId} onOpenChange={(open) => !open && handleCancelEdit()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-base font-semibold">
+              Edit Notification
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Title</Label>
+              <Input
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                placeholder="Notification title"
+                className="w-full"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Message</Label>
+              <Textarea
+                value={editMessage}
+                onChange={(e) => setEditMessage(e.target.value)}
+                placeholder="Notification message"
+                className="w-full min-h-[100px]"
+                rows={4}
+              />
+            </div>
+          </div>
+          
+          <div className="flex gap-2 justify-end">
+            <Button
+              variant="outline"
+              onClick={handleCancelEdit}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveEdit}
+            >
+              <Check className="w-4 h-4 mr-2" />
+              Save Changes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => !open && setDeleteConfirmId(null)}>
