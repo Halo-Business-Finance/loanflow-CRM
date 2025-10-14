@@ -40,15 +40,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
 
 interface Notification {
   id: string
@@ -483,53 +478,77 @@ export default function Activities() {
         </StandardContentCard>
       </div>
 
-      {/* Edit Notification Dialog */}
-      <Dialog open={!!editingNotificationId} onOpenChange={(open) => !open && handleCancelEdit()}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-base font-semibold">
-              Edit Notification
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Title</Label>
-              <Input
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                placeholder="Notification title"
-                className="w-full"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Message</Label>
-              <Textarea
-                value={editMessage}
-                onChange={(e) => setEditMessage(e.target.value)}
-                placeholder="Notification message"
-                className="w-full min-h-[100px]"
-                rows={4}
-              />
-            </div>
+      {/* Edit Notification Modal */}
+      {editingNotificationId && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-2"
+          onClick={handleCancelEdit}
+        >
+          <div 
+            className="w-full max-w-md max-h-[85vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Card className="w-full shadow-xl border animate-in slide-in-from-top-4 duration-300">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
+                <CardTitle className="text-base font-semibold dark:text-white">
+                  Edit Notification
+                </CardTitle>
+                <Button variant="ghost" size="sm" onClick={handleCancelEdit}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-4 px-4 pb-4">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>Editing notification</span>
+                </div>
+
+                <Separator />
+
+                {/* Title */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Title</Label>
+                  <Input
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    placeholder="Notification title"
+                    className="w-full"
+                  />
+                </div>
+
+                <Separator />
+
+                {/* Message */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Message</Label>
+                  <Textarea
+                    value={editMessage}
+                    onChange={(e) => setEditMessage(e.target.value)}
+                    placeholder="Add notification details..."
+                    rows={4}
+                  />
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleSaveEdit}
+                    className="flex-1"
+                  >
+                    <Check className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleCancelEdit}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-          
-          <div className="flex gap-2 justify-end">
-            <Button
-              variant="outline"
-              onClick={handleCancelEdit}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSaveEdit}
-            >
-              <Check className="w-4 h-4 mr-2" />
-              Save Changes
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => !open && setDeleteConfirmId(null)}>
