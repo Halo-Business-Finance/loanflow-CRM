@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
-import { UserCog, Plus, Search, Filter, Download, Mail, Calendar, Phone, Edit } from 'lucide-react';
+import { UserCog, Plus, Search, Filter, Download, Mail, Calendar, Phone, Edit, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,6 +22,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SecureRoleManager } from '@/components/security/SecureRoleManager';
 import { formatPhoneNumber } from '@/lib/utils';
@@ -77,6 +87,8 @@ export default function UserDirectory() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof userEditSchema>>({
@@ -271,6 +283,40 @@ export default function UserDirectory() {
       });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return;
+
+    try {
+      setIsDeleting(true);
+      
+      const { data, error } = await supabase.functions.invoke('admin-delete-user', {
+        body: {
+          userId: selectedUser.id,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'User deleted successfully',
+      });
+
+      setIsDeleteDialogOpen(false);
+      setIsDialogOpen(false);
+      fetchUsers(); // Refresh the user list
+    } catch (error: any) {
+      console.error('Error deleting user:', error);
+      toast({
+        title: 'Error',
+        description: error?.message || 'Failed to delete user',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -592,15 +638,27 @@ export default function UserDirectory() {
                   View and manage user information and roles
                 </DialogDescription>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleEditToggle}
-                disabled={isSaving}
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                {isEditing ? 'Cancel' : 'Edit'}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleEditToggle}
+                  disabled={isSaving || isDeleting}
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  {isEditing ? 'Cancel' : 'Edit'}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsDeleteDialogOpen(true)}
+                  disabled={isSaving || isDeleting}
+                  className="text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </Button>
+              </div>
             </div>
           </DialogHeader>
 
@@ -770,6 +828,34 @@ export default function UserDirectory() {
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the user account for{' '}
+              <span className="font-semibold">
+                {selectedUser?.first_name && selectedUser?.last_name
+                  ? `${selectedUser.first_name} ${selectedUser.last_name}`
+                  : selectedUser?.email}
+              </span>{' '}
+              and remove all associated data from the system.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteUser}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? 'Deleting...' : 'Delete User'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
