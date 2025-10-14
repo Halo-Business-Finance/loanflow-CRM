@@ -218,7 +218,7 @@ export default function Settings() {
             </TabsTrigger>
             <TabsTrigger value="security" className="flex items-center gap-2">
               <Shield className="w-4 h-4" />
-              <span>Security</span>
+              <span>Authentication</span>
             </TabsTrigger>
             <TabsTrigger value="system" className="flex items-center gap-2">
               <RefreshCw className="w-4 h-4" />
