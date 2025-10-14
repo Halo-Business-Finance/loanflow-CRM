@@ -75,6 +75,7 @@ export default function LeadDetail() {
     name: "",
     email: "",
     phone: "",
+    phone_ext: "",
     business_name: "",
     business_address: "",
     business_city: "",
@@ -166,6 +167,7 @@ export default function LeadDetail() {
         name: mergedLead.name || "",
         email: mergedLead.email || "",
         phone: mergedLead.phone || "",
+        phone_ext: (mergedLead as any).phone_ext || "",
         business_name: mergedLead.business_name || "",
         business_address: mergedLead.business_address || "",
         business_city: mergedLead.business_city || "",
@@ -681,19 +683,36 @@ export default function LeadDetail() {
                   )}
                 </div>
 
-                <div>
-                  <Label className="text-xs font-medium text-muted-foreground">Phone</Label>
-                  {isEditing ? (
-                    <Input
-                      value={editableFields.phone}
-                      onChange={(e) => setEditableFields({...editableFields, phone: e.target.value})}
-                      className="mt-1 h-8 text-sm"
-                    />
-                  ) : (
-                    <div className="field-display mt-1">
-                      {editableFields.phone ? formatPhoneNumber(editableFields.phone) : 'N/A'}
-                    </div>
-                  )}
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="col-span-2">
+                    <Label className="text-xs font-medium text-muted-foreground">Company Phone</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.phone}
+                        onChange={(e) => setEditableFields({...editableFields, phone: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.phone ? formatPhoneNumber(editableFields.phone) : 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Ext</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.phone_ext || ''}
+                        onChange={(e) => setEditableFields({...editableFields, phone_ext: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                        placeholder="123"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.phone_ext || 'N/A'}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div>
