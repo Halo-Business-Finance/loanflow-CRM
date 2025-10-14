@@ -1126,7 +1126,16 @@ export default function LeadDetail() {
           </div>
         </div>
 
-        {/* Future: Action Reminder Dialog can be added here */}
+        {/* Action Reminder Dialog */}
+        {lead && (
+          <ActionReminder
+            entityId={lead.id}
+            entityName={lead.name || lead.business_name || 'Lead'}
+            entityType="lead"
+            isOpen={showReminderDialog}
+            onClose={() => setShowReminderDialog(false)}
+          />
+        )}
       </div>
     )
   }
