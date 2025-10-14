@@ -100,7 +100,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
             <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
           )}
           <div className="w-12 flex items-center justify-center">
-            <Icon className="h-4 w-4 flex-shrink-0" />
+            <Icon className="h-4 w-4 flex-shrink-0 text-[#003f88]" />
           </div>
           {!collapsed && (
             <>
@@ -126,7 +126,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
                     : 'text-[#525252] hover:bg-[#f4f4f4] hover:text-[#161616]'
                 )}
               >
-                <subItem.icon className="h-3 w-3 flex-shrink-0 mr-2" />
+                <subItem.icon className="h-3 w-3 flex-shrink-0 mr-2 text-[#003f88]" />
                 <span className="truncate text-xs">{subItem.label}</span>
               </NavLink>
             ))}
@@ -151,7 +151,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
         <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
       )}
       <div className="w-12 flex items-center justify-center">
-        <Icon className="h-4 w-4 flex-shrink-0" />
+        <Icon className="h-4 w-4 flex-shrink-0 text-[#003f88]" />
       </div>
       {!collapsed && <span className="truncate">{label}</span>}
     </NavLink>
