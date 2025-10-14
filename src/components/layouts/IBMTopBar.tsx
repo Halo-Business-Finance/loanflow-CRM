@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { NotificationBell } from '@/components/NotificationBell';
+import { LoanCalculator } from '@/components/LoanCalculator';
 
 interface IBMTopBarProps {
   onMenuClick: () => void;
@@ -46,8 +47,8 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         )}
       </div>
 
-      {/* Center search bar */}
-      <div className="flex justify-center">
+      {/* Center search bar with loan calculator */}
+      <div className="flex justify-center items-center gap-2">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
@@ -56,6 +57,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             style={{ width: '420px' }}
           />
         </div>
+        <LoanCalculator />
       </div>
 
       {/* Right section with actions */}
