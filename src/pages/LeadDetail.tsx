@@ -719,6 +719,21 @@ export default function LeadDetail() {
                 </div>
 
                 <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Mobile Phone</Label>
+                  {isEditing ? (
+                    <Input
+                      value={editableFields.mobile_phone}
+                      onChange={(e) => setEditableFields({...editableFields, mobile_phone: e.target.value})}
+                      className="mt-1 h-8 text-sm"
+                    />
+                  ) : (
+                    <div className="field-display mt-1">
+                      {editableFields.mobile_phone || 'N/A'}
+                    </div>
+                  )}
+                </div>
+
+                <div>
                   <Label className="text-xs font-medium text-muted-foreground">Ownership Percentage</Label>
                   {isEditing ? (
                     <Input
@@ -739,21 +754,6 @@ export default function LeadDetail() {
                   ) : (
                     <div className="field-display mt-1">
                       {editableFields.ownership_percentage ? `${editableFields.ownership_percentage}%` : 'N/A'}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <Label className="text-xs font-medium text-muted-foreground">Mobile Phone</Label>
-                  {isEditing ? (
-                    <Input
-                      value={editableFields.mobile_phone}
-                      onChange={(e) => setEditableFields({...editableFields, mobile_phone: e.target.value})}
-                      className="mt-1 h-8 text-sm"
-                    />
-                  ) : (
-                    <div className="field-display mt-1">
-                      {editableFields.mobile_phone || 'N/A'}
                     </div>
                   )}
                 </div>
