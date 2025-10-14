@@ -40,14 +40,23 @@ export default function LeadDocuments() {
   const [selectedDocument, setSelectedDocument] = useState<LeadDocument | null>(null)
   const [showDocumentViewer, setShowDocumentViewer] = useState(false)
 
+  // Validate leadId from route
   useEffect(() => {
-    if (leadId && user) {
-      fetchLeadDetails()
+    if (!user) return
+    const isValidUuid = (v?: string) => !!v && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v)
+
+    if (!isValidUuid(leadId) || leadId === ':leadId') {
+      navigate('/leads', { replace: true })
+      return
     }
+
+    fetchLeadDetails()
   }, [leadId, user])
 
   const fetchLeadDetails = async () => {
-    if (!leadId) return
+    // Guard for invalid route param
+    const isValidUuid = (v?: string) => !!v && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v)
+    if (!isValidUuid(leadId)) return
 
     try {
       const { data, error } = await supabase
