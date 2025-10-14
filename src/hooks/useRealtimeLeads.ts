@@ -88,31 +88,17 @@ export function useRealtimeLeads() {
     table: 'leads',
     onInsert: (payload) => {
       console.log('Real-time: New lead added:', payload.new)
-      setLeads(prev => [payload.new, ...prev])
-      toast({
-        title: "New Lead Added",
-        description: `Lead ${payload.new.id} has been created`,
-        variant: "default"
-      })
+      // Refetch to get properly transformed data
+      fetchLeads()
     },
     onUpdate: (payload) => {
       console.log('Real-time: Lead updated:', payload.new)
-      setLeads(prev => prev.map(lead => 
-        lead.id === payload.new.id ? { ...lead, ...payload.new } : lead
-      ))
-      toast({
-        title: "Lead Updated",
-        description: `Lead ${payload.new.id} has been updated`,
-        variant: "default"
-      })
+      // Refetch to get properly transformed data
+      fetchLeads()
     },
     onDelete: (payload) => {
       console.log('Real-time: Lead deleted:', payload.old)
-      setLeads(prev => {
-        const filtered = prev.filter(lead => lead.id !== payload.old.id)
-        console.log('Leads before filter:', prev.length, 'after filter:', filtered.length)
-        return filtered
-      })
+      setLeads(prev => prev.filter(lead => lead.id !== payload.old.id))
       toast({
         title: "Lead Deleted",
         description: `Lead has been removed`,
