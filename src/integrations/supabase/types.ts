@@ -4063,13 +4063,23 @@ export type Database = {
     }
     Functions: {
       admin_update_profile: {
-        Args: {
-          p_first_name?: string
-          p_is_active?: boolean
-          p_last_name?: string
-          p_phone?: string
-          p_user_id: string
-        }
+        Args:
+          | {
+              p_city?: string
+              p_first_name?: string
+              p_is_active?: boolean
+              p_last_name?: string
+              p_phone?: string
+              p_state?: string
+              p_user_id: string
+            }
+          | {
+              p_first_name?: string
+              p_is_active?: boolean
+              p_last_name?: string
+              p_phone?: string
+              p_user_id: string
+            }
         Returns: Json
       }
       anonymize_user_data: {
