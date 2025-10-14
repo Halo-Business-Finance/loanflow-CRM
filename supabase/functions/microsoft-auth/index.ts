@@ -61,9 +61,10 @@ serve(async (req) => {
       // Exchange code for tokens
       const clientId = Deno.env.get('MICROSOFT_CLIENT_ID')!;
       const clientSecret = Deno.env.get('MICROSOFT_CLIENT_SECRET')!;
+      const tenantId = Deno.env.get('MICROSOFT_TENANT_ID') || 'organizations';
       const redirectUri = `${supabaseUrl}/functions/v1/microsoft-auth`;
 
-      const tokenResponse = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+      const tokenResponse = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -195,16 +196,18 @@ serve(async (req) => {
     switch (action) {
       case 'get_auth_url': {
         const clientId = Deno.env.get('MICROSOFT_CLIENT_ID')!;
+        const tenantId = Deno.env.get('MICROSOFT_TENANT_ID') || 'organizations';
         const redirectUri = `${supabaseUrl}/functions/v1/microsoft-auth`;
         const scope = 'https://graph.microsoft.com/Mail.Send https://graph.microsoft.com/User.Read offline_access';
         
-        const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?` +
+        const authUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize?` +
           `client_id=${clientId}&` +
           `response_type=code&` +
           `redirect_uri=${encodeURIComponent(redirectUri)}&` +
           `scope=${encodeURIComponent(scope)}&` +
           `state=${user.id}&` +
-          `response_mode=query`;
+          `response_mode=query&` +
+          `prompt=consent`;
 
         return new Response(JSON.stringify({ auth_url: authUrl }), {
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -214,10 +217,11 @@ serve(async (req) => {
       case 'exchange_code': {
         const clientId = Deno.env.get('MICROSOFT_CLIENT_ID')!;
         const clientSecret = Deno.env.get('MICROSOFT_CLIENT_SECRET')!;
+        const tenantId = Deno.env.get('MICROSOFT_TENANT_ID') || 'organizations';
         const redirectUri = `${supabaseUrl}/functions/v1/microsoft-auth`;
 
         // Exchange code for tokens
-        const tokenResponse = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+        const tokenResponse = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
