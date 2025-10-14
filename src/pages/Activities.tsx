@@ -104,18 +104,10 @@ export default function Activities() {
     try {
       setLoading(true)
 
-      // Fetch real notifications from database with related contact entity data
+      // Fetch real notifications from database
       const { data: notificationData, error: notificationError } = await supabase
         .from('notifications')
-        .select(`
-          *,
-          contact_entities!notifications_related_id_fkey(
-            name,
-            business_name,
-            first_name,
-            last_name
-          )
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(20)
@@ -129,6 +121,34 @@ export default function Activities() {
       const scheduledCount = (notificationData || []).filter(n => 
         n.scheduled_for && new Date(n.scheduled_for) > now && !n.is_read
       ).length
+
+      // Fetch related contact entities for the notifications
+      const relatedIds = (notificationData || [])
+        .filter(n => n.related_id && n.related_type === 'lead')
+        .map(n => n.related_id)
+
+      let contactEntityMap = new Map()
+      if (relatedIds.length > 0) {
+        const { data: contactData } = await supabase
+          .from('leads')
+          .select(`
+            id,
+            contact_entities!inner(
+              name,
+              business_name,
+              first_name,
+              last_name
+            )
+          `)
+          .in('id', relatedIds)
+
+        if (contactData) {
+          contactData.forEach(lead => {
+            const contact = (lead as any).contact_entities
+            contactEntityMap.set(lead.id, contact)
+          })
+        }
+      }
 
       // Convert database notifications to our format, prioritizing scheduled items
       const dbNotifications: Notification[] = (notificationData || [])
@@ -146,7 +166,7 @@ export default function Activities() {
         })
         .slice(0, 10)
         .map(n => {
-          const contactEntity = (n as any).contact_entities
+          const contactEntity = n.related_id ? contactEntityMap.get(n.related_id) : null
           const borrowerName = contactEntity 
             ? (contactEntity.name || `${contactEntity.first_name || ''} ${contactEntity.last_name || ''}`.trim())
             : null

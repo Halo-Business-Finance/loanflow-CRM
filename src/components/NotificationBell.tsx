@@ -37,15 +37,7 @@ export function NotificationBell() {
     try {
       const { data, error } = await supabase
         .from('notifications')
-        .select(`
-          *,
-          contact_entities!notifications_related_id_fkey(
-            name,
-            business_name,
-            first_name,
-            last_name
-          )
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(50)
@@ -55,8 +47,36 @@ export function NotificationBell() {
         return
       }
 
+      // Fetch related contact entities for the notifications
+      const relatedIds = (data || [])
+        .filter(n => n.related_id && n.related_type === 'lead')
+        .map(n => n.related_id)
+
+      let contactEntityMap = new Map()
+      if (relatedIds.length > 0) {
+        const { data: contactData } = await supabase
+          .from('leads')
+          .select(`
+            id,
+            contact_entities!inner(
+              name,
+              business_name,
+              first_name,
+              last_name
+            )
+          `)
+          .in('id', relatedIds)
+
+        if (contactData) {
+          contactData.forEach(lead => {
+            const contact = (lead as any).contact_entities
+            contactEntityMap.set(lead.id, contact)
+          })
+        }
+      }
+
       const allNotifications = (data || []).map(n => {
-        const contactEntity = (n as any).contact_entities
+        const contactEntity = n.related_id ? contactEntityMap.get(n.related_id) : null
         const borrowerName = contactEntity 
           ? (contactEntity.name || `${contactEntity.first_name || ''} ${contactEntity.last_name || ''}`.trim())
           : null
