@@ -434,17 +434,20 @@ export default function Activities() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          {/* Recent Notifications */}
+          {/* Call Notifications */}
           <StandardContentCard 
-            title="Recent Notifications"
-            headerActions={<Bell className="h-5 w-5 text-yellow-600" />}
+            title="Call Reminders"
+            headerActions={<Phone className="h-5 w-5 text-navy" />}
           >
             <div className="space-y-4">
-              {notifications.slice(0, 5).map((notification) => (
+              {notifications
+                .filter(n => n.type === 'warning' || (n as any).type?.includes('call'))
+                .slice(0, 5)
+                .map((notification) => (
                 <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
-                  {getTypeIcon(notification.type)}
+                  <Phone className="h-4 w-4 text-navy mt-0.5" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground">
                       {notification.message}
@@ -476,39 +479,140 @@ export default function Activities() {
                   </div>
                 </div>
               ))}
+              {notifications.filter(n => n.type === 'warning' || (n as any).type?.includes('call')).length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-8">No call reminders</p>
+              )}
             </div>
           </StandardContentCard>
 
-          {/* Recent Activities */}
+          {/* Email Notifications */}
           <StandardContentCard 
-            title="Recent Activities"
-            headerActions={<Activity className="h-5 w-5 text-blue-600" />}
+            title="Email Reminders"
+            headerActions={<Mail className="h-5 w-5 text-green-600" />}
           >
             <div className="space-y-4">
-              {activities.map((activity) => (
-                <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                  {getActionIcon(activity.action)}
+              {notifications
+                .filter(n => (n as any).type?.includes('email'))
+                .slice(0, 5)
+                .map((notification) => (
+                <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
+                  <Mail className="h-4 w-4 text-green-600 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground">
-                        {activity.action}
-                      </p>
-                      <Badge variant="outline" className="text-xs">
-                        {activity.user}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {activity.details}
+                    <p className="text-sm font-medium text-foreground">
+                      {notification.message}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {formatDistanceToNow(activity.timestamp)} ago
+                    <p className="text-xs text-muted-foreground">
+                      {notification.scheduled_for && notification.scheduled_for > new Date() 
+                        ? `Scheduled for ${formatDistanceToNow(notification.scheduled_for)} from now`
+                        : `${formatDistanceToNow(notification.timestamp)} ago`
+                      }
                     </p>
+                  </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0"
+                      onClick={() => handleEditNotification(notification)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                      onClick={() => setDeleteConfirmId(notification.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               ))}
+              {notifications.filter(n => (n as any).type?.includes('email')).length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-8">No email reminders</p>
+              )}
+            </div>
+          </StandardContentCard>
+
+          {/* General Follow-up Notifications */}
+          <StandardContentCard 
+            title="General Follow-ups"
+            headerActions={<Bell className="h-5 w-5 text-purple-600" />}
+          >
+            <div className="space-y-4">
+              {notifications
+                .filter(n => n.type === 'info' || n.type === 'success' || (n as any).type?.includes('follow_up'))
+                .slice(0, 5)
+                .map((notification) => (
+                <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
+                  <Bell className="h-4 w-4 text-purple-600 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground">
+                      {notification.message}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {notification.scheduled_for && notification.scheduled_for > new Date() 
+                        ? `Scheduled for ${formatDistanceToNow(notification.scheduled_for)} from now`
+                        : `${formatDistanceToNow(notification.timestamp)} ago`
+                      }
+                    </p>
+                  </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0"
+                      onClick={() => handleEditNotification(notification)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                      onClick={() => setDeleteConfirmId(notification.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              {notifications.filter(n => n.type === 'info' || n.type === 'success' || (n as any).type?.includes('follow_up')).length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-8">No follow-up reminders</p>
+              )}
             </div>
           </StandardContentCard>
         </div>
+
+        {/* Recent Activities */}
+        <StandardContentCard 
+          title="Recent Activities"
+          headerActions={<Activity className="h-5 w-5 text-blue-600" />}
+        >
+          <div className="space-y-4">
+            {activities.map((activity) => (
+              <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                {getActionIcon(activity.action)}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium text-foreground">
+                      {activity.action}
+                    </p>
+                    <Badge variant="outline" className="text-xs">
+                      {activity.user}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {activity.details}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {formatDistanceToNow(activity.timestamp)} ago
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </StandardContentCard>
 
         {/* Activity Timeline */}
         <StandardContentCard 
