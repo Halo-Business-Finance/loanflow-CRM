@@ -30,11 +30,19 @@ export function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
   const { user } = useAuth()
+  const [hasError, setHasError] = useState(false)
 
   const fetchNotifications = async () => {
     if (!user) return
 
     try {
+      // Ensure we have a valid session before making requests
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (sessionError || !session) {
+        console.warn('No valid session for notifications')
+        setHasError(true)
+        return
+      }
       const { data, error } = await supabase
         .from('notifications')
         .select('*')
@@ -100,8 +108,14 @@ export function NotificationBell() {
       setNotifications(sortedNotifications as any)
       const unread = sortedNotifications.filter(n => !n.is_read).length || 0
       setUnreadCount(unread)
+      setHasError(false)
     } catch (error) {
       console.error('Error fetching notifications:', error)
+      // Check if it's a SecurityError
+      if (error instanceof Error && error.name === 'SecurityError') {
+        console.warn('SecurityError accessing notifications - session may need refresh')
+        setHasError(true)
+      }
     }
   }
 
@@ -149,37 +163,47 @@ export function NotificationBell() {
   }
 
   useEffect(() => {
-    fetchNotifications()
+    // Add delay to ensure auth is fully initialized
+    const initNotifications = async () => {
+      try {
+        await fetchNotifications()
 
-    // Set up real-time subscription for new notifications
-    if (user) {
-      const channel = supabase
-        .channel('notifications')
-        .on(
-          'postgres_changes',
-          {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${user.id}`
-          },
-          (payload) => {
-            const newNotification = payload.new as Notification
-            setNotifications(prev => [newNotification, ...prev.slice(0, 19)])
-            if (!newNotification.is_read) {
-              setUnreadCount(prev => prev + 1)
-            }
+        // Set up real-time subscription for new notifications
+        if (user && !hasError) {
+          const channel = supabase
+            .channel('notifications')
+            .on(
+              'postgres_changes',
+              {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'notifications',
+                filter: `user_id=eq.${user.id}`
+              },
+              (payload) => {
+                const newNotification = payload.new as Notification
+                setNotifications(prev => [newNotification, ...prev.slice(0, 19)])
+                if (!newNotification.is_read) {
+                  setUnreadCount(prev => prev + 1)
+                }
+              }
+            )
+            .subscribe()
+
+          return () => {
+            supabase.removeChannel(channel)
           }
-        )
-        .subscribe()
-
-      return () => {
-        supabase.removeChannel(channel)
+        }
+      } catch (error) {
+        console.error('Error initializing notifications:', error)
       }
     }
-  }, [user])
 
-  if (!user) return null
+    const timer = setTimeout(initNotifications, 100)
+    return () => clearTimeout(timer)
+  }, [user, hasError])
+
+  if (!user || hasError) return null
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
