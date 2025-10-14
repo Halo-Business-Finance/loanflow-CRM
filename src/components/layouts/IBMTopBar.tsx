@@ -30,14 +30,14 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
   };
 
   return (
-    <header className="h-16 bg-[#161616] border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full px-4">
+    <header className="h-20 bg-[#161616] border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full px-4">
       {/* Left section with hamburger and brand */}
       <div className="flex items-center h-full flex-1" style={{ minWidth: sidebarCollapsed ? '48px' : '240px' }}>
         <Button
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-16 w-12 rounded-none text-white hover:bg-white/10 flex-shrink-0 flex items-center justify-center p-0"
+          className="h-20 w-12 rounded-none text-white hover:bg-white/10 flex-shrink-0 flex items-center justify-center p-0"
         >
           <Grid3x3 className="h-4 w-4" />
         </Button>
