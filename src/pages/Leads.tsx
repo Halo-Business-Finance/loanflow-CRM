@@ -26,6 +26,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { LeadsList } from '@/components/leads/LeadsList';
+import { LeadFilters } from '@/components/LeadFilters';
 import { SecureLeadForm } from '@/components/leads/SecureLeadForm';
 import { SecurityWrapper } from '@/components/SecurityWrapper';
 import { SecureFormProvider } from '@/components/security/SecureFormValidator';
@@ -68,6 +69,9 @@ export default function Leads() {
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedStage, setSelectedStage] = useState('All');
+  const [selectedPriority, setSelectedPriority] = useState('All');
   const { hasRole } = useRoleBasedAccess();
   const hasAdminRole = hasRole('admin') || hasRole('super_admin');
 
@@ -368,11 +372,16 @@ export default function Leads() {
     }
   };
 
-  const filteredLeads = realtimeLeads.filter(lead =>
-    lead.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (lead.business_name && lead.business_name.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredLeads = realtimeLeads.filter(lead => {
+    const matchesSearch = lead.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (lead.business_name && lead.business_name.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesStage = selectedStage === 'All' || lead.stage === selectedStage;
+    const matchesPriority = selectedPriority === 'All' || lead.priority === selectedPriority;
+    
+    return matchesSearch && matchesStage && matchesPriority;
+  });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -408,9 +417,14 @@ export default function Leads() {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 text-xs font-medium"
+                      onClick={() => setShowFilters(!showFilters)}
+                    >
                       <Filter className="h-3 w-3 mr-2" />
-                      Filter
+                      {showFilters ? 'Hide Filters' : 'Filter'}
                     </Button>
                     <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium">
                       <UserPlus className="h-3 w-3 mr-2" />
@@ -470,6 +484,24 @@ export default function Leads() {
                     You have {overview.followUpsDue} leads requiring follow-up attention.
                   </AlertDescription>
                 </Alert>
+              )}
+
+              {/* Filters Section */}
+              {showFilters && (
+                <Card>
+                  <CardContent className="p-6">
+                    <LeadFilters
+                      searchTerm={searchTerm}
+                      setSearchTerm={setSearchTerm}
+                      selectedStage={selectedStage}
+                      setSelectedStage={setSelectedStage}
+                      selectedPriority={selectedPriority}
+                      setSelectedPriority={setSelectedPriority}
+                      totalLeads={realtimeLeads.length}
+                      filteredCount={filteredLeads.length}
+                    />
+                  </CardContent>
+                </Card>
               )}
 
         <Tabs defaultValue="active" className="space-y-6">
