@@ -194,10 +194,16 @@ export function LeadTableRow({
               </span>
             </div>
           )}
+        </div>
+      </td>
+
+      {/* Column 4: Status (Stage & Priority) */}
+      <td className="px-6 py-6">
+        <div className="space-y-3">
           {lead.stage && (
             <Badge 
               variant="secondary" 
-              className="text-xs font-medium px-3 py-1 bg-secondary/50 hover:bg-secondary/70 transition-colors"
+              className="text-xs font-medium px-3 py-1 bg-secondary/50 hover:bg-secondary/70 transition-colors w-full justify-center"
             >
               {lead.stage}
             </Badge>
@@ -213,7 +219,7 @@ export function LeadTableRow({
         </div>
       </td>
 
-      {/* Column 4: Actions */}
+      {/* Column 5: Actions */}
       <td className="px-6 py-6 text-right" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-2 justify-end">
           <Button

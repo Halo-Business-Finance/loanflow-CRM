@@ -63,6 +63,7 @@ export function LeadsList({
             </TableHead>
             <TableHead className="px-6 font-semibold">Contact Information</TableHead>
             <TableHead className="px-6 font-semibold">Lead Details</TableHead>
+            <TableHead className="px-6 font-semibold">Status</TableHead>
             <TableHead className="px-6 text-right font-semibold">Actions</TableHead>
           </TableRow>
         </TableHeader>
