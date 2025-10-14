@@ -163,7 +163,7 @@ export function IBMSidebar({ collapsed }: IBMSidebarProps) {
     <aside
       className={cn(
         'bg-[#f4f4f4] border-r border-[#e0e0e0] flex-shrink-0 transition-all duration-300 overflow-y-auto no-scrollbar pl-4',
-        collapsed ? 'w-12' : 'w-60'
+        collapsed ? 'w-16' : 'w-60'
       )}
     >
       <nav className="space-y-0.5">
