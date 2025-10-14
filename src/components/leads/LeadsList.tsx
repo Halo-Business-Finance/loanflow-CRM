@@ -61,9 +61,9 @@ export function LeadsList({
                 <span className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Lead Name</span>
               </div>
             </TableHead>
-            <TableHead className="px-2 font-medium text-xs uppercase tracking-wider text-muted-foreground">Contact</TableHead>
-            <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Details</TableHead>
-            <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Status</TableHead>
+            <TableHead className="px-2 font-medium text-xs uppercase tracking-wider text-muted-foreground">Contact Information</TableHead>
+            <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Loan Details</TableHead>
+            <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Lead Status</TableHead>
             <TableHead className="px-4 text-right font-medium text-xs uppercase tracking-wider text-muted-foreground">Actions</TableHead>
           </TableRow>
         </TableHeader>
