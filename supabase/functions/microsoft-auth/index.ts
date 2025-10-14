@@ -31,6 +31,150 @@ serve(async (req) => {
   }
 
   try {
+    // Handle OAuth callback (GET request with code parameter)
+    if (req.method === 'GET') {
+      const url = new URL(req.url);
+      const code = url.searchParams.get('code');
+      const state = url.searchParams.get('state');
+      const error = url.searchParams.get('error');
+
+      if (error) {
+        return new Response(`
+          <html>
+            <body>
+              <script>
+                window.opener.postMessage({ type: 'microsoft_auth_error', error: '${error}' }, '*');
+                window.close();
+              </script>
+              <p>Authentication failed. You can close this window.</p>
+            </body>
+          </html>
+        `, {
+          headers: { 'Content-Type': 'text/html', ...corsHeaders }
+        });
+      }
+
+      if (!code || !state) {
+        return new Response('Missing code or state parameter', { status: 400 });
+      }
+
+      // Exchange code for tokens
+      const clientId = Deno.env.get('MICROSOFT_CLIENT_ID')!;
+      const clientSecret = Deno.env.get('MICROSOFT_CLIENT_SECRET')!;
+      const redirectUri = `${supabaseUrl}/functions/v1/microsoft-auth`;
+
+      const tokenResponse = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          client_id: clientId,
+          client_secret: clientSecret,
+          code: code,
+          redirect_uri: redirectUri,
+          grant_type: 'authorization_code',
+        }),
+      });
+
+      if (!tokenResponse.ok) {
+        const errorText = await tokenResponse.text();
+        console.error('Token exchange error:', errorText);
+        return new Response(`
+          <html>
+            <body>
+              <script>
+                window.opener.postMessage({ type: 'microsoft_auth_error', error: 'Failed to exchange code' }, '*');
+                window.close();
+              </script>
+              <p>Authentication failed. You can close this window.</p>
+            </body>
+          </html>
+        `, {
+          headers: { 'Content-Type': 'text/html', ...corsHeaders }
+        });
+      }
+
+      const tokens: MicrosoftTokenResponse = await tokenResponse.json();
+
+      // Get user profile
+      const profileResponse = await fetch('https://graph.microsoft.com/v1.0/me', {
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+        },
+      });
+
+      if (!profileResponse.ok) {
+        return new Response(`
+          <html>
+            <body>
+              <script>
+                window.opener.postMessage({ type: 'microsoft_auth_error', error: 'Failed to get profile' }, '*');
+                window.close();
+              </script>
+              <p>Authentication failed. You can close this window.</p>
+            </body>
+          </html>
+        `, {
+          headers: { 'Content-Type': 'text/html', ...corsHeaders }
+        });
+      }
+
+      const profile: MicrosoftUserProfile = await profileResponse.json();
+      const expiresAt = new Date(Date.now() + (tokens.expires_in * 1000));
+
+      // Store tokens using the user_id from state
+      const { error: dbError } = await supabase
+        .from('email_accounts')
+        .upsert({
+          user_id: state,
+          email_address: profile.mail || profile.userPrincipalName,
+          display_name: profile.displayName,
+          access_token: tokens.access_token,
+          refresh_token: tokens.refresh_token,
+          expires_at: expiresAt.toISOString(),
+          is_active: true,
+        }, {
+          onConflict: 'user_id,email_address',
+        });
+
+      if (dbError) {
+        console.error('Database error:', dbError);
+        return new Response(`
+          <html>
+            <body>
+              <script>
+                window.opener.postMessage({ type: 'microsoft_auth_error', error: 'Database error' }, '*');
+                window.close();
+              </script>
+              <p>Failed to save account. You can close this window.</p>
+            </body>
+          </html>
+        `, {
+          headers: { 'Content-Type': 'text/html', ...corsHeaders }
+        });
+      }
+
+      return new Response(`
+        <html>
+          <body>
+            <script>
+              window.opener.postMessage({ 
+                type: 'microsoft_auth_success', 
+                email: '${profile.mail || profile.userPrincipalName}',
+                name: '${profile.displayName}'
+              }, '*');
+              window.close();
+            </script>
+            <p>Email account connected successfully! You can close this window.</p>
+          </body>
+        </html>
+      `, {
+        headers: { 'Content-Type': 'text/html', ...corsHeaders }
+      });
+    }
+
+    // Handle POST requests (JSON API)
     const { action, code, state } = await req.json();
     
     // Get authorization header
