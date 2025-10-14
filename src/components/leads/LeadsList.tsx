@@ -58,7 +58,7 @@ export function LeadsList({
                   aria-label="Select all leads"
                   className={someSelected ? "data-[state=checked]:bg-primary/50" : ""}
                 />
-                <span className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Lead</span>
+                <span className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Lead Name</span>
               </div>
             </TableHead>
             <TableHead className="px-2 font-medium text-xs uppercase tracking-wider text-muted-foreground">Contact</TableHead>
