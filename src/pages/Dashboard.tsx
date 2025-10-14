@@ -6,28 +6,21 @@ import { IBMContentCard } from '@/components/ui/IBMContentCard';
 import { IBMCardCarousel } from '@/components/ui/IBMCardCarousel';
 import { Badge } from '@/components/ui/badge';
 import { 
-  BarChart3, 
   TrendingUp, 
   Users, 
   DollarSign,
-  Target,
-  RefreshCw,
-  Download,
-  Filter,
-  Plus,
+  FileText,
+  Calendar,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Activity,
   Rocket,
   BookOpen,
-  Zap
+  Zap,
+  Target,
+  BarChart3
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer
-} from 'recharts';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -39,13 +32,12 @@ export default function Dashboard() {
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(false);
-  const [totalRevenue, setTotalRevenue] = useState(0);
-  const [pipelineValue, setPipelineValue] = useState(0);
-  const [totalLeads, setTotalLeads] = useState(0);
-  const [conversionRate, setConversionRate] = useState(0);
-  const [monthlyData, setMonthlyData] = useState([
-    { month: 'Jan', revenue: 0, deals: 0 }
-  ]);
+  const [stats, setStats] = useState({
+    totalLeads: 0,
+    activeDeals: 0,
+    pendingTasks: 0,
+    recentActivity: 0
+  });
 
   const fetchDashboardData = async () => {
     if (!user?.id) return;
@@ -57,31 +49,25 @@ export default function Dashboard() {
         .from('leads')
         .select(`
           *,
-          contact_entities(*)
+          contact_entities(stage)
         `)
         .eq('user_id', user.id);
 
-      setTotalLeads(leads?.length || 0);
-      
-      // For now, use placeholder conversion rate
-      setConversionRate(15);
-      
-      // Use placeholder revenue and pipeline values
-      setTotalRevenue(2500000);
-      setPipelineValue(4800000);
+      // Count active deals based on contact entity stage
+      const activeDeals = leads?.filter(l => {
+        const stage = (l.contact_entities as any)?.stage;
+        return stage === 'negotiation' || stage === 'proposal';
+      }).length || 0;
 
-      toast({
-        title: "Dashboard refreshed",
-        description: "All metrics have been updated successfully.",
+      setStats({
+        totalLeads: leads?.length || 0,
+        activeDeals: activeDeals,
+        pendingTasks: 5, // Placeholder
+        recentActivity: 12 // Placeholder
       });
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      toast({
-        title: "Error refreshing dashboard",
-        description: "Failed to update metrics. Please try again.",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
@@ -92,249 +78,290 @@ export default function Dashboard() {
   }, [user?.id]);
 
   return (
-    <div className="bg-white min-h-full">
+    <div className="bg-[#f4f4f4] min-h-full">
       <IBMPageHeader
-        title="Dashboard Overview"
-        subtitle="Overview of your loan pipeline and key metrics"
+        title="Dashboard"
+        hasDropdown
         actions={
-          <>
-            <Button variant="ghost" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm">
+              Edit dashboard
             </Button>
-            <Button variant="ghost" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Export
+            <Button variant="default" size="sm">
+              Create resource
             </Button>
-            <Button size="sm" onClick={() => navigate('/leads/new')}>
-              <Plus className="h-4 w-4 mr-2" />
-              New Lead
-            </Button>
-          </>
+          </div>
         }
       />
 
       <div className="px-6 py-8 space-y-6">
-        {/* Featured Cards Carousel */}
-        <IBMCardCarousel>
-          <IBMContentCard
-            featured
-            icon={<Rocket className="h-8 w-8" />}
-            title="Get started with Loanflow CRM"
-            description="Learn how to manage your loan pipeline, track leads, and close more deals with our powerful CRM platform."
-            footer={
-              <div className="flex gap-2">
-                <Badge variant="secondary" className="bg-white/20 text-white border-white/20">
-                  Getting started
-                </Badge>
-                <span className="text-white/80 text-xs">5 min</span>
-              </div>
-            }
-            className="min-w-[280px] max-w-[280px] flex-shrink-0 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => navigate('/resources')}
-          />
-          
-          <IBMContentCard
-            icon={<Users className="h-6 w-6" />}
-            title="Lead Management Best Practices"
-            description="Discover strategies to improve lead conversion and streamline your sales process."
-            footer={
-              <div className="flex gap-2">
-                <Badge variant="secondary" className="text-xs">Recommended</Badge>
-                <span className="text-[#525252] text-xs">8 min</span>
-              </div>
-            }
-            className="min-w-[280px] max-w-[280px] flex-shrink-0 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => navigate('/leads')}
-          />
-
-          <IBMContentCard
-            icon={<BookOpen className="h-6 w-6" />}
-            title="Pipeline Analytics Guide"
-            description="Learn how to use analytics to identify bottlenecks and optimize your pipeline."
-            footer={
-              <div className="flex gap-2">
-                <Badge variant="secondary" className="text-xs">Popular</Badge>
-                <span className="text-[#525252] text-xs">10 min</span>
-              </div>
-            }
-            className="min-w-[280px] max-w-[280px] flex-shrink-0 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => navigate('/pipeline/analytics')}
-          />
-
-          <IBMContentCard
-            icon={<Zap className="h-6 w-6" />}
-            title="Automation Features"
-            description="Automate repetitive tasks and focus on what matters most - closing deals."
-            footer={
-              <div className="flex gap-2">
-                <Badge variant="secondary" className="text-xs">New</Badge>
-                <span className="text-[#525252] text-xs">6 min</span>
-              </div>
-            }
-            className="min-w-[280px] max-w-[280px] flex-shrink-0 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => navigate('/ai-tools')}
-          />
-        </IBMCardCarousel>
-
-        {/* Key Metrics */}
+        {/* For you section */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium text-[#161616]">Key metrics</h2>
-            <Button variant="ghost" size="sm" onClick={fetchDashboardData} disabled={loading}>
-              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
-            </Button>
+            <h2 className="text-base font-normal text-[#161616]">For you</h2>
+            <select className="text-sm border border-[#e0e0e0] rounded px-3 py-1 bg-white text-[#161616]">
+              <option>Select an option</option>
+              <option>Getting started</option>
+              <option>Recommended</option>
+              <option>Popular</option>
+            </select>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card 
-              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]"
-              onClick={() => navigate('/reports')}
-            >
-              <CardHeader className="pb-2">
-                <CardDescription className="text-[#525252]">Total Revenue</CardDescription>
-                <CardTitle className="text-2xl text-[#161616]">
-                  ${totalRevenue.toLocaleString()}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-sm">
-                  <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
-                  <span className="text-green-600 font-medium">12%</span>
-                  <span className="text-[#525252] ml-1">vs last month</span>
-                </div>
-              </CardContent>
-            </Card>
 
-            <Card 
-              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]"
-              onClick={() => navigate('/pipeline')}
-            >
-              <CardHeader className="pb-2">
-                <CardDescription className="text-[#525252]">Pipeline Value</CardDescription>
-                <CardTitle className="text-2xl text-[#161616]">
-                  ${pipelineValue.toLocaleString()}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-sm">
-                  <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
-                  <span className="text-green-600 font-medium">8%</span>
-                  <span className="text-[#525252] ml-1">vs last month</span>
+          <IBMCardCarousel>
+            <IBMContentCard
+              featured
+              icon={<Rocket className="h-8 w-8" />}
+              title="Build"
+              description="Explore Loanflow CRM with this selection of easy starter tutorials and services."
+              footer={
+                <div className="flex gap-2 items-center">
+                  <Badge variant="secondary" className="bg-white/20 text-white border-white/20 text-xs">
+                    Getting started
+                  </Badge>
+                  <span className="text-white/80 text-xs">5 min</span>
                 </div>
-              </CardContent>
-            </Card>
+              }
+              className="min-w-[260px] max-w-[260px] flex-shrink-0"
+            />
+            
+            <IBMContentCard
+              icon={<Target className="h-6 w-6" />}
+              title="Track performance"
+              description="View estimated metrics for your loan pipeline and export data for reporting."
+              footer={
+                <div className="flex gap-2 items-center">
+                  <Badge variant="secondary" className="text-xs">Recommended</Badge>
+                  <span className="text-[#525252] text-xs">1 min</span>
+                </div>
+              }
+              className="min-w-[260px] max-w-[260px] flex-shrink-0"
+            />
 
-            <Card 
-              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]"
-              onClick={() => navigate('/leads')}
-            >
-              <CardHeader className="pb-2">
-                <CardDescription className="text-[#525252]">Total Leads</CardDescription>
-                <CardTitle className="text-2xl text-[#161616]">{totalLeads}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-sm">
-                  <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
-                  <span className="text-green-600 font-medium">15%</span>
-                  <span className="text-[#525252] ml-1">vs last month</span>
+            <IBMContentCard
+              icon={<Zap className="h-6 w-6" />}
+              title="Build with AI"
+              description="Automate workflows, insights, and more. Explore the AI platform for business."
+              footer={
+                <div className="flex gap-2 items-center">
+                  <Badge variant="secondary" className="text-xs">Popular</Badge>
+                  <span className="text-[#525252] text-xs">3 min</span>
                 </div>
-              </CardContent>
-            </Card>
+              }
+              className="min-w-[260px] max-w-[260px] flex-shrink-0"
+            />
 
-            <Card 
-              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]"
-              onClick={() => navigate('/pipeline/analytics')}
-            >
-              <CardHeader className="pb-2">
-                <CardDescription className="text-[#525252]">Conversion Rate</CardDescription>
-                <CardTitle className="text-2xl text-[#161616]">
-                  {conversionRate.toFixed(1)}%
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-sm">
-                  <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
-                  <span className="text-green-600 font-medium">3%</span>
-                  <span className="text-[#525252] ml-1">vs last month</span>
+            <IBMContentCard
+              icon={<Activity className="h-6 w-6" />}
+              title="Monitor your pipeline"
+              description="Get visibility into the performance and health of your loan pipeline."
+              footer={
+                <div className="flex gap-2 items-center">
+                  <Badge variant="secondary" className="text-xs">Getting started</Badge>
+                  <span className="text-[#525252] text-xs">5 min</span>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              }
+              className="min-w-[260px] max-w-[260px] flex-shrink-0"
+            />
+
+            <IBMContentCard
+              icon={<Users className="h-6 w-6" />}
+              title="Lead Management"
+              description="Deploy your lead tracking with advanced CRM capabilities and analytics."
+              footer={
+                <div className="flex gap-2 items-center">
+                  <Badge variant="secondary" className="text-xs">Recommended</Badge>
+                  <span className="text-[#525252] text-xs">3 min</span>
+                </div>
+              }
+              className="min-w-[260px] max-w-[260px] flex-shrink-0"
+            />
+
+            <IBMContentCard
+              icon={<BookOpen className="h-6 w-6" />}
+              title="Explore tutorials"
+              description="Try out a variety of tutorials to get you started with features and scenarios."
+              footer={
+                <div className="flex gap-2 items-center">
+                  <Badge variant="secondary" className="text-xs">Getting started</Badge>
+                  <span className="text-[#525252] text-xs">10 min</span>
+                </div>
+              }
+              className="min-w-[260px] max-w-[260px] flex-shrink-0"
+            />
+          </IBMCardCarousel>
         </div>
 
-        {/* Performance Chart */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium text-[#161616]">Revenue performance</h2>
-            <Button variant="ghost" size="sm" className="text-[#0f62fe]">
-              View all
-            </Button>
-          </div>
-          
-          <Card className="border-[#e0e0e0]">
-            <CardContent className="pt-6">
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                  <XAxis dataKey="month" stroke="#525252" />
-                  <YAxis stroke="#525252" />
-                  <Tooltip />
-                  <Bar dataKey="revenue" fill="#0f62fe" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="deals" fill="#0353e9" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+        {/* Dashboard widgets grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Active tasks */}
+          <Card className="bg-white border border-[#e0e0e0]">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base font-normal text-[#161616]">Active tasks</CardTitle>
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                  View all
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-light text-[#161616] mb-2">{stats.pendingTasks}</div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 text-sm">
+                  <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-[#161616]">Follow up with 3 leads due today</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent leads */}
+          <Card className="bg-white border border-[#e0e0e0]">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base font-normal text-[#161616]">Recent leads</CardTitle>
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                  View all
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-light text-[#161616] mb-2">{stats.totalLeads}</div>
+              <div className="flex items-center gap-1 text-sm text-[#525252]">
+                <span>Total in pipeline</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Planned activities */}
+          <Card className="bg-white border border-[#e0e0e0]">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base font-normal text-[#161616]">Planned activities</CardTitle>
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                  View all
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-light text-[#161616] mb-2">{stats.activeDeals}</div>
+              <div className="space-y-1">
+                <p className="text-sm text-[#525252]">Upcoming events</p>
+                <div className="flex items-start gap-2 text-sm">
+                  <Calendar className="h-4 w-4 text-[#0f62fe] mt-0.5 flex-shrink-0" />
+                  <span className="text-[#161616]">Weekly pipeline review tomorrow</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Performance metrics */}
+          <Card className="bg-white border border-[#e0e0e0]">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base font-normal text-[#161616]">Performance</CardTitle>
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                  View all
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-baseline gap-1 mb-2">
+                <span className="text-3xl font-light text-[#161616]">15</span>
+                <span className="text-sm text-[#525252]">%</span>
+              </div>
+              <div className="flex items-center gap-1 text-sm">
+                <TrendingUp className="h-4 w-4 text-green-600" />
+                <span className="text-[#525252]">Conversion rate (last 30 days)</span>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Quick Actions */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium text-[#161616]">Quick actions</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card 
-              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => navigate('/leads/new')}
-            >
-              <CardHeader>
-                <Users className="h-6 w-6 text-[#0f62fe] mb-2" />
-                <CardTitle className="text-lg">Add New Lead</CardTitle>
-                <CardDescription className="text-[#525252]">
-                  Create a new lead and start tracking
-                </CardDescription>
-              </CardHeader>
-            </Card>
+        {/* Bottom section with recent activity */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Card className="bg-white border border-[#e0e0e0]">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base font-normal text-[#161616]">Recent activity</CardTitle>
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                  View all
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 pb-3 border-b border-[#e0e0e0]">
+                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm text-[#161616] font-medium">Lead converted to client</p>
+                    <p className="text-xs text-[#525252] mt-1">Acme Corp - $250,000 loan approved</p>
+                    <p className="text-xs text-[#525252] mt-1">2 hours ago</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 pb-3 border-b border-[#e0e0e0]">
+                  <FileText className="h-5 w-5 text-[#0f62fe] mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm text-[#161616] font-medium">Document uploaded</p>
+                    <p className="text-xs text-[#525252] mt-1">Financial statements for Tech Startup LLC</p>
+                    <p className="text-xs text-[#525252] mt-1">5 hours ago</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Clock className="h-5 w-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm text-[#161616] font-medium">Follow-up scheduled</p>
+                    <p className="text-xs text-[#525252] mt-1">Call with Restaurant Group Inc</p>
+                    <p className="text-xs text-[#525252] mt-1">Yesterday</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-            <Card 
-              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => navigate('/pipeline')}
-            >
-              <CardHeader>
-                <BarChart3 className="h-6 w-6 text-[#0f62fe] mb-2" />
-                <CardTitle className="text-lg">View Pipeline</CardTitle>
-                <CardDescription className="text-[#525252]">
-                  Manage and track your deal pipeline
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card 
-              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => navigate('/reports')}
-            >
-              <CardHeader>
-                <Target className="h-6 w-6 text-[#0f62fe] mb-2" />
-                <CardTitle className="text-lg">Generate Report</CardTitle>
-                <CardDescription className="text-[#525252]">
-                  Create detailed performance reports
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
+          <Card className="bg-white border border-[#e0e0e0]">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base font-normal text-[#161616]">Quick actions</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start h-auto py-3"
+                  onClick={() => navigate('/leads/new')}
+                >
+                  <Users className="h-4 w-4 mr-3" />
+                  <div className="text-left">
+                    <div className="text-sm font-medium">Add new lead</div>
+                    <div className="text-xs text-[#525252]">Create and track a new opportunity</div>
+                  </div>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start h-auto py-3"
+                  onClick={() => navigate('/pipeline')}
+                >
+                  <BarChart3 className="h-4 w-4 mr-3" />
+                  <div className="text-left">
+                    <div className="text-sm font-medium">View pipeline</div>
+                    <div className="text-xs text-[#525252]">Manage your active deals</div>
+                  </div>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start h-auto py-3"
+                  onClick={() => navigate('/reports')}
+                >
+                  <FileText className="h-4 w-4 mr-3" />
+                  <div className="text-left">
+                    <div className="text-sm font-medium">Generate report</div>
+                    <div className="text-xs text-[#525252]">Create performance analytics</div>
+                  </div>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
