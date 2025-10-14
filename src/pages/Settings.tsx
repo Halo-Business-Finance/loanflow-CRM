@@ -45,6 +45,9 @@ export default function Settings() {
   const [isChangingPassword, setIsChangingPassword] = useState(false)
 
   useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.info('[Page] Settings mounted');
+    }
     const fetchUserData = async () => {
       if (user?.user_metadata) {
         setDisplayName(user.user_metadata.display_name || "")
@@ -181,7 +184,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f4f4]">
+    <div data-testid="page-settings" className="min-h-screen bg-[#f4f4f4]">
       <IBMPageHeader 
         title="Settings"
         subtitle="Manage your profile, preferences, and system configuration"

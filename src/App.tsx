@@ -1,10 +1,10 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "next-themes";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/components/auth/AuthProvider";
 import { AuthPage } from "@/components/auth/AuthPage";
 import { CallbackHandler } from "@/components/auth/CallbackHandler";
@@ -28,7 +28,7 @@ import { IBMCloudLayout } from "@/components/layouts/IBMCloudLayout";
 import { SecurityEnhancementProvider } from "@/components/security/SecurityEnhancementProvider";
 import { SecurityProvider as EnhancedSecurityProvider } from "@/components/security/SecurityProvider";
 import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
-import Dashboard from "./pages/Dashboard";
+const DashboardPage = lazy(() => import("./pages/Dashboard"));
 
 
 import Leads from "./pages/Leads";
@@ -48,7 +48,7 @@ import ClientDetail from "./pages/ClientDetail";
 import Documents from "./pages/Documents";
 import Activities from "./pages/Activities";
 import Reports from "./pages/Reports";
-import Settings from "./pages/Settings";
+const SettingsPage = lazy(() => import("./pages/Settings"));
 import UserDirectory from "./pages/UserDirectory";
 import Resources from "./pages/Resources";
 import Enterprise from "./pages/Enterprise";
@@ -119,8 +119,8 @@ function AuthenticatedApp() {
         {/* Protected routes - require authentication */}
         {user ? (
           <>
-            <Route path="/" element={<MfaEnforcementWrapper><IBMCloudLayout><Dashboard /></IBMCloudLayout></MfaEnforcementWrapper>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/dashboard" element={<MfaEnforcementWrapper><IBMCloudLayout><Dashboard /></IBMCloudLayout></MfaEnforcementWrapper>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} errorElement={<RouteErrorBoundary />} />
+            <Route path="/dashboard" element={<MfaEnforcementWrapper><IBMCloudLayout key="dashboard-layout"><Suspense fallback={<div className="p-6">Loading...</div>}><DashboardPage /></Suspense></IBMCloudLayout></MfaEnforcementWrapper>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/leads" element={<IBMCloudLayout><Leads /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/leads/new" element={<IBMCloudLayout><NewLead /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
@@ -156,7 +156,7 @@ function AuthenticatedApp() {
             <Route path="/reports" element={<IBMCloudLayout><Reports /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/user-directory" element={<IBMCloudLayout><UserDirectory /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/settings" element={<IBMCloudLayout><Settings /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/settings" element={<IBMCloudLayout key="settings-layout"><Suspense fallback={<div className="p-6">Loading...</div>}><SettingsPage /></Suspense></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/settings/users" element={<IBMCloudLayout><SettingsUsers /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/settings/system" element={<IBMCloudLayout><SettingsSystem /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             

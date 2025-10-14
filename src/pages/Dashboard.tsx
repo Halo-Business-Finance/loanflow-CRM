@@ -135,11 +135,14 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.info('[Page] Dashboard mounted');
+    }
     fetchDashboardData();
   }, [user?.id]);
 
   return (
-    <div className="bg-[#f4f4f4] min-h-full">
+    <div data-testid="page-dashboard" className="bg-[#f4f4f4] min-h-full">
       <IBMPageHeader
         title="Dashboard"
         hasDropdown
