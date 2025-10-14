@@ -447,18 +447,6 @@ export default function LeadDetail() {
                       {lead.name || lead.business_name || 'Lead Details'}
                     </h1>
                     <div className="flex items-center gap-2">
-                      <Badge 
-                        variant={getStageColor(lead.stage)}
-                        className="text-xs font-medium px-2 py-1"
-                      >
-                        {lead.stage || 'new'}
-                      </Badge>
-                      <Badge 
-                        variant={getPriorityColor(lead.priority)}
-                        className="text-xs font-medium px-2 py-1"
-                      >
-                        {lead.priority || 'normal'}
-                      </Badge>
                       {lead.is_converted_to_client && (
                         <Badge variant="default" className="text-xs font-medium px-2 py-1 text-green-800 border-green-200">
                           <CheckCircle className="h-3 w-3 mr-1" />
@@ -574,6 +562,69 @@ export default function LeadDetail() {
         <div className="p-6 space-y-6">
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Lead Status Card */}
+            <Card className="border border-border shadow-sm bg-white lg:col-span-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
+                  <Target className="h-4 w-4 text-muted-foreground" />
+                  Lead Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Stage</Label>
+                    {isEditing ? (
+                      <Select
+                        value={editableFields.stage}
+                        onValueChange={(value) => setEditableFields({...editableFields, stage: value})}
+                      >
+                        <SelectTrigger className="mt-1 h-9 text-sm">
+                          <SelectValue placeholder="Select stage" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="New Lead">New Lead</SelectItem>
+                          <SelectItem value="Initial Contact">Initial Contact</SelectItem>
+                          <SelectItem value="Qualified">Qualified</SelectItem>
+                          <SelectItem value="Application">Application</SelectItem>
+                          <SelectItem value="Loan Approved">Loan Approved</SelectItem>
+                          <SelectItem value="Documentation">Documentation</SelectItem>
+                          <SelectItem value="Closing">Closing</SelectItem>
+                          <SelectItem value="Funded">Funded</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.stage || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Priority</Label>
+                    {isEditing ? (
+                      <Select
+                        value={editableFields.priority}
+                        onValueChange={(value) => setEditableFields({...editableFields, priority: value})}
+                      >
+                        <SelectTrigger className="mt-1 h-9 text-sm">
+                          <SelectValue placeholder="Select priority" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="low">Low</SelectItem>
+                          <SelectItem value="medium">Medium</SelectItem>
+                          <SelectItem value="high">High</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.priority || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Contact Information Card */}
             <Card className="border border-border shadow-sm bg-white">
               <CardHeader className="pb-4">
