@@ -15,7 +15,9 @@ interface PhoneDialerProps {
 
 export function PhoneDialer({ trigger, phoneNumber: initialPhoneNumber }: PhoneDialerProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber || "")
+  // Strip and reformat initial phone number to ensure consistent display
+  const cleanInitialPhone = initialPhoneNumber ? formatPhoneNumber(initialPhoneNumber) : ""
+  const [phoneNumber, setPhoneNumber] = useState(cleanInitialPhone)
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
 
@@ -76,7 +78,8 @@ export function PhoneDialer({ trigger, phoneNumber: initialPhoneNumber }: PhoneD
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open)
     if (open && initialPhoneNumber) {
-      setPhoneNumber(initialPhoneNumber)
+      // Strip and reformat to ensure consistent display
+      setPhoneNumber(formatPhoneNumber(initialPhoneNumber))
     } else if (!open && !initialPhoneNumber) {
       setPhoneNumber("")
     }

@@ -559,6 +559,7 @@ export default function ClientDetail() {
             {/* First Row - Communication Buttons */}
             <div className="flex gap-3 flex-wrap">
               <PhoneDialer 
+                phoneNumber={client?.phone}
                 trigger={
                   <Button 
                     variant="gradient-blue"
