@@ -99,7 +99,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
           {(isActive || hasActiveSubItem) && !collapsed && (
             <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
           )}
-          <div className="w-12 flex items-center justify-center pl-1">
+          <div className="w-12 flex items-center justify-center pl-2">
             <Icon className="h-4 w-4 flex-shrink-0" />
           </div>
           {!collapsed && (
@@ -150,7 +150,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
       {isActive && !collapsed && (
         <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
       )}
-      <div className="w-12 flex items-center justify-center pl-1">
+      <div className="w-12 flex items-center justify-center pl-2">
         <Icon className="h-4 w-4 flex-shrink-0" />
       </div>
       {!collapsed && <span className="truncate">{label}</span>}
