@@ -130,7 +130,8 @@ export default function Dashboard() {
                 <span className="text-white/80 text-xs">5 min</span>
               </div>
             }
-            className="min-w-[280px] max-w-[280px] flex-shrink-0"
+            className="min-w-[280px] max-w-[280px] flex-shrink-0 cursor-pointer hover:scale-105 transition-transform"
+            onClick={() => navigate('/resources')}
           />
           
           <IBMContentCard
@@ -143,7 +144,8 @@ export default function Dashboard() {
                 <span className="text-[#525252] text-xs">8 min</span>
               </div>
             }
-            className="min-w-[280px] max-w-[280px] flex-shrink-0"
+            className="min-w-[280px] max-w-[280px] flex-shrink-0 cursor-pointer hover:scale-105 transition-transform"
+            onClick={() => navigate('/leads')}
           />
 
           <IBMContentCard
@@ -156,7 +158,8 @@ export default function Dashboard() {
                 <span className="text-[#525252] text-xs">10 min</span>
               </div>
             }
-            className="min-w-[280px] max-w-[280px] flex-shrink-0"
+            className="min-w-[280px] max-w-[280px] flex-shrink-0 cursor-pointer hover:scale-105 transition-transform"
+            onClick={() => navigate('/pipeline/analytics')}
           />
 
           <IBMContentCard
@@ -169,7 +172,8 @@ export default function Dashboard() {
                 <span className="text-[#525252] text-xs">6 min</span>
               </div>
             }
-            className="min-w-[280px] max-w-[280px] flex-shrink-0"
+            className="min-w-[280px] max-w-[280px] flex-shrink-0 cursor-pointer hover:scale-105 transition-transform"
+            onClick={() => navigate('/ai-tools')}
           />
         </IBMCardCarousel>
 
@@ -184,7 +188,10 @@ export default function Dashboard() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="border-[#e0e0e0]">
+            <Card 
+              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]"
+              onClick={() => navigate('/reports')}
+            >
               <CardHeader className="pb-2">
                 <CardDescription className="text-[#525252]">Total Revenue</CardDescription>
                 <CardTitle className="text-2xl text-[#161616]">
@@ -200,7 +207,10 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="border-[#e0e0e0]">
+            <Card 
+              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]"
+              onClick={() => navigate('/pipeline')}
+            >
               <CardHeader className="pb-2">
                 <CardDescription className="text-[#525252]">Pipeline Value</CardDescription>
                 <CardTitle className="text-2xl text-[#161616]">
@@ -216,7 +226,10 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="border-[#e0e0e0]">
+            <Card 
+              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]"
+              onClick={() => navigate('/leads')}
+            >
               <CardHeader className="pb-2">
                 <CardDescription className="text-[#525252]">Total Leads</CardDescription>
                 <CardTitle className="text-2xl text-[#161616]">{totalLeads}</CardTitle>
@@ -230,7 +243,10 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="border-[#e0e0e0]">
+            <Card 
+              className="border-[#e0e0e0] cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]"
+              onClick={() => navigate('/pipeline/analytics')}
+            >
               <CardHeader className="pb-2">
                 <CardDescription className="text-[#525252]">Conversion Rate</CardDescription>
                 <CardTitle className="text-2xl text-[#161616]">

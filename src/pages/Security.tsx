@@ -11,6 +11,7 @@ import { SecurityWrapper } from '@/components/SecurityWrapper';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 import { 
   Shield, 
   Bot, 
@@ -26,6 +27,8 @@ import {
 } from 'lucide-react';
 
 const SecurityPage: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-background p-6">
       <SecurityWrapper>
@@ -40,7 +43,10 @@ const SecurityPage: React.FC = () => {
 
           {/* Security Metrics Overview */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <Card className="bg-card border-0 shadow-lg hover-scale">
+            <Card 
+              className="bg-card border-0 shadow-lg hover-scale cursor-pointer hover:shadow-xl transition-all"
+              onClick={() => navigate('/security/compliance')}
+            >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -52,7 +58,10 @@ const SecurityPage: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-0 shadow-lg hover-scale">
+            <Card 
+              className="bg-card border-0 shadow-lg hover-scale cursor-pointer hover:shadow-xl transition-all"
+              onClick={() => navigate('/security/audit')}
+            >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -64,7 +73,10 @@ const SecurityPage: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-0 shadow-lg hover-scale">
+            <Card 
+              className="bg-card border-0 shadow-lg hover-scale cursor-pointer hover:shadow-xl transition-all"
+              onClick={() => navigate('/security/threats')}
+            >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -76,7 +88,10 @@ const SecurityPage: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-0 shadow-lg hover-scale">
+            <Card 
+              className="bg-card border-0 shadow-lg hover-scale cursor-pointer hover:shadow-xl transition-all"
+              onClick={() => navigate('/security/access')}
+            >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -116,7 +131,10 @@ const SecurityPage: React.FC = () => {
             <TabsContent value="monitoring" className="space-y-6">
               <EnhancedSecurityMonitor />
               <div className="grid gap-6 md:grid-cols-2">
-                <Card className="bg-card border-0 shadow-lg hover-scale">
+                <Card 
+                  className="bg-card border-0 shadow-lg hover-scale cursor-pointer hover:shadow-xl transition-all"
+                  onClick={() => navigate('/security/threats')}
+                >
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                       <Bot className="h-5 w-5 text-blue-600" />
@@ -131,7 +149,10 @@ const SecurityPage: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card border-0 shadow-lg hover-scale">
+                <Card 
+                  className="bg-card border-0 shadow-lg hover-scale cursor-pointer hover:shadow-xl transition-all"
+                  onClick={() => navigate('/security/threats')}
+                >
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                       <Globe className="h-5 w-5 text-red-600" />
@@ -146,7 +167,10 @@ const SecurityPage: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card border-0 shadow-lg hover-scale">
+                <Card 
+                  className="bg-card border-0 shadow-lg hover-scale cursor-pointer hover:shadow-xl transition-all"
+                  onClick={() => navigate('/security/threats')}
+                >
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                       <Zap className="h-5 w-5 text-yellow-600" />
@@ -161,7 +185,10 @@ const SecurityPage: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card border-0 shadow-lg hover-scale">
+                <Card 
+                  className="bg-card border-0 shadow-lg hover-scale cursor-pointer hover:shadow-xl transition-all"
+                  onClick={() => navigate('/security/threats')}
+                >
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                       <Target className="h-5 w-5 text-orange-600" />

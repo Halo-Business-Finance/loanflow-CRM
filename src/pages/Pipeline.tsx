@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -41,6 +42,7 @@ interface PipelineOverview {
 export default function Pipeline() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [overview, setOverview] = useState<PipelineOverview>({
     totalOpportunities: 0,
     activeDeals: 0,
@@ -179,7 +181,10 @@ export default function Pipeline() {
 
         {/* Pipeline Overview Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+        <Card 
+          className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+          onClick={() => navigate('/leads')}
+        >
           <CardContent className="p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Total Opportunities</p>
@@ -188,7 +193,10 @@ export default function Pipeline() {
           </CardContent>
         </Card>
 
-        <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+        <Card 
+          className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+          onClick={() => navigate('/pipeline')}
+        >
           <CardContent className="p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Active Deals</p>
@@ -197,7 +205,10 @@ export default function Pipeline() {
           </CardContent>
         </Card>
 
-        <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+        <Card 
+          className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+          onClick={() => navigate('/reports')}
+        >
           <CardContent className="p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
@@ -206,7 +217,10 @@ export default function Pipeline() {
           </CardContent>
         </Card>
 
-        <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+        <Card 
+          className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+          onClick={() => navigate('/pipeline/analytics')}
+        >
           <CardContent className="p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Avg Cycle Time</p>
@@ -218,7 +232,10 @@ export default function Pipeline() {
 
         {/* Additional Metrics Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+        <Card 
+          className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+          onClick={() => navigate('/pipeline/analytics')}
+        >
           <CardContent className="p-6">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">Conversion Rate</p>
@@ -227,7 +244,10 @@ export default function Pipeline() {
           </CardContent>
         </Card>
 
-        <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+        <Card 
+          className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+          onClick={() => navigate('/reports')}
+        >
           <CardContent className="p-6">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">Avg Deal Size</p>
@@ -236,7 +256,10 @@ export default function Pipeline() {
           </CardContent>
         </Card>
 
-        <Card className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+        <Card 
+          className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+          onClick={() => navigate('/clients')}
+        >
           <CardContent className="p-6">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">Closed Deals</p>
