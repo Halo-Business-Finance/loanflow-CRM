@@ -28,6 +28,7 @@ import { useToast } from '@/hooks/use-toast';
 import { LeadsList } from '@/components/leads/LeadsList';
 import { LeadFilters } from '@/components/LeadFilters';
 import { SecureLeadForm } from '@/components/leads/SecureLeadForm';
+import { LeadStats } from '@/components/leads/LeadStats';
 import { SecurityWrapper } from '@/components/SecurityWrapper';
 import { SecureFormProvider } from '@/components/security/SecureFormValidator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -622,63 +623,7 @@ export default function Leads() {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-blue-500" />
-                    Conversion Metrics
-                  </CardTitle>
-                  <CardDescription>
-                    Lead conversion and performance tracking
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Conversion Rate</span>
-                      <span className="font-semibold">{overview.conversionRate.toFixed(1)}%</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Avg Response Time</span>
-                      <span className="font-semibold">{overview.responseTime}h</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Lead Quality Score</span>
-                      <span className="font-semibold text-green-600">8.2/10</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Activity className="h-5 w-5 text-purple-500" />
-                    Activity Overview
-                  </CardTitle>
-                  <CardDescription>
-                    Lead engagement and interaction metrics
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Calls Made</span>
-                      <span className="font-semibold">127</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Emails Sent</span>
-                      <span className="font-semibold">284</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Meetings Scheduled</span>
-                      <span className="font-semibold text-blue-600">18</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <LeadStats leads={realtimeLeads} />
           </TabsContent>
 
           <TabsContent value="management" className="space-y-6">
