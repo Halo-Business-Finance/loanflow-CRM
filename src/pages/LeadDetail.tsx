@@ -679,6 +679,66 @@ export default function LeadDetail() {
                 </div>
 
                 <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Home Address</Label>
+                  {isEditing ? (
+                    <Input
+                      value={editableFields.home_address}
+                      onChange={(e) => setEditableFields({...editableFields, home_address: e.target.value})}
+                      className="mt-1 h-8 text-sm"
+                    />
+                  ) : (
+                    <div className="field-display mt-1">
+                      {editableFields.home_address || 'N/A'}
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">City</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.home_city}
+                        onChange={(e) => setEditableFields({...editableFields, home_city: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.home_city || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">State</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.home_state}
+                        onChange={(e) => setEditableFields({...editableFields, home_state: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.home_state || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">ZIP Code</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.home_zip_code}
+                        onChange={(e) => setEditableFields({...editableFields, home_zip_code: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.home_zip_code || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div>
                   <Label className="text-xs font-medium text-muted-foreground">Email</Label>
                   {isEditing ? (
                     <Input
@@ -764,66 +824,6 @@ export default function LeadDetail() {
                       {editableFields.ownership_percentage ? `${editableFields.ownership_percentage}%` : 'N/A'}
                     </div>
                   )}
-                </div>
-
-                <div>
-                  <Label className="text-xs font-medium text-muted-foreground">Home Address</Label>
-                  {isEditing ? (
-                    <Input
-                      value={editableFields.home_address}
-                      onChange={(e) => setEditableFields({...editableFields, home_address: e.target.value})}
-                      className="mt-1 h-8 text-sm"
-                    />
-                  ) : (
-                    <div className="field-display mt-1">
-                      {editableFields.home_address || 'N/A'}
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">City</Label>
-                    {isEditing ? (
-                      <Input
-                        value={editableFields.home_city}
-                        onChange={(e) => setEditableFields({...editableFields, home_city: e.target.value})}
-                        className="mt-1 h-8 text-sm"
-                      />
-                    ) : (
-                      <div className="field-display mt-1">
-                        {editableFields.home_city || 'N/A'}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">State</Label>
-                    {isEditing ? (
-                      <Input
-                        value={editableFields.home_state}
-                        onChange={(e) => setEditableFields({...editableFields, home_state: e.target.value})}
-                        className="mt-1 h-8 text-sm"
-                      />
-                    ) : (
-                      <div className="field-display mt-1">
-                        {editableFields.home_state || 'N/A'}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">ZIP Code</Label>
-                    {isEditing ? (
-                      <Input
-                        value={editableFields.home_zip_code}
-                        onChange={(e) => setEditableFields({...editableFields, home_zip_code: e.target.value})}
-                        className="mt-1 h-8 text-sm"
-                      />
-                    ) : (
-                      <div className="field-display mt-1">
-                        {editableFields.home_zip_code || 'N/A'}
-                      </div>
-                    )}
-                  </div>
                 </div>
               </CardContent>
             </Card>
