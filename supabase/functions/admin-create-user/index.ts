@@ -71,7 +71,7 @@ serve(async (req) => {
     console.log('Admin access verified, proceeding with user creation...');
 
     // Get the user data from request body
-    const { email, password, firstName, lastName, phone, role, isActive } = await req.json();
+    const { email, password, firstName, lastName, phone, city, state, role, isActive } = await req.json();
 
     if (!email || !password) {
       throw new Error('Email and password are required');
@@ -105,6 +105,8 @@ serve(async (req) => {
           first_name: firstName || null,
           last_name: lastName || null,
           phone: phone || null,
+          city: city || null,
+          state: state || null,
           is_active: isActive !== false
         })
         .eq('id', newUser.user.id);

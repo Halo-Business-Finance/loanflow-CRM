@@ -37,7 +37,7 @@ serve(async (req) => {
       );
     }
 
-    const { userId, firstName, lastName, phone, isActive } = await req.json();
+    const { userId, firstName, lastName, phone, city, state, isActive } = await req.json();
 
     if (!userId) {
       return new Response(
@@ -46,7 +46,7 @@ serve(async (req) => {
       );
     }
 
-    console.log('Updating user profile:', { userId, firstName, lastName, phone, isActive });
+    console.log('Updating user profile:', { userId, firstName, lastName, phone, city, state, isActive });
 
     // Call the admin_update_profile database function
     const { data, error } = await supabaseClient.rpc('admin_update_profile', {
@@ -54,6 +54,8 @@ serve(async (req) => {
       p_first_name: firstName || null,
       p_last_name: lastName || null,
       p_phone: phone || null,
+      p_city: city || null,
+      p_state: state || null,
       p_is_active: isActive !== undefined ? isActive : null,
     });
 

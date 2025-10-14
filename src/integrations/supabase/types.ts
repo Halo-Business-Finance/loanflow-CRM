@@ -2909,6 +2909,7 @@ export type Database = {
           archive_reason: string | null
           archived_at: string | null
           archived_by: string | null
+          city: string | null
           created_at: string
           daily_summary_reports: boolean | null
           email: string | null
@@ -2921,6 +2922,7 @@ export type Database = {
           last_name: string | null
           new_application_alerts: boolean | null
           phone_number: string | null
+          state: string | null
           status_change_notifications: boolean | null
           timezone: string | null
           updated_at: string
@@ -2930,6 +2932,7 @@ export type Database = {
           archive_reason?: string | null
           archived_at?: string | null
           archived_by?: string | null
+          city?: string | null
           created_at?: string
           daily_summary_reports?: boolean | null
           email?: string | null
@@ -2942,6 +2945,7 @@ export type Database = {
           last_name?: string | null
           new_application_alerts?: boolean | null
           phone_number?: string | null
+          state?: string | null
           status_change_notifications?: boolean | null
           timezone?: string | null
           updated_at?: string
@@ -2951,6 +2955,7 @@ export type Database = {
           archive_reason?: string | null
           archived_at?: string | null
           archived_by?: string | null
+          city?: string | null
           created_at?: string
           daily_summary_reports?: boolean | null
           email?: string | null
@@ -2963,6 +2968,7 @@ export type Database = {
           last_name?: string | null
           new_application_alerts?: boolean | null
           phone_number?: string | null
+          state?: string | null
           status_change_notifications?: boolean | null
           timezone?: string | null
           updated_at?: string
@@ -4153,7 +4159,7 @@ export type Database = {
               p_session_token: string
               p_user_agent: string
             }
-        Returns: undefined
+        Returns: string
       }
       decrypt_token: {
         Args: { p_encrypted_token: string }

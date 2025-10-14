@@ -68,6 +68,8 @@ interface UserProfile {
   last_name: string | null;
   email: string | null;
   phone_number: string | null;
+  city: string | null;
+  state: string | null;
   role: string | null;
   created_at: string;
   user_number?: number | null;
@@ -78,6 +80,8 @@ const userEditSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(100, 'First name too long'),
   lastName: z.string().min(1, 'Last name is required').max(100, 'Last name too long'),
   phoneNumber: z.string().regex(/^\+?[\d\s\-()]+$/, 'Invalid phone number').optional().or(z.literal('')),
+  city: z.string().max(100, 'City name too long').optional().or(z.literal('')),
+  state: z.string().max(50, 'State name too long').optional().or(z.literal('')),
   isActive: z.boolean(),
 });
 
@@ -87,6 +91,8 @@ const userCreateSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(100, 'First name too long'),
   lastName: z.string().min(1, 'Last name is required').max(100, 'Last name too long'),
   phoneNumber: z.string().regex(/^\+?[\d\s\-()]+$/, 'Invalid phone number').optional().or(z.literal('')),
+  city: z.string().max(100, 'City name too long').optional().or(z.literal('')),
+  state: z.string().max(50, 'State name too long').optional().or(z.literal('')),
   role: z.string().min(1, 'Role is required'),
   isActive: z.boolean(),
 });
@@ -117,6 +123,8 @@ export default function UserDirectory() {
       firstName: '',
       lastName: '',
       phoneNumber: '',
+      city: '',
+      state: '',
       isActive: true,
     },
   });
@@ -129,6 +137,8 @@ export default function UserDirectory() {
       firstName: '',
       lastName: '',
       phoneNumber: '',
+      city: '',
+      state: '',
       role: 'agent',
       isActive: true,
     },
@@ -215,6 +225,8 @@ export default function UserDirectory() {
       firstName: user.first_name || '',
       lastName: user.last_name || '',
       phoneNumber: user.phone_number || '',
+      city: user.city || '',
+      state: user.state || '',
       isActive: user.is_active ?? true,
     });
   };
@@ -234,6 +246,8 @@ export default function UserDirectory() {
         firstName: selectedUser.first_name || '',
         lastName: selectedUser.last_name || '',
         phoneNumber: selectedUser.phone_number || '',
+        city: selectedUser.city || '',
+        state: selectedUser.state || '',
         isActive: selectedUser.is_active ?? true,
       });
     }
@@ -251,6 +265,8 @@ export default function UserDirectory() {
           firstName: values.firstName,
           lastName: values.lastName,
           phone: values.phoneNumber || null,
+          city: values.city || null,
+          state: values.state || null,
           isActive: values.isActive,
         },
       });
@@ -293,6 +309,8 @@ export default function UserDirectory() {
           firstName: values.firstName,
           lastName: values.lastName,
           phone: values.phoneNumber || null,
+          city: values.city || null,
+          state: values.state || null,
           role: values.role,
           isActive: values.isActive,
         },
@@ -664,6 +682,7 @@ export default function UserDirectory() {
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Phone</TableHead>
+                    <TableHead>Location</TableHead>
                     <TableHead>Role</TableHead>
                     <TableHead>Joined</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -693,6 +712,11 @@ export default function UserDirectory() {
                       <TableCell>{user.email || 'N/A'}</TableCell>
                       <TableCell>
                         {user.phone_number ? formatPhoneNumber(user.phone_number) : 'N/A'}
+                      </TableCell>
+                      <TableCell>
+                        {user.city && user.state ? (
+                          `${user.city}, ${user.state}`
+                        ) : user.city || user.state || 'N/A'}
                       </TableCell>
                       <TableCell>
                         <Badge variant="secondary" className="text-xs">
@@ -803,6 +827,36 @@ export default function UserDirectory() {
                   </FormItem>
                 )}
               />
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={createForm.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>City (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="San Francisco" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={createForm.control}
+                  name="state"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>State (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="CA" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={createForm.control}
@@ -965,6 +1019,14 @@ export default function UserDirectory() {
                           )}
                         </p>
                       </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">Location</p>
+                        <p className="text-sm">
+                          {selectedUser.city && selectedUser.state
+                            ? `${selectedUser.city}, ${selectedUser.state}`
+                            : selectedUser.city || selectedUser.state || 'N/A'}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -1014,6 +1076,36 @@ export default function UserDirectory() {
                             </FormItem>
                           )}
                         />
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="city"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>City</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="San Francisco" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="state"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>State</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="CA" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
 
                         <FormField
                           control={form.control}
