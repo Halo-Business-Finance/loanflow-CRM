@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
-import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -47,6 +48,7 @@ import {
 } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SecureRoleManager } from '@/components/security/SecureRoleManager';
+import LeadAssignment from './LeadAssignment';
 import { formatPhoneNumber } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -559,7 +561,20 @@ export default function UserDirectory() {
         }
       />
 
-      <div className="px-6 py-6 space-y-6">
+      <Tabs defaultValue="users" className="px-6 py-6">
+        <TabsList className="mb-6">
+          <TabsTrigger value="users" className="gap-2">
+            <UserCog className="h-4 w-4" />
+            Users
+          </TabsTrigger>
+          <TabsTrigger value="lead-assignment" className="gap-2">
+            <Users className="h-4 w-4" />
+            Lead Assignment
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="users" className="space-y-6 mt-0">
+      <div className="space-y-6">
         {/* Bulk Actions Bar */}
         {selectedUserIds.size > 0 && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-between">
@@ -743,6 +758,12 @@ export default function UserDirectory() {
           </CardContent>
         </Card>
       </div>
+        </TabsContent>
+
+        <TabsContent value="lead-assignment" className="mt-0">
+          <LeadAssignment />
+        </TabsContent>
+      </Tabs>
 
       {/* Add User Dialog */}
       <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
