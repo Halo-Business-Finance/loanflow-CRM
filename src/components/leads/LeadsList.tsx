@@ -49,22 +49,22 @@ export function LeadsList({
     <div className="border rounded-lg overflow-hidden bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="w-[400px] px-6">
-              <div className="flex items-center gap-4">
+          <TableRow className="border-b border-border hover:bg-transparent bg-muted/30">
+            <TableHead className="w-[300px] px-4">
+              <div className="flex items-center gap-3">
                 <Checkbox
                   checked={allSelected}
                   onCheckedChange={onSelectAll}
                   aria-label="Select all leads"
                   className={someSelected ? "data-[state=checked]:bg-primary/50" : ""}
                 />
-                <span className="font-semibold">Lead</span>
+                <span className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Lead</span>
               </div>
             </TableHead>
-            <TableHead className="px-6 font-semibold">Contact Information</TableHead>
-            <TableHead className="px-6 font-semibold">Lead Details</TableHead>
-            <TableHead className="px-6 font-semibold">Status</TableHead>
-            <TableHead className="px-6 text-right font-semibold">Actions</TableHead>
+            <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Contact</TableHead>
+            <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Details</TableHead>
+            <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Status</TableHead>
+            <TableHead className="px-4 text-right font-medium text-xs uppercase tracking-wider text-muted-foreground">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
