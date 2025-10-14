@@ -23,7 +23,8 @@ import {
   BarChart3,
   PieChart,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  UserPlus
 } from 'lucide-react';
 import {
   LineChart,
@@ -157,92 +158,132 @@ export default function Dashboard() {
   }, [user]);
 
   return (
-    <div data-testid="page-dashboard" className="bg-[#f4f4f4] min-h-full">
-      <IBMPageHeader
-        title={userName ? `Welcome, ${userName}` : 'Welcome'}
-        actions={
-          <Button variant="default" size="sm" onClick={() => navigate('/leads/new')}>
+    <div data-testid="page-dashboard" className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Enterprise Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight text-foreground">
+              {userName ? `Welcome, ${userName}` : 'Welcome'}
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Your SBA & Commercial Loan Command Center
+            </p>
+          </div>
+          <Button 
+            onClick={() => navigate('/leads/new')}
+            className="gap-2"
+          >
+            <UserPlus className="h-4 w-4" />
             Create New Lead
           </Button>
-        }
-      />
+        </div>
 
-      <div className="px-6 py-8 space-y-6">
         {/* Key Performance Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-white border border-[#e0e0e0] hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate('/reports')}>
-            <CardHeader className="pb-2">
-              <CardDescription className="text-[#525252] text-xs">Total Revenue</CardDescription>
-              <CardTitle className="text-2xl font-light text-[#161616]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card 
+            className="widget-glass widget-glow border-0 cursor-pointer group transition-all"
+            onClick={() => navigate('/reports')}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
+                  <DollarSign className="h-5 w-5 text-primary" />
+                </div>
+                <Badge variant="outline" className="text-xs font-semibold">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  +12.5%
+                </Badge>
+              </div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Revenue</h3>
+              <p className="text-2xl font-bold text-foreground">
                 ${(stats.totalRevenue / 1000000).toFixed(1)}M
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-1 text-sm">
-                <TrendingUp className="h-4 w-4 text-green-600" />
-                <span className="text-green-600 font-medium">+12.5%</span>
-                <span className="text-[#525252]">vs last month</span>
-              </div>
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">vs last month</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-[#e0e0e0] hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate('/pipeline')}>
-            <CardHeader className="pb-2">
-              <CardDescription className="text-[#525252] text-xs">Pipeline Value</CardDescription>
-              <CardTitle className="text-2xl font-light text-[#161616]">
+          <Card 
+            className="widget-glass widget-glow border-0 cursor-pointer group transition-all"
+            onClick={() => navigate('/pipeline')}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
+                  <Target className="h-5 w-5 text-primary" />
+                </div>
+                <Badge variant="outline" className="text-xs font-semibold">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  +8.3%
+                </Badge>
+              </div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Pipeline Value</h3>
+              <p className="text-2xl font-bold text-foreground">
                 ${(stats.pipelineValue / 1000000).toFixed(1)}M
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-1 text-sm">
-                <TrendingUp className="h-4 w-4 text-green-600" />
-                <span className="text-green-600 font-medium">+8.3%</span>
-                <span className="text-[#525252]">vs last month</span>
-              </div>
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">vs last month</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-[#e0e0e0] hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate('/leads')}>
-            <CardHeader className="pb-2">
-              <CardDescription className="text-[#525252] text-xs">Active Leads</CardDescription>
-              <CardTitle className="text-2xl font-light text-[#161616]">{stats.totalLeads}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-1 text-sm">
-                <TrendingUp className="h-4 w-4 text-green-600" />
-                <span className="text-green-600 font-medium">+15.2%</span>
-                <span className="text-[#525252]">vs last month</span>
+          <Card 
+            className="widget-glass widget-glow border-0 cursor-pointer group transition-all"
+            onClick={() => navigate('/leads')}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
+                  <Users className="h-5 w-5 text-primary" />
+                </div>
+                <Badge variant="outline" className="text-xs font-semibold">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  +15.2%
+                </Badge>
               </div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Active Leads</h3>
+              <p className="text-2xl font-bold text-foreground">{stats.totalLeads}</p>
+              <p className="text-xs text-muted-foreground mt-2">vs last month</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-[#e0e0e0] hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate('/pipeline/analytics')}>
-            <CardHeader className="pb-2">
-              <CardDescription className="text-[#525252] text-xs">Conversion Rate</CardDescription>
-              <CardTitle className="text-2xl font-light text-[#161616]">{stats.conversionRate}%</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-1 text-sm">
-                <TrendingUp className="h-4 w-4 text-green-600" />
-                <span className="text-green-600 font-medium">+2.8%</span>
-                <span className="text-[#525252]">vs last month</span>
+          <Card 
+            className="widget-glass widget-glow border-0 cursor-pointer group transition-all"
+            onClick={() => navigate('/pipeline/analytics')}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
+                  <Activity className="h-5 w-5 text-primary" />
+                </div>
+                <Badge variant="outline" className="text-xs font-semibold">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  +2.8%
+                </Badge>
               </div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Conversion Rate</h3>
+              <p className="text-2xl font-bold text-foreground">{stats.conversionRate}%</p>
+              <p className="text-xs text-muted-foreground mt-2">vs last month</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Performance Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Revenue Performance */}
-          <Card className="bg-white border border-[#e0e0e0]">
+          <Card className="widget-glass border-0">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-normal text-[#161616]">Revenue Performance</CardTitle>
-                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                    <BarChart3 className="h-4 w-4 text-primary" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold">Revenue Performance</CardTitle>
+                </div>
+                <Button variant="ghost" size="sm" className="text-primary">
                   View details
+                  <ArrowUpRight className="h-3 w-3 ml-1" />
                 </Button>
               </div>
-              <CardDescription className="text-[#525252]">Monthly revenue vs target</CardDescription>
+              <CardDescription>Monthly revenue vs target</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={250}>

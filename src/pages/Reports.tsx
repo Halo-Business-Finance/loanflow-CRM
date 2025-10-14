@@ -57,59 +57,121 @@ export default function Reports() {
   };
 
   return (
-    <StandardPageLayout>
-      <StandardPageHeader 
-        title="Business Intelligence Center"
-        description="Advanced analytics, reporting, and performance insights"
-      />
-      
-      <div className="p-6 space-y-6">
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Enterprise Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                <BarChart3 className="h-6 w-6 text-primary" />
+              </div>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">
+                Business Intelligence Center
+              </h1>
+            </div>
+            <p className="text-muted-foreground">
+              Advanced analytics, reporting, and performance insights
+            </p>
+          </div>
+          <Button className="gap-2">
+            <Download className="h-4 w-4" />
+            Export Reports
+          </Button>
+        </div>
+
+        {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StandardKPICard
-            title="Total Reports"
-            value={overview.totalReports}
-          />
+          <Card className="widget-glass widget-glow border-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                  <FileText className="h-5 w-5 text-primary" />
+                </div>
+                <Badge variant="outline" className="text-xs">TOTAL</Badge>
+              </div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Reports</h3>
+              <p className="text-2xl font-bold text-foreground">{overview.totalReports}</p>
+            </CardContent>
+          </Card>
           
-          <StandardKPICard
-            title="Data Accuracy"
-            value={`${overview.dataAccuracy}%`}
-          />
+          <Card className="widget-glass widget-glow border-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                  <Target className="h-5 w-5 text-primary" />
+                </div>
+                <Badge variant="outline" className="text-xs">ACCURACY</Badge>
+              </div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Data Accuracy</h3>
+              <p className="text-2xl font-bold text-foreground">{overview.dataAccuracy}%</p>
+            </CardContent>
+          </Card>
           
-          <StandardKPICard
-            title="Processing Time"
-            value={`${overview.processingTime}s`}
-          />
+          <Card className="widget-glass widget-glow border-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                  <Activity className="h-5 w-5 text-primary" />
+                </div>
+                <Badge variant="outline" className="text-xs">SPEED</Badge>
+              </div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Processing Time</h3>
+              <p className="text-2xl font-bold text-foreground">{overview.processingTime}s</p>
+            </CardContent>
+          </Card>
           
-          <StandardKPICard
-            title="Compliance Score"
-            value={`${overview.complianceScore}%`}
-          />
+          <Card className="widget-glass widget-glow border-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                </div>
+                <Badge variant="outline" className="text-xs">COMPLIANCE</Badge>
+              </div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Compliance Score</h3>
+              <p className="text-2xl font-bold text-foreground">{overview.complianceScore}%</p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Performance Alerts */}
         {overview.alertsActive > 0 && (
-          <Alert className="border-secondary">
-            <AlertTriangle className="h-4 w-4" />
+          <Alert className="widget-glass border-warning/50">
+            <AlertTriangle className="h-4 w-4 text-warning" />
             <AlertDescription>
-              {overview.alertsActive} active alerts require attention in your reports.
+              <strong>{overview.alertsActive} active alerts</strong> require attention in your reports.
             </AlertDescription>
           </Alert>
         )}
 
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Report Overview</TabsTrigger>
-            <TabsTrigger value="performance">Performance</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="compliance">Compliance</TabsTrigger>
+        <Tabs defaultValue="overview" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-4 h-auto p-2 bg-muted/50 backdrop-blur-sm rounded-lg">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium">
+              Report Overview
+            </TabsTrigger>
+            <TabsTrigger value="performance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium">
+              Performance
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium">
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="compliance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium">
+              Compliance
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
-              <Card>
+              <Card className="widget-glass border-0">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-green-500" />
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                      <TrendingUp className="h-4 w-4 text-primary" />
+                    </div>
+                    <Badge variant="outline" className="text-xs">REVENUE</Badge>
+                  </div>
+                  <CardTitle className="text-lg font-semibold">
                     Revenue Analytics
                   </CardTitle>
                   <CardDescription>
@@ -330,6 +392,6 @@ export default function Reports() {
           </TabsContent>
         </Tabs>
       </div>
-    </StandardPageLayout>
+    </div>
   );
 }
