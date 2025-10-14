@@ -64,6 +64,10 @@ interface Notification {
   timestamp: Date
   type: 'warning' | 'success' | 'info'
   scheduled_for?: Date
+  related_id?: string
+  related_type?: string
+  borrower_name?: string
+  company_name?: string
 }
 
 interface ActivityItem {
@@ -100,10 +104,18 @@ export default function Activities() {
     try {
       setLoading(true)
 
-      // Fetch real notifications from database, prioritizing scheduled reminders
+      // Fetch real notifications from database with related contact entity data
       const { data: notificationData, error: notificationError } = await supabase
         .from('notifications')
-        .select('*')
+        .select(`
+          *,
+          contact_entities!notifications_related_id_fkey(
+            name,
+            business_name,
+            first_name,
+            last_name
+          )
+        `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(20)
@@ -133,13 +145,25 @@ export default function Activities() {
           return new Date(bTime).getTime() - new Date(aTime).getTime()
         })
         .slice(0, 10)
-        .map(n => ({
-          id: n.id,
-          message: n.message || n.title,
-          timestamp: new Date(n.scheduled_for || n.created_at),
-          type: n.is_read ? 'success' : (n.scheduled_for ? 'warning' : 'info'),
-          scheduled_for: n.scheduled_for ? new Date(n.scheduled_for) : undefined
-        }))
+        .map(n => {
+          const contactEntity = (n as any).contact_entities
+          const borrowerName = contactEntity 
+            ? (contactEntity.name || `${contactEntity.first_name || ''} ${contactEntity.last_name || ''}`.trim())
+            : null
+          const companyName = contactEntity?.business_name
+
+          return {
+            id: n.id,
+            message: n.message || n.title,
+            timestamp: new Date(n.scheduled_for || n.created_at),
+            type: n.is_read ? 'success' : (n.scheduled_for ? 'warning' : 'info'),
+            scheduled_for: n.scheduled_for ? new Date(n.scheduled_for) : undefined,
+            related_id: n.related_id,
+            related_type: n.related_type,
+            borrower_name: borrowerName || undefined,
+            company_name: companyName || undefined
+          }
+        })
 
       // Fetch real activities from audit logs or similar table
       const { data: auditData, error: auditError } = await supabase
@@ -449,33 +473,50 @@ export default function Activities() {
                 <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
                   <Phone className="h-4 w-4 text-navy mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">
-                      {notification.message}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {notification.scheduled_for && notification.scheduled_for > new Date() 
-                        ? `Scheduled for ${formatDistanceToNow(notification.scheduled_for)} from now`
-                        : `${formatDistanceToNow(notification.timestamp)} ago`
-                      }
-                    </p>
-                  </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0"
-                      onClick={() => handleEditNotification(notification)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                      onClick={() => setDeleteConfirmId(notification.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        {notification.borrower_name && (
+                          <p className="text-sm font-semibold text-foreground">
+                            {notification.borrower_name}
+                          </p>
+                        )}
+                        {notification.company_name && (
+                          <p className="text-xs text-muted-foreground">
+                            {notification.company_name}
+                          </p>
+                        )}
+                        <p className="text-sm text-foreground mt-1">
+                          {notification.message}
+                        </p>
+                      </div>
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleEditNotification(notification)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                          onClick={() => setDeleteConfirmId(notification.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <CalendarIcon className="h-3 w-3 text-muted-foreground" />
+                      <p className="text-xs text-muted-foreground">
+                        {notification.scheduled_for && notification.scheduled_for > new Date() 
+                          ? format(notification.scheduled_for, 'MMM d, yyyy • h:mm a')
+                          : format(notification.timestamp, 'MMM d, yyyy • h:mm a')
+                        }
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -498,33 +539,50 @@ export default function Activities() {
                 <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
                   <Mail className="h-4 w-4 text-green-600 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">
-                      {notification.message}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {notification.scheduled_for && notification.scheduled_for > new Date() 
-                        ? `Scheduled for ${formatDistanceToNow(notification.scheduled_for)} from now`
-                        : `${formatDistanceToNow(notification.timestamp)} ago`
-                      }
-                    </p>
-                  </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0"
-                      onClick={() => handleEditNotification(notification)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                      onClick={() => setDeleteConfirmId(notification.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        {notification.borrower_name && (
+                          <p className="text-sm font-semibold text-foreground">
+                            {notification.borrower_name}
+                          </p>
+                        )}
+                        {notification.company_name && (
+                          <p className="text-xs text-muted-foreground">
+                            {notification.company_name}
+                          </p>
+                        )}
+                        <p className="text-sm text-foreground mt-1">
+                          {notification.message}
+                        </p>
+                      </div>
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleEditNotification(notification)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                          onClick={() => setDeleteConfirmId(notification.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <CalendarIcon className="h-3 w-3 text-muted-foreground" />
+                      <p className="text-xs text-muted-foreground">
+                        {notification.scheduled_for && notification.scheduled_for > new Date() 
+                          ? format(notification.scheduled_for, 'MMM d, yyyy • h:mm a')
+                          : format(notification.timestamp, 'MMM d, yyyy • h:mm a')
+                        }
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -547,33 +605,50 @@ export default function Activities() {
                 <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
                   <Bell className="h-4 w-4 text-purple-600 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">
-                      {notification.message}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {notification.scheduled_for && notification.scheduled_for > new Date() 
-                        ? `Scheduled for ${formatDistanceToNow(notification.scheduled_for)} from now`
-                        : `${formatDistanceToNow(notification.timestamp)} ago`
-                      }
-                    </p>
-                  </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0"
-                      onClick={() => handleEditNotification(notification)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                      onClick={() => setDeleteConfirmId(notification.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        {notification.borrower_name && (
+                          <p className="text-sm font-semibold text-foreground">
+                            {notification.borrower_name}
+                          </p>
+                        )}
+                        {notification.company_name && (
+                          <p className="text-xs text-muted-foreground">
+                            {notification.company_name}
+                          </p>
+                        )}
+                        <p className="text-sm text-foreground mt-1">
+                          {notification.message}
+                        </p>
+                      </div>
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleEditNotification(notification)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                          onClick={() => setDeleteConfirmId(notification.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <CalendarIcon className="h-3 w-3 text-muted-foreground" />
+                      <p className="text-xs text-muted-foreground">
+                        {notification.scheduled_for && notification.scheduled_for > new Date() 
+                          ? format(notification.scheduled_for, 'MMM d, yyyy • h:mm a')
+                          : format(notification.timestamp, 'MMM d, yyyy • h:mm a')
+                        }
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}

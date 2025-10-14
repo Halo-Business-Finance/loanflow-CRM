@@ -21,6 +21,8 @@ interface Notification {
   related_id?: string
   related_type?: string
   scheduled_for?: string
+  borrower_name?: string
+  company_name?: string
 }
 
 export function NotificationBell() {
@@ -35,7 +37,15 @@ export function NotificationBell() {
     try {
       const { data, error } = await supabase
         .from('notifications')
-        .select('*')
+        .select(`
+          *,
+          contact_entities!notifications_related_id_fkey(
+            name,
+            business_name,
+            first_name,
+            last_name
+          )
+        `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(50)
@@ -45,7 +55,19 @@ export function NotificationBell() {
         return
       }
 
-      const allNotifications = (data as Notification[]) || []
+      const allNotifications = (data || []).map(n => {
+        const contactEntity = (n as any).contact_entities
+        const borrowerName = contactEntity 
+          ? (contactEntity.name || `${contactEntity.first_name || ''} ${contactEntity.last_name || ''}`.trim())
+          : null
+        const companyName = contactEntity?.business_name
+
+        return {
+          ...n,
+          borrower_name: borrowerName,
+          company_name: companyName
+        }
+      })
       
       // Show both past notifications and future reminders
       // Sort by scheduled_for if it exists, otherwise by created_at
@@ -55,7 +77,7 @@ export function NotificationBell() {
         return new Date(bTime).getTime() - new Date(aTime).getTime()
       }).slice(0, 20)
       
-      setNotifications(sortedNotifications)
+      setNotifications(sortedNotifications as any)
       const unread = sortedNotifications.filter(n => !n.is_read).length || 0
       setUnreadCount(unread)
     } catch (error) {

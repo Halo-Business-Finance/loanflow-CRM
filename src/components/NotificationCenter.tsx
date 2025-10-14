@@ -26,6 +26,8 @@ interface Notification {
   related_id?: string
   related_type?: string
   scheduled_for?: string
+  borrower_name?: string
+  company_name?: string
 }
 
 interface NotificationCenterProps {
@@ -141,12 +143,24 @@ export function NotificationCenter({
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
-                        <h4 className={cn(
-                          "text-sm font-medium",
-                          !notification.is_read && "font-semibold"
-                        )}>
-                          {notification.title}
-                        </h4>
+                        <div className="flex-1">
+                          {notification.borrower_name && (
+                            <p className="text-xs font-semibold text-foreground">
+                              {notification.borrower_name}
+                            </p>
+                          )}
+                          {notification.company_name && (
+                            <p className="text-xs text-muted-foreground">
+                              {notification.company_name}
+                            </p>
+                          )}
+                          <h4 className={cn(
+                            "text-sm font-medium mt-1",
+                            !notification.is_read && "font-semibold"
+                          )}>
+                            {notification.title}
+                          </h4>
+                        </div>
                         <span className="text-xs text-muted-foreground flex-shrink-0">
                           {notification.scheduled_for 
                             ? new Date(notification.scheduled_for).toLocaleString('en-US', {
