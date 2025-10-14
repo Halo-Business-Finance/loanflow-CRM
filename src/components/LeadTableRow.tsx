@@ -123,7 +123,7 @@ export function LeadTableRow({
       </td>
 
       {/* Column 2: Contact Information */}
-      <td className="px-4 py-4">
+      <td className="px-2 py-4">
         <div className="space-y-1.5">
           {lead.phone && (
             <div className="flex items-center gap-2">
