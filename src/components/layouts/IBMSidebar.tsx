@@ -89,8 +89,8 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
         <div
           onClick={handleClick}
           className={cn(
-            'flex items-center justify-center h-12 text-sm transition-colors relative group cursor-pointer',
-            collapsed ? 'w-12 px-0' : 'justify-start px-4',
+            'flex items-center h-12 text-sm transition-colors relative group cursor-pointer',
+            collapsed ? 'justify-center w-12 px-0' : 'pl-0 pr-4',
             (isActive || hasActiveSubItem)
               ? 'bg-[#e0e0e0] text-[#161616] font-medium'
               : 'text-[#525252] hover:bg-[#e0e0e0] hover:text-[#161616]'
@@ -99,7 +99,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
           {(isActive || hasActiveSubItem) && !collapsed && (
             <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
           )}
-          <div className={cn("flex items-center justify-center", collapsed ? "w-full" : "w-4 mr-3")}>
+          <div className="w-12 flex items-center justify-center">
             <Icon className="h-4 w-4 flex-shrink-0" />
           </div>
           {!collapsed && (
@@ -140,8 +140,8 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
     <NavLink
       to={to!}
       className={cn(
-        'flex items-center justify-center h-12 text-sm transition-colors relative group',
-        collapsed ? 'w-12 px-0' : 'justify-start px-4',
+        'flex items-center h-12 text-sm transition-colors relative group',
+        collapsed ? 'justify-center w-12 px-0' : 'pl-0 pr-4',
         isActive
           ? 'bg-[#e0e0e0] text-[#161616] font-medium'
           : 'text-[#525252] hover:bg-[#e0e0e0] hover:text-[#161616]'
@@ -150,7 +150,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
       {isActive && !collapsed && (
         <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
       )}
-      <div className={cn("flex items-center justify-center", collapsed ? "w-full" : "w-4 mr-3")}>
+      <div className="w-12 flex items-center justify-center">
         <Icon className="h-4 w-4 flex-shrink-0" />
       </div>
       {!collapsed && <span className="truncate">{label}</span>}
