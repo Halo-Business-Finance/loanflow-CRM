@@ -55,6 +55,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(false);
+  const [userName, setUserName] = useState('');
   const [stats, setStats] = useState({
     totalLeads: 0,
     activeDeals: 0,
@@ -106,6 +107,10 @@ export default function Dashboard() {
     try {
       setLoading(true);
       
+      // Get user's first name from metadata
+      const firstName = user?.user_metadata?.first_name || '';
+      setUserName(firstName);
+      
       const { data: leads } = await supabase
         .from('leads')
         .select(`
@@ -144,7 +149,7 @@ export default function Dashboard() {
   return (
     <div data-testid="page-dashboard" className="bg-[#f4f4f4] min-h-full">
       <IBMPageHeader
-        title="Dashboard"
+        title={userName ? `Welcome, ${userName}` : 'Welcome'}
         actions={
           <Button variant="default" size="sm" onClick={() => navigate('/leads/new')}>
             Create New Lead
