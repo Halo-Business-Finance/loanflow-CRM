@@ -28,6 +28,8 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
     setIsLoading(true)
     try {
       await signUp(email, password, firstName, lastName)
+      // Switch to login mode after successful signup
+      onToggleMode()
     } catch (error) {
       // Error handling is done in the AuthProvider
     } finally {
