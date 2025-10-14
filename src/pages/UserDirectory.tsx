@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
-import { UserCog, Plus, Search, Filter, Download, Mail, Calendar, Phone, Edit, Trash2, X, UserX } from 'lucide-react';
+import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -442,10 +442,6 @@ export default function UserDirectory() {
             <Button variant="ghost" size="sm">
               <Filter className="h-4 w-4 mr-2" />
               Filter
-            </Button>
-            <Button variant="ghost" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Export
             </Button>
             <Button size="sm" onClick={() => setIsAddUserOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
