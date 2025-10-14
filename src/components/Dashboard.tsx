@@ -108,44 +108,40 @@ function Dashboard() {
       
       console.log('Fetching dashboard data for user:', user.id);
       
-      // Fetch leads with contact entities
-      const { data: leads, error: leadsError } = await supabase
-        .from('leads')
-        .select(`
-          *,
-          contact_entities!inner(*)
-        `)
+      // Fetch all contact entities for this user (which includes lead data)
+      const { data: contactEntities, error: contactError } = await supabase
+        .from('contact_entities')
+        .select('*')
         .eq('user_id', user.id);
 
-      if (leadsError) {
-        console.warn('Leads query error (non-blocking):', leadsError)
-        // Avoid disruptive toasts; proceed with empty data for a cleaner UX
+      if (contactError) {
+        console.warn('Contact entities query error (non-blocking):', contactError);
       }
 
-      console.log('Fetched leads:', leads?.length || 0);
-      console.log('Fetched leads data:', leads);
+      console.log('Fetched contact entities:', contactEntities?.length || 0);
+      console.log('Contact entities data:', contactEntities);
 
-      // Calculate real metrics
-      const totalLeads = leads?.length || 0;
-      const activeLeads = leads?.filter(lead => 
-        lead.contact_entities && 
-        ['qualification', 'proposal', 'negotiation'].includes(lead.contact_entities.stage)
+      // Calculate real metrics from contact_entities (the source of truth)
+      const totalLeads = contactEntities?.length || 0;
+      const activeLeads = contactEntities?.filter(contact => 
+        contact.stage && 
+        !['Funded', 'Closed Won', 'Closed Lost', 'Archive'].includes(contact.stage)
       ).length || 0;
 
-      const totalRevenue = leads?.reduce((sum, lead) => 
-        sum + (lead.contact_entities?.loan_amount || 0), 0
+      const totalRevenue = contactEntities?.reduce((sum, contact) => 
+        sum + (contact.loan_amount || 0), 0
       ) || 0;
 
-      const pipelineValue = leads?.filter(lead => 
-        lead.contact_entities && 
-        !['closed_won', 'closed_lost'].includes(lead.contact_entities.stage)
-      ).reduce((sum, lead) => 
-        sum + (lead.contact_entities?.loan_amount || 0), 0
+      const pipelineValue = contactEntities?.filter(contact => 
+        contact.stage && 
+        !['Funded', 'Closed Won', 'Closed Lost', 'Archive'].includes(contact.stage)
+      ).reduce((sum, contact) => 
+        sum + (contact.loan_amount || 0), 0
       ) || 0;
 
       // Calculate conversion rate
-      const closedWonLeads = leads?.filter(lead => 
-        lead.contact_entities?.stage === 'closed_won'
+      const closedWonLeads = contactEntities?.filter(contact => 
+        ['Funded', 'Closed Won'].includes(contact.stage || '')
       ).length || 0;
       const conversionRate = totalLeads > 0 ? (closedWonLeads / totalLeads) * 100 : 0;
 
@@ -159,14 +155,14 @@ function Dashboard() {
         });
       }
 
-      // Group leads by stage for funnel chart
-      const stageGroups = leads?.reduce((acc, lead) => {
-        const stage = lead.contact_entities?.stage || 'unknown';
+      // Group contact entities by stage for funnel chart
+      const stageGroups = contactEntities?.reduce((acc, contact) => {
+        const stage = contact.stage || 'unknown';
         if (!acc[stage]) {
           acc[stage] = { count: 0, value: 0 };
         }
         acc[stage].count += 1;
-        acc[stage].value += lead.contact_entities?.loan_amount || 0;
+        acc[stage].value += contact.loan_amount || 0;
         return acc;
       }, {} as Record<string, { count: number; value: number }>) || {};
 
@@ -177,13 +173,13 @@ function Dashboard() {
       }));
 
       // Group by loan type
-      const loanGroups = leads?.reduce((acc, lead) => {
-        const loanType = lead.contact_entities?.loan_type || 'Unknown';
+      const loanGroups = contactEntities?.reduce((acc, contact) => {
+        const loanType = contact.loan_type || 'Unknown';
         if (!acc[loanType]) {
           acc[loanType] = { count: 0, total_amount: 0 };
         }
         acc[loanType].count += 1;
-        acc[loanType].total_amount += lead.contact_entities?.loan_amount || 0;
+        acc[loanType].total_amount += contact.loan_amount || 0;
         return acc;
       }, {} as Record<string, { count: number; total_amount: number }>) || {};
 
