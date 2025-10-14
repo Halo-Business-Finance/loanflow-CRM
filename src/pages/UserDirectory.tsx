@@ -58,6 +58,16 @@ const userEditSchema = z.object({
   isActive: z.boolean(),
 });
 
+const userCreateSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  firstName: z.string().min(1, 'First name is required').max(100, 'First name too long'),
+  lastName: z.string().min(1, 'Last name is required').max(100, 'Last name too long'),
+  phoneNumber: z.string().regex(/^\+?[\d\s\-()]+$/, 'Invalid phone number').optional().or(z.literal('')),
+  role: z.string().min(1, 'Role is required'),
+  isActive: z.boolean(),
+});
+
 export default function UserDirectory() {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +76,7 @@ export default function UserDirectory() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof userEditSchema>>({
@@ -74,6 +85,19 @@ export default function UserDirectory() {
       firstName: '',
       lastName: '',
       phoneNumber: '',
+      isActive: true,
+    },
+  });
+
+  const createForm = useForm<z.infer<typeof userCreateSchema>>({
+    resolver: zodResolver(userCreateSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      role: 'agent',
       isActive: true,
     },
   });
@@ -212,6 +236,44 @@ export default function UserDirectory() {
     setIsDialogOpen(false);
   };
 
+  const onCreateUser = async (values: z.infer<typeof userCreateSchema>) => {
+    try {
+      setIsSaving(true);
+      
+      const { data, error } = await supabase.functions.invoke('admin-create-user', {
+        body: {
+          email: values.email,
+          password: values.password,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          phone: values.phoneNumber || null,
+          role: values.role,
+          isActive: values.isActive,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'User created successfully',
+      });
+
+      setIsAddUserOpen(false);
+      createForm.reset();
+      fetchUsers(); // Refresh the user list
+    } catch (error: any) {
+      console.error('Error creating user:', error);
+      toast({
+        title: 'Error',
+        description: error?.message || 'Failed to create user',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const totalUsers = users.length;
   const activeUsers = users.length; // All fetched users are considered active
   const pendingInvites = 0; // Would need a separate invites table
@@ -231,7 +293,7 @@ export default function UserDirectory() {
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
-            <Button size="sm">
+            <Button size="sm" onClick={() => setIsAddUserOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Add User
             </Button>
@@ -366,6 +428,158 @@ export default function UserDirectory() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Add User Dialog */}
+      <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New User</DialogTitle>
+            <DialogDescription>
+              Create a new user account with role and permissions
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...createForm}>
+            <form onSubmit={createForm.handleSubmit(onCreateUser)} className="space-y-4">
+              <FormField
+                control={createForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="user@example.com" type="email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={createForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Min 8 characters" type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={createForm.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={createForm.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={createForm.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="(555) 123-4567" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={createForm.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <FormControl>
+                      <select
+                        {...field}
+                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      >
+                        <option value="agent">Agent</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Admin</option>
+                        <option value="super_admin">Super Admin</option>
+                        <option value="loan_processor">Loan Processor</option>
+                        <option value="underwriter">Underwriter</option>
+                        <option value="funder">Funder</option>
+                        <option value="closer">Closer</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={createForm.control}
+                name="isActive"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <FormLabel>Active Status</FormLabel>
+                      <div className="text-sm text-muted-foreground">
+                        Enable user account immediately
+                      </div>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex gap-2 pt-4">
+                <Button type="submit" disabled={isSaving}>
+                  {isSaving ? 'Creating...' : 'Create User'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setIsAddUserOpen(false);
+                    createForm.reset();
+                  }}
+                  disabled={isSaving}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
 
       {/* User Detail Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
