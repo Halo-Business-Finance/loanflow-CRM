@@ -12,6 +12,8 @@ interface UserProfile {
   last_name: string | null
   email: string
   phone_number: string | null
+  city: string | null
+  state: string | null
   is_active: boolean
   created_at: string
   updated_at: string
@@ -157,6 +159,8 @@ Deno.serve(async (req) => {
       last_name: profile.last_name,
       email: profile.email,
       phone_number: profile.phone_number,
+      city: profile.city,
+      state: profile.state,
       is_active: profile.is_active,
       created_at: profile.created_at,
       updated_at: profile.updated_at,
