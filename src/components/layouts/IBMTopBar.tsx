@@ -83,6 +83,8 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           <Phone className="h-5 w-5" />
         </Button>
 
+        <NotificationBell />
+
         <Button
           variant="ghost"
           size="icon"
@@ -91,8 +93,6 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         >
           <HelpCircle className="h-5 w-5" />
         </Button>
-
-        <NotificationBell />
 
         <ThemeToggle />
 
