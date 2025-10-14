@@ -498,12 +498,6 @@ export default function Activities() {
                 </Button>
               </CardHeader>
               <CardContent className="space-y-4 px-4 pb-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>Editing notification</span>
-                </div>
-
-                <Separator />
-
                 {/* Title */}
                 <div className="space-y-3">
                   <Label className="text-sm font-medium">Title</Label>
