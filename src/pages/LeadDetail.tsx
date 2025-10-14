@@ -105,17 +105,16 @@ export default function LeadDetail() {
     mobile_phone: ""
   })
 
+  const isValidUuid = (value?: string) =>
+    !!value && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
+
+
   useEffect(() => {
     console.log('LeadDetail useEffect - id:', id, 'user:', user?.id)
     
-    if (id === ':id') {
-      // If the literal placeholder is in the URL, redirect safely to the list
-      navigate('/leads', { replace: true })
-      return
-    }
+    if (!user) return
 
-    if (!id || !user) {
-      // Don't toast here to avoid noise; just redirect back
+    if (!isValidUuid(id) || id === ':id') {
       navigate('/leads', { replace: true })
       return
     }
@@ -127,8 +126,10 @@ export default function LeadDetail() {
     try {
       console.log('Fetching lead with ID:', id)
       
-      if (!id || id === ':id') {
-        throw new Error('Invalid lead ID')
+      if (!isValidUuid(id)) {
+        // Guard against invalid URLs
+        navigate('/leads', { replace: true })
+        return
       }
       
       const { data, error } = await supabase
