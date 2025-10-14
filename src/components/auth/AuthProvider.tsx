@@ -123,8 +123,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('Error fetching user roles:', error)
-        setUserRole('agent')
-        setUserRoles(['agent'])
+        setUserRole('loan_originator')
+        setUserRoles(['loan_originator'])
         return
       }
 
@@ -132,21 +132,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const roles = data?.map((r: { role: string }) => r.role) || []
       
       // Determine primary role (highest in hierarchy)
-      const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'agent', 'manager', 'admin', 'super_admin']
+      const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'manager', 'admin', 'super_admin']
       const primaryRole = roles.length > 0 
         ? roles.reduce((highest, current) => {
             const highestIndex = roleHierarchy.indexOf(highest)
             const currentIndex = roleHierarchy.indexOf(current)
             return currentIndex > highestIndex ? current : highest
           }, roles[0])
-        : 'agent'
+        : 'loan_originator'
 
       setUserRole(primaryRole)
-      setUserRoles(roles.length > 0 ? roles : ['agent'])
+      setUserRoles(roles.length > 0 ? roles : ['loan_originator'])
     } catch (error) {
       console.error('Error fetching user roles:', error)
-      setUserRole('agent')
-      setUserRoles(['agent'])
+      setUserRole('loan_originator')
+      setUserRoles(['loan_originator'])
     }
   }
 
@@ -283,7 +283,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (role === 'super_admin') return userRoles.includes('super_admin')
     
     // Role hierarchy: super_admin > admin > manager > agent/loan_originator/loan_processor/funder/underwriter/closer > tech
-    const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'agent', 'manager', 'admin', 'super_admin']
+    const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'manager', 'admin', 'super_admin']
     
     // Find highest role user has
     const highestUserRole = userRoles.reduce((highest, current) => {

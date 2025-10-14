@@ -86,7 +86,7 @@ export function AdvancedSessionManager() {
         { role: 'super_admin', timeout_minutes: 120, max_concurrent_sessions: 2, require_2fa: true },
         { role: 'admin', timeout_minutes: 240, max_concurrent_sessions: 3, require_2fa: true },
         { role: 'manager', timeout_minutes: 360, max_concurrent_sessions: 5, require_2fa: false },
-        { role: 'agent', timeout_minutes: 480, max_concurrent_sessions: 3, require_2fa: false }
+        { role: 'loan_originator', timeout_minutes: 480, max_concurrent_sessions: 3, require_2fa: false }
       ];
 
       setSessions((sessionsData || []).map(session => ({

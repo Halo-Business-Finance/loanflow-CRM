@@ -39,7 +39,7 @@ export class SecurityMonitoring {
     // Prevent privilege escalation attempts
     const roleHierarchy = {
       'tech': 0,
-      'agent': 1,
+      
       'loan_originator': 1,
       'loan_processor': 1,
       'funder': 1,

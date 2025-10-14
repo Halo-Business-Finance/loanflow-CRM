@@ -1,7 +1,7 @@
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useCallback } from 'react';
 
-export type UserRole = 'super_admin' | 'admin' | 'manager' | 'agent' | 'loan_originator' | 'loan_processor' | 'funder' | 'underwriter' | 'closer' | 'tech';
+export type UserRole = 'super_admin' | 'admin' | 'manager' | 'loan_originator' | 'loan_processor' | 'funder' | 'underwriter' | 'closer' | 'tech';
 
 interface RoleHierarchy {
   [key: string]: number;
@@ -14,7 +14,7 @@ const ROLE_HIERARCHY: RoleHierarchy = {
   'funder': 1,
   'loan_processor': 1,
   'loan_originator': 1,
-  'agent': 1,
+  
   'manager': 2,
   'admin': 3,
   'super_admin': 4
@@ -56,11 +56,11 @@ export const useRoleBasedAccess = () => {
   }, [hasMinimumRole]);
 
   const canViewReports = useCallback((): boolean => {
-    return hasMinimumRole('agent');
+    return hasMinimumRole('loan_originator');
   }, [hasMinimumRole]);
 
   const canManageClients = useCallback((): boolean => {
-    return hasMinimumRole('agent');
+    return hasMinimumRole('loan_originator');
   }, [hasMinimumRole]);
 
   // Loan-specific role permissions

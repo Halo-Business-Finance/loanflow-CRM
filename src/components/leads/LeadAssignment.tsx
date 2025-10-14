@@ -89,7 +89,7 @@ export function LeadAssignment({
         first_name: profile.first_name,
         last_name: profile.last_name,
         email: profile.email,
-        role: Array.isArray(profile.user_roles) ? profile.user_roles[0]?.role || 'agent' : 'agent'
+        role: Array.isArray(profile.user_roles) ? profile.user_roles[0]?.role || 'loan_originator' : 'loan_originator'
       })) || []
 
       setTeamMembers(members)
@@ -175,11 +175,11 @@ export function LeadAssignment({
     return teamMembers.filter(member => {
       switch (targetRole) {
         case 'loan_originator':
-          return ['agent', 'manager', 'admin', 'super_admin'].includes(member.role)
+          return ['loan_originator', 'manager', 'admin', 'super_admin'].includes(member.role)
         case 'loan_processor':
           return ['loan_processor', 'manager', 'admin', 'super_admin'].includes(member.role)
         case 'closer':
-          return ['agent', 'manager', 'admin', 'super_admin'].includes(member.role)
+          return ['loan_originator', 'manager', 'admin', 'super_admin'].includes(member.role)
         case 'funder':
           return ['funder', 'manager', 'admin', 'super_admin'].includes(member.role)
         default:

@@ -28,7 +28,6 @@ const ROLE_OPTIONS: { value: UserRole; label: string; level: number }[] = [
   { value: 'funder', label: 'Funder', level: 1 },
   { value: 'underwriter', label: 'Underwriter', level: 1 },
   { value: 'closer', label: 'Closer', level: 1 },
-  { value: 'agent', label: 'Agent', level: 1 },
   { value: 'tech', label: 'Tech', level: 0 },
 ];
 

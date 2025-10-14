@@ -141,7 +141,7 @@ export default function UserDirectory() {
       phoneNumber: '',
       city: '',
       state: '',
-      role: 'agent',
+      role: 'loan_originator',
       isActive: true,
     },
   });
@@ -517,7 +517,7 @@ export default function UserDirectory() {
                         <SelectItem value="super_admin">Super Admin</SelectItem>
                         <SelectItem value="admin">Admin</SelectItem>
                         <SelectItem value="manager">Manager</SelectItem>
-                        <SelectItem value="agent">Agent</SelectItem>
+                        <SelectItem value="loan_originator">Loan Originator</SelectItem>
                         <SelectItem value="loan_processor">Loan Processor</SelectItem>
                         <SelectItem value="underwriter">Underwriter</SelectItem>
                         <SelectItem value="funder">Funder</SelectItem>
@@ -890,7 +890,7 @@ export default function UserDirectory() {
                         {...field}
                         className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                       >
-                        <option value="agent">Agent</option>
+                        <option value="loan_originator">Loan Originator</option>
                         <option value="manager">Manager</option>
                         <option value="admin">Admin</option>
                         <option value="super_admin">Super Admin</option>

@@ -94,7 +94,7 @@ export default function SettingsUsers() {
               ...profile,
               user_id: profile.id,
               phone: profile.phone_number || '',
-              role: normalizeRole(profile.role || 'agent'),
+              role: normalizeRole(profile.role || 'loan_originator'),
               is_active: profile.is_active !== false // Ensure boolean
             }
             console.log('Transformed user:', transformed)
@@ -376,7 +376,7 @@ export default function SettingsUsers() {
       case 'funder': return 'secondary'
       case 'closer': return 'secondary'
       case 'loan_originator': return 'secondary'
-      case 'agent': return 'outline'
+      case 'loan_originator': return 'outline'
       case 'viewer': return 'outline'
       default: return 'outline'
     }
@@ -384,13 +384,13 @@ export default function SettingsUsers() {
 
   const normalizeRole = (role: unknown): string => {
     const allowed = new Set([
-      'super_admin','admin','manager','loan_processor','underwriter','funder','closer','loan_originator','agent','viewer'
+      'super_admin','admin','manager','loan_processor','underwriter','funder','closer','loan_originator','viewer'
     ])
     const r = typeof role === 'string' ? role.toLowerCase().trim() : ''
     if (allowed.has(r)) return r
     // Guard against status strings or unexpected values showing in the role column
-    if (r === 'active' || r === 'inactive') return 'agent'
-    return 'agent'
+    if (r === 'active' || r === 'inactive') return 'loan_originator'
+    return 'loan_originator'
   }
 
   const displayRole = (role: string) => {
@@ -698,10 +698,10 @@ export default function SettingsUsers() {
                         <span className="text-xs text-slate-500 dark:text-slate-400">Primary Contact</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="w-fit">
-                          {displayRole(user.role || 'agent')}
+                        <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'loan_originator'))} className="w-fit">
+                          {displayRole(user.role || 'loan_originator')}
                         </Badge>
-                        <span className="text-sm text-foreground">{displayRole(user.role || 'agent')}</span>
+                        <span className="text-sm text-foreground">{displayRole(user.role || 'loan_originator')}</span>
                       </div>
                       <div className="flex items-center gap-2 justify-end pr-4">
                         <div className="flex items-center gap-2">
@@ -820,8 +820,8 @@ export default function SettingsUsers() {
                         <div className="flex items-center gap-4">
                           <div className="flex items-center gap-1">
                             <span className="text-muted-foreground">Role:</span>
-                            <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'agent'))} className="text-xs">
-                              {displayRole(user.role || 'agent')}
+                            <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'loan_originator'))} className="text-xs">
+                              {displayRole(user.role || 'loan_originator')}
                             </Badge>
                           </div>
                           <div className="flex items-center gap-1">
@@ -1378,7 +1378,7 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
                 <SelectItem value="underwriter">Underwriter</SelectItem>
                 <SelectItem value="funder">Funder</SelectItem>
                 <SelectItem value="closer">Closer</SelectItem>
-                <SelectItem value="agent">Agent</SelectItem>
+                <SelectItem value="loan_originator">Loan Originator</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -1469,7 +1469,7 @@ function AddUserForm({ onSave, onCancel }: AddUserFormProps) {
     phone: '',
     password: '',
     confirmPassword: '',
-    role: 'agent',
+    role: 'loan_originator',
     is_active: true
   });
   const [saving, setSaving] = useState(false);
@@ -1650,7 +1650,7 @@ function AddUserForm({ onSave, onCancel }: AddUserFormProps) {
                 <SelectItem value="underwriter">Underwriter</SelectItem>
                 <SelectItem value="funder">Funder</SelectItem>
                 <SelectItem value="closer">Closer</SelectItem>
-                <SelectItem value="agent">Agent</SelectItem>
+                <SelectItem value="loan_originator">Loan Originator</SelectItem>
               </SelectContent>
             </Select>
           </div>
