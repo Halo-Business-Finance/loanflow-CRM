@@ -89,8 +89,8 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
         <div
           onClick={handleClick}
           className={cn(
-            'flex items-center h-8 text-sm transition-colors relative group cursor-pointer',
-            collapsed ? 'justify-center px-0' : 'px-4',
+            'flex items-center h-12 text-sm transition-colors relative group cursor-pointer',
+            collapsed ? 'justify-center px-0 w-12' : 'px-4',
             (isActive || hasActiveSubItem)
               ? 'bg-[#e0e0e0] text-[#161616] font-medium'
               : 'text-[#525252] hover:bg-[#e0e0e0] hover:text-[#161616]'
@@ -138,8 +138,8 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
     <NavLink
       to={to!}
       className={cn(
-        'flex items-center h-8 text-sm transition-colors relative group',
-        collapsed ? 'justify-center px-0' : 'px-4',
+        'flex items-center h-12 text-sm transition-colors relative group',
+        collapsed ? 'justify-center px-0 w-12' : 'px-4',
         isActive
           ? 'bg-[#e0e0e0] text-[#161616] font-medium'
           : 'text-[#525252] hover:bg-[#e0e0e0] hover:text-[#161616]'
@@ -162,7 +162,7 @@ export function IBMSidebar({ collapsed }: IBMSidebarProps) {
         collapsed ? 'w-12' : 'w-60'
       )}
     >
-      <nav className="py-2 pt-8 space-y-0.5">
+      <nav className="space-y-0.5">
         {navItems.map((item) => (
           <NavItem key={item.to || item.label} {...item} collapsed={collapsed} />
         ))}

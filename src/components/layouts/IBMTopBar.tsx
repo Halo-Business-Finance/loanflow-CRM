@@ -37,9 +37,9 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-16 w-12 rounded-none text-white hover:bg-white/10 flex-shrink-0"
+          className="h-16 w-12 rounded-none text-white hover:bg-white/10 flex-shrink-0 flex items-center justify-center"
         >
-          {sidebarCollapsed ? <Grid3x3 className="h-5 w-5" /> : <Grid3x3 className="h-5 w-5" />}
+          {sidebarCollapsed ? <Grid3x3 className="h-4 w-4" /> : <Grid3x3 className="h-4 w-4" />}
         </Button>
         {!sidebarCollapsed && (
           <div className="text-white font-medium text-lg px-6 whitespace-nowrap">LoanFlow CRM</div>
