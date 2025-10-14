@@ -94,12 +94,11 @@ export function LeadTableRow({
             onClick={(e) => e.stopPropagation()}
             aria-label={`Select ${lead.name}`}
           />
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap min-w-0">
-              <span className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors truncate">
-                {lead.name}
-              </span>
-              <span className="text-xs text-muted-foreground">·</span>
+          <div className="flex flex-col gap-1.5 min-w-0">
+            <span className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors truncate">
+              {lead.name}
+            </span>
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs text-muted-foreground font-mono">
                 #{String(lead.lead_number).padStart(3, '0')}
               </span>
