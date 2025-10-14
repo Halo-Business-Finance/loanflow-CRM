@@ -23,9 +23,25 @@ import {
   Users,
   Phone,
   Mail,
-  RefreshCw
+  RefreshCw,
+  Trash2,
+  Edit,
+  Check,
+  X
 } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 
 interface Notification {
   id: string
@@ -49,6 +65,10 @@ export default function Activities() {
   const [loading, setLoading] = useState(true)
   const [actualTodaysActions, setActualTodaysActions] = useState(0)
   const [scheduledReminders, setScheduledReminders] = useState(0)
+  const [editingNotificationId, setEditingNotificationId] = useState<string | null>(null)
+  const [editTitle, setEditTitle] = useState('')
+  const [editMessage, setEditMessage] = useState('')
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
   const { user } = useAuth()
   const { toast } = useToast()
 
@@ -210,6 +230,74 @@ export default function Activities() {
     }
   }
 
+  const handleEditNotification = (notification: Notification) => {
+    setEditingNotificationId(notification.id)
+    setEditTitle(notification.message.split(' - ')[0] || notification.message)
+    setEditMessage(notification.message)
+  }
+
+  const handleSaveEdit = async (notificationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .update({
+          title: editTitle,
+          message: editMessage,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', notificationId)
+
+      if (error) throw error
+
+      toast({
+        title: "Success",
+        description: "Notification updated successfully",
+      })
+
+      setEditingNotificationId(null)
+      fetchData()
+    } catch (error) {
+      console.error('Error updating notification:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update notification",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setEditingNotificationId(null)
+    setEditTitle('')
+    setEditMessage('')
+  }
+
+  const handleDeleteNotification = async (notificationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('id', notificationId)
+
+      if (error) throw error
+
+      toast({
+        title: "Success",
+        description: "Notification deleted successfully",
+      })
+
+      setDeleteConfirmId(null)
+      fetchData()
+    } catch (error) {
+      console.error('Error deleting notification:', error)
+      toast({
+        title: "Error",
+        description: "Failed to delete notification",
+        variant: "destructive",
+      })
+    }
+  }
+
   if (loading) {
     return (
       <StandardPageLayout>
@@ -279,19 +367,73 @@ export default function Activities() {
           >
             <div className="space-y-4">
               {notifications.slice(0, 5).map((notification) => (
-                <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                  {getTypeIcon(notification.type)}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">
-                      {notification.message}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {notification.scheduled_for && notification.scheduled_for > new Date() 
-                        ? `Scheduled for ${formatDistanceToNow(notification.scheduled_for)} from now`
-                        : `${formatDistanceToNow(notification.timestamp)} ago`
-                      }
-                    </p>
-                  </div>
+                <div key={notification.id}>
+                  {editingNotificationId === notification.id ? (
+                    <div className="flex flex-col gap-3 p-3 rounded-lg bg-muted/30 border border-primary">
+                      <Input
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        placeholder="Title"
+                        className="text-sm"
+                      />
+                      <Textarea
+                        value={editMessage}
+                        onChange={(e) => setEditMessage(e.target.value)}
+                        placeholder="Message"
+                        className="text-sm min-h-[60px]"
+                      />
+                      <div className="flex gap-2 justify-end">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={handleCancelEdit}
+                        >
+                          <X className="h-4 w-4 mr-1" />
+                          Cancel
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => handleSaveEdit(notification.id)}
+                        >
+                          <Check className="h-4 w-4 mr-1" />
+                          Save
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
+                      {getTypeIcon(notification.type)}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground">
+                          {notification.message}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {notification.scheduled_for && notification.scheduled_for > new Date() 
+                            ? `Scheduled for ${formatDistanceToNow(notification.scheduled_for)} from now`
+                            : `${formatDistanceToNow(notification.timestamp)} ago`
+                          }
+                        </p>
+                      </div>
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleEditNotification(notification)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                          onClick={() => setDeleteConfirmId(notification.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -365,6 +507,27 @@ export default function Activities() {
           </div>
         </StandardContentCard>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => !open && setDeleteConfirmId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Notification</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this notification? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteConfirmId && handleDeleteNotification(deleteConfirmId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </StandardPageLayout>
   )
 }
