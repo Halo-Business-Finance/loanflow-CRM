@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
-import { UserCog, Plus, Search, Filter, Download, Mail, Calendar, Phone, Edit, Trash2 } from 'lucide-react';
+import { UserCog, Plus, Search, Filter, Download, Mail, Calendar, Phone, Edit, Trash2, X, UserX } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -89,6 +90,10 @@ export default function UserDirectory() {
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
+  const [isBulkActionOpen, setIsBulkActionOpen] = useState(false);
+  const [bulkActionType, setBulkActionType] = useState<'delete' | 'deactivate' | null>(null);
+  const [isBulkProcessing, setIsBulkProcessing] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof userEditSchema>>({
@@ -320,6 +325,109 @@ export default function UserDirectory() {
     }
   };
 
+  const toggleUserSelection = (userId: string) => {
+    const newSelection = new Set(selectedUserIds);
+    if (newSelection.has(userId)) {
+      newSelection.delete(userId);
+    } else {
+      newSelection.add(userId);
+    }
+    setSelectedUserIds(newSelection);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedUserIds.size === filteredUsers.length) {
+      setSelectedUserIds(new Set());
+    } else {
+      setSelectedUserIds(new Set(filteredUsers.map(u => u.id)));
+    }
+  };
+
+  const handleBulkAction = (action: 'delete' | 'deactivate') => {
+    if (selectedUserIds.size === 0) {
+      toast({
+        title: 'No users selected',
+        description: 'Please select at least one user',
+        variant: 'destructive',
+      });
+      return;
+    }
+    setBulkActionType(action);
+    setIsBulkActionOpen(true);
+  };
+
+  const executeBulkAction = async () => {
+    if (selectedUserIds.size === 0 || !bulkActionType) return;
+
+    try {
+      setIsBulkProcessing(true);
+      const selectedUsersArray = Array.from(selectedUserIds);
+      let successCount = 0;
+      let failCount = 0;
+
+      if (bulkActionType === 'delete') {
+        // Delete users one by one
+        for (const userId of selectedUsersArray) {
+          try {
+            const { error } = await supabase.functions.invoke('admin-delete-user', {
+              body: { userId },
+            });
+            if (!error) {
+              successCount++;
+            } else {
+              failCount++;
+            }
+          } catch {
+            failCount++;
+          }
+        }
+
+        toast({
+          title: 'Bulk delete completed',
+          description: `Successfully deleted ${successCount} user(s). ${failCount > 0 ? `Failed: ${failCount}` : ''}`,
+        });
+      } else if (bulkActionType === 'deactivate') {
+        // Deactivate users one by one
+        for (const userId of selectedUsersArray) {
+          try {
+            const { error } = await supabase.functions.invoke('admin-update-user', {
+              body: {
+                userId,
+                isActive: false,
+              },
+            });
+            if (!error) {
+              successCount++;
+            } else {
+              failCount++;
+            }
+          } catch {
+            failCount++;
+          }
+        }
+
+        toast({
+          title: 'Bulk deactivation completed',
+          description: `Successfully deactivated ${successCount} user(s). ${failCount > 0 ? `Failed: ${failCount}` : ''}`,
+        });
+      }
+
+      setSelectedUserIds(new Set());
+      setIsBulkActionOpen(false);
+      setBulkActionType(null);
+      fetchUsers(); // Refresh the user list
+    } catch (error: any) {
+      console.error('Error in bulk action:', error);
+      toast({
+        title: 'Error',
+        description: error?.message || 'Failed to complete bulk action',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsBulkProcessing(false);
+    }
+  };
+
   const totalUsers = users.length;
   const activeUsers = users.length; // All fetched users are considered active
   const pendingInvites = 0; // Would need a separate invites table
@@ -348,6 +456,45 @@ export default function UserDirectory() {
       />
 
       <div className="px-6 py-6 space-y-6">
+        {/* Bulk Actions Bar */}
+        {selectedUserIds.size > 0 && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-blue-900">
+                {selectedUserIds.size} user{selectedUserIds.size > 1 ? 's' : ''} selected
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedUserIds(new Set())}
+              >
+                <X className="h-4 w-4 mr-2" />
+                Clear Selection
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleBulkAction('deactivate')}
+                disabled={isBulkProcessing}
+              >
+                <UserX className="h-4 w-4 mr-2" />
+                Deactivate Selected
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => handleBulkAction('delete')}
+                disabled={isBulkProcessing}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Selected
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Search Bar */}
         <div className="flex items-center gap-4">
           <div className="flex-1 max-w-md">
@@ -422,6 +569,12 @@ export default function UserDirectory() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">
+                      <Checkbox
+                        checked={selectedUserIds.size === filteredUsers.length && filteredUsers.length > 0}
+                        onCheckedChange={toggleSelectAll}
+                      />
+                    </TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Phone</TableHead>
@@ -433,6 +586,12 @@ export default function UserDirectory() {
                 <TableBody>
                   {filteredUsers.map((user) => (
                     <TableRow key={user.id}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedUserIds.has(user.id)}
+                          onCheckedChange={() => toggleUserSelection(user.id)}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">
                         <div className="flex flex-col">
                           <span>
@@ -852,6 +1011,46 @@ export default function UserDirectory() {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {isDeleting ? 'Deleting...' : 'Delete User'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Action Confirmation Dialog */}
+      <AlertDialog open={isBulkActionOpen} onOpenChange={setIsBulkActionOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {bulkActionType === 'delete' ? 'Delete Multiple Users?' : 'Deactivate Multiple Users?'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {bulkActionType === 'delete' ? (
+                <>
+                  This action cannot be undone. This will permanently delete{' '}
+                  <span className="font-semibold">{selectedUserIds.size}</span> user
+                  {selectedUserIds.size > 1 ? 's' : ''} and remove all associated data from the system.
+                </>
+              ) : (
+                <>
+                  This will deactivate <span className="font-semibold">{selectedUserIds.size}</span> user
+                  {selectedUserIds.size > 1 ? 's' : ''}. They will no longer be able to access the system.
+                  You can reactivate them later.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isBulkProcessing}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={executeBulkAction}
+              disabled={isBulkProcessing}
+              className={bulkActionType === 'delete' ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90' : ''}
+            >
+              {isBulkProcessing
+                ? 'Processing...'
+                : bulkActionType === 'delete'
+                ? `Delete ${selectedUserIds.size} User${selectedUserIds.size > 1 ? 's' : ''}`
+                : `Deactivate ${selectedUserIds.size} User${selectedUserIds.size > 1 ? 's' : ''}`}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
