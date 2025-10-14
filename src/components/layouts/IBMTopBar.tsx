@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, HelpCircle, Grid3x3, User, ChevronDown, Mail } from 'lucide-react';
+import { Search, HelpCircle, Grid3x3, User, ChevronDown, Mail, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -92,6 +92,16 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           title="Open Microsoft 365 Email"
         >
           <Mail className="h-5 w-5" />
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 text-white hover:bg-white/10"
+          onClick={() => window.open('https://app.ringcentral.com', '_blank')}
+          title="Open RingCentral Dial Pad"
+        >
+          <Phone className="h-5 w-5" />
         </Button>
 
         <Button
