@@ -185,54 +185,15 @@ export default function Activities() {
         user: a.user_id || 'System'
       }))
 
-      // Only use fallback data if no database activities are available
-      const fallbackActivities: ActivityItem[] = dbActivities.length === 0 ? [
-        { 
-          id: '1', 
-          action: 'Lead Created', 
-          details: 'New SBA loan application from John Smith - $150k equipment financing', 
-          timestamp: new Date(Date.now() - 30 * 60 * 1000), 
-          user: 'Sarah Johnson' 
-        },
-        { 
-          id: '2', 
-          action: 'Document Uploaded', 
-          details: 'Financial statements for ABC Corp uploaded to lead #12345', 
-          timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), 
-          user: 'Mike Davis' 
-        },
-        { 
-          id: '3', 
-          action: 'Deal Closed', 
-          details: '$250k commercial real estate loan approved and funded', 
-          timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000), 
-          user: 'Lisa Wong' 
-        },
-        { 
-          id: '4', 
-          action: 'Follow-up Scheduled', 
-          details: 'Meeting scheduled with prospect for loan restructuring discussion', 
-          timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000), 
-          user: 'Tom Anderson' 
-        },
-      ] : []
-
-      // Only use fallback notifications if no database notifications are available
-      const fallbackNotifications: Notification[] = dbNotifications.length === 0 ? [
-        { id: 'n1', message: 'New lead requires immediate follow-up', timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), type: 'warning' },
-        { id: 'n2', message: 'Deal closed successfully - Commission earned!', timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), type: 'success' },
-        { id: 'n3', message: 'Payment reminder scheduled for tomorrow', timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), type: 'info' },
-      ] : []
-
       // Calculate live metrics
-      const allActivities = [...dbActivities, ...fallbackActivities]
-      const allNotifications = [...dbNotifications, ...fallbackNotifications]
+      const allActivities = dbActivities
+      const allNotifications = dbNotifications
       
       const todaysActions = allActivities.filter(activity => {
         const today = new Date()
         const activityDate = activity.timestamp
         return activityDate.toDateString() === today.toDateString()
-      }).length || Math.floor(Math.random() * 15) + 5
+      }).length
 
       setActualTodaysActions(todaysActions)
       setScheduledReminders(scheduledCount)
@@ -665,27 +626,31 @@ export default function Activities() {
           headerActions={<Activity className="h-5 w-5 text-blue-600" />}
         >
           <div className="space-y-4">
-            {activities.map((activity) => (
-              <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                {getActionIcon(activity.action)}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-foreground">
-                      {activity.action}
+            {activities.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">No recent activities</p>
+            ) : (
+              activities.map((activity) => (
+                <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                  {getActionIcon(activity.action)}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-foreground">
+                        {activity.action}
+                      </p>
+                      <Badge variant="outline" className="text-xs">
+                        {activity.user}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {activity.details}
                     </p>
-                    <Badge variant="outline" className="text-xs">
-                      {activity.user}
-                    </Badge>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {formatDistanceToNow(activity.timestamp)} ago
+                    </p>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {activity.details}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {formatDistanceToNow(activity.timestamp)} ago
-                  </p>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </StandardContentCard>
 
