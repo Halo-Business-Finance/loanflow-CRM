@@ -60,28 +60,6 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
 
       {/* Right section with actions */}
       <div className="flex items-center gap-1 px-6 flex-1 justify-end">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-9 text-white hover:bg-white/10 text-sm px-3"
-            >
-              Manage <ChevronDown className="ml-1 h-3 w-3" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => navigate('/settings')}>
-              Settings
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/security')}>
-              Security
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <div className="h-6 w-px bg-[#393939] mx-2" />
-
         <ThemeToggle />
 
         <Button
