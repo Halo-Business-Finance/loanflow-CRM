@@ -53,12 +53,16 @@ import { Lead, Client as ClientType, LOAN_TYPES } from "@/types/lead"
 import { mapLeadFields, mapClientFields, extractContactEntityData, LEAD_WITH_CONTACT_QUERY, CLIENT_WITH_CONTACT_QUERY } from "@/lib/field-mapping"
 
 export default function LeadDetail() {
-  const { id } = useParams<{ id: string }>()
+  const params = useParams<{ id: string }>()
+  const id = params.id
   const navigate = useNavigate()
   const { user } = useAuth()
   const { toast } = useToast()
   const { createNotification } = useNotifications()
   const { canDeleteLeads } = useRoleBasedAccess()
+  
+  // Debug logging
+  console.log('LeadDetail component - params:', params, 'id:', id, 'window.location:', window.location.pathname)
 
   const [lead, setLead] = useState<Lead | null>(null)
   const [client, setClient] = useState<ClientType | null>(null)
@@ -102,18 +106,38 @@ export default function LeadDetail() {
   })
 
   useEffect(() => {
-    if (id && user) {
-      fetchLead()
+    console.log('LeadDetail useEffect - id:', id, 'user:', user?.id)
+    
+    // Validate that id is a valid UUID
+    if (!id || id === ':id' || !user) {
+      console.error('Invalid ID or user:', { id, userId: user?.id })
+      toast({
+        title: "Error",
+        description: "Invalid lead ID",
+        variant: "destructive",
+      })
+      navigate('/leads')
+      return
     }
+    
+    fetchLead()
   }, [id, user])
 
   const fetchLead = async () => {
     try {
+      console.log('Fetching lead with ID:', id)
+      
+      if (!id || id === ':id') {
+        throw new Error('Invalid lead ID')
+      }
+      
       const { data, error } = await supabase
         .from('leads')
         .select(LEAD_WITH_CONTACT_QUERY)
         .eq('id', id)
         .maybeSingle()
+
+      console.log('Lead fetch result:', { data, error })
 
       if (error) throw error
       
