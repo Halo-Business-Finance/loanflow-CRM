@@ -5,10 +5,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Shield } from 'lucide-react';
+import { AlertTriangle, Shield, Smartphone } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useSecureRoleManagement } from '@/hooks/useSecureRoleManagement';
 import { UserRole } from '@/hooks/useRoleBasedAccess';
+import { MicrosoftAuthenticatorSetup } from '@/components/auth/MicrosoftAuthenticatorSetup';
 
 interface SecureRoleManagerProps {
   targetUserId: string;
@@ -38,11 +40,11 @@ export const SecureRoleManager: React.FC<SecureRoleManagerProps> = ({
 }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole | ''>('');
   const [reason, setReason] = useState('');
+  const [mfaDialogOpen, setMfaDialogOpen] = useState(false);
   
   const {
     isLoading,
     assignUserRole,
-    revokeUserRole,
   } = useSecureRoleManagement();
 
   const handleAssignRole = async () => {
@@ -59,18 +61,6 @@ export const SecureRoleManager: React.FC<SecureRoleManagerProps> = ({
     }
   };
 
-  const handleRevokeRole = async () => {
-    if (!reason.trim()) {
-      return;
-    }
-
-    const result = await revokeUserRole(targetUserId, reason, false);
-    
-    if (result.success) {
-      setReason('');
-      onRoleChanged?.();
-    }
-  };
 
   return (
     <Card className="w-full max-w-2xl">
@@ -132,16 +122,26 @@ export const SecureRoleManager: React.FC<SecureRoleManagerProps> = ({
             {isLoading ? 'Assigning...' : 'Assign Role'}
           </Button>
           
-          {currentRole && (
-            <Button
-              variant="destructive"
-              onClick={handleRevokeRole}
-              disabled={!reason.trim() || isLoading}
-              className="flex-1"
-            >
-              {isLoading ? 'Revoking...' : 'Revoke Role'}
-            </Button>
-          )}
+          <Dialog open={mfaDialogOpen} onOpenChange={setMfaDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex-1"
+              >
+                <Smartphone className="h-4 w-4 mr-2" />
+                MFA Setup
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Multi-Factor Authentication</DialogTitle>
+                <DialogDescription>
+                  Register or update MFA details for {targetUserName}
+                </DialogDescription>
+              </DialogHeader>
+              <MicrosoftAuthenticatorSetup />
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Security Notice */}
