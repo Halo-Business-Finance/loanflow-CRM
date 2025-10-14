@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { StandardPageLayout } from '@/components/StandardPageLayout'
-import { StandardPageHeader } from '@/components/StandardPageHeader'
-import { StandardKPICard } from '@/components/StandardKPICard'
-import { StandardContentCard } from '@/components/StandardContentCard'
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -184,67 +181,45 @@ export default function Settings() {
   }
 
   return (
-    <StandardPageLayout>
-      <StandardPageHeader 
-        title="Configuration Command Center"
-        description="System configuration, user preferences, and account management for enterprise security CRM"
+    <div className="min-h-screen bg-[#f4f4f4]">
+      <IBMPageHeader 
+        title="Settings"
+        subtitle="Manage your profile, preferences, and system configuration"
         actions={
-          <Button className="flex items-center gap-2" variant="outline">
+          <Button variant="outline" className="flex items-center gap-2">
             <RefreshCw className="h-4 w-4" />
-            Refresh Settings
+            Refresh
           </Button>
         }
       />
       
-      <div className="p-6 space-y-6">
-        {/* Settings Metrics Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <StandardKPICard
-            title="Profile Settings"
-            value="Active"
-          />
-          
-          <StandardKPICard
-            title="Notifications"
-            value="3"
-          />
-          
-          <StandardKPICard
-            title="Security Level"
-            value="High"
-          />
-          
-          <StandardKPICard
-            title="Integrations"
-            value="4"
-          />
-        </div>
+      <div className="px-6 py-8 space-y-6">
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="bg-white border border-border shadow-sm">
-            <TabsTrigger value="profile" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+          <TabsList className="bg-white border border-[#e0e0e0]">
+            <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="w-4 h-4" />
               <span>Profile</span>
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="w-4 h-4" />
               <span>Notifications</span>
             </TabsTrigger>
-            <TabsTrigger value="system" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="system" className="flex items-center gap-2">
               <RefreshCw className="w-4 h-4" />
               <span>System Health</span>
             </TabsTrigger>
-            <TabsTrigger value="integrations" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="integrations" className="flex items-center gap-2">
               <Lock className="w-4 h-4" />
               <span>Integrations</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">
-            <Card className="bg-card border-0 shadow-lg">
+            <Card className="bg-white border border-[#e0e0e0]">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold text-foreground">Profile Settings</CardTitle>
-                <CardDescription className="text-muted-foreground">
+                <CardTitle className="text-lg font-normal text-[#161616]">Profile Settings</CardTitle>
+                <CardDescription className="text-[#525252]">
                   Update your personal information and preferences
                 </CardDescription>
               </CardHeader>
@@ -340,10 +315,10 @@ export default function Settings() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-0 shadow-lg">
+            <Card className="bg-white border border-[#e0e0e0]">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold text-foreground">Communication Settings</CardTitle>
-                <CardDescription className="text-muted-foreground">
+                <CardTitle className="text-lg font-normal text-[#161616]">Communication Settings</CardTitle>
+                <CardDescription className="text-[#525252]">
                   Configure your phone and email settings
                 </CardDescription>
               </CardHeader>
@@ -369,13 +344,13 @@ export default function Settings() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-0 shadow-lg">
+            <Card className="bg-white border border-[#e0e0e0]">
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <CardTitle className="flex items-center gap-2 text-lg font-normal text-[#161616]">
                   <Lock className="w-5 h-5" />
                   Change Password
                 </CardTitle>
-                <CardDescription className="text-muted-foreground">
+                <CardDescription className="text-[#525252]">
                   Update your account password
                 </CardDescription>
               </CardHeader>
@@ -419,10 +394,10 @@ export default function Settings() {
           </TabsContent>
 
           <TabsContent value="notifications">
-            <Card className="bg-card border-0 shadow-lg">
+            <Card className="bg-white border border-[#e0e0e0]">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold text-foreground">Notification Preferences</CardTitle>
-                <CardDescription className="text-muted-foreground">
+                <CardTitle className="text-lg font-normal text-[#161616]">Notification Preferences</CardTitle>
+                <CardDescription className="text-[#525252]">
                   Configure how you receive notifications
                 </CardDescription>
               </CardHeader>
@@ -487,6 +462,6 @@ export default function Settings() {
           </TabsContent>
         </Tabs>
       </div>
-    </StandardPageLayout>
+    </div>
   )
 }
