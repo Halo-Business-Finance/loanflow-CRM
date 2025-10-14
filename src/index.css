@@ -339,6 +339,15 @@ All colors MUST be HSL.
     backdrop-filter: blur(20px);
   }
 
+  /* Hide native scrollbars but keep scrolling */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;    /* Firefox */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;            /* Chrome, Safari */
+  }
+
   /* Professional button enhancements */
   .btn-primary {
     @apply bg-gradient-primary shadow-medium hover:shadow-large transition-all duration-200;
