@@ -107,6 +107,22 @@ export default function NewLead() {
         throw new Error(`Failed to create lead: ${leadError.message}`)
       }
 
+      // Create audit log entry for lead creation
+      await supabase
+        .from('audit_logs')
+        .insert({
+          user_id: user.id,
+          action: 'lead_created',
+          table_name: 'leads',
+          record_id: leadData.id,
+          new_values: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            business_name: formData.businessName,
+            email: formData.email,
+            phone: formData.phone
+          }
+        })
+
       toast({
         title: "Lead Created",
         description: "New lead has been added to your pipeline",

@@ -263,6 +263,25 @@ export default function LeadDetail() {
 
       if (leadError) throw leadError
 
+      // Create audit log entry for the activity
+      const { error: auditError } = await supabase
+        .from('audit_logs')
+        .insert({
+          user_id: user?.id,
+          action: 'lead_updated',
+          table_name: 'contact_entities',
+          record_id: lead.contact_entity_id,
+          new_values: {
+            call_notes: callNotes,
+            notes: generalNotes,
+            ...contactUpdateData
+          }
+        })
+
+      if (auditError) {
+        console.error('Error creating audit log:', auditError)
+      }
+
       toast({
         title: "Success",
         description: "Lead information updated successfully",
@@ -295,6 +314,20 @@ export default function LeadDetail() {
         console.error('Delete error details:', error)
         throw error
       }
+
+      // Create audit log entry for the deletion
+      await supabase
+        .from('audit_logs')
+        .insert({
+          user_id: user?.id,
+          action: 'lead_deleted',
+          table_name: 'leads',
+          record_id: lead.id,
+          old_values: {
+            name: lead.name,
+            business_name: lead.business_name
+          }
+        })
       
       console.log('Lead deleted successfully')
       toast({

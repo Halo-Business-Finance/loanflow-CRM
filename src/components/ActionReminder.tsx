@@ -111,6 +111,22 @@ export function ActionReminder({ entityId, entityName, entityType, isOpen, onClo
 
       if (error) throw error
 
+      // Create audit log entry for reminder creation
+      await supabase
+        .from('audit_logs')
+        .insert({
+          user_id: user?.id,
+          action: `${reminderType}_reminder_created`,
+          table_name: 'notifications',
+          record_id: entityId,
+          new_values: {
+            reminder_type: reminderType,
+            scheduled_for: reminderDateTime.toISOString(),
+            entity_name: entityName,
+            entity_type: entityType
+          }
+        })
+
       toast({
         title: "Reminder Created",
         description: `${reminderTypes.find(t => t.id === reminderType)?.label} scheduled for ${format(reminderDateTime, 'PPP p')}`,

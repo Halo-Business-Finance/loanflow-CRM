@@ -165,25 +165,43 @@ export default function Activities() {
           }
         })
 
-      // Fetch real activities from audit logs or similar table
+      // Fetch real activities from audit logs with user profile information
       const { data: auditData, error: auditError } = await supabase
         .from('audit_logs')
-        .select('*')
+        .select(`
+          *,
+          profiles!audit_logs_user_id_fkey(
+            first_name,
+            last_name,
+            email
+          )
+        `)
         .order('created_at', { ascending: false })
-        .limit(10)
+        .limit(50)
 
       if (auditError) {
         console.error('Error fetching audit logs:', auditError)
       }
 
       // Convert audit logs to activities format
-      const dbActivities: ActivityItem[] = (auditData || []).map(a => ({
-        id: a.id,
-        action: a.action || 'System Action',
-        details: a.table_name ? `${a.action} on ${a.table_name}` : 'Activity performed',
-        timestamp: new Date(a.created_at),
-        user: a.user_id || 'System'
-      }))
+      const dbActivities: ActivityItem[] = (auditData || []).map(a => {
+        const profile = (a as any).profiles
+        const userName = profile 
+          ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email
+          : 'System'
+        
+        return {
+          id: a.id,
+          action: a.action === 'lead_updated' 
+            ? 'Lead Updated' 
+            : a.action?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'System Action',
+          details: a.table_name 
+            ? `Updated ${a.table_name.replace(/_/g, ' ')}`
+            : 'Activity performed',
+          timestamp: new Date(a.created_at),
+          user: userName
+        }
+      })
 
       // Calculate live metrics
       const allActivities = dbActivities
