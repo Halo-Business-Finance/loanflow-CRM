@@ -145,16 +145,10 @@ export default function Dashboard() {
     <div data-testid="page-dashboard" className="bg-[#f4f4f4] min-h-full">
       <IBMPageHeader
         title="Dashboard"
-        hasDropdown
         actions={
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              Edit dashboard
-            </Button>
-            <Button variant="default" size="sm" onClick={() => navigate('/leads/new')}>
-              Create New Lead
-            </Button>
-          </div>
+          <Button variant="default" size="sm" onClick={() => navigate('/leads/new')}>
+            Create New Lead
+          </Button>
         }
       />
 
