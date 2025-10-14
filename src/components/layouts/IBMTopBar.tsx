@@ -61,7 +61,6 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
 
       {/* Right section with actions */}
       <div className="flex items-center gap-1 px-6 flex-1 justify-end">
-        <ThemeToggle />
         <LoanCalculator />
 
         <Button
@@ -94,6 +93,8 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         </Button>
 
         <NotificationBell />
+
+        <ThemeToggle />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
