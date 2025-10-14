@@ -108,15 +108,15 @@ export default function LeadDetail() {
   useEffect(() => {
     console.log('LeadDetail useEffect - id:', id, 'user:', user?.id)
     
-    // Validate that id is a valid UUID
-    if (!id || id === ':id' || !user) {
-      console.error('Invalid ID or user:', { id, userId: user?.id })
-      toast({
-        title: "Error",
-        description: "Invalid lead ID",
-        variant: "destructive",
-      })
-      navigate('/leads')
+    if (id === ':id') {
+      // If the literal placeholder is in the URL, redirect safely to the list
+      navigate('/leads', { replace: true })
+      return
+    }
+
+    if (!id || !user) {
+      // Don't toast here to avoid noise; just redirect back
+      navigate('/leads', { replace: true })
       return
     }
     
