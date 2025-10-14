@@ -78,13 +78,7 @@ export default function Dashboard() {
     { month: 'Jun', revenue: 312000, deals: 15, target: 300000 }
   ]);
 
-  const [pipelineStages] = useState([
-    { name: 'Lead', value: 45, color: COLORS[0] },
-    { name: 'Qualified', value: 28, color: COLORS[1] },
-    { name: 'Proposal', value: 18, color: COLORS[2] },
-    { name: 'Negotiation', value: 12, color: COLORS[3] },
-    { name: 'Closed', value: 8, color: COLORS[4] }
-  ]);
+  const [pipelineStages, setPipelineStages] = useState<{ name: string; value: number; color: string }[]>([]);
 
   const [conversionFunnel] = useState([
     { stage: 'Leads', count: 150, conversion: 100 },
@@ -134,6 +128,19 @@ export default function Dashboard() {
         const stage = (l.contact_entities as any)?.stage;
         return stage === 'negotiation' || stage === 'proposal';
       }).length || 0;
+
+      // Compute pipeline distribution dynamically from lead stages
+      const stageCountMap = new Map<string, number>();
+      (leads || []).forEach((l: any) => {
+        const stageName = l?.contact_entities?.stage || 'New Lead';
+        stageCountMap.set(stageName, (stageCountMap.get(stageName) || 0) + 1);
+      });
+      const computedStages = Array.from(stageCountMap.entries()).map(([name, value], idx) => ({
+        name,
+        value,
+        color: COLORS[idx % COLORS.length],
+      }));
+      setPipelineStages(computedStages);
 
       setStats(prev => ({
         ...prev,

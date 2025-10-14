@@ -1,8 +1,33 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BarChart3, TrendingUp, TrendingDown, DollarSign, Clock } from "lucide-react"
+import { useEffect, useState } from "react"
+import { supabase } from "@/integrations/supabase/client"
 
 export default function PipelineAnalytics() {
+  const [pipelineStages, setPipelineStages] = useState<{ name: string; value: number }[]>([])
+
+  useEffect(() => {
+    const fetchStages = async () => {
+      const { data: leads } = await supabase
+        .from('leads')
+        .select(`
+          *,
+          contact_entities(stage)
+        `)
+
+      const map = new Map<string, number>()
+      ;(leads || []).forEach((l: any) => {
+        const stage = l?.contact_entities?.stage || 'New Lead'
+        map.set(stage, (map.get(stage) || 0) + 1)
+      })
+
+      setPipelineStages(Array.from(map.entries()).map(([name, value]) => ({ name, value })))
+    }
+
+    fetchStages()
+  }, [])
+
   return (
     <div className="space-y-6">
       <div>
@@ -77,41 +102,18 @@ export default function PipelineAnalytics() {
             <CardDescription>Distribution of deals across pipeline stages</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm">Prospecting</span>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary">15 deals</Badge>
-                <span className="text-sm text-muted-foreground">$520K</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm">Qualification</span>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary">12 deals</Badge>
-                <span className="text-sm text-muted-foreground">$680K</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm">Proposal</span>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary">8 deals</Badge>
-                <span className="text-sm text-muted-foreground">$420K</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm">Negotiation</span>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary">5 deals</Badge>
-                <span className="text-sm text-muted-foreground">$380K</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm">Closing</span>
-              <div className="flex items-center gap-2">
-                <Badge>3 deals</Badge>
-                <span className="text-sm text-muted-foreground">$400K</span>
-              </div>
-            </div>
+            {pipelineStages.length === 0 ? (
+              <div className="text-sm text-muted-foreground">No pipeline data</div>
+            ) : (
+              pipelineStages.map((stage) => (
+                <div className="flex justify-between items-center" key={stage.name}>
+                  <span className="text-sm">{stage.name}</span>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary">{stage.value} deals</Badge>
+                  </div>
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
 
