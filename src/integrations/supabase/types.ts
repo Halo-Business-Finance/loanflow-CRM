@@ -3872,6 +3872,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_mfa_status: {
+        Row: {
+          created_at: string
+          id: string
+          last_login_at: string | null
+          login_count_since_required: number
+          mfa_completed_at: string | null
+          mfa_required_since: string
+          mfa_setup_completed: boolean
+          mfa_setup_required: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_login_at?: string | null
+          login_count_since_required?: number
+          mfa_completed_at?: string | null
+          mfa_required_since?: string
+          mfa_setup_completed?: boolean
+          mfa_setup_required?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_login_at?: string | null
+          login_count_since_required?: number
+          mfa_completed_at?: string | null
+          mfa_required_since?: string
+          mfa_setup_completed?: boolean
+          mfa_setup_required?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           archive_reason: string | null
@@ -4106,6 +4145,10 @@ export type Database = {
       can_access_approval_step: {
         Args: { step_id: string }
         Returns: boolean
+      }
+      check_mfa_requirement: {
+        Args: { p_user_id: string }
+        Returns: Json
       }
       check_rate_limit: {
         Args: {
@@ -4548,6 +4591,10 @@ export type Database = {
       log_verified_blockchain_view_access: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      mark_mfa_completed: {
+        Args: { p_user_id: string }
+        Returns: boolean
       }
       monitor_system_performance: {
         Args: Record<PropertyKey, never>

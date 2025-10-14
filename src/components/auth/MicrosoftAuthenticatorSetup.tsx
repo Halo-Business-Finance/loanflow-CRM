@@ -8,6 +8,7 @@ import { QrCode, Shield, Smartphone, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { EnhancedMFA } from '@/lib/enhanced-mfa';
 import { useAuth } from '@/components/auth/AuthProvider';
+import { useMfaStatus } from '@/hooks/useMfaStatus';
 
 interface SetupStep {
   id: number;
@@ -26,6 +27,7 @@ export const MicrosoftAuthenticatorSetup: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { markMfaCompleted } = useMfaStatus(user?.id);
 
   const steps: SetupStep[] = [
     {
@@ -103,6 +105,9 @@ export const MicrosoftAuthenticatorSetup: React.FC = () => {
       const isValid = await EnhancedMFA.verifyTOTP(user.id, verificationCode);
       
       if (isValid) {
+        // Mark MFA as completed in the database
+        await markMfaCompleted();
+        
         setIsVerified(true);
         setCurrentStep(4);
         toast({

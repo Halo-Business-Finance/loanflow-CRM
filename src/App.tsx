@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/components/auth/AuthProvider";
 import { AuthPage } from "@/components/auth/AuthPage";
 import { CallbackHandler } from "@/components/auth/CallbackHandler";
+import { MfaEnforcementWrapper } from "@/components/auth/MfaEnforcementWrapper";
 import { SecurityManager } from "@/components/security/SecurityManager";
 import { GeoSecurityCheck } from "@/components/GeoSecurityCheck";
 import { AsyncErrorBoundary } from "@/components/AsyncErrorBoundary";
@@ -118,8 +119,8 @@ function AuthenticatedApp() {
         {/* Protected routes - require authentication */}
         {user ? (
           <>
-            <Route path="/" element={<IBMCloudLayout><Dashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
-            <Route path="/dashboard" element={<IBMCloudLayout><Dashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/" element={<MfaEnforcementWrapper><IBMCloudLayout><Dashboard /></IBMCloudLayout></MfaEnforcementWrapper>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/dashboard" element={<MfaEnforcementWrapper><IBMCloudLayout><Dashboard /></IBMCloudLayout></MfaEnforcementWrapper>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/leads" element={<IBMCloudLayout><Leads /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/leads/new" element={<IBMCloudLayout><NewLead /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />

@@ -153,6 +153,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log('Audit logging failed (non-critical):', auditError)
       }
 
+      // Check MFA requirement and track login count
+      if (data?.user?.id) {
+        try {
+          await supabase.rpc('check_mfa_requirement', {
+            p_user_id: data.user.id
+          })
+        } catch (mfaError) {
+          console.log('MFA check failed (non-critical):', mfaError)
+        }
+      }
+
       toast({
         title: "Welcome back!",
         description: "You have been signed in successfully.",
