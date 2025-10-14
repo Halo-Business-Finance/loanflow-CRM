@@ -98,24 +98,38 @@ export const useSessionSecurity = () => {
 
   // Generate device fingerprint
   const generateDeviceFingerprint = useCallback((): string => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.textBaseline = 'top';
-      ctx.font = '14px Arial';
-      ctx.fillText('Device fingerprint', 2, 2);
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      let canvasData = '';
+      
+      if (ctx) {
+        try {
+          ctx.textBaseline = 'top';
+          ctx.font = '14px Arial';
+          ctx.fillText('Device fingerprint', 2, 2);
+          canvasData = canvas.toDataURL();
+        } catch (e) {
+          canvasData = 'canvas-unavailable';
+        }
+      }
+      
+      const fingerprint = {
+        screen: `${screen.width}x${screen.height}`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        language: navigator.language,
+        platform: navigator.platform,
+        userAgent: navigator.userAgent,
+        canvas: canvasData
+      };
+      
+      return btoa(JSON.stringify(fingerprint));
+    } catch (error) {
+      return btoa(JSON.stringify({
+        userAgent: navigator.userAgent,
+        timestamp: Date.now()
+      }));
     }
-    
-    const fingerprint = {
-      screen: `${screen.width}x${screen.height}`,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      language: navigator.language,
-      platform: navigator.platform,
-      userAgent: navigator.userAgent,
-      canvas: canvas.toDataURL()
-    };
-    
-    return btoa(JSON.stringify(fingerprint));
   }, []);
 
   // Enhanced session validation with security checks

@@ -158,25 +158,42 @@ export const useSecurityValidation = () => {
 
   // Generate device fingerprint for security tracking
   const generateDeviceFingerprint = useCallback((): string => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.textBaseline = 'top';
-      ctx.font = '14px Arial';
-      ctx.fillText('Device fingerprint', 2, 2);
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      let canvasData = '';
+      
+      if (ctx) {
+        try {
+          ctx.textBaseline = 'top';
+          ctx.font = '14px Arial';
+          ctx.fillText('Device fingerprint', 2, 2);
+          canvasData = canvas.toDataURL();
+        } catch (e) {
+          // Canvas fingerprinting failed, use fallback
+          canvasData = 'canvas-unavailable';
+        }
+      }
+      
+      const fingerprint = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width + 'x' + screen.height,
+        new Date().getTimezoneOffset(),
+        !!window.sessionStorage,
+        !!window.localStorage,
+        canvasData
+      ].join('|');
+      
+      return btoa(fingerprint).slice(0, 32);
+    } catch (error) {
+      // Fallback fingerprint if everything fails
+      return btoa([
+        navigator.userAgent,
+        navigator.language,
+        Date.now().toString()
+      ].join('|')).slice(0, 32);
     }
-    
-    const fingerprint = [
-      navigator.userAgent,
-      navigator.language,
-      screen.width + 'x' + screen.height,
-      new Date().getTimezoneOffset(),
-      !!window.sessionStorage,
-      !!window.localStorage,
-      canvas.toDataURL()
-    ].join('|');
-    
-    return btoa(fingerprint).slice(0, 32);
   }, []);
 
   // Security alert handler
