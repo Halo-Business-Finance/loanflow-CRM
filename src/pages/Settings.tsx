@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -27,10 +27,12 @@ import { RingCentralSetup } from "@/components/RingCentralSetup"
 import { EmailSetup } from "@/components/EmailSetup"
 import { SystemHealthMonitor } from "@/components/SystemHealthMonitor"
 import { WebhookManager } from "@/components/webhooks/WebhookManager"
+import { MicrosoftAuthenticatorSetup } from "@/components/auth/MicrosoftAuthenticatorSetup"
 
 export default function Settings() {
   const { user } = useAuth()
   const { toast } = useToast()
+  const [searchParams] = useSearchParams()
   const [displayName, setDisplayName] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [timeZone, setTimeZone] = useState("")
@@ -43,11 +45,17 @@ export default function Settings() {
   const [followUpReminders, setFollowUpReminders] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [isChangingPassword, setIsChangingPassword] = useState(false)
-
+  const [activeTab, setActiveTab] = useState("profile")
   useEffect(() => {
     if (import.meta.env.DEV) {
       console.info('[Page] Settings mounted');
     }
+
+    // Sync active tab from query params
+    const tabParam = searchParams.get('tab');
+    if (tabParam) setActiveTab(tabParam);
+    if (searchParams.get('mfa')) setActiveTab('security');
+
     const fetchUserData = async () => {
       if (user?.user_metadata) {
         setDisplayName(user.user_metadata.display_name || "")
@@ -72,7 +80,7 @@ export default function Settings() {
     }
 
     fetchUserData()
-  }, [user])
+  }, [user, searchParams])
 
   const handleSaveProfile = async () => {
     if (!user) return
@@ -198,7 +206,7 @@ export default function Settings() {
       
       <div className="px-6 py-8 space-y-6">
 
-        <Tabs defaultValue="profile" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="bg-white border border-[#e0e0e0]">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="w-4 h-4" />
@@ -207,6 +215,10 @@ export default function Settings() {
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="w-4 h-4" />
               <span>Notifications</span>
+            </TabsTrigger>
+            <TabsTrigger value="security" className="flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              <span>Security</span>
             </TabsTrigger>
             <TabsTrigger value="system" className="flex items-center gap-2">
               <RefreshCw className="w-4 h-4" />
@@ -452,6 +464,20 @@ export default function Settings() {
                   <Save className="w-4 h-4" />
                   {isLoading ? "Saving..." : "Save Preferences"}
                 </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="security">
+            <Card className="bg-white border border-[#e0e0e0]">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-normal text-[#161616]">Multi-Factor Authentication</CardTitle>
+                <CardDescription className="text-[#525252]">
+                  Secure your account with Microsoft Authenticator (TOTP)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <MicrosoftAuthenticatorSetup />
               </CardContent>
             </Card>
           </TabsContent>
