@@ -553,9 +553,9 @@ export default function Leads() {
                   className="pl-10"
                 />
               </div>
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2" onClick={() => setShowFilters(!showFilters)}>
                 <Filter className="h-4 w-4" />
-                Filter
+                {showFilters ? 'Hide Filters' : 'Filter'}
               </Button>
             </div>
             
