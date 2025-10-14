@@ -152,7 +152,7 @@ export default function Dashboard() {
               Edit dashboard
             </Button>
             <Button variant="default" size="sm" onClick={() => navigate('/leads/new')}>
-              Create resource
+              Create New Lead
             </Button>
           </div>
         }
