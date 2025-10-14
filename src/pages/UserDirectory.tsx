@@ -33,6 +33,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SecureRoleManager } from '@/components/security/SecureRoleManager';
 import { formatPhoneNumber } from '@/lib/utils';
@@ -94,6 +106,9 @@ export default function UserDirectory() {
   const [isBulkActionOpen, setIsBulkActionOpen] = useState(false);
   const [bulkActionType, setBulkActionType] = useState<'delete' | 'deactivate' | null>(null);
   const [isBulkProcessing, setIsBulkProcessing] = useState(false);
+  const [filterRole, setFilterRole] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof userEditSchema>>({
@@ -174,13 +189,20 @@ export default function UserDirectory() {
 
   const filteredUsers = users.filter(user => {
     const searchLower = searchTerm.toLowerCase();
-    return (
+    const matchesSearch = (
       user.first_name?.toLowerCase().includes(searchLower) ||
       user.last_name?.toLowerCase().includes(searchLower) ||
       user.email?.toLowerCase().includes(searchLower) ||
       user.phone_number?.toLowerCase().includes(searchLower) ||
       user.role?.toLowerCase().includes(searchLower)
     );
+    
+    const matchesRole = filterRole === 'all' || user.role === filterRole;
+    const matchesStatus = filterStatus === 'all' || 
+      (filterStatus === 'active' && user.is_active) ||
+      (filterStatus === 'inactive' && !user.is_active);
+    
+    return matchesSearch && matchesRole && matchesStatus;
   });
 
   const handleViewUser = (user: UserProfile) => {
@@ -196,6 +218,13 @@ export default function UserDirectory() {
       isActive: user.is_active ?? true,
     });
   };
+
+  const clearFilters = () => {
+    setFilterRole('all');
+    setFilterStatus('all');
+  };
+
+  const hasActiveFilters = filterRole !== 'all' || filterStatus !== 'all';
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
@@ -439,10 +468,71 @@ export default function UserDirectory() {
         subtitle="Manage users, roles, and permissions across your organization"
         actions={
           <>
-            <Button variant="ghost" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
+            <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
+                  {hasActiveFilters && (
+                    <Badge variant="secondary" className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center">
+                      !
+                    </Badge>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="end">
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-medium mb-3">Filter Users</h4>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Role</Label>
+                    <Select value={filterRole} onValueChange={setFilterRole}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Roles</SelectItem>
+                        <SelectItem value="super_admin">Super Admin</SelectItem>
+                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="manager">Manager</SelectItem>
+                        <SelectItem value="agent">Agent</SelectItem>
+                        <SelectItem value="loan_processor">Loan Processor</SelectItem>
+                        <SelectItem value="underwriter">Underwriter</SelectItem>
+                        <SelectItem value="funder">Funder</SelectItem>
+                        <SelectItem value="closer">Closer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Status</Label>
+                    <Select value={filterStatus} onValueChange={setFilterStatus}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {hasActiveFilters && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearFilters}
+                      className="w-full"
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
             <Button size="sm" onClick={() => setIsAddUserOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Add User
