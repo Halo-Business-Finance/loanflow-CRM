@@ -41,30 +41,37 @@ export function useRealtimeLeads() {
       }
       
       // Transform the data to match Lead interface
-      const transformedLeads: Lead[] = (data || []).map(lead => ({
-        id: lead.id,
-        lead_number: lead.lead_number,
-        name: lead.contact_entity?.name || '',
-        email: lead.contact_entity?.email === '[SECURED]' ? '***@***.com' : (lead.contact_entity?.email || ''),
-        phone: lead.contact_entity?.phone === '[SECURED]' ? '***-***-****' : (lead.contact_entity?.phone || ''),
-        business_name: lead.contact_entity?.business_name || '',
-        location: lead.contact_entity?.location || '',
-        loan_amount: lead.contact_entity?.loan_amount || 0,
-        loan_type: lead.contact_entity?.loan_type || '',
-        credit_score: lead.contact_entity?.credit_score || 0,
-        stage: lead.contact_entity?.stage || 'Initial Contact',
-        priority: lead.contact_entity?.priority || 'Medium',
-        net_operating_income: lead.contact_entity?.net_operating_income || 0,
-        naics_code: lead.contact_entity?.naics_code || '',
-        ownership_structure: lead.contact_entity?.ownership_structure || '',
-        created_at: lead.created_at,
-        updated_at: lead.updated_at,
-        user_id: lead.user_id,
-        contact_entity_id: lead.contact_entity_id,
-        last_contact: lead.updated_at,
-        is_converted_to_client: false,
-        contact_entity: lead.contact_entity
-      }))
+      const transformedLeads: Lead[] = (data || []).map(lead => {
+        // Compute name from first_name and last_name, fallback to name field
+        const computedName = lead.contact_entity?.first_name || lead.contact_entity?.last_name
+          ? `${lead.contact_entity?.first_name || ''} ${lead.contact_entity?.last_name || ''}`.trim()
+          : (lead.contact_entity?.name || '')
+        
+        return {
+          id: lead.id,
+          lead_number: lead.lead_number,
+          name: computedName,
+          email: lead.contact_entity?.email === '[SECURED]' ? '***@***.com' : (lead.contact_entity?.email || ''),
+          phone: lead.contact_entity?.phone === '[SECURED]' ? '***-***-****' : (lead.contact_entity?.phone || ''),
+          business_name: lead.contact_entity?.business_name || '',
+          location: lead.contact_entity?.location || '',
+          loan_amount: lead.contact_entity?.loan_amount || 0,
+          loan_type: lead.contact_entity?.loan_type || '',
+          credit_score: lead.contact_entity?.credit_score || 0,
+          stage: lead.contact_entity?.stage || 'Initial Contact',
+          priority: lead.contact_entity?.priority || 'Medium',
+          net_operating_income: lead.contact_entity?.net_operating_income || 0,
+          naics_code: lead.contact_entity?.naics_code || '',
+          ownership_structure: lead.contact_entity?.ownership_structure || '',
+          created_at: lead.created_at,
+          updated_at: lead.updated_at,
+          user_id: lead.user_id,
+          contact_entity_id: lead.contact_entity_id,
+          last_contact: lead.updated_at,
+          is_converted_to_client: false,
+          contact_entity: lead.contact_entity
+        }
+      })
       
       setLeads(transformedLeads)
     } catch (error) {
@@ -121,11 +128,16 @@ export function useRealtimeLeads() {
       console.log('Contact entity updated:', payload.new)
       setLeads(prev => prev.map(lead => {
         if (lead.contact_entity_id === payload.new.id) {
+          // Compute name from first_name and last_name, fallback to name field
+          const computedName = payload.new.first_name || payload.new.last_name
+            ? `${payload.new.first_name || ''} ${payload.new.last_name || ''}`.trim()
+            : (payload.new.name || '')
+          
           return {
             ...lead,
             contact_entity: payload.new,
             // Map contact entity fields to lead for convenience
-            name: payload.new.name,
+            name: computedName,
             email: payload.new.email,
             phone: payload.new.phone,
             business_name: payload.new.business_name,
