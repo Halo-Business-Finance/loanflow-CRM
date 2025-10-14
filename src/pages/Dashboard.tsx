@@ -108,7 +108,10 @@ export default function Dashboard() {
       setLoading(true);
       
       // Get user's first name from metadata
+      console.log('User object:', user);
+      console.log('User metadata:', user?.user_metadata);
       const firstName = user?.user_metadata?.first_name || '';
+      console.log('First name extracted:', firstName);
       setUserName(firstName);
       
       const { data: leads } = await supabase
@@ -144,7 +147,7 @@ export default function Dashboard() {
       console.info('[Page] Dashboard mounted');
     }
     fetchDashboardData();
-  }, [user?.id]);
+  }, [user]);
 
   return (
     <div data-testid="page-dashboard" className="bg-[#f4f4f4] min-h-full">
