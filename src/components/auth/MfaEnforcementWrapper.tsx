@@ -22,9 +22,34 @@ export const MfaEnforcementWrapper: React.FC<MfaEnforcementWrapperProps> = ({ ch
     );
   }
 
-  // If MFA setup is required immediately (after 3 logins), redirect to setup
+  // If MFA setup is required immediately (after 3 logins), show blocking banner but do not redirect
   if (mfaStatus?.requires_immediate_setup) {
-    return <Navigate to="/settings?tab=security&mfa=required" replace />;
+    if (import.meta.env.DEV) {
+      console.info('[MFA] Immediate setup required — showing banner, no redirect');
+    }
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Alert className="rounded-none border-l-4 border-l-warning bg-warning/10">
+          <AlertTriangle className="h-5 w-5 text-warning" />
+          <AlertTitle className="font-semibold">MFA Required</AlertTitle>
+          <AlertDescription className="flex items-center justify-between">
+            <span>
+              Multi-factor authentication is required to continue using the app. Please set up MFA now to secure your account.
+            </span>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => (window.location.href = '/settings?tab=security&mfa=required')}
+              className="ml-4"
+           >
+              <Shield className="mr-2 h-4 w-4" />
+              Set Up MFA Now
+            </Button>
+          </AlertDescription>
+        </Alert>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
   }
 
   // Show grace period warning banner if applicable
