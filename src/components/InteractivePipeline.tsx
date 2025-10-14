@@ -148,9 +148,11 @@ export function InteractivePipeline() {
       // Transform leads data to merge contact entity fields
       const transformedLeads = data?.map(lead => ({
         ...lead,
-        ...lead.contact_entity
+        ...lead.contact_entity,
+        contact_entity_id: lead.contact_entity_id // Preserve the contact_entity_id
       })) || []
 
+      console.log('Transformed leads for pipeline:', transformedLeads);
       setLeads(transformedLeads);
     } catch (error) {
       console.error('Error fetching leads:', error);
@@ -166,12 +168,25 @@ export function InteractivePipeline() {
 
   const updateLeadStage = async (leadId: string, newStage: string) => {
     try {
+      // Find the lead to get its contact_entity_id
+      const lead = leads.find(l => l.id === leadId);
+      if (!lead || !lead.contact_entity_id) {
+        throw new Error('Lead or contact entity not found');
+      }
+
+      // Update the stage in contact_entities table
       const { error } = await supabase
-        .from('leads')
+        .from('contact_entities')
         .update({ stage: newStage, updated_at: new Date().toISOString() })
-        .eq('id', leadId);
+        .eq('id', lead.contact_entity_id);
 
       if (error) throw error;
+
+      // Also update the lead's updated_at timestamp
+      await supabase
+        .from('leads')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', leadId);
 
       toast({
         title: "Success",
