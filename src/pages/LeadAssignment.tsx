@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { UserPlus, Loader2 } from "lucide-react"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { UserPlus, Loader2, BarChart3, Users } from "lucide-react"
 import { StandardPageHeader } from "@/components/StandardPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -28,6 +30,8 @@ interface TeamMember {
 }
 
 export default function LeadAssignmentPage() {
+  const navigate = useNavigate()
+  const location = useLocation()
   const [unassignedLeads, setUnassignedLeads] = useState<UnassignedLead[]>([])
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
   const [loading, setLoading] = useState(true)
@@ -188,9 +192,24 @@ export default function LeadAssignmentPage() {
   return (
     <div className="flex flex-col h-full bg-background">
       <StandardPageHeader
-        title="Lead Assignment"
-        description="Assign leads to team members for optimal distribution"
+        title="Lead Management"
+        description="Assign leads to team members and view performance statistics"
       />
+      
+      <div className="px-6 pt-4">
+        <Tabs value={location.pathname} onValueChange={(value) => navigate(value)}>
+          <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="/leads/assignment" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Lead Assignment
+            </TabsTrigger>
+            <TabsTrigger value="/leads/stats" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Lead Stats
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
       
       <div className="flex-1 overflow-auto">
         <div className="px-6 py-6 space-y-4">
