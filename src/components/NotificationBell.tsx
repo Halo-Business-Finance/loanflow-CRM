@@ -20,6 +20,7 @@ interface Notification {
   created_at: string
   related_id?: string
   related_type?: string
+  scheduled_for?: string
 }
 
 export function NotificationBell() {
@@ -37,16 +38,25 @@ export function NotificationBell() {
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(20)
+        .limit(50)
 
       if (error) {
         console.error('Error fetching notifications:', error)
         return
       }
 
-      const notifications = (data as Notification[]) || []
-      setNotifications(notifications)
-      const unread = notifications.filter(n => !n.is_read).length || 0
+      const allNotifications = (data as Notification[]) || []
+      
+      // Show both past notifications and future reminders
+      // Sort by scheduled_for if it exists, otherwise by created_at
+      const sortedNotifications = allNotifications.sort((a, b) => {
+        const aTime = a.scheduled_for || a.created_at
+        const bTime = b.scheduled_for || b.created_at
+        return new Date(bTime).getTime() - new Date(aTime).getTime()
+      }).slice(0, 20)
+      
+      setNotifications(sortedNotifications)
+      const unread = sortedNotifications.filter(n => !n.is_read).length || 0
       setUnreadCount(unread)
     } catch (error) {
       console.error('Error fetching notifications:', error)

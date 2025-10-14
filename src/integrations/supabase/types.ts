@@ -2606,6 +2606,7 @@ export type Database = {
           message: string
           related_id: string | null
           related_type: string | null
+          scheduled_for: string | null
           title: string
           type: string
           updated_at: string
@@ -2618,6 +2619,7 @@ export type Database = {
           message: string
           related_id?: string | null
           related_type?: string | null
+          scheduled_for?: string | null
           title: string
           type?: string
           updated_at?: string
@@ -2630,6 +2632,7 @@ export type Database = {
           message?: string
           related_id?: string | null
           related_type?: string | null
+          scheduled_for?: string | null
           title?: string
           type?: string
           updated_at?: string

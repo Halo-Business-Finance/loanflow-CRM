@@ -25,6 +25,7 @@ interface Notification {
   created_at: string
   related_id?: string
   related_type?: string
+  scheduled_for?: string
 }
 
 interface NotificationCenterProps {
@@ -43,6 +44,8 @@ const getNotificationIcon = (type: string) => {
     case 'client_updated':
       return <Users className="w-4 h-4 text-green-500" />
     case 'follow_up_reminder':
+    case 'call_reminder':
+    case 'email_reminder':
       return <Clock className="w-4 h-4 text-orange-500" />
     case 'success':
       return <CheckCircle className="w-4 h-4 text-green-500" />
@@ -145,13 +148,22 @@ export function NotificationCenter({
                           {notification.title}
                         </h4>
                         <span className="text-xs text-muted-foreground flex-shrink-0">
-                          {new Date(notification.created_at).toLocaleString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            hour: 'numeric',
-                            minute: '2-digit',
-                            hour12: true
-                          })}
+                          {notification.scheduled_for 
+                            ? new Date(notification.scheduled_for).toLocaleString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
+                              })
+                            : new Date(notification.created_at).toLocaleString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
+                              })
+                          }
                         </span>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1 line-clamp-2">

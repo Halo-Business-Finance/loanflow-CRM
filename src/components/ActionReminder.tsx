@@ -105,7 +105,8 @@ export function ActionReminder({ entityId, entityName, entityType, isOpen, onClo
           message: customNote || `${reminderType === 'call' ? 'Call' : reminderType === 'email' ? 'Email' : 'Follow up with'} ${entityName}`,
           type: `${reminderType}_reminder`,
           related_id: entityId,
-          created_at: reminderDateTime.toISOString()
+          related_type: entityType,
+          scheduled_for: reminderDateTime.toISOString()
         })
 
       if (error) throw error
