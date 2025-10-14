@@ -32,6 +32,7 @@ interface Notification {
   message: string
   timestamp: Date
   type: 'warning' | 'success' | 'info'
+  scheduled_for?: Date
 }
 
 interface ActivityItem {
@@ -47,7 +48,7 @@ export default function Activities() {
   const [activities, setActivities] = useState<ActivityItem[]>([])
   const [loading, setLoading] = useState(true)
   const [actualTodaysActions, setActualTodaysActions] = useState(0)
-  const [actualActiveUsers, setActualActiveUsers] = useState(0)
+  const [scheduledReminders, setScheduledReminders] = useState(0)
   const { user } = useAuth()
   const { toast } = useToast()
 
@@ -61,25 +62,46 @@ export default function Activities() {
     try {
       setLoading(true)
 
-      // Fetch real notifications from database
+      // Fetch real notifications from database, prioritizing scheduled reminders
       const { data: notificationData, error: notificationError } = await supabase
         .from('notifications')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(10)
+        .limit(20)
 
       if (notificationError) {
         console.error('Error fetching notifications:', notificationError)
       }
 
-      // Convert database notifications to our format
-      const dbNotifications: Notification[] = (notificationData || []).map(n => ({
-        id: n.id,
-        message: n.message || n.title,
-        timestamp: new Date(n.created_at),
-        type: n.is_read ? 'success' : 'info'
-      }))
+      // Count scheduled reminders (future scheduled_for dates)
+      const now = new Date()
+      const scheduledCount = (notificationData || []).filter(n => 
+        n.scheduled_for && new Date(n.scheduled_for) > now && !n.is_read
+      ).length
+
+      // Convert database notifications to our format, prioritizing scheduled items
+      const dbNotifications: Notification[] = (notificationData || [])
+        .sort((a, b) => {
+          // Prioritize unread scheduled items
+          const aScheduled = a.scheduled_for && new Date(a.scheduled_for) > now && !a.is_read
+          const bScheduled = b.scheduled_for && new Date(b.scheduled_for) > now && !b.is_read
+          if (aScheduled && !bScheduled) return -1
+          if (!aScheduled && bScheduled) return 1
+          
+          // Then sort by scheduled_for or created_at
+          const aTime = a.scheduled_for || a.created_at
+          const bTime = b.scheduled_for || b.created_at
+          return new Date(bTime).getTime() - new Date(aTime).getTime()
+        })
+        .slice(0, 10)
+        .map(n => ({
+          id: n.id,
+          message: n.message || n.title,
+          timestamp: new Date(n.scheduled_for || n.created_at),
+          type: n.is_read ? 'success' : (n.scheduled_for ? 'warning' : 'info'),
+          scheduled_for: n.scheduled_for ? new Date(n.scheduled_for) : undefined
+        }))
 
       // Fetch real activities from audit logs or similar table
       const { data: auditData, error: auditError } = await supabase
@@ -150,10 +172,8 @@ export default function Activities() {
         return activityDate.toDateString() === today.toDateString()
       }).length || Math.floor(Math.random() * 15) + 5
 
-      const activeUsers = new Set(allActivities.map(a => a.user)).size || Math.floor(Math.random() * 10) + 3
-
       setActualTodaysActions(todaysActions)
-      setActualActiveUsers(activeUsers)
+      setScheduledReminders(scheduledCount)
       setNotifications(allNotifications)
       setActivities(allActivities)
       
@@ -244,8 +264,8 @@ export default function Activities() {
           />
           
           <StandardKPICard
-            title="Active Users"
-            value={actualActiveUsers}
+            title="Scheduled Reminders"
+            value={scheduledReminders}
           />
         </div>
 
@@ -266,7 +286,10 @@ export default function Activities() {
                       {notification.message}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(notification.timestamp)} ago
+                      {notification.scheduled_for && notification.scheduled_for > new Date() 
+                        ? `Scheduled for ${formatDistanceToNow(notification.scheduled_for)} from now`
+                        : `${formatDistanceToNow(notification.timestamp)} ago`
+                      }
                     </p>
                   </div>
                 </div>
