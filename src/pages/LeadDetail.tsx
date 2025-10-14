@@ -76,6 +76,7 @@ export default function LeadDetail() {
     email: "",
     phone: "",
     phone_ext: "",
+    ownership_percentage: "",
     business_name: "",
     business_address: "",
     business_city: "",
@@ -168,6 +169,7 @@ export default function LeadDetail() {
         email: mergedLead.email || "",
         phone: mergedLead.phone || "",
         phone_ext: (mergedLead as any).phone_ext || "",
+        ownership_percentage: mergedLead.ownership_percentage?.toString() || "",
         business_name: mergedLead.business_name || "",
         business_address: mergedLead.business_address || "",
         business_city: mergedLead.business_city || "",
@@ -239,6 +241,7 @@ export default function LeadDetail() {
         name: editableFields.name,
         email: editableFields.email,
         phone: editableFields.phone,
+        ownership_percentage: editableFields.ownership_percentage ? parseFloat(editableFields.ownership_percentage) : null,
         business_name: editableFields.business_name,
         business_address: editableFields.business_address,
         business_city: editableFields.business_city,
@@ -713,6 +716,31 @@ export default function LeadDetail() {
                       </div>
                     )}
                   </div>
+                </div>
+
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Ownership Percentage</Label>
+                  {isEditing ? (
+                    <Input
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="0.01"
+                      value={editableFields.ownership_percentage}
+                      onChange={(e) => {
+                        const value = parseFloat(e.target.value);
+                        if (value >= 0 && value <= 100) {
+                          setEditableFields({...editableFields, ownership_percentage: e.target.value});
+                        }
+                      }}
+                      className="mt-1 h-8 text-sm"
+                      placeholder="0-100"
+                    />
+                  ) : (
+                    <div className="field-display mt-1">
+                      {editableFields.ownership_percentage ? `${editableFields.ownership_percentage}%` : 'N/A'}
+                    </div>
+                  )}
                 </div>
 
                 <div>
