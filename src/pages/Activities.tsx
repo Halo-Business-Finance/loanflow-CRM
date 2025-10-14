@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { useToast } from '@/hooks/use-toast'
-import { formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow, format } from 'date-fns'
 import { 
   Bell, 
   Activity, 
@@ -18,7 +18,7 @@ import {
   UserPlus, 
   FileText, 
   TrendingUp, 
-  Calendar, 
+  Calendar as CalendarIcon, 
   Clock,
   Users,
   Phone,
@@ -44,6 +44,19 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface Notification {
   id: string
@@ -70,6 +83,9 @@ export default function Activities() {
   const [editingNotificationId, setEditingNotificationId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editMessage, setEditMessage] = useState('')
+  const [editReminderType, setEditReminderType] = useState<'call' | 'email' | 'follow_up'>('follow_up')
+  const [editDate, setEditDate] = useState<Date>()
+  const [editTime, setEditTime] = useState("09:00")
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
   const { user } = useAuth()
   const { toast } = useToast()
@@ -232,21 +248,69 @@ export default function Activities() {
     }
   }
 
+  const reminderTypes = [
+    {
+      id: 'call' as const,
+      label: 'Call Reminder',
+      icon: Phone,
+      description: 'Schedule a phone call',
+      color: 'bg-navy'
+    },
+    {
+      id: 'email' as const,
+      label: 'Email Reminder',
+      icon: Mail,
+      description: 'Send an email follow-up',
+      color: 'bg-green-500'
+    },
+    {
+      id: 'follow_up' as const,
+      label: 'General Follow-up',
+      icon: Bell,
+      description: 'General reminder to follow up',
+      color: 'bg-purple-500'
+    }
+  ]
+
+  const timeOptions = [
+    { value: "09:00", label: "9:00 AM" },
+    { value: "10:00", label: "10:00 AM" },
+    { value: "11:00", label: "11:00 AM" },
+    { value: "12:00", label: "12:00 PM" },
+    { value: "13:00", label: "1:00 PM" },
+    { value: "14:00", label: "2:00 PM" },
+    { value: "15:00", label: "3:00 PM" },
+    { value: "16:00", label: "4:00 PM" },
+    { value: "17:00", label: "5:00 PM" },
+    { value: "18:00", label: "6:00 PM" },
+    { value: "19:00", label: "7:00 PM" },
+    { value: "20:00", label: "8:00 PM" }
+  ]
+
   const handleEditNotification = (notification: Notification) => {
     setEditingNotificationId(notification.id)
     setEditTitle(notification.message.split(' - ')[0] || notification.message)
     setEditMessage(notification.message)
+    setEditReminderType('follow_up')
+    setEditDate(notification.scheduled_for || new Date())
+    setEditTime("09:00")
   }
 
   const handleSaveEdit = async () => {
-    if (!editingNotificationId) return
+    if (!editingNotificationId || !editDate) return
     
     try {
+      const reminderDateTime = new Date(editDate)
+      const [hours, minutes] = editTime.split(':')
+      reminderDateTime.setHours(parseInt(hours), parseInt(minutes))
+
       const { error } = await supabase
         .from('notifications')
         .update({
           title: editTitle,
           message: editMessage,
+          type: `${editReminderType}_reminder`,
+          scheduled_for: reminderDateTime.toISOString(),
           updated_at: new Date().toISOString()
         })
         .eq('id', editingNotificationId)
@@ -261,6 +325,9 @@ export default function Activities() {
       setEditingNotificationId(null)
       setEditTitle('')
       setEditMessage('')
+      setEditReminderType('follow_up')
+      setEditDate(undefined)
+      setEditTime("09:00")
       fetchData()
     } catch (error) {
       console.error('Error updating notification:', error)
@@ -276,6 +343,9 @@ export default function Activities() {
     setEditingNotificationId(null)
     setEditTitle('')
     setEditMessage('')
+    setEditReminderType('follow_up')
+    setEditDate(undefined)
+    setEditTime("09:00")
   }
 
   const handleDeleteNotification = async (notificationId: string) => {
@@ -498,27 +568,92 @@ export default function Activities() {
                 </Button>
               </CardHeader>
               <CardContent className="space-y-4 px-4 pb-4">
-                {/* Title */}
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>For:</span>
+                  <span className="font-medium text-foreground">{editTitle || 'Notification'}</span>
+                </div>
+
+                {/* Reminder Type Selection */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium">Title</Label>
-                  <Input
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    placeholder="Notification title"
-                    className="w-full"
-                  />
+                  <Label className="text-sm font-medium">Reminder Type</Label>
+                  <div className="grid grid-cols-1 gap-2">
+                    {reminderTypes.map((type) => {
+                      const Icon = type.icon
+                      return (
+                        <Button
+                          key={type.id}
+                          variant={editReminderType === type.id ? "default" : "outline"}
+                          className="justify-start h-auto p-3"
+                          onClick={() => setEditReminderType(type.id)}
+                        >
+                          <div className={`w-3 h-3 rounded-full ${type.color} mr-3`} />
+                          <Icon className="h-4 w-4 mr-2" />
+                          <div className="text-left">
+                            <div className="font-medium">{type.label}</div>
+                            <div className="text-xs text-muted-foreground">{type.description}</div>
+                          </div>
+                        </Button>
+                      )
+                    })}
+                  </div>
                 </div>
 
                 <Separator />
 
-                {/* Message */}
+                {/* Date Selection */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium">Message</Label>
+                  <Label className="text-sm font-medium">When?</Label>
+                  
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {editDate ? format(editDate, 'PPP') : 'Pick a date'}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={editDate}
+                        onSelect={setEditDate}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                        className="p-3 pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                {/* Time Selection */}
+                {editDate && (
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">Time</Label>
+                    <Select value={editTime} onValueChange={setEditTime}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {timeOptions.map((time) => (
+                          <SelectItem key={time.value} value={time.value}>
+                            {time.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Custom Note */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Custom Note (Optional)</Label>
                   <Textarea
                     value={editMessage}
                     onChange={(e) => setEditMessage(e.target.value)}
-                    placeholder="Add notification details..."
-                    rows={4}
+                    placeholder="Add any specific details for this reminder..."
+                    rows={3}
                   />
                 </div>
 
@@ -526,6 +661,7 @@ export default function Activities() {
                 <div className="flex gap-2">
                   <Button
                     onClick={handleSaveEdit}
+                    disabled={!editDate}
                     className="flex-1"
                   >
                     <Check className="w-4 h-4 mr-2" />
