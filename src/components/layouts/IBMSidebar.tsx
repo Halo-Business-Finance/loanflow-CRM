@@ -74,6 +74,7 @@ const navItems: NavItemData[] = [
     subItems: [
       { icon: Briefcase, label: 'All Borrowers', to: '/existing-borrowers' },
       { icon: Briefcase, label: 'Borrower Details', to: '/existing-borrowers/details' },
+      { icon: Briefcase, label: 'Loan History', to: '/existing-borrowers/history' },
     ]
   },
   { 
