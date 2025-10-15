@@ -67,7 +67,15 @@ const navItems: NavItemData[] = [
       { icon: TrendingUp, label: 'Pipeline Analytics', to: '/pipeline/analytics' },
     ]
   },
-  { icon: Briefcase, label: 'Existing Borrowers', to: '/existing-borrowers' },
+  { 
+    icon: Briefcase, 
+    label: 'Existing Borrowers', 
+    to: '/existing-borrowers',
+    subItems: [
+      { icon: Briefcase, label: 'All Borrowers', to: '/existing-borrowers' },
+      { icon: Briefcase, label: 'Borrower Details', to: '/existing-borrowers/details' },
+    ]
+  },
   { 
     icon: CheckSquare, 
     label: 'Underwriter', 
