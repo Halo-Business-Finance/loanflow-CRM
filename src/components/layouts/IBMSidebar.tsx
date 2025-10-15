@@ -78,7 +78,16 @@ const navItems: NavItemData[] = [
       { icon: AlertTriangle, label: 'Risk Assessment', to: '/underwriter/risk' },
     ]
   },
-  { icon: Activity, label: 'Activities', to: '/activities' },
+  { 
+    icon: Activity, 
+    label: 'Activities', 
+    to: '/activities',
+    subItems: [
+      { icon: Activity, label: 'All Activities', to: '/activities' },
+      { icon: Activity, label: 'Calendar', to: '/activities/calendar' },
+      { icon: Activity, label: 'Tasks', to: '/activities/tasks' },
+    ]
+  },
   { 
     icon: FileText, 
     label: 'Documents', 
