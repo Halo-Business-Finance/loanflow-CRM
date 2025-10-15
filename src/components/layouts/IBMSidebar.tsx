@@ -25,6 +25,7 @@ import {
   Layers,
   TrendingUp,
   FileCheck,
+  AlertTriangle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -64,6 +65,7 @@ const navItems: NavItemData[] = [
     subItems: [
       { icon: LayoutDashboard, label: 'Underwriter Dashboard', to: '/underwriter' },
       { icon: FileCheck, label: 'Document Review', to: '/underwriter/documents' },
+      { icon: AlertTriangle, label: 'Risk Assessment', to: '/underwriter/risk' },
     ]
   },
   { icon: Activity, label: 'Activities', to: '/activities' },
