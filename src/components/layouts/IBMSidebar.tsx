@@ -79,7 +79,16 @@ const navItems: NavItemData[] = [
     ]
   },
   { icon: Activity, label: 'Activities', to: '/activities' },
-  { icon: FileText, label: 'Documents', to: '/documents' },
+  { 
+    icon: FileText, 
+    label: 'Documents', 
+    to: '/documents',
+    subItems: [
+      { icon: FileText, label: 'All Documents', to: '/documents' },
+      { icon: FileText, label: 'Upload Document', to: '/documents/upload' },
+      { icon: FileText, label: 'Document Templates', to: '/documents/templates' },
+    ]
+  },
   { icon: BarChart3, label: 'Reports', to: '/reports' },
   { icon: UserCog, label: 'User Directory', to: '/user-directory' },
   { 
