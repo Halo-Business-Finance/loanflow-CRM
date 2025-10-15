@@ -24,6 +24,7 @@ import {
   Camera,
   Layers,
   TrendingUp,
+  FileCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -55,7 +56,14 @@ const navItems: NavItemData[] = [
     ]
   },
   { icon: Briefcase, label: 'Existing Borrowers', to: '/existing-borrowers' },
-  { icon: CheckSquare, label: 'Underwriter', to: '/underwriter' },
+  { 
+    icon: CheckSquare, 
+    label: 'Underwriter', 
+    to: '/underwriter',
+    subItems: [
+      { icon: FileCheck, label: 'Document Review', to: '/underwriter/documents' },
+    ]
+  },
   { icon: Activity, label: 'Activities', to: '/activities' },
   { icon: FileText, label: 'Documents', to: '/documents' },
   { icon: BarChart3, label: 'Reports', to: '/reports' },
