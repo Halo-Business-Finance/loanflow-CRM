@@ -61,6 +61,7 @@ const navItems: NavItemData[] = [
     label: 'Underwriter', 
     to: '/underwriter',
     subItems: [
+      { icon: LayoutDashboard, label: 'Underwriter Dashboard', to: '/underwriter' },
       { icon: FileCheck, label: 'Document Review', to: '/underwriter/documents' },
     ]
   },
