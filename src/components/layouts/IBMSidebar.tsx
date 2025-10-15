@@ -52,6 +52,7 @@ const navItems: NavItemData[] = [
     label: 'Pipeline', 
     to: '/pipeline',
     subItems: [
+      { icon: GitBranch, label: 'Pipeline Management', to: '/pipeline' },
       { icon: TrendingUp, label: 'Pipeline Analytics', to: '/pipeline/analytics' },
     ]
   },
