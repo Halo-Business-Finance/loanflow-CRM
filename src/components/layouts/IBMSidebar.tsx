@@ -75,6 +75,7 @@ const navItems: NavItemData[] = [
     label: 'Enterprise', 
     to: '/enterprise',
     subItems: [
+      { icon: Building2, label: 'Enterprise Command Center', to: '/enterprise' },
       { icon: Link2, label: 'Integrations', to: '/integrations' },
       { icon: Sparkles, label: 'AI Tools', to: '/ai-tools' },
       { icon: BookOpen, label: 'Resources', to: '/resources' },
