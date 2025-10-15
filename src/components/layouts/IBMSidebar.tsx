@@ -23,6 +23,7 @@ import {
   Code,
   Camera,
   Layers,
+  TrendingUp,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -45,7 +46,14 @@ interface NavItemProps extends NavItemData {
 const navItems: NavItemData[] = [
   { icon: LayoutDashboard, label: 'Dashboard', to: '/dashboard' },
   { icon: Users, label: 'Leads', to: '/leads' },
-  { icon: GitBranch, label: 'Pipeline', to: '/pipeline' },
+  { 
+    icon: GitBranch, 
+    label: 'Pipeline', 
+    to: '/pipeline',
+    subItems: [
+      { icon: TrendingUp, label: 'Pipeline Analytics', to: '/pipeline/analytics' },
+    ]
+  },
   { icon: Briefcase, label: 'Existing Borrowers', to: '/existing-borrowers' },
   { icon: CheckSquare, label: 'Underwriter', to: '/underwriter' },
   { icon: Activity, label: 'Activities', to: '/activities' },
