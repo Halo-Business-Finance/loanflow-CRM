@@ -169,7 +169,6 @@ function AuthenticatedApp() {
             {canCloseLoans && <Route path="/dashboards/closer" element={<IBMCloudLayout><CloserDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             {canFundLoans && <Route path="/dashboards/funder" element={<IBMCloudLayout><FunderDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             {canProcessLoans && <Route path="/dashboards/processor" element={<IBMCloudLayout><LoanProcessorDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
-            {canUnderwriteLoans && <Route path="/dashboards/underwriter" element={<IBMCloudLayout><UnderwriterDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             
             {/* Security Dashboard Routes */}
             {canAccessAdminFeatures && <Route path="/dashboards/security-enhanced" element={<IBMCloudLayout><EnhancedSecurityDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
