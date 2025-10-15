@@ -368,12 +368,12 @@ export default function Pipeline() {
         </TabsContent>
 
         <TabsContent value="stages" className="space-y-6">
-          <Card className="bg-card border-0 shadow-lg">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                <BarChart3 className="h-5 w-5 text-purple-600" />
-                Stage Distribution
-              </CardTitle>
+            <Card className="widget-glass border-0">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                  <BarChart3 className="h-5 w-5 text-primary" />
+                  Stage Distribution
+                </CardTitle>
               <CardDescription className="text-muted-foreground">
                 Opportunities breakdown by pipeline stage
               </CardDescription>
@@ -387,13 +387,13 @@ export default function Pipeline() {
                   </div>
                 ) : (
                   Object.entries(overview.stagesCount).map(([stage, count]) => (
-                    <div key={stage} className="flex justify-between items-center p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                      <span className="text-sm font-medium text-foreground">{stage}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-purple-600">{count}</span>
-                        <span className="text-sm text-muted-foreground">opportunities</span>
-                      </div>
-                    </div>
+                     <div key={stage} className="flex justify-between items-center p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                       <span className="text-sm font-medium text-foreground">{stage}</span>
+                       <div className="flex items-center gap-2">
+                         <span className="font-bold text-primary">{count}</span>
+                         <span className="text-sm text-muted-foreground">opportunities</span>
+                       </div>
+                     </div>
                   ))
                 )}
               </div>
@@ -403,10 +403,10 @@ export default function Pipeline() {
 
         <TabsContent value="forecasting" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
-            <Card className="bg-card border-0 shadow-lg">
+            <Card className="widget-glass border-0">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                  <TrendingUp className="h-5 w-5 text-blue-600" />
+                  <TrendingUp className="h-5 w-5 text-primary" />
                   Revenue Forecast
                 </CardTitle>
                 <CardDescription className="text-muted-foreground">

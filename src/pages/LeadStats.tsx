@@ -109,22 +109,22 @@ export default function LeadStats() {
 
           {/* Key Metrics */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="bg-card shadow-sm hover:shadow-md transition-all duration-200 animate-fade-in">
-              <CardContent className="p-6">
+            <Card className="widget-glass widget-glow border-0 animate-fade-in">
+              <CardContent className="p-6 widget-content">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-muted-foreground">Total Leads</span>
                   <Users className="h-4 w-4 text-primary" />
                 </div>
                 <div className="text-2xl font-bold text-foreground">{loading ? "..." : stats.totalLeads}</div>
                 <div className="flex items-center text-xs text-muted-foreground mt-1">
-                  <TrendingUp className="h-3 w-3 mr-1 text-green-600" />
-                  <span className="text-green-600">Active in pipeline</span>
+                  <TrendingUp className="h-3 w-3 mr-1 text-primary" />
+                  <span className="text-primary">Active in pipeline</span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-card shadow-sm hover:shadow-md transition-all duration-200 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              <CardContent className="p-6">
+            <Card className="widget-glass widget-glow border-0 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <CardContent className="p-6 widget-content">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-muted-foreground">Conversion Rate</span>
                   <Target className="h-4 w-4 text-primary" />
@@ -138,8 +138,8 @@ export default function LeadStats() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card shadow-sm hover:shadow-md transition-all duration-200 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <CardContent className="p-6">
+            <Card className="widget-glass widget-glow border-0 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <CardContent className="p-6 widget-content">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-muted-foreground">Qualified Leads</span>
                   <BarChart3 className="h-4 w-4 text-primary" />
@@ -151,14 +151,14 @@ export default function LeadStats() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card shadow-sm hover:shadow-md transition-all duration-200 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-              <CardContent className="p-6">
+            <Card className="widget-glass widget-glow border-0 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <CardContent className="p-6 widget-content">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-muted-foreground">Avg. Response Time</span>
                   <Clock className="h-4 w-4 text-primary" />
                 </div>
                 <div className="text-2xl font-bold text-foreground">{stats.avgResponseTime}h</div>
-                <div className="flex items-center text-xs text-green-600 mt-1">
+                <div className="flex items-center text-xs text-primary mt-1">
                   <TrendingUp className="h-3 w-3 mr-1" />
                   15% faster
                 </div>
@@ -224,29 +224,29 @@ export default function LeadStats() {
                 }
               >
               <div className="space-y-4">
-                <div className="flex justify-between items-center py-2 border-b">
+                <div className="flex justify-between items-center py-2 border-b border-border">
                   <span className="text-sm font-medium">New</span>
                   <div className="flex items-center gap-3">
                     <div className="w-24 bg-muted rounded-full h-2">
-                      <div className="bg-blue-500 h-2 rounded-full" style={{ width: '35%' }} />
+                      <div className="bg-primary h-2 rounded-full" style={{ width: '35%' }} />
                     </div>
-                    <Badge className="text-xs bg-blue-500">{loading ? "..." : stats.newLeads}</Badge>
+                    <Badge className="text-xs">{loading ? "..." : stats.newLeads}</Badge>
                   </div>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b">
+                <div className="flex justify-between items-center py-2 border-b border-border">
                   <span className="text-sm font-medium">Contacted</span>
                   <div className="flex items-center gap-3">
                     <div className="w-24 bg-muted rounded-full h-2">
-                      <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '25%' }} />
+                      <div className="bg-warning h-2 rounded-full" style={{ width: '25%' }} />
                     </div>
                     <Badge variant="outline" className="text-xs">25%</Badge>
                   </div>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b">
+                <div className="flex justify-between items-center py-2 border-b border-border">
                   <span className="text-sm font-medium">Qualified</span>
                   <div className="flex items-center gap-3">
                     <div className="w-24 bg-muted rounded-full h-2">
-                      <div className="bg-orange-500 h-2 rounded-full" style={{ width: '20%' }} />
+                      <div className="bg-accent h-2 rounded-full" style={{ width: '20%' }} />
                     </div>
                     <Badge variant="outline" className="text-xs">{loading ? "..." : stats.qualifiedLeads}</Badge>
                   </div>
@@ -255,9 +255,9 @@ export default function LeadStats() {
                   <span className="text-sm font-medium">Converted</span>
                   <div className="flex items-center gap-3">
                     <div className="w-24 bg-muted rounded-full h-2">
-                      <div className="bg-green-500 h-2 rounded-full" style={{ width: '20%' }} />
+                      <div className="bg-primary h-2 rounded-full" style={{ width: '20%' }} />
                     </div>
-                    <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                    <Badge variant="outline" className="text-xs">
                       {loading ? "..." : stats.convertedLeads}
                     </Badge>
                   </div>
