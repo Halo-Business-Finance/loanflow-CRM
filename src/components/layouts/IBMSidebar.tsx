@@ -22,6 +22,7 @@ import {
   BookOpen,
   Code,
   Camera,
+  Layers,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -61,6 +62,7 @@ const navItems: NavItemData[] = [
       { icon: BookOpen, label: 'Resources', to: '/resources' },
       { icon: Code, label: 'API Docs', to: '/api-docs' },
       { icon: Camera, label: 'Screenshots', to: '/screenshots' },
+      { icon: Layers, label: 'Stage Management', to: '/pipeline/stages' },
     ]
   },
   { icon: Shield, label: 'Security', to: '/security' },
