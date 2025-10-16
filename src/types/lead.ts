@@ -106,6 +106,10 @@ export interface ContactEntity {
   business_city?: string
   business_state?: string
   business_zip_code?: string
+  home_address?: string
+  home_city?: string
+  home_state?: string
+  home_zip_code?: string
   annual_revenue?: number
   location?: string
   loan_amount?: number

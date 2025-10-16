@@ -976,6 +976,10 @@ export type Database = {
           email: string
           existing_loan_amount: number | null
           first_name: string | null
+          home_address: string | null
+          home_city: string | null
+          home_state: string | null
+          home_zip_code: string | null
           id: string
           income: number | null
           interest_rate: number | null
@@ -1023,6 +1027,10 @@ export type Database = {
           email: string
           existing_loan_amount?: number | null
           first_name?: string | null
+          home_address?: string | null
+          home_city?: string | null
+          home_state?: string | null
+          home_zip_code?: string | null
           id?: string
           income?: number | null
           interest_rate?: number | null
@@ -1070,6 +1078,10 @@ export type Database = {
           email?: string
           existing_loan_amount?: number | null
           first_name?: string | null
+          home_address?: string | null
+          home_city?: string | null
+          home_state?: string | null
+          home_zip_code?: string | null
           id?: string
           income?: number | null
           interest_rate?: number | null
