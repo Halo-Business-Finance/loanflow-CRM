@@ -27,8 +27,19 @@ import {
   Fingerprint,
   Cpu,
   Radio,
-  Download
+  Download,
+  MoreVertical,
+  Bell,
+  Sliders
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface MilitarySecurityMetrics {
   threatLevel: 'DEFCON-1' | 'DEFCON-2' | 'DEFCON-3' | 'DEFCON-4' | 'DEFCON-5';
@@ -189,6 +200,47 @@ export function EnterpriseSecurityDashboard() {
             <Download className="h-3 w-3" />
             Export Security Report
           </Button>
+          <Button 
+            size="sm"
+            className="h-8 text-xs font-medium gap-2 bg-primary hover:bg-primary/90"
+          >
+            <Sliders className="h-3 w-3" />
+            Configure Defense
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="h-8 text-xs font-medium gap-2 text-white border-white/20 hover:bg-white/10"
+              >
+                <Settings className="h-3 w-3" />
+                Security Options
+                <MoreVertical className="h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Command Center Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Bell className="mr-2 h-4 w-4" />
+                Alert Configuration
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Target className="mr-2 h-4 w-4" />
+                Threat Response
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Lock className="mr-2 h-4 w-4" />
+                Access Controls
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Radar className="mr-2 h-4 w-4" />
+                Defense Systems
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Badge variant="destructive" className="text-lg px-4 py-2">
             {metrics.threatLevel}
           </Badge>
