@@ -1,6 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileText, Download, Filter, Calendar } from "lucide-react"
+import { FileText, Download, Filter, Calendar, Shield, Key, Lock, Settings, MoreVertical, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function SecurityAudit() {
   return (
@@ -21,6 +29,40 @@ export default function SecurityAudit() {
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
+          <Button>
+            <FileText className="h-4 w-4 mr-2" />
+            Generate Report
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <Settings className="mr-2 h-4 w-4" />
+                Security Options
+                <MoreVertical className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Audit Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Shield className="mr-2 h-4 w-4" />
+                Configure Retention
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Key className="mr-2 h-4 w-4" />
+                Access Controls
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Lock className="mr-2 h-4 w-4" />
+                Archive Logs
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <AlertTriangle className="mr-2 h-4 w-4" />
+                Alert Settings
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
