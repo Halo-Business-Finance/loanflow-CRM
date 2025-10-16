@@ -3,6 +3,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 import { CustomObjectsManager } from "@/components/enterprise/CustomObjectsManager";
 import { WorkflowBuilder } from "@/components/enterprise/WorkflowBuilder";
@@ -65,7 +66,7 @@ export default function Enterprise() {
     return (
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center min-h-96">
-            <Card className="text-center">
+            <Card className="text-center max-w-xl w-full">
               <CardHeader>
                 <Shield className="h-12 w-12 mx-auto text-muted-foreground" />
                 <CardTitle>Access Restricted</CardTitle>
@@ -73,6 +74,22 @@ export default function Enterprise() {
                   Only administrators can access enterprise features.
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Signed in as <span className="font-medium">{user?.email ?? 'unknown'}</span>
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Your roles: <span className="font-medium">{userRoles?.join(', ') || 'none'}</span>
+                </p>
+                <div className="flex items-center justify-center gap-3 mt-4">
+                  <a href="/auth">
+                    <Button variant="outline">Switch account</Button>
+                  </a>
+                  <a href="/">
+                    <Button variant="ghost">Go Home</Button>
+                  </a>
+                </div>
+              </CardContent>
             </Card>
           </div>
         </div>
