@@ -47,11 +47,17 @@ export default function SettingsUsers() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null)
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false)
-  const { user, hasRole } = useAuth()
+  const { user, hasRole, loading: authLoading } = useAuth()
   const { toast } = useToast()
   const navigate = useNavigate()
 
   useEffect(() => {
+    // Wait for auth to finish loading before checking permissions
+    if (authLoading) {
+      return
+    }
+
+    // Check if user has admin privileges
     if (hasRole('admin') || hasRole('super_admin')) {
       fetchUsers()
     } else {
@@ -62,7 +68,7 @@ export default function SettingsUsers() {
       })
       navigate('/leads')
     }
-  }, [user, hasRole, navigate])
+  }, [user, hasRole, authLoading, navigate])
 
   const fetchUsers = async () => {
     try {
@@ -420,8 +426,20 @@ export default function SettingsUsers() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header Section */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        {/* Show loading while auth is being checked */}
+        {authLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center space-y-4">
+              <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+              <p className="text-muted-foreground">Checking permissions...</p>
+            </div>
+          </div>
+        )}
+
+        {!authLoading && (
+          <>
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="space-y-2">
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
               User Management
@@ -1020,6 +1038,8 @@ export default function SettingsUsers() {
             </CardContent>
           </Card>
         </div>
+        </>
+        )}
       </div>
     </div>
   )
