@@ -123,7 +123,19 @@ const navItems: NavItemData[] = [
       { icon: Layers, label: 'Stage Management', to: '/pipeline/stages' },
     ]
   },
-  { icon: Shield, label: 'Security', to: '/security' },
+  { 
+    icon: Shield, 
+    label: 'Security', 
+    to: '/security',
+    subItems: [
+      { icon: Shield, label: 'Security Overview', to: '/security' },
+      { icon: UserCog, label: 'Access Management', to: '/security/access' },
+      { icon: FileText, label: 'Audit Logs', to: '/security/audit' },
+      { icon: AlertTriangle, label: 'Threat Detection', to: '/security/threats' },
+      { icon: CheckSquare, label: 'Compliance', to: '/security/compliance' },
+      { icon: Server, label: 'Enterprise Command', to: '/security/enterprise' },
+    ]
+  },
   { icon: Settings, label: 'Settings', to: '/settings' },
 ];
 
