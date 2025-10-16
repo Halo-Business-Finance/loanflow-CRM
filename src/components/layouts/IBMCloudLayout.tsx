@@ -20,7 +20,7 @@ export function IBMCloudLayout({ children }: IBMCloudLayoutProps) {
           collapsed={sidebarCollapsed} 
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
         />
-        <main className="flex-1 overflow-auto bg-white">
+        <main className="flex-1 overflow-auto bg-white no-scrollbar">
           {children}
         </main>
       </div>
