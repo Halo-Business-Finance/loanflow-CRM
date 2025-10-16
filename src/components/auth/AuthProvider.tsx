@@ -110,6 +110,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserRole = async (userId: string) => {
     try {
+      console.log('🔍 Fetching roles for user:', userId)
+      
       // Fetch ALL user roles instead of just one
       const { data, error } = await supabase
         .from('user_roles')
@@ -118,7 +120,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('is_active', true);
 
       if (error) {
-        console.error('Error fetching user roles:', error)
+        console.error('❌ Error fetching user roles:', error)
         setUserRole('loan_originator')
         setUserRoles(['loan_originator'])
         return
@@ -126,6 +128,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Extract all roles
       const roles = data?.map((r: { role: string }) => r.role) || []
+      
+      console.log('✅ Roles fetched successfully:', { userId, roles, dataLength: data?.length })
       
       // Determine primary role (highest in hierarchy)
       const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'manager', 'admin', 'super_admin']
@@ -137,10 +141,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }, roles[0])
         : 'loan_originator'
 
+      console.log('✅ Primary role determined:', primaryRole)
+
       setUserRole(primaryRole)
       setUserRoles(roles.length > 0 ? roles : ['loan_originator'])
     } catch (error) {
-      console.error('Error fetching user roles:', error)
+      console.error('❌ EXCEPTION fetching user roles:', error)
       setUserRole('loan_originator')
       setUserRoles(['loan_originator'])
     }
