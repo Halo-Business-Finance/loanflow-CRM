@@ -193,11 +193,6 @@ export default function Dashboard() {
             onClick={() => navigate('/reports')}
           >
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
-                  <DollarSign className="h-5 w-5 text-primary" />
-                </div>
-              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Revenue</h3>
               <p className="text-2xl font-bold text-foreground">
                 ${(stats.totalRevenue / 1000000).toFixed(1)}M
@@ -211,11 +206,6 @@ export default function Dashboard() {
             onClick={() => navigate('/pipeline')}
           >
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
-                  <Target className="h-5 w-5 text-primary" />
-                </div>
-              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Pipeline Value</h3>
               <p className="text-2xl font-bold text-foreground">
                 ${(stats.pipelineValue / 1000000).toFixed(1)}M
@@ -229,11 +219,6 @@ export default function Dashboard() {
             onClick={() => navigate('/leads')}
           >
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
-                  <Users className="h-5 w-5 text-primary" />
-                </div>
-              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Active Leads</h3>
               <p className="text-2xl font-bold text-foreground">{stats.totalLeads}</p>
               <p className="text-xs text-muted-foreground mt-2">vs last month</p>
@@ -245,11 +230,6 @@ export default function Dashboard() {
             onClick={() => navigate('/pipeline/analytics')}
           >
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
-                  <Activity className="h-5 w-5 text-primary" />
-                </div>
-              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Conversion Rate</h3>
               <p className="text-2xl font-bold text-foreground">{stats.conversionRate}%</p>
               <p className="text-xs text-muted-foreground mt-2">vs last month</p>
