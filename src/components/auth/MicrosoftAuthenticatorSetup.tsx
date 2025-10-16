@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { EnhancedMFA } from '@/lib/enhanced-mfa';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useMfaStatus } from '@/hooks/useMfaStatus';
+import QRCodeLib from 'qrcode';
 
 interface SetupStep {
   id: number;
@@ -20,6 +21,7 @@ interface SetupStep {
 export const MicrosoftAuthenticatorSetup: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [qrCodeData, setQrCodeData] = useState<string>('');
+  const [qrCodeImageUrl, setQrCodeImageUrl] = useState<string>('');
   const [secret, setSecret] = useState<string>('');
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
   const [verificationCode, setVerificationCode] = useState('');
@@ -133,20 +135,28 @@ export const MicrosoftAuthenticatorSetup: React.FC = () => {
     }
   };
 
-  const generateQRCodeSVG = (data: string) => {
-    // Simple QR code placeholder - in production, use a QR code library
-    return (
-      <div className="w-48 h-48 bg-card border-2 border-border rounded-lg flex items-center justify-center">
-        <div className="text-center">
-          <QrCode className="w-16 h-16 mx-auto mb-2 text-foreground" />
-          <p className="text-sm text-foreground">QR Code</p>
-          <p className="text-xs text-muted-foreground mt-2 font-mono break-all px-2">
-            {data.substring(0, 40)}...
-          </p>
-        </div>
-      </div>
-    );
-  };
+  // Generate QR code image when qrCodeData changes
+  useEffect(() => {
+    if (qrCodeData) {
+      QRCodeLib.toDataURL(qrCodeData, {
+        width: 256,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      })
+        .then(url => setQrCodeImageUrl(url))
+        .catch(err => {
+          console.error('QR code generation failed:', err);
+          toast({
+            variant: "destructive",
+            title: "QR Code Error",
+            description: "Failed to generate QR code image"
+          });
+        });
+    }
+  }, [qrCodeData, toast]);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -218,7 +228,17 @@ export const MicrosoftAuthenticatorSetup: React.FC = () => {
               <div className="text-center">
                 <h3 className="text-lg font-medium mb-4 text-foreground">Scan QR Code with Microsoft Authenticator</h3>
                 <div className="flex justify-center mb-4">
-                  {generateQRCodeSVG(qrCodeData)}
+                  {qrCodeImageUrl ? (
+                    <img 
+                      src={qrCodeImageUrl} 
+                      alt="MFA QR Code" 
+                      className="w-64 h-64 border-2 border-border rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-64 h-64 bg-muted border-2 border-border rounded-lg flex items-center justify-center">
+                      <QrCode className="w-16 h-16 text-muted-foreground animate-pulse" />
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">
