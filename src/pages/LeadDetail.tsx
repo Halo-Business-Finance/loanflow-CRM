@@ -1111,12 +1111,8 @@ export default function LeadDetail() {
                         className="mt-1 h-8 text-sm"
                       />
                     ) : (
-                      <div className="mt-1">
-                        {editableFields.bdo_telephone ? (
-                          <ClickablePhone phoneNumber={editableFields.bdo_telephone} />
-                        ) : (
-                          <p className="text-sm font-medium">N/A</p>
-                        )}
+                      <div className="field-display mt-1">
+                        {editableFields.bdo_telephone ? formatPhoneNumber(editableFields.bdo_telephone) : 'N/A'}
                       </div>
                     )}
                   </div>
