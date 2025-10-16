@@ -24,6 +24,10 @@ export interface Lead {
   business_city?: string
   business_state?: string
   business_zip_code?: string
+  home_address?: string
+  home_city?: string
+  home_state?: string
+  home_zip_code?: string
   naics_code?: string
   ownership_structure?: string
   owns_property?: boolean
