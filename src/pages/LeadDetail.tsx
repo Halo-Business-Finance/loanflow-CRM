@@ -108,7 +108,12 @@ export default function LeadDetail() {
     first_name: "",
     last_name: "",
     personal_email: "",
-    mobile_phone: ""
+    mobile_phone: "",
+    processor_name: "",
+    pos_system: "",
+    monthly_processing_volume: "",
+    average_transaction_size: "",
+    current_processing_rate: ""
   })
 
   const isValidUuid = (value?: string) =>
@@ -205,7 +210,12 @@ export default function LeadDetail() {
         first_name: mergedLead.first_name || "",
         last_name: mergedLead.last_name || "",
         personal_email: mergedLead.personal_email || "",
-        mobile_phone: mergedLead.mobile_phone || ""
+        mobile_phone: mergedLead.mobile_phone || "",
+        processor_name: mergedLead.processor_name || "",
+        pos_system: mergedLead.pos_system || "",
+        monthly_processing_volume: mergedLead.monthly_processing_volume?.toString() || "",
+        average_transaction_size: mergedLead.average_transaction_size?.toString() || "",
+        current_processing_rate: mergedLead.current_processing_rate?.toString() || ""
       })
       
       if (data.is_converted_to_client) {
@@ -278,6 +288,11 @@ export default function LeadDetail() {
         last_name: editableFields.last_name,
         personal_email: editableFields.personal_email,
         mobile_phone: editableFields.mobile_phone,
+        processor_name: editableFields.processor_name,
+        pos_system: editableFields.pos_system,
+        monthly_processing_volume: editableFields.monthly_processing_volume ? parseFloat(editableFields.monthly_processing_volume) : null,
+        average_transaction_size: editableFields.average_transaction_size ? parseFloat(editableFields.average_transaction_size) : null,
+        current_processing_rate: editableFields.current_processing_rate ? parseFloat(editableFields.current_processing_rate) : null,
         call_notes: callNotes,
         notes: generalNotes
       }
@@ -954,6 +969,106 @@ export default function LeadDetail() {
                     ) : (
                       <div className="field-display mt-1">
                         {editableFields.naics_code || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Ownership Structure</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.ownership_structure}
+                        onChange={(e) => setEditableFields({...editableFields, ownership_structure: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.ownership_structure || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Processor Name</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.processor_name}
+                        onChange={(e) => setEditableFields({...editableFields, processor_name: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.processor_name || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">POS System</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.pos_system}
+                        onChange={(e) => setEditableFields({...editableFields, pos_system: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.pos_system || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Monthly Processing Volume</Label>
+                    {isEditing ? (
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={editableFields.monthly_processing_volume}
+                        onChange={(e) => setEditableFields({...editableFields, monthly_processing_volume: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.monthly_processing_volume ? formatCurrency(parseFloat(editableFields.monthly_processing_volume)) : 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Average Transaction Size</Label>
+                    {isEditing ? (
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={editableFields.average_transaction_size}
+                        onChange={(e) => setEditableFields({...editableFields, average_transaction_size: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.average_transaction_size ? formatCurrency(parseFloat(editableFields.average_transaction_size)) : 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Current Processing Rate</Label>
+                    {isEditing ? (
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={editableFields.current_processing_rate}
+                        onChange={(e) => setEditableFields({...editableFields, current_processing_rate: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                        placeholder="2.5"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.current_processing_rate ? `${editableFields.current_processing_rate}%` : 'N/A'}
                       </div>
                     )}
                   </div>
