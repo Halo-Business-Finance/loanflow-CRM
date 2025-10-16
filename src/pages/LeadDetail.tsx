@@ -1200,45 +1200,26 @@ export default function LeadDetail() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">Income</Label>
-                    {isEditing ? (
-                      <Input
-                        type="number"
-                        value={lead.income?.toString() || ''}
-                        onChange={(e) => {
-                          // This would need to be saved to contact_entities
-                        }}
-                        className="mt-1 h-8 text-sm"
-                      />
-                    ) : (
-                      <div className="field-display mt-1">
-                        {lead.income ? formatCurrency(lead.income) : 'N/A'}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">Owns Property</Label>
-                    {isEditing ? (
-                      <Select
-                        value={editableFields.owns_property.toString()}
-                        onValueChange={(value) => setEditableFields({...editableFields, owns_property: value === 'true'})}
-                      >
-                        <SelectTrigger className="mt-1 h-8 text-sm">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="true">Yes</SelectItem>
-                          <SelectItem value="false">No</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <div className="field-display mt-1">
-                        {editableFields.owns_property ? 'Yes' : 'No'}
-                      </div>
-                    )}
-                  </div>
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Owns Property</Label>
+                  {isEditing ? (
+                    <Select
+                      value={editableFields.owns_property.toString()}
+                      onValueChange={(value) => setEditableFields({...editableFields, owns_property: value === 'true'})}
+                    >
+                      <SelectTrigger className="mt-1 h-8 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="true">Yes</SelectItem>
+                        <SelectItem value="false">No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <div className="field-display mt-1">
+                      {editableFields.owns_property ? 'Yes' : 'No'}
+                    </div>
+                  )}
                 </div>
 
                 {editableFields.owns_property && (
