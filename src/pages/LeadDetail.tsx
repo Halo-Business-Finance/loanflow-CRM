@@ -1242,7 +1242,7 @@ export default function LeadDetail() {
             <Card className="border-0 shadow-sm bg-card lg:col-span-2">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base font-semibold text-foreground">
-                  Loan & Financial Information
+                  Loan Request Information
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0 space-y-4">
