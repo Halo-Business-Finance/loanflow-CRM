@@ -21,8 +21,22 @@ import {
 } from "lucide-react";
 
 export default function Enterprise() {
-  const { hasRole } = useAuth();
+  const { hasRole, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState("custom-objects");
+
+  // Show loading while auth is being checked
+  if (authLoading) {
+    return (
+      <div className="container mx-auto px-6 py-12">
+        <div className="flex items-center justify-center min-h-96">
+          <div className="text-center space-y-4">
+            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+            <p className="text-muted-foreground">Checking permissions...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!hasRole('admin')) {
     return (
