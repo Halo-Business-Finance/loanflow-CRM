@@ -203,9 +203,9 @@ export default function Enterprise() {
             {features.map((feature) => {
               const Icon = feature.icon;
               return (
-                <TabsTrigger key={feature.id} value={feature.id} className="flex items-center gap-2">
+                <TabsTrigger key={feature.id} value={feature.id} className="flex items-center gap-2 text-xs">
                   <Icon className="h-4 w-4" />
-                  <span className="hidden md:inline text-xs">{feature.label}</span>
+                  <span className="hidden md:inline">{feature.label}</span>
                 </TabsTrigger>
               );
             })}
