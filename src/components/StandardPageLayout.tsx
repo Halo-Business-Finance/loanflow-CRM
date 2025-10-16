@@ -8,7 +8,7 @@ interface StandardPageLayoutProps {
 
 export function StandardPageLayout({ children, className }: StandardPageLayoutProps) {
   return (
-    <div className={cn("min-h-screen bg-background", className)}>
+    <div className={cn("min-h-screen bg-background overflow-auto no-scrollbar", className)}>
       {children}
     </div>
   );

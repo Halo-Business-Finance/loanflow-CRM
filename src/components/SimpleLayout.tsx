@@ -36,7 +36,7 @@ export default function SimpleLayout({ children }: SimpleLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col w-full bg-background">
+    <div className="min-h-screen flex flex-col w-full bg-background overflow-hidden">
       <header className="h-20 border-b bg-card shadow-soft flex items-center justify-between px-6">
         <div className="flex items-center gap-3">
           <ConnectionHalo />
@@ -50,7 +50,7 @@ export default function SimpleLayout({ children }: SimpleLayoutProps) {
           <NotificationBell />
         </div>
       </header>
-      <main className="flex-1 p-6 bg-muted/30">
+      <main className="flex-1 p-6 bg-muted/30 overflow-auto no-scrollbar">
         {children}
       </main>
     </div>
