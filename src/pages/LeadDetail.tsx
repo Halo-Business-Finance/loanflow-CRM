@@ -1387,6 +1387,51 @@ export default function LeadDetail() {
                     )}
                   </div>
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">BDO Name</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.bdo_name}
+                        onChange={(e) => setEditableFields({...editableFields, bdo_name: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.bdo_name || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">BDO Phone</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.bdo_telephone}
+                        onChange={(e) => setEditableFields({...editableFields, bdo_telephone: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.bdo_telephone || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">BDO Email</Label>
+                    {isEditing ? (
+                      <Input
+                        value={editableFields.bdo_email}
+                        onChange={(e) => setEditableFields({...editableFields, bdo_email: e.target.value})}
+                        className="mt-1 h-8 text-sm"
+                      />
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.bdo_email || 'N/A'}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
