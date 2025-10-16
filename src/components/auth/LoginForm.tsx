@@ -7,6 +7,7 @@ import { Loader2, Mail, Lock, Shield } from 'lucide-react'
 import { useAuth } from './AuthProvider'
 import { supabase } from '@/integrations/supabase/client'
 import { toast } from 'sonner'
+import { sanitizeError, logSecureError } from '@/lib/error-sanitizer'
 
 interface LoginFormProps {
   onToggleMode: () => void
@@ -31,31 +32,21 @@ export function LoginForm({ onToggleMode }: LoginFormProps) {
 
     setIsLoading(true)
     try {
-      console.log('🔐 Attempting login for:', email)
       await signIn(email, password)
-      console.log('✅ Login successful!')
     } catch (error: any) {
-      console.error('❌ Login failed:', error)
-      toast.error(error.message || 'Login failed')
+      logSecureError(error, 'Login', supabase)
+      toast.error(sanitizeError(error))
     } finally {
       setIsLoading(false)
     }
   }
 
   const handleMicrosoftSignIn = async () => {
-    console.log('🚀 Starting Microsoft OAuth flow...')
     setIsMicrosoftLoading(true)
     
     try {
-      // Clear any existing auth state
-      console.log('📝 Clearing existing auth state...')
-      
-      // Get current origin for redirect - use /auth/callback for cleaner handling
       const redirectUrl = `${window.location.origin}/auth/callback`
-      console.log('🔗 Redirect URL:', redirectUrl)
       
-      // Start OAuth flow with comprehensive logging
-      console.log('🔐 Initiating OAuth with Azure provider...')
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'azure',
         options: {
@@ -68,29 +59,22 @@ export function LoginForm({ onToggleMode }: LoginFormProps) {
         }
       })
       
-      console.log('📊 OAuth Response:', { data, error })
-      
       if (error) {
-        console.error('❌ OAuth Error:', error)
-        toast.error(`Microsoft sign-in failed: ${error.message}`)
+        logSecureError(error, 'Microsoft OAuth', supabase)
+        toast.error(sanitizeError(error))
         return
       }
       
       if (data?.url) {
-        console.log('🌐 Redirecting to Microsoft...', data.url)
-        // Store intention to prevent loops
-        localStorage.setItem('ms_oauth_attempt', Date.now().toString())
         window.location.href = data.url
       } else {
-        console.warn('⚠️ No redirect URL received from OAuth')
         toast.error('Microsoft sign-in failed: No redirect URL received')
       }
       
     } catch (error: any) {
-      console.error('💥 Microsoft OAuth Error:', error)
-      toast.error(`Authentication error: ${error.message || 'Unknown error'}`)
+      logSecureError(error, 'Microsoft OAuth', supabase)
+      toast.error(sanitizeError(error))
     } finally {
-      // Only reset loading if we're not redirecting
       setTimeout(() => setIsMicrosoftLoading(false), 1000)
     }
   }

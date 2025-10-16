@@ -215,9 +215,11 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
         throw new Error('Viewer container not ready');
       }
 
-      // Setup container
+      // Setup container - clear safely
       viewerRef.current.id = 'adobe-dc-view';
-      viewerRef.current.innerHTML = '';
+      while (viewerRef.current.firstChild) {
+        viewerRef.current.removeChild(viewerRef.current.firstChild);
+      }
 
       // Wait for DOM updates
       await new Promise(resolve => setTimeout(resolve, 200));
@@ -311,9 +313,11 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
       setDocumentUrl(null);
       setViewerError(false);
       setAdobeView(null);
-      // Clear Adobe viewer container
+      // Clear Adobe viewer container safely
       if (viewerRef.current) {
-        viewerRef.current.innerHTML = '';
+        while (viewerRef.current.firstChild) {
+          viewerRef.current.removeChild(viewerRef.current.firstChild);
+        }
       }
     }
   }, [isOpen, document?.file_path, documentUrl]);

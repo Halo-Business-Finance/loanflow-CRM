@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/integrations/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 import { SecurityManager } from '@/lib/security'
+import { sanitizeError, logSecureError } from '@/lib/error-sanitizer'
 
 interface AuthContextType {
   user: User | null
@@ -36,11 +37,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Set up auth state listener FIRST to avoid missing events
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (mounted) {
-        // Clear OAuth flag on successful auth
-        if (session?.user) {
-          localStorage.removeItem('oauth_in_progress');
-        }
-        
         setSession(session)
         setUser(session?.user ?? null)
         if (session?.user) {
@@ -77,7 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setLoading(false)
         }
       } catch (error) {
-        console.error('Session check failed:', error)
+        logSecureError(error, 'Session check', supabase)
         if (mounted) {
           setLoading(false)
         }
@@ -152,22 +148,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      console.log('Attempting to sign in with email:', email)
       const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
-      console.log('Sign in response:', { error, data })
       if (error) {
-        // Check for common auth errors and provide better messages
-        if (error.message === 'Invalid login credentials') {
-          throw new Error('Invalid email or password. Please check your credentials and try again.')
-        }
         throw error
       }
 
-      // Log successful login (optional - can be done in background)
+      // Check MFA requirement after successful login
+      if (data?.user?.id) {
+        try {
+          await supabase.rpc('check_mfa_requirement', {
+            p_user_id: data.user.id
+          })
+        } catch (mfaError) {
+          logSecureError(mfaError, 'MFA check', supabase)
+        }
+      }
+
+      // Log successful login
       try {
         await supabase.functions.invoke('audit-log', {
           body: {
@@ -176,18 +177,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         })
       } catch (auditError) {
-        console.log('Audit logging failed (non-critical):', auditError)
-      }
-
-      // Check MFA requirement and track login count
-      if (data?.user?.id) {
-        try {
-          await supabase.rpc('check_mfa_requirement', {
-            p_user_id: data.user.id
-          })
-        } catch (mfaError) {
-          console.log('MFA check failed (non-critical):', mfaError)
-        }
+        logSecureError(auditError, 'Audit logging', supabase)
       }
 
       toast({
@@ -195,9 +185,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: "You have been signed in successfully.",
       })
     } catch (error: any) {
+      logSecureError(error, 'Sign in', supabase)
       toast({
         title: "Sign in failed",
-        description: error.message,
+        description: sanitizeError(error),
         variant: "destructive",
       })
       throw error
@@ -227,9 +218,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: "Please check your email to verify your account.",
       })
     } catch (error: any) {
+      logSecureError(error, 'Sign up', supabase)
       toast({
         title: "Sign up failed",
-        description: error.message,
+        description: sanitizeError(error),
         variant: "destructive",
       })
       throw error
@@ -237,9 +229,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signOut = async () => {
-    console.log('signOut function called')
     try {
-      console.log('Attempting to log logout...')
       // Log logout
       await supabase.functions.invoke('audit-log', {
         body: {
@@ -248,23 +238,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       })
 
-      console.log('Attempting Supabase signOut...')
       const { error } = await supabase.auth.signOut()
       if (error) {
-        console.error('Supabase signOut error:', error)
         throw error
       }
 
-      console.log('SignOut successful, showing toast...')
       toast({
         title: "Signed out",
         description: "You have been signed out successfully.",
       })
     } catch (error: any) {
-      console.error('SignOut catch block error:', error)
+      logSecureError(error, 'Sign out', supabase)
       toast({
         title: "Sign out failed",
-        description: error.message,
+        description: sanitizeError(error),
         variant: "destructive",
       })
     }
@@ -374,8 +361,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
-    // Log additional context for debugging
-    console.error('useAuth called outside AuthProvider context. Stack:', new Error().stack)
     throw new Error('useAuth must be used within an AuthProvider')
   }
   return context

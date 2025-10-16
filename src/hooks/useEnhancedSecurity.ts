@@ -4,7 +4,7 @@
 
 import { useEffect, useCallback } from 'react';
 import { enhancedSecureStorage } from '@/lib/enhanced-secure-storage';
-import { errorSanitizer, handleSanitizedError } from '@/lib/error-sanitizer';
+import { sanitizeError } from '@/lib/error-sanitizer';
 import { applyClientSecurityHeaders } from '@/lib/security-headers';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from 'sonner';
@@ -41,7 +41,8 @@ export const useEnhancedSecurity = () => {
         ttl: serverSide ? 480 : 60 // 8 hours server, 1 hour client
       });
     } catch (error) {
-      handleSanitizedError(error, 'secure_storage_set', (msg) => toast.error(msg));
+      const userMessage = sanitizeError(error);
+      toast.error(userMessage);
       return false;
     }
   }, []);
@@ -53,7 +54,8 @@ export const useEnhancedSecurity = () => {
     try {
       return await enhancedSecureStorage.getItem(key, serverSide);
     } catch (error) {
-      handleSanitizedError(error, 'secure_storage_get');
+      const userMessage = sanitizeError(error);
+      toast.error(userMessage);
       return null;
     }
   }, []);
@@ -62,13 +64,22 @@ export const useEnhancedSecurity = () => {
     try {
       await enhancedSecureStorage.removeItem(key);
     } catch (error) {
-      handleSanitizedError(error, 'secure_storage_remove');
+      const userMessage = sanitizeError(error);
+      toast.error(userMessage);
     }
   }, []);
 
   // Enhanced error handling
   const handleError = useCallback((error: any, context?: string) => {
-    return handleSanitizedError(error, context, (msg) => toast.error(msg));
+    const userMessage = sanitizeError(error);
+    toast.error(userMessage);
+    
+    // Log in development only
+    if (import.meta.env.DEV) {
+      console.error(`[${context || 'Error'}]`, error);
+    }
+    
+    return userMessage;
   }, []);
 
   // Security validation
@@ -162,7 +173,6 @@ export const useEnhancedSecurity = () => {
     removeSecureItem,
     handleError,
     validateInput,
-    logSecurityEvent,
-    errorSanitizer
+    logSecurityEvent
   };
 };

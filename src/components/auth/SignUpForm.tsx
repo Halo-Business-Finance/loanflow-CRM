@@ -7,6 +7,7 @@ import { Loader2, Mail, Lock, User, Shield } from 'lucide-react'
 import { useAuth } from './AuthProvider'
 import { supabase } from '@/integrations/supabase/client'
 import { toast } from 'sonner'
+import { sanitizeError, logSecureError } from '@/lib/error-sanitizer'
 
 interface SignUpFormProps {
   onToggleMode: () => void
@@ -38,57 +39,27 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
   }
 
   const handleMicrosoftSignUp = async () => {
-    console.log('🆕 Microsoft Sign-Up: Starting fresh OAuth registration flow...')
     setIsMicrosoftLoading(true)
     
     try {
-      // Clear any previous auth attempts
-      localStorage.removeItem('ms_oauth_attempt')
-      localStorage.removeItem('ms_oauth_signup_attempt')
+      const redirectUrl = `${window.location.origin}/`
       
-      // Set new sign-up flag
-      const signupTimestamp = Date.now().toString()
-      localStorage.setItem('ms_signup_flow', signupTimestamp)
-      console.log('📝 Set sign-up flow flag:', signupTimestamp)
-      
-      // Prepare redirect URL
-      const baseUrl = window.location.origin
-      const redirectUrl = `${baseUrl}/`
-      console.log('🔗 Sign-up redirect configured:', redirectUrl)
-      
-      // Log current environment
-      console.log('🌍 Environment check:', {
-        origin: window.location.origin,
-        host: window.location.host,
-        protocol: window.location.protocol
-      })
-      
-      // Initialize Microsoft OAuth for new user registration
-      console.log('🚀 Launching Microsoft account creation flow...')
       const oauthResponse = await supabase.auth.signInWithOAuth({
         provider: 'azure',
         options: {
           scopes: 'openid profile email User.Read',
           redirectTo: redirectUrl,
           queryParams: {
-            prompt: 'consent', // Force consent screen for new users
+            prompt: 'consent',
             access_type: 'offline',
             response_mode: 'query'
           }
         }
       })
       
-      console.log('📋 Microsoft Sign-up OAuth Response:', {
-        hasData: !!oauthResponse.data,
-        hasUrl: !!oauthResponse.data?.url,
-        hasError: !!oauthResponse.error,
-        error: oauthResponse.error?.message
-      })
-      
       if (oauthResponse.error) {
-        console.error('❌ Microsoft sign-up OAuth failed:', oauthResponse.error)
-        toast.error(`Microsoft sign-up failed: ${oauthResponse.error.message}`)
-        localStorage.removeItem('ms_signup_flow')
+        logSecureError(oauthResponse.error, 'Microsoft sign-up', supabase)
+        toast.error(sanitizeError(oauthResponse.error))
         setIsMicrosoftLoading(false)
         return
       }
