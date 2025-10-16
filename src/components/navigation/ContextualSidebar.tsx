@@ -5,7 +5,8 @@ import {
   PieChart, Calendar, CheckSquare, Search, Filter,
   Shield, Key, UserCheck, AlertTriangle, Building,
   Workflow, Brain, Code, Image, BookOpen, Zap,
-  Clock, TrendingUp, Database, Target, Award
+  Clock, TrendingUp, Database, Target, Award, MoreVertical,
+  Lock, Bell
 } from "lucide-react"
 import {
   Sidebar,
@@ -18,6 +19,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 // Contextual navigation based on current module
@@ -125,8 +135,44 @@ export function ContextualSidebar() {
     <Sidebar className={cn("bg-card/60 backdrop-blur h-full !border-0 group-data-[side=left]:!border-r-0 group-data-[side=right]:!border-l-0", collapsed ? "w-16" : "w-72")} collapsible="icon">
       <SidebarContent className="pt-32 pb-4 h-full">
         <SidebarGroup>
-          <SidebarGroupLabel className={cn("text-sm font-bold text-black px-8 mt-6 mb-2", collapsed && "sr-only")}>
-            {getModuleName(currentModule)}
+          <SidebarGroupLabel className={cn("text-sm font-bold text-black px-8 mt-6 mb-2 flex items-center justify-between", collapsed && "sr-only")}>
+            <span>{getModuleName(currentModule)}</span>
+            {currentModule === "/security" && !collapsed && (
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" className="h-7 text-xs">
+                  <Shield className="h-3 w-3 mr-1" />
+                  Configure
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuLabel>Security Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Shield className="mr-2 h-4 w-4" />
+                      Security Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Lock className="mr-2 h-4 w-4" />
+                      Access Controls
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Bell className="mr-2 h-4 w-4" />
+                      Alert Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Key className="mr-2 h-4 w-4" />
+                      Manage Keys
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
           </SidebarGroupLabel>
           <SidebarGroupContent className="px-6">
             <SidebarMenu className="space-y-1">
