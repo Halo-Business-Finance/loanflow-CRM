@@ -21,8 +21,17 @@ import {
 } from "lucide-react";
 
 export default function Enterprise() {
-  const { hasRole, loading: authLoading } = useAuth();
+  const { hasRole, loading: authLoading, userRoles, user } = useAuth();
   const [activeTab, setActiveTab] = useState("custom-objects");
+
+  // Debug logging
+  console.log('Enterprise Page - Auth State:', {
+    authLoading,
+    userRoles,
+    userId: user?.id,
+    hasAdminRole: hasRole('admin'),
+    hasSuperAdminRole: hasRole('super_admin')
+  });
 
   // Show loading while auth is being checked
   if (authLoading) {
