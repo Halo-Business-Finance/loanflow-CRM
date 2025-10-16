@@ -597,8 +597,7 @@ export default function LeadDetail() {
             {/* Lead Status Card */}
             <Card className="border border-border shadow-sm bg-white lg:col-span-2">
               <CardHeader className="pb-4">
-                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-                  <Target className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-base font-semibold text-foreground">
                   Lead Status
                 </CardTitle>
               </CardHeader>
@@ -660,8 +659,7 @@ export default function LeadDetail() {
             {/* Contact Information Card */}
             <Card className="border border-border shadow-sm bg-white">
               <CardHeader className="pb-4">
-                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-base font-semibold text-foreground">
                   Contact Information
                 </CardTitle>
               </CardHeader>
@@ -850,8 +848,7 @@ export default function LeadDetail() {
             {/* Company Information Card */}
             <Card className="border border-border shadow-sm bg-white">
               <CardHeader className="pb-4">
-                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-                  <Building className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-base font-semibold text-foreground">
                   Company Information
                 </CardTitle>
               </CardHeader>
@@ -1083,8 +1080,7 @@ export default function LeadDetail() {
             {/* BDO Information Card */}
             <Card className="border-0 shadow-sm bg-card">
               <CardHeader className="pb-4">
-                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-                  <UserPlus className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-base font-semibold text-foreground">
                   BDO Information
                 </CardTitle>
               </CardHeader>
@@ -1151,8 +1147,7 @@ export default function LeadDetail() {
             {/* Additional Business Details Card */}
             <Card className="border-0 shadow-sm bg-card">
               <CardHeader className="pb-4">
-                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-                  <Building className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-base font-semibold text-foreground">
                   Additional Business Details
                 </CardTitle>
               </CardHeader>
@@ -1246,8 +1241,7 @@ export default function LeadDetail() {
             {/* Financial Information Card */}
             <Card className="border-0 shadow-sm bg-card lg:col-span-2">
               <CardHeader className="pb-4">
-                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-base font-semibold text-foreground">
                   Loan & Financial Information
                 </CardTitle>
               </CardHeader>
@@ -1399,8 +1393,7 @@ export default function LeadDetail() {
             {/* Notes and Communication Card */}
             <Card className="border-0 shadow-sm bg-card lg:col-span-2">
               <CardHeader className="pb-4">
-                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-base font-semibold text-foreground">
                   Notes & Communication
                 </CardTitle>
               </CardHeader>
