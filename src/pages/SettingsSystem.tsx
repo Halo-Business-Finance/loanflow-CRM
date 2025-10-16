@@ -1,16 +1,30 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Settings, Database, Server, Monitor } from "lucide-react"
+import { Settings, Database, Server, Monitor, Shield, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function SettingsSystem() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">System Configuration</h1>
-        <p className="text-muted-foreground">
-          Manage system-wide settings and configurations
-        </p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">System Configuration</h1>
+          <p className="text-muted-foreground">
+            Manage system-wide settings and configurations
+          </p>
+        </div>
+        <Button>
+          <Settings className="mr-2 h-4 w-4" />
+          Save Changes
+        </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -167,6 +181,71 @@ export default function SettingsSystem() {
             </div>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Security Settings</CardTitle>
+            <CardDescription>Configure security and access controls</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <label className="text-sm font-medium">Security Level</label>
+                  <p className="text-xs text-muted-foreground">
+                    Select system security configuration
+                  </p>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="w-[180px] justify-between">
+                      <span>High Security</span>
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[180px] bg-card z-50">
+                    <DropdownMenuLabel>Security Level</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Low Security</DropdownMenuItem>
+                    <DropdownMenuItem>Medium Security</DropdownMenuItem>
+                    <DropdownMenuItem>High Security</DropdownMenuItem>
+                    <DropdownMenuItem>Maximum Security</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <label className="text-sm font-medium">Two-Factor Auth</label>
+                  <p className="text-xs text-muted-foreground">
+                    Require 2FA for all users
+                  </p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <label className="text-sm font-medium">IP Whitelist</label>
+                  <p className="text-xs text-muted-foreground">
+                    Restrict access by IP address
+                  </p>
+                </div>
+                <Switch />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <label className="text-sm font-medium">Audit Logging</label>
+                  <p className="text-xs text-muted-foreground">
+                    Log all security events
+                  </p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
@@ -239,6 +318,10 @@ export default function SettingsSystem() {
             <Button variant="outline" className="h-20 flex-col space-y-2">
               <Server className="h-6 w-6" />
               <span>Restart Services</span>
+            </Button>
+            <Button variant="outline" className="h-20 flex-col space-y-2">
+              <Shield className="h-6 w-6" />
+              <span>Security Scan</span>
             </Button>
           </div>
         </CardContent>
