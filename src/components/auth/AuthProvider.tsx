@@ -111,29 +111,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchUserRole = async (userId: string) => {
     try {
       console.log('🔍 Fetching roles for user:', userId)
-      
-      // Fetch ALL user roles instead of just one
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('is_active', true);
 
-      if (error) {
-        console.error('❌ Error fetching user roles:', error)
+      // Fetch all active roles AND the server-determined primary role in parallel
+      const [rolesRes, primaryRes] = await Promise.all([
+        supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', userId)
+          .eq('is_active', true),
+        supabase.rpc('get_user_role', { p_user_id: userId })
+      ])
+
+      // If both calls failed, fall back
+      if (rolesRes.error && (!primaryRes || primaryRes.error)) {
+        console.error('❌ Error fetching user roles:', rolesRes.error)
         setUserRole('loan_originator')
         setUserRoles(['loan_originator'])
         return
       }
 
-      // Extract all roles
-      const roles = data?.map((r: { role: string }) => r.role) || []
-      
-      console.log('✅ Roles fetched successfully:', { userId, roles, dataLength: data?.length })
-      
-      // Determine primary role (highest in hierarchy)
+      // Extract all roles (may be empty)
+      const roles: string[] = rolesRes.data?.map((r: { role: any }) => String(r.role)) || []
+      const serverPrimary: string | null = (primaryRes && !primaryRes.error && primaryRes.data) ? String(primaryRes.data) : null
+
+      console.log('✅ Roles fetched successfully:', { userId, roles, dataLength: rolesRes.data?.length })
+      if (serverPrimary) {
+        console.log('✅ Server primary role:', serverPrimary)
+      }
+
+      // Determine primary role (prefer secure server value)
       const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'manager', 'admin', 'super_admin']
-      const primaryRole = roles.length > 0 
+      const derivedPrimary = roles.length > 0 
         ? roles.reduce((highest, current) => {
             const highestIndex = roleHierarchy.indexOf(highest)
             const currentIndex = roleHierarchy.indexOf(current)
@@ -141,10 +149,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }, roles[0])
         : 'loan_originator'
 
+      const primaryRole = serverPrimary || derivedPrimary
       console.log('✅ Primary role determined:', primaryRole)
 
+      // Ensure roles includes the primary role and is de-duplicated
+      const normalizedRoles = Array.from(new Set([...(roles || []), primaryRole].filter(Boolean))) as string[]
+
       setUserRole(primaryRole)
-      setUserRoles(roles.length > 0 ? roles : ['loan_originator'])
+      setUserRoles(normalizedRoles.length > 0 ? normalizedRoles : ['loan_originator'])
     } catch (error) {
       console.error('❌ EXCEPTION fetching user roles:', error)
       setUserRole('loan_originator')
