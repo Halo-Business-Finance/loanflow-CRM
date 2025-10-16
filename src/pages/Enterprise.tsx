@@ -205,7 +205,7 @@ export default function Enterprise() {
               return (
                 <TabsTrigger key={feature.id} value={feature.id} className="flex items-center gap-2">
                   <Icon className="h-4 w-4" />
-                  <span className="hidden md:inline">{feature.label}</span>
+                  <span className="hidden md:inline text-xs">{feature.label}</span>
                 </TabsTrigger>
               );
             })}
