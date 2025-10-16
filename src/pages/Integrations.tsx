@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -332,9 +332,9 @@ export default function Integrations() {
                     <p className="text-lg font-bold">{integrations.filter(i => i.status === "connected").length}</p>
                   </div>
                 </div>
-                <Badge variant="default">
+                <span className="text-sm font-medium">
                   ACTIVE
-                </Badge>
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -497,9 +497,9 @@ export default function Integrations() {
                           </CardTitle>
                           <div className="flex items-center space-x-2">
                             {getStatusIcon(integration.status)}
-                            <Badge className={`${getStatusColor(integration.status)} border text-xs px-2 py-1 rounded-full`}>
+                            <span className="text-xs font-medium px-2 py-1 rounded-full">
                               {integration.status}
-                            </Badge>
+                            </span>
                           </div>
                         </div>
                         <Switch 
@@ -518,14 +518,14 @@ export default function Integrations() {
                         <Label className="text-sm font-medium text-foreground/80">Key Features</Label>
                         <div className="flex flex-wrap gap-2">
                           {integration.features.slice(0, 3).map((feature) => (
-                            <Badge key={feature} variant="secondary" className="text-xs text-foreground/70 border-0 rounded-lg px-2 py-1">
+                            <span key={feature} className="text-xs px-2 py-1 rounded-lg">
                               {feature}
-                            </Badge>
+                            </span>
                           ))}
                           {integration.features.length > 3 && (
-                            <Badge variant="secondary" className="text-xs text-foreground/70 border-0 rounded-lg px-2 py-1">
+                            <span className="text-xs px-2 py-1 rounded-lg">
                               +{integration.features.length - 3} more
-                            </Badge>
+                            </span>
                           )}
                         </div>
                       </div>
@@ -593,9 +593,9 @@ export default function Integrations() {
                            </CardTitle>
                            <div className="flex items-center space-x-2">
                              {getStatusIcon(tool.status)}
-                             <Badge className={`${getStatusColor(tool.status)} border text-xs px-2 py-1 rounded-full`}>
-                               {tool.status}
-                             </Badge>
+                              <span className="text-xs font-medium px-2 py-1 rounded-full">
+                                {tool.status}
+                              </span>
                              {tool.status === "active" && (
                                <div className="flex items-center">
                                  <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
@@ -710,7 +710,7 @@ export default function Integrations() {
                         ].map((api, index) => (
                           <div key={index} className="flex justify-between items-center p-3 bg-background/50 rounded-lg border">
                             <span className="font-mono text-foreground">{api.endpoint}</span>
-                            <Badge className="text-accent border-accent/20">{api.status}</Badge>
+                            <span className="text-xs font-medium">{api.status}</span>
                           </div>
                         ))}
                       </div>
@@ -747,28 +747,28 @@ export default function Integrations() {
                 <div className="bg-muted/30 rounded-lg p-3 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Status</span>
-                    <Badge className={adobeConfig.isDemo ? "text-orange-700 border-orange-200" : "text-green-700 border-green-200"} variant="outline">
+                    <span className="text-sm font-medium">
                       {adobeConfig.isDemo ? 'Demo Mode' : 'Licensed'}
-                    </Badge>
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Client ID</span>
-                    <Badge variant="outline" className="text-xs">
+                    <span className="text-xs font-medium">
                       {adobeConfig.isDemo ? 'Demo' : 'Configured'}
-                    </Badge>
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">API Key</span>
-                    <Badge variant={adobeConfig.hasApiKey ? "default" : "secondary"} className="text-xs">
+                    <span className="text-xs font-medium">
                       {adobeConfig.hasApiKey ? 'Configured' : 'Not Set'}
-                    </Badge>
+                    </span>
                   </div>
                   {!adobeConfig.isDemo && (
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Advanced Features</span>
-                      <Badge className="text-blue-700 border-blue-200 text-xs">
+                      <span className="text-xs font-medium">
                         {adobeConfig.hasApiKey ? 'Available' : 'Limited'}
-                      </Badge>
+                      </span>
                     </div>
                   )}
                 </div>
@@ -777,9 +777,9 @@ export default function Integrations() {
                 <div className="space-y-3 p-3 border rounded-lg">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">API Configuration</span>
-                    <Badge variant="outline" className="text-xs">
+                    <span className="text-xs font-medium">
                       {adobeConfig.isDemo ? 'Demo Mode' : 'Production'}
-                    </Badge>
+                    </span>
                   </div>
                   
                   <div className="space-y-2">

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -307,9 +307,9 @@ export default function UsersLeads() {
                           <div>
                             <h3 className="text-lg font-semibold">{userWithLeads.name}</h3>
                             <p className="text-sm text-muted-foreground">{userWithLeads.email}</p>
-                            <Badge variant={userWithLeads.role === 'super_admin' ? 'destructive' : userWithLeads.role === 'admin' ? 'default' : 'secondary'}>
+                            <span className="text-sm font-medium">
                               {userWithLeads.role}
-                            </Badge>
+                            </span>
                           </div>
                         </div>
                         <div className="text-right">
@@ -348,13 +348,13 @@ export default function UsersLeads() {
                                     <p className="text-muted-foreground">{lead.business_name || 'No business name'}</p>
                                   </div>
                                   <div className="flex flex-col items-end gap-1">
-                                    <Badge className={getStageColor(lead.stage || '')}>
+                                    <span className={`text-sm font-medium ${getStageColor(lead.stage || '')}`}>
                                       {lead.stage || 'No stage'}
-                                    </Badge>
-                                    <Badge variant="outline" className={getPriorityColor(lead.priority || '')}>
-                                      <Star className="h-3 w-3 mr-1" />
+                                    </span>
+                                    <span className={`text-sm font-medium ${getPriorityColor(lead.priority || '')}`}>
+                                      <Star className="h-3 w-3 mr-1 inline" />
                                       {lead.priority || 'medium'} priority
-                                    </Badge>
+                                    </span>
                                   </div>
                                 </div>
                                 

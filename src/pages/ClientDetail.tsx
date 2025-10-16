@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
@@ -529,28 +529,19 @@ export default function ClientDetail() {
                  </div>
                </div>
                <div className="flex items-center gap-3 flex-wrap">
-                 <Badge 
-                   variant={getStatusColor(client.status)}
-                   className="px-3 py-1 rounded-full font-medium shadow-sm"
-                 >
-                   {client.status}
-                 </Badge>
-                 {client.priority && (
-                   <Badge 
-                     variant={getPriorityColor(client.priority)}
-                     className="px-3 py-1 rounded-full font-medium shadow-sm"
-                   >
-                     {client.priority} Priority
-                   </Badge>
-                 )}
-                 {client.stage && (
-                   <Badge 
-                     variant={getStageColor(client.stage)}
-                     className="px-3 py-1 rounded-full font-medium shadow-sm"
-                   >
-                     {client.stage}
-                   </Badge>
-                 )}
+                <span className="px-3 py-1 rounded-full font-medium shadow-sm text-sm">
+                  {client.status}
+                </span>
+                  {client.priority && (
+                    <span className="px-3 py-1 rounded-full font-medium shadow-sm text-sm">
+                      {client.priority} Priority
+                    </span>
+                  )}
+                  {client.stage && (
+                    <span className="px-3 py-1 rounded-full font-medium shadow-sm text-sm">
+                      {client.stage}
+                    </span>
+                  )}
                </div>
              </div>
            </div>
@@ -723,7 +714,7 @@ export default function ClientDetail() {
                           </SelectContent>
                         </Select>
                       ) : (
-                        <Badge variant={getStatusColor(client.status)}>{client.status}</Badge>
+                        <span className="text-sm font-medium">{client.status}</span>
                       )}
                     </div>
                   </div>

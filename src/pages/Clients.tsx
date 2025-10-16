@@ -6,7 +6,7 @@ import { useAuth } from "@/components/auth/AuthProvider"
 import { useNavigate } from "react-router-dom"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -464,9 +464,9 @@ export default function ExistingBorrowers() {
                   <h1 className="text-xl font-semibold text-foreground">
                     Existing Borrowers
                   </h1>
-                  <Badge variant="default" className="text-xs font-medium px-2 py-1">
+                  <span className="text-xs font-medium px-2 py-1">
                     {clients.length} Borrowers
-                  </Badge>
+                  </span>
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
                   Manage and track your existing borrower relationships and portfolios
@@ -502,9 +502,9 @@ export default function ExistingBorrowers() {
                     <p className="text-2xl font-bold">{clients.length}</p>
                   </div>
                 </div>
-                <Badge variant="default" className="text-xs">
+                <span className="text-xs font-medium">
                   ACTIVE
-                </Badge>
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -625,13 +625,13 @@ export default function ExistingBorrowers() {
                     
                     <div className="text-right space-y-2">
                       <div className="flex gap-2">
-                        <Badge variant={getStatusColor(client.status)}>
+                        <span className="text-sm font-medium">
                           {client.status}
-                        </Badge>
+                        </span>
                         {client.stage && (
-                          <Badge variant={getStageColor(client.stage)}>
+                          <span className="text-sm font-medium">
                             {client.stage}
-                          </Badge>
+                          </span>
                         )}
                       </div>
                       <div className="text-sm text-muted-foreground">

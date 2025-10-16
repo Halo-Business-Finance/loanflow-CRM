@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+// Badge component removed - using plain text instead
 import { Camera, Download, ExternalLink } from "lucide-react";
 // import HybridLayout from "@/components/HybridLayout";
 
@@ -81,9 +81,9 @@ const Screenshots = () => {
                     <p className="text-lg font-bold">{pages.length}</p>
                   </div>
                 </div>
-                <Badge variant="default">
+                <span className="text-sm font-medium">
                   READY
-                </Badge>
+                </span>
               </div>
             </CardContent>
           </Card>

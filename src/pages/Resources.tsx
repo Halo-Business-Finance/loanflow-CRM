@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+// Badge component removed - using plain text instead
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   BookOpen, 
@@ -289,7 +289,7 @@ export default function Resources() {
                       <p className="text-sm font-medium">New documentation published</p>
                       <p className="text-xs text-muted-foreground truncate">API Integration Guide v2.1 • 2 hours ago</p>
                     </div>
-                    <Badge variant="default" className="flex-shrink-0">New</Badge>
+                    <span className="text-sm font-medium">New</span>
                   </div>
                   
                   <div className="flex items-center gap-3 p-3 hover:bg-muted/50 rounded-md transition-colors">
@@ -298,7 +298,7 @@ export default function Resources() {
                       <p className="text-sm font-medium">Training module completed</p>
                       <p className="text-xs text-muted-foreground truncate">Advanced Security Features • 5 hours ago</p>
                     </div>
-                    <Badge variant="secondary" className="flex-shrink-0">Completed</Badge>
+                    <span className="text-sm font-medium">Completed</span>
                   </div>
                   
                   <div className="flex items-center gap-3 p-3 hover:bg-muted/50 rounded-md transition-colors">
@@ -307,7 +307,7 @@ export default function Resources() {
                       <p className="text-sm font-medium">Resource downloaded</p>
                       <p className="text-xs text-muted-foreground truncate">Compliance Checklist Template • 1 day ago</p>
                     </div>
-                    <Badge variant="outline" className="flex-shrink-0">Downloaded</Badge>
+                    <span className="text-sm font-medium">Downloaded</span>
                   </div>
                 </div>
               </CardContent>
@@ -332,9 +332,9 @@ export default function Resources() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="font-medium">{item.name}</span>
-                            <Badge variant={getStatusColor(item.status)}>
+                            <span className="text-sm font-medium">
                               {item.status}
-                            </Badge>
+                            </span>
                           </div>
                           <p className="text-sm text-muted-foreground">
                             {item.type} • {item.category}
@@ -370,9 +370,9 @@ export default function Resources() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="font-medium">{item.name}</span>
-                            <Badge variant={completion === 100 ? 'default' : 'secondary'}>
+                            <span className="text-sm font-medium">
                               {item.completion} Complete
-                            </Badge>
+                            </span>
                           </div>
                           <p className="text-sm text-muted-foreground">
                             {item.type} • {item.duration}

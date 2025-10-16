@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, Upload, CheckCircle, Clock, AlertTriangle, RefreshCw, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 
 export default function UnderwriterDocuments() {
   return (
@@ -16,9 +16,9 @@ export default function UnderwriterDocuments() {
                   <h1 className="text-xl font-semibold text-foreground">
                     Document Review
                   </h1>
-                  <Badge variant="default" className="text-xs font-medium px-2 py-1">
+                  <span className="text-xs font-medium px-2 py-1">
                     176 Pending
-                  </Badge>
+                  </span>
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
                   Review and process loan documents for underwriting decisions
@@ -110,9 +110,9 @@ export default function UnderwriterDocuments() {
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Badge variant="secondary" className="text-green-600 border-green-600/20 bg-green-50">
+                  <span className="text-xs px-1.5 py-0 text-green-600">
                     Approved
-                  </Badge>
+                  </span>
                   <Button size="sm" variant="outline">View Details</Button>
                 </div>
               </div>
@@ -126,9 +126,9 @@ export default function UnderwriterDocuments() {
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Badge variant="secondary" className="text-yellow-600 border-yellow-600/20 bg-yellow-50">
+                  <span className="text-xs px-1.5 py-0 text-yellow-600">
                     Under Review
-                  </Badge>
+                  </span>
                   <Button size="sm" variant="outline">Review Now</Button>
                 </div>
               </div>

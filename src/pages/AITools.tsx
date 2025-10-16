@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { LeadScoring } from "@/components/ai/LeadScoring"
@@ -157,9 +157,9 @@ export default function AITools() {
                 <CardDescription>{tool.description}</CardDescription>
               </div>
             </div>
-            <Badge variant={config.enabled ? "default" : "secondary"}>
+            <span className="text-sm font-medium">
               {config.enabled ? "Active" : "Inactive"}
-            </Badge>
+            </span>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -417,9 +417,9 @@ export default function AITools() {
                     <p className="text-lg font-bold">{aiTools.filter(t => t.status === 'active').length}</p>
                   </div>
                 </div>
-                <Badge variant="default">
+                <span className="text-sm font-medium">
                   RUNNING
-                </Badge>
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -538,14 +538,14 @@ export default function AITools() {
                                     <h3 className="font-medium text-foreground">{tool.name}</h3>
                                     <p className="text-sm text-muted-foreground">{tool.description}</p>
                                   </div>
-                                  <Badge variant={tool.status === "active" ? "default" : "secondary"}>
+                                  <span className="text-sm font-medium">
                                     {tool.status === "active" ? (
-                                      <CheckCircle className="w-3 h-3 mr-1" />
+                                      <CheckCircle className="w-3 h-3 mr-1 inline" />
                                     ) : (
-                                      <AlertCircle className="w-3 h-3 mr-1" />
+                                      <AlertCircle className="w-3 h-3 mr-1 inline" />
                                     )}
                                     {tool.status}
-                                  </Badge>
+                                  </span>
                                 </div>
                               </CardContent>
                             </Card>

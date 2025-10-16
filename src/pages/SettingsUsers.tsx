@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -698,10 +698,9 @@ export default function SettingsUsers() {
                         <span className="text-xs text-slate-500 dark:text-slate-400">Primary Contact</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'loan_originator'))} className="w-fit">
+                        <span className="text-sm font-medium">
                           {displayRole(user.role || 'loan_originator')}
-                        </Badge>
-                        <span className="text-sm text-foreground">{displayRole(user.role || 'loan_originator')}</span>
+                        </span>
                       </div>
                       <div className="flex items-center gap-2 justify-end pr-4">
                         <div className="flex items-center gap-2">
@@ -817,12 +816,12 @@ export default function SettingsUsers() {
                         </DropdownMenu>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-4">
                           <div className="flex items-center gap-1">
                             <span className="text-muted-foreground">Role:</span>
-                            <Badge variant={getRoleBadgeVariant(normalizeRole(user.role || 'loan_originator'))} className="text-xs">
+                            <span className="text-xs font-medium">
                               {displayRole(user.role || 'loan_originator')}
-                            </Badge>
+                            </span>
                           </div>
                           <div className="flex items-center gap-1">
                             <span className="text-muted-foreground">Status:</span>
@@ -940,9 +939,9 @@ export default function SettingsUsers() {
                     <p className="font-medium text-foreground">Super Administrator</p>
                     <p className="text-sm text-muted-foreground">Full system access and control</p>
                   </div>
-                  <Badge variant="destructive" className="text-xs">
+                  <span className="text-xs font-medium">
                     Level 4
-                  </Badge>
+                  </span>
                 </div>
                 
                 <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/30 transition-colors">
@@ -950,9 +949,9 @@ export default function SettingsUsers() {
                     <p className="font-medium text-foreground">Administrator</p>
                     <p className="text-sm text-muted-foreground">System administration access</p>
                   </div>
-                  <Badge variant="default" className="text-xs">
+                  <span className="text-xs font-medium">
                     Level 3
-                  </Badge>
+                  </span>
                 </div>
                 
                 <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/30 transition-colors">
@@ -960,9 +959,9 @@ export default function SettingsUsers() {
                     <p className="font-medium text-foreground">Manager</p>
                     <p className="text-sm text-muted-foreground">Team and lead management</p>
                   </div>
-                  <Badge variant="secondary" className="text-xs">
+                  <span className="text-xs font-medium">
                     Level 2
-                  </Badge>
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/30 transition-colors">
@@ -970,9 +969,9 @@ export default function SettingsUsers() {
                     <p className="font-medium text-foreground">Loan Specialists</p>
                     <p className="text-sm text-muted-foreground">Loan processing and underwriting</p>
                   </div>
-                  <Badge variant="outline" className="text-xs">
+                  <span className="text-xs font-medium">
                     Level 1
-                  </Badge>
+                  </span>
                 </div>
               </div>
             </CardContent>

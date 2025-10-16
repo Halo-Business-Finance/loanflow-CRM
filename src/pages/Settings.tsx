@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom"
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -246,9 +246,9 @@ export default function Settings() {
                     User Role
                   </Label>
                   <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="capitalize">
+                    <span className="text-sm font-medium capitalize">
                       {userRole || "Loading..."}
-                    </Badge>
+                    </span>
                     <p className="text-xs text-muted-foreground">
                       Contact an administrator to change your role
                     </p>

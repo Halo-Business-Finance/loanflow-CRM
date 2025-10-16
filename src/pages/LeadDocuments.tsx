@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { useDocuments, LeadDocument } from "@/hooks/useDocuments"
@@ -235,9 +235,9 @@ export default function LeadDocuments() {
                 </div>
                 <div className="text-sm text-muted-foreground">
                   {lead.contact_entity?.loan_type || 'Type not specified'} • 
-                  <Badge variant="outline" className="ml-1 text-xs">
+                  <span className="ml-1 text-xs font-medium">
                     {lead.contact_entity?.stage || 'No stage'}
-                  </Badge>
+                  </span>
                 </div>
               </div>
             </div>
@@ -337,17 +337,17 @@ export default function LeadDocuments() {
                       <div className="space-y-1">
                         <div className="flex items-center gap-3">
                           <h3 className="font-semibold text-foreground">{document.document_name}</h3>
-                          <Badge variant="secondary" className="text-xs">
+                          <span className="text-xs font-medium">
                             {document.document_type}
-                          </Badge>
+                          </span>
                         </div>
                         <p className="text-muted-foreground">Document ID: {document.id.slice(0, 8)}</p>
                       </div>
                       
                       <div className="text-right space-y-1">
-                        <Badge variant={getStatusColor(document.status)}>
+                        <span className="text-sm font-medium">
                           {document.status.charAt(0).toUpperCase() + document.status.slice(1)}
-                        </Badge>
+                        </span>
                         <div className="text-sm text-muted-foreground">
                           {formatDate(document.uploaded_at)}
                         </div>

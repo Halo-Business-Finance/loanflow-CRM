@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { BarChart3, TrendingUp, TrendingDown, DollarSign, Clock } from "lucide-react"
 import { useEffect, useState } from "react"
 import { supabase } from "@/integrations/supabase/client"
@@ -109,7 +109,7 @@ export default function PipelineAnalytics() {
                 <div className="flex justify-between items-center" key={stage.name}>
                   <span className="text-sm">{stage.name}</span>
                   <div className="flex items-center gap-2">
-                    <Badge variant="secondary">{stage.value} deals</Badge>
+                    <span className="text-sm font-medium">{stage.value} deals</span>
                   </div>
                 </div>
               ))

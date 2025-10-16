@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart3, TrendingUp, TrendingDown, Users, Target, Clock } from "lucide-react"
 import { StandardPageHeader } from "@/components/StandardPageHeader"
@@ -182,7 +182,7 @@ export default function LeadStats() {
                     <div className="w-24 bg-muted rounded-full h-2">
                       <div className="bg-primary h-2 rounded-full" style={{ width: '45%' }} />
                     </div>
-                    <Badge variant="secondary" className="text-xs">45%</Badge>
+                    <span className="text-xs font-medium">45%</span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b">
@@ -191,7 +191,7 @@ export default function LeadStats() {
                     <div className="w-24 bg-muted rounded-full h-2">
                       <div className="bg-primary h-2 rounded-full" style={{ width: '30%' }} />
                     </div>
-                    <Badge variant="secondary" className="text-xs">30%</Badge>
+                    <span className="text-xs font-medium">30%</span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b">
@@ -200,7 +200,7 @@ export default function LeadStats() {
                     <div className="w-24 bg-muted rounded-full h-2">
                       <div className="bg-primary h-2 rounded-full" style={{ width: '15%' }} />
                     </div>
-                    <Badge variant="secondary" className="text-xs">15%</Badge>
+                    <span className="text-xs font-medium">15%</span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center py-2">
@@ -209,7 +209,7 @@ export default function LeadStats() {
                     <div className="w-24 bg-muted rounded-full h-2">
                       <div className="bg-primary h-2 rounded-full" style={{ width: '10%' }} />
                     </div>
-                    <Badge variant="secondary" className="text-xs">10%</Badge>
+                    <span className="text-xs font-medium">10%</span>
                   </div>
                 </div>
               </div>
@@ -230,7 +230,7 @@ export default function LeadStats() {
                     <div className="w-24 bg-muted rounded-full h-2">
                       <div className="bg-primary h-2 rounded-full" style={{ width: '35%' }} />
                     </div>
-                    <Badge className="text-xs">{loading ? "..." : stats.newLeads}</Badge>
+                    <span className="text-xs font-medium">{loading ? "..." : stats.newLeads}</span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b border-border">
@@ -239,7 +239,7 @@ export default function LeadStats() {
                     <div className="w-24 bg-muted rounded-full h-2">
                       <div className="bg-warning h-2 rounded-full" style={{ width: '25%' }} />
                     </div>
-                    <Badge variant="outline" className="text-xs">25%</Badge>
+                    <span className="text-xs font-medium">25%</span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b border-border">
@@ -248,7 +248,7 @@ export default function LeadStats() {
                     <div className="w-24 bg-muted rounded-full h-2">
                       <div className="bg-accent h-2 rounded-full" style={{ width: '20%' }} />
                     </div>
-                    <Badge variant="outline" className="text-xs">{loading ? "..." : stats.qualifiedLeads}</Badge>
+                    <span className="text-xs font-medium">{loading ? "..." : stats.qualifiedLeads}</span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center py-2">
@@ -257,9 +257,9 @@ export default function LeadStats() {
                     <div className="w-24 bg-muted rounded-full h-2">
                       <div className="bg-primary h-2 rounded-full" style={{ width: '20%' }} />
                     </div>
-                    <Badge variant="outline" className="text-xs">
+                    <span className="text-xs font-medium">
                       {loading ? "..." : stats.convertedLeads}
-                    </Badge>
+                    </span>
                   </div>
                 </div>
               </div>

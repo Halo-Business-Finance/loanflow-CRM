@@ -4,7 +4,7 @@ import { StandardPageHeader } from '@/components/StandardPageHeader'
 import { StandardKPICard } from '@/components/StandardKPICard'
 import { StandardContentCard } from '@/components/StandardContentCard'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Filter, FileText, Calendar, User, DollarSign, Download, Upload, Eye, Trash2, CheckCircle, RefreshCw } from "lucide-react"
@@ -207,17 +207,17 @@ export default function Documents() {
                         <div className="space-y-1">
                           <div className="flex items-center gap-3">
                             <h3 className="font-semibold text-foreground">{document.contact_entity?.name || 'Unknown Lead'}</h3>
-                            <Badge variant="secondary" className="text-xs">
+                            <span className="text-xs font-medium">
                               {document.document_type}
-                            </Badge>
+                            </span>
                           </div>
                           <p className="text-muted-foreground">Document ID: {document.id.slice(0, 8)}</p>
                         </div>
                         
                         <div className="text-right space-y-1">
-                          <Badge variant={getStatusColor(document.status)}>
+                          <span className="text-sm font-medium">
                             {document.status.charAt(0).toUpperCase() + document.status.slice(1)}
-                          </Badge>
+                          </span>
                           <div className="text-sm text-muted-foreground">
                             {formatDate(document.uploaded_at)}
                           </div>

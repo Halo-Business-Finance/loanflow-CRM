@@ -3,7 +3,7 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import { Copy, ExternalLink, Code, Database, Lock, Zap, Search } from "lucide-react"
@@ -158,9 +158,9 @@ export default function APIDocs() {
                     <p className="text-lg font-bold">{apiEndpoints.length}</p>
                   </div>
                 </div>
-                <Badge variant="default">
+                <span className="text-sm font-medium">
                   ACTIVE
-                </Badge>
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -265,9 +265,9 @@ export default function APIDocs() {
                     <h3 className="font-medium">Available Resources</h3>
                     <div className="grid md:grid-cols-3 gap-2">
                       {categories.map((category) => (
-                        <Badge key={category} variant="secondary" className="justify-center">
+                        <span key={category} className="text-sm font-medium">
                           {category}
-                        </Badge>
+                        </span>
                       ))}
                     </div>
                   </div>
@@ -318,15 +318,12 @@ export default function APIDocs() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <Badge 
-                            variant={endpoint.method === "GET" ? "secondary" : "default"}
-                            className="font-mono"
-                          >
+                          <span className="font-mono text-sm font-medium">
                             {endpoint.method}
-                          </Badge>
+                          </span>
                           <code className="text-sm font-mono">{endpoint.endpoint}</code>
                         </div>
-                        <Badge variant="outline">{endpoint.category}</Badge>
+                        <span className="text-sm font-medium">{endpoint.category}</span>
                       </div>
                       <CardDescription>{endpoint.description}</CardDescription>
                     </CardHeader>
@@ -338,13 +335,13 @@ export default function APIDocs() {
                             <div key={index} className="flex items-center justify-between p-2 bg-muted/20 rounded">
                               <div className="flex items-center gap-2">
                                 <code className="text-sm font-mono">{param.name}</code>
-                                <Badge variant="outline" className="text-xs">
+                                <span className="text-xs font-medium">
                                   {param.type}
-                                </Badge>
+                                </span>
                                 {param.required && (
-                                  <Badge variant="destructive" className="text-xs">
+                                  <span className="text-xs font-medium">
                                     Required
-                                  </Badge>
+                                  </span>
                                 )}
                               </div>
                               <span className="text-sm text-muted-foreground">

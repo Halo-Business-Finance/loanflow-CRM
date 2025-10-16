@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { ActionReminder } from "@/components/ActionReminder"
@@ -461,10 +461,10 @@ export default function LeadDetail() {
                     </h1>
                     <div className="flex items-center gap-2">
                       {lead.is_converted_to_client && (
-                        <Badge variant="default" className="text-xs font-medium px-2 py-1 text-green-800 border-green-200">
-                          <CheckCircle className="h-3 w-3 mr-1" />
+                        <span className="text-xs font-medium px-2 py-1 text-green-800">
+                          <CheckCircle className="h-3 w-3 mr-1 inline" />
                           Converted
-                        </Badge>
+                        </span>
                       )}
                     </div>
                   </div>

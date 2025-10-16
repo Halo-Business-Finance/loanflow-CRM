@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+// Badge component removed - using plain text instead
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -250,16 +250,13 @@ export default function LeadAssignmentPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-medium text-sm">{lead.name}</span>
-                          <Badge 
-                            variant={lead.priority === 'High' ? 'destructive' : 'outline'}
-                            className="text-xs px-1.5 py-0"
-                          >
+                          <span className="text-xs px-1.5 py-0 font-medium">
                             {lead.priority}
-                          </Badge>
+                          </span>
                         </div>
                         <div className="text-xs text-muted-foreground">{lead.email}</div>
                         <div className="mt-1">
-                          <Badge variant="outline" className="text-xs">{lead.stage}</Badge>
+                          <span className="text-xs font-medium">{lead.stage}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
@@ -341,9 +338,9 @@ export default function LeadAssignmentPage() {
                           </div>
                         </div>
                       </div>
-                      <Badge variant="outline" className="text-xs font-semibold">
+                      <span className="text-xs font-semibold">
                         {member.leadCount}
-                      </Badge>
+                      </span>
                     </div>
                   ))
                 )}
