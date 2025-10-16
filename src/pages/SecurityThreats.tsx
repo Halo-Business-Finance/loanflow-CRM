@@ -1,15 +1,61 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertTriangle, Shield, Activity, TrendingUp } from "lucide-react"
+import { AlertTriangle, Shield, Activity, TrendingUp, Settings, MoreVertical, Bell, Lock, Key, Ban } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function SecurityThreats() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Threat Detection</h1>
-        <p className="text-muted-foreground">
-          Real-time threat monitoring and security incident management
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Threat Detection</h1>
+          <p className="text-muted-foreground">
+            Real-time threat monitoring and security incident management
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button>
+            <AlertTriangle className="mr-2 h-4 w-4" />
+            View Alerts
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <Settings className="mr-2 h-4 w-4" />
+                Security Options
+                <MoreVertical className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Threat Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Bell className="mr-2 h-4 w-4" />
+                Configure Alerts
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Ban className="mr-2 h-4 w-4" />
+                Block IP Addresses
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Lock className="mr-2 h-4 w-4" />
+                Lockdown Mode
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Key className="mr-2 h-4 w-4" />
+                Detection Rules
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
