@@ -161,7 +161,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
         <div
           onClick={handleClick}
           className={cn(
-            'flex items-center h-12 text-sm transition-colors relative group cursor-pointer',
+            'flex items-center h-12 text-xs transition-colors relative group cursor-pointer',
             collapsed ? 'justify-center w-12 px-0' : 'pl-0 pr-4',
             (isActive || hasActiveSubItem)
               ? 'bg-[#e0e0e0] text-[#161616] font-medium'
@@ -192,7 +192,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
                 key={subItem.to}
                 to={subItem.to!}
                 className={cn(
-                  'flex items-center h-8 text-sm transition-colors relative pl-4',
+                  'flex items-center h-8 text-xs transition-colors relative pl-4',
                   location.pathname === subItem.to || location.pathname.startsWith(subItem.to! + '/')
                     ? 'bg-[#f4f4f4] text-[#161616] font-medium'
                     : 'text-[#525252] hover:bg-[#f4f4f4] hover:text-[#161616]'
@@ -212,7 +212,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
     <NavLink
       to={to!}
       className={cn(
-        'flex items-center h-12 text-sm transition-colors relative group',
+        'flex items-center h-12 text-xs transition-colors relative group',
         collapsed ? 'justify-center w-12 px-0' : 'pl-0 pr-4',
         isActive
           ? 'bg-[#e0e0e0] text-[#161616] font-medium'
