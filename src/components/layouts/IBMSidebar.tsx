@@ -60,7 +60,7 @@ const navItems: NavItemData[] = [
   },
   { 
     icon: GitBranch, 
-    label: 'Pipeline', 
+    label: 'Loan Pipeline', 
     to: '/pipeline',
     subItems: [
       { icon: GitBranch, label: 'Pipeline Management', to: '/pipeline' },
