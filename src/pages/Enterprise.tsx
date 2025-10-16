@@ -47,7 +47,21 @@ export default function Enterprise() {
     );
   }
 
-  if (!hasRole('admin')) {
+  // If roles haven't loaded yet, keep showing the loading state
+  if (!userRoles || userRoles.length === 0) {
+    return (
+      <div className="container mx-auto px-6 py-12">
+        <div className="flex items-center justify-center min-h-96">
+          <div className="text-center space-y-4">
+            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+            <p className="text-muted-foreground">Loading roles...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!(hasRole('admin') || hasRole('super_admin'))) {
     return (
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center min-h-96">
