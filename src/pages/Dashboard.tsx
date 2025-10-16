@@ -197,10 +197,6 @@ export default function Dashboard() {
                 <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
                   <DollarSign className="h-5 w-5 text-primary" />
                 </div>
-                <Badge variant="outline" className="text-xs font-semibold">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  +12.5%
-                </Badge>
               </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Revenue</h3>
               <p className="text-2xl font-bold text-foreground">
@@ -219,10 +215,6 @@ export default function Dashboard() {
                 <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
                   <Target className="h-5 w-5 text-primary" />
                 </div>
-                <Badge variant="outline" className="text-xs font-semibold">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  +8.3%
-                </Badge>
               </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Pipeline Value</h3>
               <p className="text-2xl font-bold text-foreground">
@@ -241,10 +233,6 @@ export default function Dashboard() {
                 <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
                   <Users className="h-5 w-5 text-primary" />
                 </div>
-                <Badge variant="outline" className="text-xs font-semibold">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  +15.2%
-                </Badge>
               </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Active Leads</h3>
               <p className="text-2xl font-bold text-foreground">{stats.totalLeads}</p>
@@ -261,10 +249,6 @@ export default function Dashboard() {
                 <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
                   <Activity className="h-5 w-5 text-primary" />
                 </div>
-                <Badge variant="outline" className="text-xs font-semibold">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  +2.8%
-                </Badge>
               </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Conversion Rate</h3>
               <p className="text-2xl font-bold text-foreground">{stats.conversionRate}%</p>
