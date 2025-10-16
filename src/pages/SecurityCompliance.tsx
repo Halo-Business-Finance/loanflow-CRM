@@ -1,15 +1,61 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, AlertTriangle, FileText, Shield } from "lucide-react"
+import { CheckCircle, AlertTriangle, FileText, Shield, Settings, MoreVertical, Download, Calendar, Key, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function SecurityCompliance() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Compliance</h1>
-        <p className="text-muted-foreground">
-          Monitor regulatory compliance and security standards adherence
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Compliance</h1>
+          <p className="text-muted-foreground">
+            Monitor regulatory compliance and security standards adherence
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button>
+            <Download className="mr-2 h-4 w-4" />
+            Generate Report
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <Settings className="mr-2 h-4 w-4" />
+                Security Options
+                <MoreVertical className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Compliance Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Calendar className="mr-2 h-4 w-4" />
+                Schedule Audit
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <FileText className="mr-2 h-4 w-4" />
+                View Policies
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Lock className="mr-2 h-4 w-4" />
+                Compliance Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Key className="mr-2 h-4 w-4" />
+                Certification Management
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
