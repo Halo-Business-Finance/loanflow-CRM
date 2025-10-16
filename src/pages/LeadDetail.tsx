@@ -774,7 +774,7 @@ export default function LeadDetail() {
                     <Label className="text-xs font-medium text-muted-foreground">Company Phone</Label>
                     {isEditing ? (
                       <Input
-                        value={editableFields.phone}
+                        value={editableFields.phone ? formatPhoneNumber(editableFields.phone) : ''}
                         onChange={(e) => setEditableFields({...editableFields, phone: e.target.value})}
                         className="mt-1 h-8 text-sm"
                       />
@@ -805,13 +805,13 @@ export default function LeadDetail() {
                   <Label className="text-xs font-medium text-muted-foreground">Mobile Phone</Label>
                   {isEditing ? (
                     <Input
-                      value={editableFields.mobile_phone}
+                      value={editableFields.mobile_phone ? formatPhoneNumber(editableFields.mobile_phone) : ''}
                       onChange={(e) => setEditableFields({...editableFields, mobile_phone: e.target.value})}
                       className="mt-1 h-8 text-sm"
                     />
                   ) : (
                     <div className="field-display mt-1">
-                      {editableFields.mobile_phone || 'N/A'}
+                      {editableFields.mobile_phone ? formatPhoneNumber(editableFields.mobile_phone) : 'N/A'}
                     </div>
                   )}
                 </div>
@@ -1106,7 +1106,7 @@ export default function LeadDetail() {
                     {isEditing ? (
                       <Input
                         type="tel"
-                        value={editableFields.bdo_telephone}
+                        value={editableFields.bdo_telephone ? formatPhoneNumber(editableFields.bdo_telephone) : ''}
                         onChange={(e) => setEditableFields({...editableFields, bdo_telephone: e.target.value})}
                         className="mt-1 h-8 text-sm"
                       />
