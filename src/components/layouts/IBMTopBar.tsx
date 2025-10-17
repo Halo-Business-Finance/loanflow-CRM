@@ -66,19 +66,25 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
 
         const { data, error } = await supabase
           .from('contact_entities')
-          .select('id, name, business_name, email')
+          .select('id, first_name, last_name, business_name, email')
           .eq('user_id', session.session.user.id)
-          .or(`name.ilike.%${searchQuery}%,business_name.ilike.%${searchQuery}%`)
+          .or(`first_name.ilike.%${searchQuery}%,last_name.ilike.%${searchQuery}%,business_name.ilike.%${searchQuery}%`)
           .limit(10);
 
         if (error) throw error;
 
-        setSearchResults(data?.map(d => ({
-          id: d.id,
-          name: d.name,
-          businessName: d.business_name || undefined,
-          email: d.email || undefined
-        })) || []);
+        setSearchResults(data?.map(d => {
+          const borrowerName = d.first_name && d.last_name 
+            ? `${d.first_name} ${d.last_name}`.trim()
+            : d.first_name || d.last_name || 'Unknown';
+          
+          return {
+            id: d.id,
+            name: d.business_name || borrowerName,
+            businessName: d.business_name ? borrowerName : undefined,
+            email: d.email || undefined
+          };
+        }) || []);
         setShowResults(true);
       } catch (error) {
         console.error('Search error:', error);
