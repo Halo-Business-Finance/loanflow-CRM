@@ -77,7 +77,7 @@ export function LoanCalculator() {
           className="h-9 w-9 text-white hover:text-white hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300 rounded"
           title="Loan Calculator"
         >
-          <Calculator className="h-5 w-5" />
+          <Calculator className="h-6 w-6" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px] bg-white dark:bg-[#262626] border-[#e0e0e0] dark:border-[#393939]">

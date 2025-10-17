@@ -213,7 +213,7 @@ export function NotificationBell() {
           size="sm" 
           className="relative text-foreground dark:text-white hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300 rounded"
         >
-          <Bell className="w-5 h-5" fill="rgb(234, 179, 8)" stroke="rgb(234, 179, 8)" />
+          <Bell className="w-6 h-6" fill="rgb(234, 179, 8)" stroke="rgb(234, 179, 8)" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground">
               {unreadCount > 99 ? '99+' : unreadCount}
