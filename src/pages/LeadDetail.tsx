@@ -527,7 +527,7 @@ export default function LeadDetail() {
                 <div>
                   <div className="flex items-center gap-3">
                     <h1 className="text-xl font-semibold text-foreground">
-                      {lead.name || lead.business_name || 'Lead Details'}
+                      {lead.business_name || lead.name || 'Lead Details'}
                     </h1>
                     <div className="flex items-center gap-2">
                       {lead.is_converted_to_client && (
