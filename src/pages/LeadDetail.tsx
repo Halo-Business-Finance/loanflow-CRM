@@ -498,6 +498,28 @@ export default function LeadDetail() {
         setAssignments(updatedAssignments)
       }
 
+      // Add timestamp to call notes if they've been modified
+      let timestampedCallNotes = callNotes
+      if (callNotes !== lead.call_notes) {
+        const timestamp = new Date().toLocaleString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        })
+        const noteEntry = callNotes.trim()
+        
+        // If there are existing notes, add a separator
+        if (lead.call_notes && lead.call_notes.trim()) {
+          timestampedCallNotes = `${lead.call_notes}\n\n[${timestamp}]\n${noteEntry}`
+        } else {
+          timestampedCallNotes = `[${timestamp}]\n${noteEntry}`
+        }
+        setCallNotes(timestampedCallNotes)
+      }
+
       const contactUpdateData: any = {
         name: editableFields.name,
         email: editableFields.email,
@@ -540,7 +562,7 @@ export default function LeadDetail() {
         monthly_processing_volume: editableFields.monthly_processing_volume ? parseFloat(editableFields.monthly_processing_volume) : null,
         average_transaction_size: editableFields.average_transaction_size ? parseFloat(editableFields.average_transaction_size) : null,
         current_processing_rate: editableFields.current_processing_rate ? parseFloat(editableFields.current_processing_rate) : null,
-        call_notes: callNotes,
+        call_notes: timestampedCallNotes,
         notes: generalNotes
       }
 
@@ -575,7 +597,7 @@ export default function LeadDetail() {
           table_name: 'contact_entities',
           record_id: lead.contact_entity_id,
           new_values: {
-            call_notes: callNotes,
+            call_notes: timestampedCallNotes,
             notes: generalNotes,
             ...contactUpdateData
           }
