@@ -68,9 +68,33 @@ export default function Dashboard() {
     avgDealSize: 185000
   });
 
+  // Sample data for charts
+  const [monthlyRevenue] = useState([
+    { month: 'Jan', revenue: 185000, deals: 8, target: 200000 },
+    { month: 'Feb', revenue: 215000, deals: 10, target: 200000 },
+    { month: 'Mar', revenue: 198000, deals: 9, target: 200000 },
+    { month: 'Apr', revenue: 245000, deals: 12, target: 250000 },
+    { month: 'May', revenue: 278000, deals: 13, target: 250000 },
+    { month: 'Jun', revenue: 312000, deals: 15, target: 300000 }
+  ]);
+
   const [pipelineStages, setPipelineStages] = useState<{ name: string; value: number; color: string }[]>([]);
-  const [conversionFunnel, setConversionFunnel] = useState<{ stage: string; count: number; conversion: number }[]>([]);
-  const [activityTrend, setActivityTrend] = useState<{ date: string; leads: number }[]>([]);
+
+  const [conversionFunnel] = useState([
+    { stage: 'Leads', count: 150, conversion: 100 },
+    { stage: 'Qualified', count: 95, conversion: 63 },
+    { stage: 'Proposal', count: 62, conversion: 41 },
+    { stage: 'Negotiation', count: 38, conversion: 25 },
+    { stage: 'Closed Won', count: 23, conversion: 15 }
+  ]);
+
+  const [activityTrend] = useState([
+    { date: 'Mon', calls: 12, emails: 28, meetings: 5 },
+    { date: 'Tue', calls: 15, emails: 32, meetings: 7 },
+    { date: 'Wed', calls: 18, emails: 25, meetings: 6 },
+    { date: 'Thu', calls: 14, emails: 30, meetings: 8 },
+    { date: 'Fri', calls: 20, emails: 35, meetings: 4 }
+  ]);
 
   const fetchDashboardData = async () => {
     if (!user?.id) return;
@@ -117,37 +141,6 @@ export default function Dashboard() {
         color: COLORS[idx % COLORS.length],
       }));
       setPipelineStages(computedStages);
-
-      // Calculate real conversion funnel data
-      const stageOrder = ['New Lead', 'Contacted', 'Qualified', 'Proposal', 'Negotiation', 'Closed Won'];
-      const totalLeadsCount = leads?.length || 0;
-      const funnelData = stageOrder.map(stageName => {
-        const count = stageCountMap.get(stageName) || 0;
-        const conversion = totalLeadsCount > 0 ? (count / totalLeadsCount) * 100 : 0;
-        return { stage: stageName, count, conversion };
-      }).filter(item => item.count > 0);
-      setConversionFunnel(funnelData);
-
-      // Calculate activity trend (leads created in last 7 days)
-      const last7Days = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date();
-        date.setDate(date.getDate() - (6 - i));
-        return date;
-      });
-      
-      const activityData = last7Days.map(date => {
-        const dateStr = date.toLocaleDateString('en-US', { weekday: 'short' });
-        const dayStart = new Date(date.setHours(0, 0, 0, 0));
-        const dayEnd = new Date(date.setHours(23, 59, 59, 999));
-        
-        const leadsCount = leads?.filter(l => {
-          const createdAt = new Date(l.created_at);
-          return createdAt >= dayStart && createdAt <= dayEnd;
-        }).length || 0;
-        
-        return { date: dateStr, leads: leadsCount };
-      });
-      setActivityTrend(activityData);
 
       setStats(prev => ({
         ...prev,
@@ -246,6 +239,57 @@ export default function Dashboard() {
 
         {/* Performance Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Revenue Performance */}
+          <Card className="widget-glass border-0">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                    <BarChart3 className="h-4 w-4 text-primary" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold">Revenue Performance</CardTitle>
+                </div>
+                <Button variant="ghost" size="sm" className="text-primary">
+                  View details
+                  <ArrowUpRight className="h-3 w-3 ml-1" />
+                </Button>
+              </div>
+              <CardDescription>Monthly revenue vs target</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={250}>
+                <AreaChart data={monthlyRevenue}>
+                  <defs>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#0f62fe" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#0f62fe" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                  <XAxis dataKey="month" stroke="#525252" style={{ fontSize: '12px' }} />
+                  <YAxis stroke="#525252" style={{ fontSize: '12px' }} />
+                  <Tooltip />
+                  <Area 
+                    type="monotone" 
+                    dataKey="revenue" 
+                    stroke="#0f62fe" 
+                    strokeWidth={2}
+                    fillOpacity={1} 
+                    fill="url(#colorRevenue)" 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="target" 
+                    stroke="#d12771" 
+                    strokeDasharray="5 5"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
           {/* Pipeline Distribution */}
           <Card className="bg-white border border-[#e0e0e0]">
             <CardHeader>
@@ -316,34 +360,30 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Activity Trends - Lead Creation */}
+          {/* Activity Trends */}
           <Card className="bg-white border border-[#e0e0e0]">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-normal text-[#161616]">Lead Activity</CardTitle>
+                <CardTitle className="text-base font-normal text-[#161616]">Activity Trends</CardTitle>
                 <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
-                  View leads
+                  View activities
                 </Button>
               </div>
-              <CardDescription className="text-[#525252]">Leads created this week</CardDescription>
+              <CardDescription className="text-[#525252]">This week's activity</CardDescription>
             </CardHeader>
             <CardContent>
-              {activityTrend.length > 0 && activityTrend.some(d => d.leads > 0) ? (
-                <ResponsiveContainer width="100%" height={250}>
-                  <LineChart data={activityTrend}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                    <XAxis dataKey="date" stroke="#525252" style={{ fontSize: '12px' }} />
-                    <YAxis stroke="#525252" style={{ fontSize: '12px' }} />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="leads" stroke="#0f62fe" strokeWidth={2} name="New Leads" />
-                  </LineChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-[250px] flex items-center justify-center text-[#525252]">
-                  <p>No lead activity in the past 7 days</p>
-                </div>
-              )}
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={activityTrend}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                  <XAxis dataKey="date" stroke="#525252" style={{ fontSize: '12px' }} />
+                  <YAxis stroke="#525252" style={{ fontSize: '12px' }} />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="calls" stroke="#0f62fe" strokeWidth={2} />
+                  <Line type="monotone" dataKey="emails" stroke="#0353e9" strokeWidth={2} />
+                  <Line type="monotone" dataKey="meetings" stroke="#8a3ffc" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </div>
