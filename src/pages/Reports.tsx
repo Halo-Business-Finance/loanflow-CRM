@@ -62,14 +62,9 @@ export default function Reports() {
         {/* Enterprise Header */}
         <div className="flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
-                <BarChart3 className="h-6 w-6 text-primary" />
-              </div>
-              <h1 className="text-4xl font-bold tracking-tight text-foreground">
-                Business Intelligence Center
-              </h1>
-            </div>
+            <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2">
+              Business Intelligence Center
+            </h1>
             <p className="text-muted-foreground">
               Advanced analytics, reporting, and performance insights
             </p>
