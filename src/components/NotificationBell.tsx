@@ -211,7 +211,7 @@ export function NotificationBell() {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="relative text-foreground dark:text-white hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 transition-all rounded"
+          className="relative text-foreground dark:text-white hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all rounded"
         >
           <Bell className="w-5 h-5" fill="rgb(234, 179, 8)" stroke="rgb(234, 179, 8)" />
           {unreadCount > 0 && (
