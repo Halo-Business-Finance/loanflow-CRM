@@ -32,7 +32,7 @@ export function GlobalSearch() {
   const navigate = useNavigate()
 
   const searchData = async (searchQuery: string) => {
-    if (!user || !searchQuery || searchQuery.length < 2) {
+    if (!user || !searchQuery || searchQuery.length < 1) {
       setResults([])
       return
     }
@@ -231,17 +231,17 @@ export function GlobalSearch() {
             </div>
           )}
 
-          {!loading && query.length >= 2 && results.length === 0 && (
+          {!loading && query.length >= 1 && results.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
               <Search className="h-8 w-8 mx-auto mb-2 opacity-50 text-muted-foreground" />
               <p>No results found for "{query}"</p>
             </div>
           )}
 
-          {query.length < 2 && (
+          {query.length < 1 && (
             <div className="text-center py-8 text-muted-foreground">
               <Search className="h-8 w-8 mx-auto mb-2 opacity-50 text-muted-foreground" />
-              <p>Type at least 2 characters to search</p>
+              <p>Start typing to search leads, clients, and loans...</p>
             </div>
           )}
         </div>
