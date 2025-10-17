@@ -71,6 +71,7 @@ export default function Dashboard() {
   const [pipelineStages, setPipelineStages] = useState<{ name: string; value: number; color: string }[]>([]);
   const [conversionFunnel, setConversionFunnel] = useState<{ stage: string; count: number; conversion: number }[]>([]);
   const [activityTrend, setActivityTrend] = useState<{ date: string; leads: number }[]>([]);
+  const [revenuePerformance, setRevenuePerformance] = useState<{ month: string; revenue: number; pipeline: number }[]>([]);
 
   const fetchDashboardData = async () => {
     if (!user?.id) return;
@@ -148,6 +149,37 @@ export default function Dashboard() {
         return { date: dateStr, leads: leadsCount };
       });
       setActivityTrend(activityData);
+
+      // Calculate revenue performance (last 6 months)
+      const last6Months = Array.from({ length: 6 }, (_, i) => {
+        const date = new Date();
+        date.setMonth(date.getMonth() - (5 - i));
+        return date;
+      });
+
+      const revenueData = last6Months.map(date => {
+        const monthStr = date.toLocaleDateString('en-US', { month: 'short' });
+        const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+        const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
+        
+        const monthLeads = leads?.filter(l => {
+          const createdAt = new Date(l.created_at);
+          return createdAt >= monthStart && createdAt <= monthEnd;
+        }) || [];
+
+        const closedWonLeads = monthLeads.filter(l => (l.contact_entities as any)?.stage === 'Closed Won');
+        const revenue = closedWonLeads.reduce((sum, l) => {
+          const loanAmount = (l.contact_entities as any)?.loan_amount || 0;
+          return sum + loanAmount;
+        }, 0);
+        const pipeline = monthLeads.reduce((sum, l) => {
+          const loanAmount = (l.contact_entities as any)?.loan_amount || 0;
+          return sum + loanAmount;
+        }, 0);
+        
+        return { month: monthStr, revenue, pipeline };
+      });
+      setRevenuePerformance(revenueData);
 
       setStats(prev => ({
         ...prev,
@@ -246,6 +278,38 @@ export default function Dashboard() {
 
         {/* Performance Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Revenue Performance */}
+          <Card className="bg-white border border-[#e0e0e0]">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base font-normal text-[#161616]">Revenue Performance</CardTitle>
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                  View reports
+                </Button>
+              </div>
+              <CardDescription className="text-[#525252]">Revenue vs Pipeline (6 months)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {revenuePerformance.length > 0 && revenuePerformance.some(d => d.revenue > 0 || d.pipeline > 0) ? (
+                <ResponsiveContainer width="100%" height={250}>
+                  <AreaChart data={revenuePerformance}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                    <XAxis dataKey="month" stroke="#525252" style={{ fontSize: '12px' }} />
+                    <YAxis stroke="#525252" style={{ fontSize: '12px' }} />
+                    <Tooltip />
+                    <Legend />
+                    <Area type="monotone" dataKey="pipeline" stackId="1" stroke="#33b1ff" fill="#33b1ff" name="Pipeline Value" />
+                    <Area type="monotone" dataKey="revenue" stackId="2" stroke="#0f62fe" fill="#0f62fe" name="Closed Revenue" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-[250px] flex items-center justify-center text-[#525252]">
+                  <p>No revenue data available</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Pipeline Distribution */}
           <Card className="bg-white border border-[#e0e0e0]">
             <CardHeader>
