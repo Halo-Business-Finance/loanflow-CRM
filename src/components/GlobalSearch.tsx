@@ -39,31 +39,40 @@ export function GlobalSearch() {
 
     setLoading(true)
     try {
-      // Search leads with contact entity data
-      const { data: leads } = await supabase
+      // First, find matching contact entities
+      const { data: matchingContacts } = await supabase
+        .from('contact_entities')
+        .select('id, name, email, stage, loan_amount')
+        .eq('user_id', user.id)
+        .or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`)
+
+      const contactIds = matchingContacts?.map(c => c.id) || []
+
+      // Search leads with matching contact entities
+      const { data: leads } = contactIds.length > 0 ? await supabase
         .from('leads')
         .select(`
-          id, user_id,
+          id, user_id, contact_entity_id,
           contact_entity:contact_entities!contact_entity_id (
             name, email, stage, loan_amount
           )
         `)
         .eq('user_id', user.id)
-        .or(`contact_entities.name.ilike.%${searchQuery}%,contact_entities.email.ilike.%${searchQuery}%`)
-        .limit(5)
+        .in('contact_entity_id', contactIds)
+        .limit(5) : { data: [] }
 
-      // Search clients with contact entity data
-      const { data: clients } = await supabase
+      // Search clients with matching contact entities
+      const { data: clients } = contactIds.length > 0 ? await supabase
         .from('clients')
         .select(`
-          id, user_id, status,
+          id, user_id, status, contact_entity_id,
           contact_entity:contact_entities!contact_entity_id (
             name, email
           )
         `)
         .eq('user_id', user.id)
-        .or(`contact_entities.name.ilike.%${searchQuery}%,contact_entities.email.ilike.%${searchQuery}%`)
-        .limit(5)
+        .in('contact_entity_id', contactIds)
+        .limit(5) : { data: [] }
 
       // Search loans
       const { data: loans } = await supabase
