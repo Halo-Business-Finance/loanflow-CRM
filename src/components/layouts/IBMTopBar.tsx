@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, HelpCircle, Grid3x3, User, ChevronDown, Mail, Phone } from 'lucide-react';
+import { Search, HelpCircle, Grid3x3, User, ChevronDown, Mail, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -42,6 +42,29 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         >
           <Grid3x3 className="h-4 w-4" />
         </Button>
+        
+        {/* Navigation Controls */}
+        <div className="flex items-center gap-0 border-l border-[#393939]">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => window.history.back()}
+            className="h-24 w-10 rounded-none text-white hover:bg-white/10 flex-shrink-0"
+            title="Go back"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => window.history.forward()}
+            className="h-24 w-10 rounded-none text-white hover:bg-white/10 flex-shrink-0"
+            title="Go forward"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+        
         {!sidebarCollapsed && (
           <div className="text-white font-medium text-lg px-6 whitespace-nowrap">LoanFlow CRM</div>
         )}
