@@ -1914,36 +1914,28 @@ export default function LeadDetail() {
                   {/* Call Notes History */}
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground mb-2 block">Call Notes History</Label>
-                    <div className="max-h-[500px] overflow-y-auto p-4 bg-muted/20 rounded-lg border space-y-3">
+                    <div className="max-h-[500px] overflow-y-auto space-y-2">
                       {notesHistory.filter(n => n.note_type === 'call').length === 0 ? (
-                        <p className="text-sm text-muted-foreground italic text-center py-4">No call notes yet...</p>
+                        <p className="text-sm text-muted-foreground italic py-4">No call notes yet...</p>
                       ) : (
                         notesHistory
                           .filter(n => n.note_type === 'call')
                           .map(note => (
-                            <div key={note.id} className="flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                <span className="text-xs font-semibold text-primary">
-                                  {note.user_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                            <div key={note.id} className="pb-2 border-b border-border last:border-0">
+                              <div className="flex items-baseline justify-between mb-1">
+                                <span className="text-xs text-muted-foreground">
+                                  {new Date(note.created_at).toLocaleString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: '2-digit',
+                                    hour12: true
+                                  })}
                                 </span>
+                                <span className="text-xs text-muted-foreground">{note.user_name}</span>
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-baseline gap-2 mb-1">
-                                  <span className="font-semibold text-sm text-foreground">{note.user_name}</span>
-                                  <span className="text-xs text-muted-foreground">
-                                    {new Date(note.created_at).toLocaleString('en-US', {
-                                      month: 'short',
-                                      day: 'numeric',
-                                      hour: 'numeric',
-                                      minute: '2-digit',
-                                      hour12: true
-                                    })}
-                                  </span>
-                                </div>
-                                <div className="bg-card rounded-lg px-3 py-2 shadow-sm border">
-                                  <p className="text-sm text-foreground whitespace-pre-wrap break-words">{note.content}</p>
-                                </div>
-                              </div>
+                              <p className="text-sm text-foreground whitespace-pre-wrap">{note.content}</p>
                             </div>
                           ))
                       )}
