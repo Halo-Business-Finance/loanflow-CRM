@@ -77,6 +77,9 @@ export default function LeadDetail() {
     processor_id: "",
     underwriter_id: ""
   })
+  const [additionalBorrowers, setAdditionalBorrowers] = useState<any[]>([])
+  const [currentBorrowerIndex, setCurrentBorrowerIndex] = useState(0)
+  const [isFlipping, setIsFlipping] = useState(false)
   const [editableFields, setEditableFields] = useState({
     name: "",
     email: "",
@@ -138,7 +141,71 @@ export default function LeadDetail() {
     
     fetchLead()
     fetchTeamMembers()
+    fetchAdditionalBorrowers()
   }, [id, user])
+
+  const fetchAdditionalBorrowers = async () => {
+    if (!id) return
+    
+    try {
+      const { data, error } = await supabase
+        .from('additional_borrowers')
+        .select('*, contact_entity:contact_entities(*)')
+        .eq('lead_id', id)
+        .order('borrower_order')
+
+      if (error) throw error
+      setAdditionalBorrowers(data || [])
+    } catch (error) {
+      console.error('Error fetching additional borrowers:', error)
+    }
+  }
+
+  const handleFlipToBorrower = (index: number) => {
+    if (index === currentBorrowerIndex) return
+    
+    setIsFlipping(true)
+    setTimeout(() => {
+      setCurrentBorrowerIndex(index)
+      setIsFlipping(false)
+    }, 300)
+  }
+
+  const handleAddBorrower = () => {
+    navigate(`/leads/${id}/add-borrower`)
+  }
+
+  // Get current borrower data based on index
+  const getCurrentBorrowerData = () => {
+    if (currentBorrowerIndex === 0) {
+      // Primary borrower (lead contact)
+      return {
+        first_name: editableFields.first_name,
+        last_name: editableFields.last_name,
+        home_address: editableFields.home_address,
+        home_city: editableFields.home_city,
+        home_state: editableFields.home_state,
+        home_zip_code: editableFields.home_zip_code,
+        email: editableFields.email,
+        isPrimary: true
+      }
+    } else {
+      // Additional borrower
+      const borrower = additionalBorrowers[currentBorrowerIndex - 1]
+      return {
+        first_name: borrower?.contact_entity?.first_name || '',
+        last_name: borrower?.contact_entity?.last_name || '',
+        home_address: borrower?.contact_entity?.home_address || '',
+        home_city: borrower?.contact_entity?.home_city || '',
+        home_state: borrower?.contact_entity?.home_state || '',
+        home_zip_code: borrower?.contact_entity?.home_zip_code || '',
+        email: borrower?.contact_entity?.email || '',
+        isPrimary: false
+      }
+    }
+  }
+
+  const currentBorrower = getCurrentBorrowerData()
 
   const fetchTeamMembers = async () => {
     try {
@@ -792,33 +859,79 @@ export default function LeadDetail() {
             </Card>
 
             {/* Borrower Information Card */}
-            <Card className="border border-border shadow-sm bg-white">
+            <Card className="border border-border shadow-sm bg-white relative">
+              <style>
+                {`
+                  @keyframes flipOut {
+                    0% { transform: rotateY(0deg); }
+                    100% { transform: rotateY(90deg); }
+                  }
+                  @keyframes flipIn {
+                    0% { transform: rotateY(-90deg); }
+                    100% { transform: rotateY(0deg); }
+                  }
+                  .flip-out {
+                    animation: flipOut 0.3s ease-in-out;
+                  }
+                  .flip-in {
+                    animation: flipIn 0.3s ease-in-out;
+                  }
+                `}
+              </style>
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base font-semibold text-foreground">
-                    Borrower Information
-                  </CardTitle>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 text-xs"
-                    onClick={() => {
-                      toast({
-                        title: "Add Borrower",
-                        description: "Additional borrower functionality coming soon",
-                      })
-                    }}
-                  >
-                    <UserPlus className="h-3 w-3 mr-2" />
-                    Add Borrower
-                  </Button>
+                  <div className="flex items-center gap-3">
+                    <CardTitle className="text-base font-semibold text-foreground">
+                      Borrower Information
+                    </CardTitle>
+                    {additionalBorrowers.length > 0 && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <span>
+                          {currentBorrowerIndex + 1} of {additionalBorrowers.length + 1}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {additionalBorrowers.length > 0 && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleFlipToBorrower(Math.max(0, currentBorrowerIndex - 1))}
+                          disabled={currentBorrowerIndex === 0 || isFlipping}
+                        >
+                          <ChevronDown className="h-4 w-4 rotate-90" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleFlipToBorrower(Math.min(additionalBorrowers.length, currentBorrowerIndex + 1))}
+                          disabled={currentBorrowerIndex === additionalBorrowers.length || isFlipping}
+                        >
+                          <ChevronDown className="h-4 w-4 -rotate-90" />
+                        </Button>
+                      </>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs"
+                      onClick={handleAddBorrower}
+                    >
+                      <UserPlus className="h-3 w-3 mr-2" />
+                      Add Borrower
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
-              <CardContent className="pt-0 space-y-4">
+              <CardContent className={`pt-0 space-y-4 ${isFlipping ? 'flip-out' : 'flip-in'}`}>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground">First Name</Label>
-                    {isEditing ? (
+                    {isEditing && currentBorrower.isPrimary ? (
                       <Input
                         value={editableFields.first_name}
                         onChange={(e) => setEditableFields({...editableFields, first_name: e.target.value})}
@@ -826,13 +939,13 @@ export default function LeadDetail() {
                       />
                     ) : (
                       <div className="field-display mt-1">
-                        {editableFields.first_name || 'N/A'}
+                        {currentBorrower.first_name || 'N/A'}
                       </div>
                     )}
                   </div>
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground">Last Name</Label>
-                    {isEditing ? (
+                    {isEditing && currentBorrower.isPrimary ? (
                       <Input
                         value={editableFields.last_name}
                         onChange={(e) => setEditableFields({...editableFields, last_name: e.target.value})}
@@ -840,7 +953,7 @@ export default function LeadDetail() {
                       />
                     ) : (
                       <div className="field-display mt-1">
-                        {editableFields.last_name || 'N/A'}
+                        {currentBorrower.last_name || 'N/A'}
                       </div>
                     )}
                   </div>
@@ -848,7 +961,7 @@ export default function LeadDetail() {
 
                 <div>
                   <Label className="text-xs font-medium text-muted-foreground">Home Address</Label>
-                  {isEditing ? (
+                  {isEditing && currentBorrower.isPrimary ? (
                     <Input
                       value={editableFields.home_address}
                       onChange={(e) => setEditableFields({...editableFields, home_address: e.target.value})}
@@ -856,7 +969,7 @@ export default function LeadDetail() {
                     />
                   ) : (
                     <div className="field-display mt-1">
-                      {editableFields.home_address || 'N/A'}
+                      {currentBorrower.home_address || 'N/A'}
                     </div>
                   )}
                 </div>
@@ -864,7 +977,7 @@ export default function LeadDetail() {
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground">City</Label>
-                    {isEditing ? (
+                    {isEditing && currentBorrower.isPrimary ? (
                       <Input
                         value={editableFields.home_city}
                         onChange={(e) => setEditableFields({...editableFields, home_city: e.target.value})}
@@ -872,13 +985,13 @@ export default function LeadDetail() {
                       />
                     ) : (
                       <div className="field-display mt-1">
-                        {editableFields.home_city || 'N/A'}
+                        {currentBorrower.home_city || 'N/A'}
                       </div>
                     )}
                   </div>
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground">State</Label>
-                    {isEditing ? (
+                    {isEditing && currentBorrower.isPrimary ? (
                       <Input
                         value={editableFields.home_state}
                         onChange={(e) => setEditableFields({...editableFields, home_state: e.target.value})}
@@ -886,13 +999,13 @@ export default function LeadDetail() {
                       />
                     ) : (
                       <div className="field-display mt-1">
-                        {editableFields.home_state || 'N/A'}
+                        {currentBorrower.home_state || 'N/A'}
                       </div>
                     )}
                   </div>
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground">ZIP Code</Label>
-                    {isEditing ? (
+                    {isEditing && currentBorrower.isPrimary ? (
                       <Input
                         value={editableFields.home_zip_code}
                         onChange={(e) => setEditableFields({...editableFields, home_zip_code: e.target.value})}
@@ -900,7 +1013,7 @@ export default function LeadDetail() {
                       />
                     ) : (
                       <div className="field-display mt-1">
-                        {editableFields.home_zip_code || 'N/A'}
+                        {currentBorrower.home_zip_code || 'N/A'}
                       </div>
                     )}
                   </div>
@@ -908,7 +1021,7 @@ export default function LeadDetail() {
 
                 <div>
                   <Label className="text-xs font-medium text-muted-foreground">Email</Label>
-                  {isEditing ? (
+                  {isEditing && currentBorrower.isPrimary ? (
                     <Input
                       type="email"
                       value={editableFields.email}
@@ -917,7 +1030,7 @@ export default function LeadDetail() {
                     />
                   ) : (
                     <div className="field-display mt-1">
-                      {editableFields.email || 'N/A'}
+                      {currentBorrower.email || 'N/A'}
                     </div>
                   )}
                 </div>
