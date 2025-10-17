@@ -254,6 +254,59 @@ export default function LeadDetail() {
     }
   }
 
+  const deleteCurrentBorrower = async () => {
+    if (currentBorrowerIndex === 0 || !lead || !user) {
+      toast({
+        title: "Error",
+        description: "Cannot delete the primary borrower",
+        variant: "destructive",
+      })
+      return
+    }
+
+    const borrower = additionalBorrowers[currentBorrowerIndex - 1]
+    if (!borrower) return
+
+    try {
+      // Delete the additional borrower record
+      const { error: borrowerError } = await supabase
+        .from('additional_borrowers')
+        .delete()
+        .eq('id', borrower.id)
+
+      if (borrowerError) throw borrowerError
+
+      // Optionally delete the contact entity as well
+      const { error: contactError } = await supabase
+        .from('contact_entities')
+        .delete()
+        .eq('id', borrower.contact_entity_id)
+
+      if (contactError) {
+        console.error('Error deleting contact entity:', contactError)
+        // Continue even if contact deletion fails
+      }
+
+      toast({
+        title: "Success",
+        description: "Borrower deleted successfully",
+      })
+
+      // Navigate to primary borrower
+      setCurrentBorrowerIndex(0)
+      
+      // Refresh borrowers list
+      fetchAdditionalBorrowers()
+    } catch (error) {
+      console.error('Error deleting borrower:', error)
+      toast({
+        title: "Error",
+        description: "Failed to delete borrower",
+        variant: "destructive",
+      })
+    }
+  }
+
   // Get current borrower data based on index
   const getCurrentBorrowerData = () => {
     if (currentBorrowerIndex === 0) {
@@ -1003,6 +1056,37 @@ export default function LeadDetail() {
                       <UserPlus className="h-3 w-3 mr-2" />
                       Add Borrower
                     </Button>
+                    {currentBorrowerIndex > 0 && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-3 w-3 mr-2" />
+                            Delete Borrower
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Borrower</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete this borrower? This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={deleteCurrentBorrower}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
                   </div>
                 </div>
               </CardHeader>
