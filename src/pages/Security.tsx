@@ -61,14 +61,14 @@ const SecurityPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <SecurityWrapper>
-        <div className="space-y-8 p-8 animate-fade-in">
+        <div className="mx-auto max-w-[1800px] space-y-10 p-8 animate-fade-in">
           {/* Enterprise Header */}
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between border-b border-border pb-6">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold tracking-tight text-foreground">
+              <h1 className="text-4xl font-semibold tracking-tight text-foreground">
                 Enterprise Security Center
               </h1>
-              <p className="text-muted-foreground mt-1">
+              <p className="text-base text-muted-foreground">
                 Military-grade security monitoring and threat intelligence
               </p>
             </div>
@@ -76,67 +76,66 @@ const SecurityPage: React.FC = () => {
               <Button 
                 onClick={() => window.location.reload()}
                 variant="outline"
+                size="sm"
+                className="h-9"
               >
-                Refresh
+                Refresh Data
               </Button>
             </div>
           </div>
 
           {/* Security Score Header */}
-          <Card className="widget-glass widget-glow border-0">
-            <CardContent className="p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-1">
-                        Overall Security Posture
-                      </h3>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-bold text-foreground">
-                          {securityScore.toFixed(1)}
-                        </span>
-                        <span className="text-2xl text-muted-foreground">/100</span>
-                      </div>
+          <Card className="border shadow-sm">
+            <CardContent className="p-10">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <div className="lg:col-span-2 space-y-8">
+                  <div>
+                    <h2 className="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-3">
+                      Overall Security Posture
+                    </h2>
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-6xl font-semibold text-foreground">
+                        {securityScore.toFixed(1)}
+                      </span>
+                      <span className="text-3xl font-light text-muted-foreground">/100</span>
                     </div>
                   </div>
-                  <Progress value={securityScore} className="h-3" />
-                  <div className="grid grid-cols-3 gap-4 pt-2">
-                    <div className="text-center">
-                      <p className="text-sm text-muted-foreground mb-1">Encryption</p>
-                      <p className="text-xl font-bold text-primary">AES-256</p>
+                  <Progress value={securityScore} className="h-2" />
+                  <div className="grid grid-cols-3 gap-6 pt-4">
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Encryption</p>
+                      <p className="text-2xl font-semibold">AES-256</p>
                     </div>
-                    <div className="text-center">
-                      <p className="text-sm text-muted-foreground mb-1">Uptime</p>
-                      <p className="text-xl font-bold text-primary">99.99%</p>
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Uptime</p>
+                      <p className="text-2xl font-semibold">99.99%</p>
                     </div>
-                    <div className="text-center">
-                      <p className="text-sm text-muted-foreground mb-1">Compliance</p>
-                      <p className="text-xl font-bold text-primary">100%</p>
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Compliance</p>
+                      <p className="text-2xl font-semibold">100%</p>
                     </div>
                   </div>
                 </div>
-                <Separator orientation="vertical" className="hidden lg:block" />
-                <div className="space-y-4">
-                  <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                <div className="border-l border-border pl-10">
+                  <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-6">
                     System Status
                   </h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Database</span>
-                      <span className="text-xs text-muted-foreground">Healthy</span>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm font-medium">Database</span>
+                      <span className="text-sm text-green-600 dark:text-green-400">Healthy</span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Network</span>
-                      <span className="text-xs text-muted-foreground">Secured</span>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm font-medium">Network</span>
+                      <span className="text-sm text-green-600 dark:text-green-400">Secured</span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Monitoring</span>
-                      <span className="text-xs text-muted-foreground">Active</span>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm font-medium">Monitoring</span>
+                      <span className="text-sm text-blue-600 dark:text-blue-400">Active</span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">MFA</span>
-                      <span className="text-xs text-muted-foreground">Enforced</span>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm font-medium">MFA</span>
+                      <span className="text-sm text-blue-600 dark:text-blue-400">Enforced</span>
                     </div>
                   </div>
                 </div>
@@ -145,104 +144,103 @@ const SecurityPage: React.FC = () => {
           </Card>
 
           {/* Security Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             <Card 
-              className="widget-glass widget-glow border-0 cursor-pointer group transition-all duration-300"
+              className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
               onClick={() => navigate('/security/compliance')}
             >
-              <CardContent className="p-6">
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Security Status</h3>
-                <p className="text-2xl font-bold text-foreground">Optimal</p>
-                <Progress value={98} className="h-1 mt-3" />
+              <CardContent className="p-6 space-y-3">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Security Status</p>
+                <p className="text-3xl font-semibold">Optimal</p>
+                <Progress value={98} className="h-1.5" />
               </CardContent>
             </Card>
 
             <Card 
-              className="widget-glass widget-glow border-0 cursor-pointer group transition-all duration-300"
+              className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
               onClick={() => navigate('/security/audit')}
             >
-              <CardContent className="p-6">
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Active Monitors</h3>
-                <p className="text-2xl font-bold text-foreground">6</p>
-                <p className="text-xs text-muted-foreground mt-2">Real-time tracking</p>
+              <CardContent className="p-6 space-y-3">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Active Monitors</p>
+                <p className="text-3xl font-semibold">6</p>
+                <p className="text-xs text-muted-foreground">Real-time tracking</p>
               </CardContent>
             </Card>
 
             <Card 
-              className="widget-glass widget-glow border-0 cursor-pointer group transition-all duration-300"
+              className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
               onClick={() => navigate('/security/threats')}
             >
-              <CardContent className="p-6">
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Threats Blocked</h3>
-                <p className="text-2xl font-bold text-foreground">127</p>
-                <p className="text-xs text-muted-foreground mt-2">Last 24 hours</p>
+              <CardContent className="p-6 space-y-3">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Threats Blocked</p>
+                <p className="text-3xl font-semibold">127</p>
+                <p className="text-xs text-muted-foreground">Last 24 hours</p>
               </CardContent>
             </Card>
 
             <Card 
-              className="widget-glass widget-glow border-0 cursor-pointer group transition-all duration-300"
+              className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
               onClick={() => navigate('/security/access')}
             >
-              <CardContent className="p-6">
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">MFA Status</h3>
-                <p className="text-2xl font-bold text-foreground">Active</p>
-                <Progress value={100} className="h-1 mt-3" />
+              <CardContent className="p-6 space-y-3">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">MFA Status</p>
+                <p className="text-3xl font-semibold">Active</p>
+                <Progress value={100} className="h-1.5" />
               </CardContent>
             </Card>
           </div>
 
           {/* Security Modules Tabs */}
           <Tabs defaultValue="monitoring" className="space-y-8">
-            <TabsList className="grid w-full grid-cols-4 h-auto p-2 bg-muted/50 backdrop-blur-sm rounded-lg">
+            <TabsList className="inline-flex h-11 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground w-full max-w-2xl">
               <TabsTrigger 
                 value="monitoring" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-6 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
               >
                 Live Monitoring
               </TabsTrigger>
               <TabsTrigger 
                 value="access-control" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-6 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
               >
                 Access Control
               </TabsTrigger>
               <TabsTrigger 
                 value="mfa" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-6 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
               >
                 MFA Setup
               </TabsTrigger>
               <TabsTrigger 
                 value="dashboard" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-6 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
               >
                 Command Center
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="monitoring" className="space-y-6">
-              <Card className="widget-glass border-0">
-                <CardHeader className="pb-0">
-                  <CardTitle className="text-xl font-semibold flex items-center gap-2">
-                    <Activity className="h-5 w-5 text-primary" />
+            <TabsContent value="monitoring" className="space-y-6 mt-6">
+              <Card className="border shadow-sm">
+                <CardHeader className="space-y-1 pb-4">
+                  <CardTitle className="text-2xl font-semibold">
                     Real-Time Security Monitoring
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-base">
                     Enterprise-grade threat detection and response system
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="pt-6">
+                <CardContent>
                   <EnhancedSecurityMonitor />
                 </CardContent>
               </Card>
 
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-5 md:grid-cols-2">
                 <Card 
-                  className="widget-glass border-0 hover-scale cursor-pointer group transition-all"
+                  className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
                   onClick={() => navigate('/security/threats')}
                 >
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold">
+                  <CardHeader className="space-y-1 pb-4">
+                    <CardTitle className="text-xl font-semibold">
                       AI Protection Monitor
                     </CardTitle>
                     <CardDescription>
@@ -255,11 +253,11 @@ const SecurityPage: React.FC = () => {
                 </Card>
 
                 <Card 
-                  className="widget-glass border-0 hover-scale cursor-pointer group transition-all"
+                  className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
                   onClick={() => navigate('/security/threats')}
                 >
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold">
+                  <CardHeader className="space-y-1 pb-4">
+                    <CardTitle className="text-xl font-semibold">
                       Dark Web Monitoring
                     </CardTitle>
                     <CardDescription>
@@ -272,11 +270,11 @@ const SecurityPage: React.FC = () => {
                 </Card>
 
                 <Card 
-                  className="widget-glass border-0 hover-scale cursor-pointer group transition-all"
+                  className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
                   onClick={() => navigate('/security/threats')}
                 >
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold">
+                  <CardHeader className="space-y-1 pb-4">
+                    <CardTitle className="text-xl font-semibold">
                       Advanced Threat Detection
                     </CardTitle>
                     <CardDescription>
@@ -289,11 +287,11 @@ const SecurityPage: React.FC = () => {
                 </Card>
 
                 <Card 
-                  className="widget-glass border-0 hover-scale cursor-pointer group transition-all"
+                  className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
                   onClick={() => navigate('/security/threats')}
                 >
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold">
+                  <CardHeader className="space-y-1 pb-4">
+                    <CardTitle className="text-xl font-semibold">
                       Intrusion Prevention
                     </CardTitle>
                     <CardDescription>
@@ -307,13 +305,13 @@ const SecurityPage: React.FC = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="access-control" className="space-y-6">
-              <Card className="widget-glass border-0">
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold">
+            <TabsContent value="access-control" className="space-y-6 mt-6">
+              <Card className="border shadow-sm">
+                <CardHeader className="space-y-1 pb-4">
+                  <CardTitle className="text-2xl font-semibold">
                     Data Access Control Management
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-base">
                     Role-based access control and sensitive data permissions
                   </CardDescription>
                 </CardHeader>
@@ -323,13 +321,13 @@ const SecurityPage: React.FC = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="mfa" className="space-y-6">
-              <Card className="widget-glass border-0">
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold">
+            <TabsContent value="mfa" className="space-y-6 mt-6">
+              <Card className="border shadow-sm">
+                <CardHeader className="space-y-1 pb-4">
+                  <CardTitle className="text-2xl font-semibold">
                     Multi-Factor Authentication
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-base">
                     Configure Microsoft Authenticator for enhanced account security
                   </CardDescription>
                 </CardHeader>
@@ -339,7 +337,7 @@ const SecurityPage: React.FC = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="dashboard" className="space-y-6">
+            <TabsContent value="dashboard" className="space-y-6 mt-6">
               <EnhancedSecurityDashboard />
             </TabsContent>
           </Tabs>
