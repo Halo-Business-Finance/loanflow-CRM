@@ -791,11 +791,11 @@ export default function LeadDetail() {
               </CardContent>
             </Card>
 
-            {/* Contact Information Card */}
+            {/* Borrower Information Card */}
             <Card className="border border-border shadow-sm bg-white">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base font-semibold text-foreground">
-                  Contact Information
+                  Borrower Information
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0 space-y-4">
