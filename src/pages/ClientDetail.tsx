@@ -116,6 +116,13 @@ export default function ClientDetail() {
   const [generalNotes, setGeneralNotes] = useState("")
   const [showReminderDialog, setShowReminderDialog] = useState(false)
   const [userProfile, setUserProfile] = useState<{first_name?: string, last_name?: string} | null>(null)
+  const [notesHistory, setNotesHistory] = useState<Array<{
+    id: string
+    note_type: 'general' | 'call'
+    content: string
+    created_at: string
+    user_name: string
+  }>>([])
   const [editableFields, setEditableFields] = useState({
     name: "",
     email: "",
@@ -163,6 +170,12 @@ export default function ClientDetail() {
       fetchUserProfile()
     }
   }, [id, user])
+
+  useEffect(() => {
+    if (client?.contact_entity_id) {
+      fetchNotesHistory()
+    }
+  }, [client?.contact_entity_id])
 
   const fetchUserProfile = async () => {
     try {
@@ -286,58 +299,44 @@ export default function ClientDetail() {
   }
 
   const saveCallNotes = async () => {
-    if (!client) return
+    if (!client || !user) return
 
     try {
-      console.log('Saving call notes for client:', client.id)
-      console.log('Contact entity ID:', client.contact_entity_id)
-      console.log('Current callNotes:', callNotes)
-      console.log('New call note:', newCallNote)
-      
-      let userName = 'Unknown User'
-      if (userProfile) {
-        const fullName = `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim()
-        userName = fullName || 'Unknown User'
+      const trimmed = newCallNote.trim()
+      if (!trimmed) {
+        toast({ title: 'Error', description: 'Note cannot be empty', variant: 'destructive' })
+        return
       }
-      
-      const updatedNotes = callNotes + (newCallNote ? `\n\n${userName} [${new Date().toLocaleString()}]: ${newCallNote}` : "")
-      
-      console.log('Updated notes to save:', updatedNotes)
       
       if (!client.contact_entity_id) {
         throw new Error('No contact entity ID found for client')
       }
       
-      // Update the contact_entities table, not the clients table
-      const { error, data } = await supabase
-        .from('contact_entities')
-        .update({ 
-          call_notes: updatedNotes,
-          updated_at: new Date().toISOString()
+      // Insert into history
+      const { error: historyError } = await supabase
+        .from('notes_history')
+        .insert({
+          contact_id: client.contact_entity_id,
+          note_type: 'call',
+          content: trimmed,
+          user_id: user.id
         })
-        .eq('id', client.contact_entity_id)
-        .select()
-
-      console.log('Contact entities update result:', { error, data })
-
-      if (error) throw error
-
-      // Also update the client's last_activity
-      const { error: clientError } = await supabase
+      
+      if (historyError) {
+        console.error('Error saving note history:', historyError)
+        toast({ title: 'Error', description: 'Failed to save note', variant: 'destructive' })
+        return
+      }
+      
+      // Update client's last_activity
+      await supabase
         .from('clients')
         .update({ last_activity: new Date().toISOString() })
         .eq('id', client.id)
-
-      console.log('Client update result:', { clientError })
-
-      setCallNotes(updatedNotes)
-      setNewCallNote("")
-      toast({
-        title: "Success",
-        description: "Call notes saved successfully",
-      })
       
-      // Refresh client data
+      setNewCallNote('')
+      fetchNotesHistory()
+      toast({ title: 'Saved', description: 'Call note added to history' })
       fetchClient()
     } catch (error) {
       console.error('Error saving call notes:', error)
@@ -350,22 +349,34 @@ export default function ClientDetail() {
   }
 
   const saveGeneralNotes = async () => {
-    if (!client) return
+    if (!client || !user) return
 
     try {
-      const { error } = await supabase
-        .from('contact_entities')
-        .update({ notes: generalNotes })
-        .eq('id', client.contact_entity_id)
-
-      if (error) throw error
-
-      toast({
-        title: "Success",
-        description: "General notes saved successfully",
-      })
+      const trimmed = generalNotes.trim()
+      if (!trimmed) {
+        toast({ title: 'Error', description: 'Note cannot be empty', variant: 'destructive' })
+        return
+      }
       
-      // Refresh client data
+      // Insert into history
+      const { error: historyError } = await supabase
+        .from('notes_history')
+        .insert({
+          contact_id: client.contact_entity_id,
+          note_type: 'general',
+          content: trimmed,
+          user_id: user.id
+        })
+      
+      if (historyError) {
+        console.error('Error saving note history:', historyError)
+        toast({ title: 'Error', description: 'Failed to save note', variant: 'destructive' })
+        return
+      }
+      
+      setGeneralNotes('')
+      fetchNotesHistory()
+      toast({ title: 'Saved', description: 'Note added to history' })
       fetchClient()
     } catch (error) {
       console.error('Error saving general notes:', error)
@@ -375,6 +386,44 @@ export default function ClientDetail() {
         variant: "destructive",
       })
     }
+  }
+
+  // Fetch notes history
+  const fetchNotesHistory = async () => {
+    if (!client?.contact_entity_id) return
+    const { data, error } = await supabase
+      .from('notes_history')
+      .select(`
+        id,
+        note_type,
+        content,
+        created_at,
+        user_id
+      `)
+      .eq('contact_id', client.contact_entity_id)
+      .order('created_at', { ascending: false })
+    
+    if (error) {
+      console.error('Error fetching notes history:', error)
+      return
+    }
+
+    // Fetch user names
+    const userIds = [...new Set(data.map(n => n.user_id))]
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name')
+      .in('id', userIds)
+    
+    const profileMap = new Map(profiles?.map(p => [p.id, `${p.first_name || ''} ${p.last_name || ''}`.trim()]) || [])
+    
+    setNotesHistory(data.map(note => ({
+      id: note.id,
+      note_type: note.note_type as 'general' | 'call',
+      content: note.content,
+      created_at: note.created_at,
+      user_name: profileMap.get(note.user_id) || 'Unknown User'
+    })))
   }
 
   const saveClientChanges = async () => {
@@ -1406,20 +1455,49 @@ export default function ClientDetail() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="generalNotes">
-                  Notes
-                </Label>
+                <Label htmlFor="generalNotes">Add New Note</Label>
                 <Textarea
                   id="generalNotes"
-                  placeholder="Enter general notes about this client..."
+                  placeholder="Type your note here..."
                   value={generalNotes}
                   onChange={(e) => setGeneralNotes(e.target.value)}
                   rows={4}
                 />
-                <Button onClick={saveGeneralNotes}>
+                <Button onClick={saveGeneralNotes} disabled={!generalNotes.trim()}>
                   <Save className="w-4 h-4 mr-2" />
-                  Save General Notes
+                  Save Note
                 </Button>
+              </div>
+
+              {/* Notes History */}
+              <div className="space-y-2">
+                <Label>Notes History</Label>
+                <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                  {notesHistory.filter(n => n.note_type === 'general').length === 0 ? (
+                    <p className="text-sm text-muted-foreground italic">No notes yet...</p>
+                  ) : (
+                    notesHistory
+                      .filter(n => n.note_type === 'general')
+                      .map(note => (
+                        <div key={note.id} className="p-3 bg-muted/30 rounded-md border text-sm">
+                          <div className="flex justify-between items-start gap-2 mb-1">
+                            <span className="font-medium text-xs text-primary">{note.user_name}</span>
+                            <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                              {new Date(note.created_at).toLocaleString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
+                              })}
+                            </span>
+                          </div>
+                          <p className="text-foreground whitespace-pre-wrap">{note.content}</p>
+                        </div>
+                      ))
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -1427,30 +1505,12 @@ export default function ClientDetail() {
           {/* Call Notes Section */}
           <Card>
             <CardHeader>
-              <CardTitle>
-                Call Notes
-              </CardTitle>
+              <CardTitle>Call Notes</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Existing Call Notes */}
-              {callNotes && (
-                <div>
-                  <Label>Previous Call Notes</Label>
-                  <div className="mt-2 p-3 bg-muted rounded-lg">
-                    <pre className="whitespace-pre-wrap text-sm">
-                      {callNotes}
-                    </pre>
-                  </div>
-                </div>
-              )}
-
-              <Separator />
-
-              {/* Add New Call Note */}
+              {/* New Call Note Input */}
               <div className="space-y-2">
-                <Label htmlFor="newCallNote">
-                  Add New Call Note
-                </Label>
+                <Label htmlFor="newCallNote">Add New Call Note</Label>
                 <Textarea
                   id="newCallNote"
                   placeholder="Enter your call notes here..."
@@ -1462,6 +1522,37 @@ export default function ClientDetail() {
                   <Save className="w-4 h-4 mr-2" />
                   Save Call Note
                 </Button>
+              </div>
+
+              {/* Call Notes History */}
+              <div className="space-y-2">
+                <Label>Call Notes History</Label>
+                <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                  {notesHistory.filter(n => n.note_type === 'call').length === 0 ? (
+                    <p className="text-sm text-muted-foreground italic">No call notes yet...</p>
+                  ) : (
+                    notesHistory
+                      .filter(n => n.note_type === 'call')
+                      .map(note => (
+                        <div key={note.id} className="p-3 bg-muted/30 rounded-md border text-sm">
+                          <div className="flex justify-between items-start gap-2 mb-1">
+                            <span className="font-medium text-xs text-primary">{note.user_name}</span>
+                            <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                              {new Date(note.created_at).toLocaleString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
+                              })}
+                            </span>
+                          </div>
+                          <p className="text-foreground whitespace-pre-wrap">{note.content}</p>
+                        </div>
+                      ))
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>

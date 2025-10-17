@@ -72,6 +72,13 @@ export default function LeadDetail() {
   const [callNotes, setCallNotes] = useState("")
   const [generalNotes, setGeneralNotes] = useState("")
   const [showReminderDialog, setShowReminderDialog] = useState(false)
+  const [notesHistory, setNotesHistory] = useState<Array<{
+    id: string
+    note_type: 'general' | 'call'
+    content: string
+    created_at: string
+    user_name: string
+  }>>([])
   const [teamMembers, setTeamMembers] = useState<Array<{ id: string; name: string; role: string }>>([])
   const [assignments, setAssignments] = useState({
     loan_originator_id: "",
@@ -628,50 +635,102 @@ export default function LeadDetail() {
     }
   }
 
-  // Save General Notes on blur (always editable)
-  const saveGeneralNotesImmediate = async () => {
+  // Fetch notes history
+  const fetchNotesHistory = async () => {
     if (!lead?.contact_entity_id) return
-    const safeNotes = (generalNotes || "").slice(0, 5000)
-    const { error } = await supabase
-      .from('contact_entities')
-      .update({ notes: safeNotes })
-      .eq('id', lead.contact_entity_id)
+    const { data, error } = await supabase
+      .from('notes_history')
+      .select(`
+        id,
+        note_type,
+        content,
+        created_at,
+        user_id
+      `)
+      .eq('contact_id', lead.contact_entity_id)
+      .order('created_at', { ascending: false })
+    
     if (error) {
-      console.error('Error saving general notes:', error)
-      toast({ title: 'Error', description: 'Failed to save general notes', variant: 'destructive' })
+      console.error('Error fetching notes history:', error)
       return
     }
-    setLead(prev => prev ? { ...prev, notes: safeNotes } : prev)
-    toast({ title: 'Saved', description: 'General notes saved' })
+
+    // Fetch user names
+    const userIds = [...new Set(data.map(n => n.user_id))]
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name')
+      .in('id', userIds)
+    
+    const profileMap = new Map(profiles?.map(p => [p.id, `${p.first_name || ''} ${p.last_name || ''}`.trim()]) || [])
+    
+    setNotesHistory(data.map(note => ({
+      id: note.id,
+      note_type: note.note_type as 'general' | 'call',
+      content: note.content,
+      created_at: note.created_at,
+      user_name: profileMap.get(note.user_id) || 'Unknown User'
+    })))
+  }
+
+  // Save General Notes on blur (always editable)
+  const saveGeneralNotesImmediate = async () => {
+    if (!lead?.contact_entity_id || !user) return
+    const trimmed = generalNotes.trim()
+    if (!trimmed) {
+      toast({ title: 'Error', description: 'Note cannot be empty', variant: 'destructive' })
+      return
+    }
+    
+    // Insert into history
+    const { error: historyError } = await supabase
+      .from('notes_history')
+      .insert({
+        contact_id: lead.contact_entity_id,
+        note_type: 'general',
+        content: trimmed,
+        user_id: user.id
+      })
+    
+    if (historyError) {
+      console.error('Error saving note history:', historyError)
+      toast({ title: 'Error', description: 'Failed to save note', variant: 'destructive' })
+      return
+    }
+    
+    setGeneralNotes('')
+    fetchNotesHistory()
+    toast({ title: 'Saved', description: 'Note added to history' })
   }
 
   // Save Call Notes on blur with timestamp
   const saveCallNotesImmediate = async () => {
-    if (!lead?.contact_entity_id) return
-    let updated = callNotes
-    if (callNotes !== lead?.call_notes) {
-      const timestamp = new Date().toLocaleString('en-US', {
-        month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true
-      })
-      const noteEntry = callNotes.trim()
-      if (lead?.call_notes && lead.call_notes.trim()) {
-        updated = `${lead.call_notes}\n\n[${timestamp}]\n${noteEntry}`
-      } else {
-        updated = `[${timestamp}]\n${noteEntry}`
-      }
-      setCallNotes(updated)
-    }
-    const { error } = await supabase
-      .from('contact_entities')
-      .update({ call_notes: updated })
-      .eq('id', lead.contact_entity_id)
-    if (error) {
-      console.error('Error saving call notes:', error)
-      toast({ title: 'Error', description: 'Failed to save call notes', variant: 'destructive' })
+    if (!lead?.contact_entity_id || !user) return
+    const trimmed = callNotes.trim()
+    if (!trimmed) {
+      toast({ title: 'Error', description: 'Note cannot be empty', variant: 'destructive' })
       return
     }
-    setLead(prev => prev ? { ...prev, call_notes: updated } : prev)
-    toast({ title: 'Saved', description: 'Call notes saved' })
+    
+    // Insert into history
+    const { error: historyError } = await supabase
+      .from('notes_history')
+      .insert({
+        contact_id: lead.contact_entity_id,
+        note_type: 'call',
+        content: trimmed,
+        user_id: user.id
+      })
+    
+    if (historyError) {
+      console.error('Error saving note history:', historyError)
+      toast({ title: 'Error', description: 'Failed to save note', variant: 'destructive' })
+      return
+    }
+    
+    setCallNotes('')
+    fetchNotesHistory()
+    toast({ title: 'Saved', description: 'Call note added to history' })
   }
 
   const deleteLead = async () => {
@@ -1581,16 +1640,48 @@ export default function LeadDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <div>
-                  <Label className="text-xs font-medium text-muted-foreground">Notes</Label>
-                  <Textarea
-                    value={generalNotes}
-                    onChange={(e) => setGeneralNotes(e.target.value)}
-                    onBlur={saveGeneralNotesImmediate}
-                    placeholder="Add general notes..."
-                    className="mt-1 min-h-[100px] text-sm"
-                  />
-                  <p className="mt-1 text-[11px] text-muted-foreground">Changes save automatically when you click outside.</p>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Add New Note</Label>
+                    <Textarea
+                      value={generalNotes}
+                      onChange={(e) => setGeneralNotes(e.target.value)}
+                      onBlur={saveGeneralNotesImmediate}
+                      placeholder="Type your note and click outside to save..."
+                      className="mt-1 min-h-[80px] text-sm"
+                    />
+                  </div>
+                  
+                  {/* Notes History */}
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground mb-2 block">Notes History</Label>
+                    <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                      {notesHistory.filter(n => n.note_type === 'general').length === 0 ? (
+                        <p className="text-sm text-muted-foreground italic">No notes yet...</p>
+                      ) : (
+                        notesHistory
+                          .filter(n => n.note_type === 'general')
+                          .map(note => (
+                            <div key={note.id} className="p-3 bg-muted/30 rounded-md border text-sm">
+                              <div className="flex justify-between items-start gap-2 mb-1">
+                                <span className="font-medium text-xs text-primary">{note.user_name}</span>
+                                <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                                  {new Date(note.created_at).toLocaleString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: '2-digit',
+                                    hour12: true
+                                  })}
+                                </span>
+                              </div>
+                              <p className="text-foreground whitespace-pre-wrap">{note.content}</p>
+                            </div>
+                          ))
+                      )}
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -1800,16 +1891,48 @@ export default function LeadDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <div>
-                  <Label className="text-xs font-medium text-muted-foreground">Notes</Label>
-                  <Textarea
-                    value={callNotes}
-                    onChange={(e) => setCallNotes(e.target.value)}
-                    onBlur={saveCallNotesImmediate}
-                    placeholder="Add call notes..."
-                    className="mt-1 min-h-[100px] text-sm"
-                  />
-                  <p className="mt-1 text-[11px] text-muted-foreground">A timestamp is added automatically when saved.</p>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Add New Call Note</Label>
+                    <Textarea
+                      value={callNotes}
+                      onChange={(e) => setCallNotes(e.target.value)}
+                      onBlur={saveCallNotesImmediate}
+                      placeholder="Type your call note and click outside to save..."
+                      className="mt-1 min-h-[80px] text-sm"
+                    />
+                  </div>
+                  
+                  {/* Call Notes History */}
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground mb-2 block">Call Notes History</Label>
+                    <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                      {notesHistory.filter(n => n.note_type === 'call').length === 0 ? (
+                        <p className="text-sm text-muted-foreground italic">No call notes yet...</p>
+                      ) : (
+                        notesHistory
+                          .filter(n => n.note_type === 'call')
+                          .map(note => (
+                            <div key={note.id} className="p-3 bg-muted/30 rounded-md border text-sm">
+                              <div className="flex justify-between items-start gap-2 mb-1">
+                                <span className="font-medium text-xs text-primary">{note.user_name}</span>
+                                <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                                  {new Date(note.created_at).toLocaleString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: '2-digit',
+                                    hour12: true
+                                  })}
+                                </span>
+                              </div>
+                              <p className="text-foreground whitespace-pre-wrap">{note.content}</p>
+                            </div>
+                          ))
+                      )}
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
