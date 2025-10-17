@@ -142,63 +142,79 @@ export default function NewLead() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Create New Lead</h1>
-        <p className="text-muted-foreground">
-          Add a new lead to your pipeline
-        </p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Enterprise Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight text-foreground">
+              Create New Lead
+            </h1>
+            <p className="text-[#525252] mt-1">
+              Add a new lead to your SBA & Commercial Loan pipeline
+            </p>
+          </div>
+          <Button 
+            variant="outline"
+            onClick={() => navigate('/leads')}
+          >
+            Back to Leads
+          </Button>
+        </div>
 
-      <div className="grid gap-6 max-w-4xl">
+        <div className="grid gap-6 max-w-5xl">
         {/* Contact Information */}
-        <Card>
+        <Card className="bg-white border border-[#e0e0e0]">
           <CardHeader>
-            <CardTitle>Contact Information</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-base font-normal text-[#161616]">Contact Information</CardTitle>
+            <CardDescription className="text-[#525252]">
               Primary contact details for the borrower
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="firstName">First Name *</Label>
+                <Label htmlFor="firstName" className="text-sm font-medium text-[#161616]">First Name *</Label>
                 <Input 
                   id="firstName" 
                   placeholder="Enter first name"
                   value={formData.firstName}
                   onChange={(e) => handleInputChange("firstName", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="lastName">Last Name *</Label>
+                <Label htmlFor="lastName" className="text-sm font-medium text-[#161616]">Last Name *</Label>
                 <Input 
                   id="lastName" 
                   placeholder="Enter last name"
                   value={formData.lastName}
                   onChange={(e) => handleInputChange("lastName", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="email">Email *</Label>
+                <Label htmlFor="email" className="text-sm font-medium text-[#161616]">Email *</Label>
                 <Input 
                   id="email" 
                   type="email" 
                   placeholder="Enter email address"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone" className="text-sm font-medium text-[#161616]">Phone Number</Label>
                 <Input 
                   id="phone" 
                   placeholder="Enter phone number"
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
             </div>
@@ -206,93 +222,100 @@ export default function NewLead() {
         </Card>
 
         {/* Business Information */}
-        <Card>
+        <Card className="bg-white border border-[#e0e0e0]">
           <CardHeader>
-            <CardTitle>Business Information</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-base font-normal text-[#161616]">Business Information</CardTitle>
+            <CardDescription className="text-[#525252]">
               Details about the borrower's business
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="businessName">Business Name</Label>
+              <Label htmlFor="businessName" className="text-sm font-medium text-[#161616]">Business Name</Label>
               <Input 
                 id="businessName" 
                 placeholder="Enter business name"
                 value={formData.businessName}
                 onChange={(e) => handleInputChange("businessName", e.target.value)}
+                className="border-[#e0e0e0]"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="businessAddress">Business Address</Label>
+              <Label htmlFor="businessAddress" className="text-sm font-medium text-[#161616]">Business Address</Label>
               <Input 
                 id="businessAddress" 
                 placeholder="Enter business address"
                 value={formData.businessAddress}
                 onChange={(e) => handleInputChange("businessAddress", e.target.value)}
+                className="border-[#e0e0e0]"
               />
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="businessCity">City</Label>
+                <Label htmlFor="businessCity" className="text-sm font-medium text-[#161616]">City</Label>
                 <Input 
                   id="businessCity" 
                   placeholder="City"
                   value={formData.businessCity}
                   onChange={(e) => handleInputChange("businessCity", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="businessState">State</Label>
+                <Label htmlFor="businessState" className="text-sm font-medium text-[#161616]">State</Label>
                 <Input 
                   id="businessState" 
                   placeholder="State"
                   value={formData.businessState}
                   onChange={(e) => handleInputChange("businessState", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="businessZipCode">Zip Code</Label>
+                <Label htmlFor="businessZipCode" className="text-sm font-medium text-[#161616]">Zip Code</Label>
                 <Input 
                   id="businessZipCode" 
                   placeholder="Zip Code"
                   value={formData.businessZipCode}
                   onChange={(e) => handleInputChange("businessZipCode", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="yearEstablished">Year Established</Label>
+                <Label htmlFor="yearEstablished" className="text-sm font-medium text-[#161616]">Year Established</Label>
                 <Input 
                   id="yearEstablished" 
                   type="number"
                   placeholder="YYYY"
                   value={formData.yearEstablished}
                   onChange={(e) => handleInputChange("yearEstablished", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="naicsCode">NAICS Code</Label>
+                <Label htmlFor="naicsCode" className="text-sm font-medium text-[#161616]">NAICS Code</Label>
                 <Input 
                   id="naicsCode" 
                   placeholder="Enter NAICS code"
                   value={formData.naicsCode}
                   onChange={(e) => handleInputChange("naicsCode", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="ownershipStructure">Ownership Structure</Label>
+              <Label htmlFor="ownershipStructure" className="text-sm font-medium text-[#161616]">Ownership Structure</Label>
               <Select value={formData.ownershipStructure} onValueChange={(value) => handleInputChange("ownershipStructure", value)}>
-                <SelectTrigger>
+                <SelectTrigger className="border-[#e0e0e0]">
                   <SelectValue placeholder="Select ownership structure" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="Sole Proprietorship">Sole Proprietorship</SelectItem>
                   <SelectItem value="Partnership">Partnership</SelectItem>
                   <SelectItem value="LLC">LLC</SelectItem>
@@ -305,32 +328,33 @@ export default function NewLead() {
         </Card>
 
         {/* Loan Information */}
-        <Card>
+        <Card className="bg-white border border-[#e0e0e0]">
           <CardHeader>
-            <CardTitle>Loan Information</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-base font-normal text-[#161616]">Loan Information</CardTitle>
+            <CardDescription className="text-[#525252]">
               Loan requirements and financial details
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="loanAmount">Loan Amount</Label>
+                <Label htmlFor="loanAmount" className="text-sm font-medium text-[#161616]">Loan Amount</Label>
                 <Input 
                   id="loanAmount" 
                   type="number"
                   placeholder="Enter loan amount"
                   value={formData.loanAmount}
                   onChange={(e) => handleInputChange("loanAmount", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="loanType">Loan Type</Label>
+                <Label htmlFor="loanType" className="text-sm font-medium text-[#161616]">Loan Type</Label>
                 <Select value={formData.loanType} onValueChange={(value) => handleInputChange("loanType", value)}>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-[#e0e0e0]">
                     <SelectValue placeholder="Select loan type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     {LOAN_TYPES.map((type) => (
                       <SelectItem key={type} value={type}>{type}</SelectItem>
                     ))}
@@ -339,37 +363,39 @@ export default function NewLead() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="annualRevenue">Annual Revenue</Label>
+                <Label htmlFor="annualRevenue" className="text-sm font-medium text-[#161616]">Annual Revenue</Label>
                 <Input 
                   id="annualRevenue" 
                   type="number"
                   placeholder="Enter annual revenue"
                   value={formData.annualRevenue}
                   onChange={(e) => handleInputChange("annualRevenue", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="creditScore">Credit Score</Label>
+                <Label htmlFor="creditScore" className="text-sm font-medium text-[#161616]">Credit Score</Label>
                 <Input 
                   id="creditScore" 
                   type="number"
                   placeholder="Enter credit score"
                   value={formData.creditScore}
                   onChange={(e) => handleInputChange("creditScore", e.target.value)}
+                  className="border-[#e0e0e0]"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="stage">Stage</Label>
+                <Label htmlFor="stage" className="text-sm font-medium text-[#161616]">Stage</Label>
                 <Select value={formData.stage} onValueChange={(value) => handleInputChange("stage", value)}>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-[#e0e0e0]">
                     <SelectValue placeholder="Select stage" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     {STAGES.filter(stage => stage !== "All").map((stage) => (
                       <SelectItem key={stage} value={stage}>{stage}</SelectItem>
                     ))}
@@ -377,12 +403,12 @@ export default function NewLead() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="priority">Priority</Label>
+                <Label htmlFor="priority" className="text-sm font-medium text-[#161616]">Priority</Label>
                 <Select value={formData.priority} onValueChange={(value) => handleInputChange("priority", value)}>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-[#e0e0e0]">
                     <SelectValue placeholder="Select priority" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     {PRIORITIES.filter(priority => priority !== "All").map((priority) => (
                       <SelectItem key={priority} value={priority}>{priority}</SelectItem>
                     ))}
@@ -394,37 +420,45 @@ export default function NewLead() {
         </Card>
 
         {/* Notes */}
-        <Card>
+        <Card className="bg-white border border-[#e0e0e0]">
           <CardHeader>
-            <CardTitle>Additional Information</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-base font-normal text-[#161616]">Additional Information</CardTitle>
+            <CardDescription className="text-[#525252]">
               Any additional notes or comments
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
+              <Label htmlFor="notes" className="text-sm font-medium text-[#161616]">Notes</Label>
               <Textarea 
                 id="notes" 
                 placeholder="Enter any additional notes"
                 value={formData.notes}
                 onChange={(e) => handleInputChange("notes", e.target.value)}
                 rows={4}
+                className="border-[#e0e0e0]"
               />
             </div>
           </CardContent>
         </Card>
 
         {/* Actions */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex gap-2">
-              <Button onClick={handleSubmit} className="flex-1">Create Lead</Button>
-              <Button variant="outline">Save as Draft</Button>
-              <Button variant="ghost">Cancel</Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="flex gap-4 justify-end pb-8">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/leads')}
+            className="text-[#525252]"
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSubmit}
+            className="bg-[#0f62fe] hover:bg-[#0353e9] text-white px-8"
+          >
+            Create Lead
+          </Button>
+        </div>
+        </div>
       </div>
     </div>
   )
