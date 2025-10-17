@@ -72,7 +72,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         </div>
         
         {!sidebarCollapsed && (
-          <div className="text-white font-medium text-lg px-6 whitespace-nowrap">LoanFlow CRM</div>
+          <div className="text-white font-medium text-xl px-12 whitespace-nowrap">LoanFlow CRM</div>
         )}
       </div>
 
