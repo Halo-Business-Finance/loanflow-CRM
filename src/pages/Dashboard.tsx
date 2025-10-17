@@ -41,7 +41,8 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend
+  Legend,
+  Label
 } from 'recharts';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -371,6 +372,8 @@ export default function Dashboard() {
                       outerRadius={80}
                       paddingAngle={2}
                       dataKey="value"
+                      label={(entry) => entry.value}
+                      labelLine={false}
                     >
                       {pipelineStages.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
