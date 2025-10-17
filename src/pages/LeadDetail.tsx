@@ -1543,6 +1543,7 @@ export default function LeadDetail() {
                       onChange={(e) => setGeneralNotes(e.target.value)}
                       placeholder="Add general notes..."
                       className="mt-1 min-h-[100px] text-sm"
+                      readOnly={!isEditing}
                     />
                   ) : (
                     <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
@@ -1768,6 +1769,7 @@ export default function LeadDetail() {
                       onChange={(e) => setCallNotes(e.target.value)}
                       placeholder="Add call notes..."
                       className="mt-1 min-h-[100px] text-sm"
+                      readOnly={!isEditing}
                     />
                   ) : (
                     <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
