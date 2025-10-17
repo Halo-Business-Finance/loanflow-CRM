@@ -1505,6 +1505,53 @@ export default function LeadDetail() {
             </Card>
 
 
+            {/* Notes and Communication Card */}
+            <Card className="border-0 shadow-sm bg-card lg:col-span-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-base font-semibold text-foreground">
+                  Notes & Communication
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Call Notes</Label>
+                    {isEditing ? (
+                      <Textarea
+                        value={callNotes}
+                        onChange={(e) => setCallNotes(e.target.value)}
+                        placeholder="Add call notes..."
+                        className="mt-1 min-h-[100px] text-sm"
+                      />
+                    ) : (
+                      <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
+                        <p className="text-sm text-foreground whitespace-pre-wrap">
+                          {callNotes || 'No call notes yet...'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">General Notes</Label>
+                    {isEditing ? (
+                      <Textarea
+                        value={generalNotes}
+                        onChange={(e) => setGeneralNotes(e.target.value)}
+                        placeholder="Add general notes..."
+                        className="mt-1 min-h-[100px] text-sm"
+                      />
+                    ) : (
+                      <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
+                        <p className="text-sm text-foreground whitespace-pre-wrap">
+                          {generalNotes || 'No general notes yet...'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Financial Information Card */}
             <Card className="border-0 shadow-sm bg-card lg:col-span-2">
               <CardHeader className="pb-4">
@@ -1575,17 +1622,39 @@ export default function LeadDetail() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
-                    <Label className="text-xs font-medium text-muted-foreground">Credit Score</Label>
+                    <Label className="text-xs font-medium text-muted-foreground">Owns Property</Label>
+                    {isEditing ? (
+                      <Select
+                        value={editableFields.owns_property?.toString() || "false"}
+                        onValueChange={(value) => setEditableFields({...editableFields, owns_property: value === "true"})}
+                      >
+                        <SelectTrigger className="mt-1 h-8 text-sm">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="true">Yes</SelectItem>
+                          <SelectItem value="false">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.owns_property ? 'Yes' : 'No'}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Property Payment Amount</Label>
                     {isEditing ? (
                       <Input
                         type="number"
-                        value={editableFields.credit_score}
-                        onChange={(e) => setEditableFields({...editableFields, credit_score: e.target.value})}
+                        step="0.01"
+                        value={editableFields.property_payment_amount}
+                        onChange={(e) => setEditableFields({...editableFields, property_payment_amount: e.target.value})}
                         className="mt-1 h-8 text-sm"
                       />
                     ) : (
                       <div className="field-display mt-1">
-                        {editableFields.credit_score || 'N/A'}
+                        {editableFields.property_payment_amount ? formatCurrency(parseFloat(editableFields.property_payment_amount)) : 'N/A'}
                       </div>
                     )}
                   </div>
@@ -1695,53 +1764,6 @@ export default function LeadDetail() {
                     ) : (
                       <div className="field-display mt-1">
                         {editableFields.bdo_email || 'N/A'}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Notes and Communication Card */}
-            <Card className="border-0 shadow-sm bg-card lg:col-span-2">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-base font-semibold text-foreground">
-                  Notes & Communication
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">Call Notes</Label>
-                    {isEditing ? (
-                      <Textarea
-                        value={callNotes}
-                        onChange={(e) => setCallNotes(e.target.value)}
-                        placeholder="Add call notes..."
-                        className="mt-1 min-h-[100px] text-sm"
-                      />
-                    ) : (
-                      <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
-                        <p className="text-sm text-foreground whitespace-pre-wrap">
-                          {callNotes || 'No call notes yet...'}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">General Notes</Label>
-                    {isEditing ? (
-                      <Textarea
-                        value={generalNotes}
-                        onChange={(e) => setGeneralNotes(e.target.value)}
-                        placeholder="Add general notes..."
-                        className="mt-1 min-h-[100px] text-sm"
-                      />
-                    ) : (
-                      <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
-                        <p className="text-sm text-foreground whitespace-pre-wrap">
-                          {generalNotes || 'No general notes yet...'}
-                        </p>
                       </div>
                     )}
                   </div>
