@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 // Badge component removed - using plain text instead
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { ActionReminder } from "@/components/ActionReminder"
 import { PhoneDialer } from "@/components/PhoneDialer"
@@ -80,6 +81,17 @@ export default function LeadDetail() {
   const [additionalBorrowers, setAdditionalBorrowers] = useState<any[]>([])
   const [currentBorrowerIndex, setCurrentBorrowerIndex] = useState(0)
   const [isFlipping, setIsFlipping] = useState(false)
+  const [showAddBorrowerDialog, setShowAddBorrowerDialog] = useState(false)
+  const [newBorrower, setNewBorrower] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    home_address: "",
+    home_city: "",
+    home_state: "",
+    home_zip_code: "",
+    ownership_percentage: ""
+  })
   const [editableFields, setEditableFields] = useState({
     name: "",
     email: "",
@@ -172,7 +184,74 @@ export default function LeadDetail() {
   }
 
   const handleAddBorrower = () => {
-    navigate(`/leads/${id}/add-borrower`)
+    setShowAddBorrowerDialog(true)
+  }
+
+  const saveNewBorrower = async () => {
+    if (!lead || !user) return
+
+    try {
+      // Create contact entity for the new borrower
+      const { data: contactData, error: contactError } = await supabase
+        .from('contact_entities')
+        .insert({
+          user_id: user.id,
+          name: `${newBorrower.first_name} ${newBorrower.last_name}`.trim(),
+          first_name: newBorrower.first_name,
+          last_name: newBorrower.last_name,
+          email: newBorrower.email,
+          home_address: newBorrower.home_address,
+          home_city: newBorrower.home_city,
+          home_state: newBorrower.home_state,
+          home_zip_code: newBorrower.home_zip_code,
+          ownership_percentage: newBorrower.ownership_percentage ? parseFloat(newBorrower.ownership_percentage) : null
+        })
+        .select()
+        .single()
+
+      if (contactError) throw contactError
+
+      // Create additional borrower record
+      const borrowerOrder = additionalBorrowers.length + 1
+      const { error: borrowerError } = await supabase
+        .from('additional_borrowers')
+        .insert({
+          lead_id: lead.id,
+          contact_entity_id: contactData.id,
+          borrower_order: borrowerOrder,
+          is_primary: false
+        })
+
+      if (borrowerError) throw borrowerError
+
+      toast({
+        title: "Success",
+        description: "Additional borrower added successfully",
+      })
+
+      // Reset form and close dialog
+      setNewBorrower({
+        first_name: "",
+        last_name: "",
+        email: "",
+        home_address: "",
+        home_city: "",
+        home_state: "",
+        home_zip_code: "",
+        ownership_percentage: ""
+      })
+      setShowAddBorrowerDialog(false)
+      
+      // Refresh borrowers list
+      fetchAdditionalBorrowers()
+    } catch (error) {
+      console.error('Error adding borrower:', error)
+      toast({
+        title: "Error",
+        description: "Failed to add borrower",
+        variant: "destructive",
+      })
+    }
   }
 
   // Get current borrower data based on index
@@ -1599,6 +1678,121 @@ export default function LeadDetail() {
             onClose={() => setShowReminderDialog(false)}
           />
         )}
+
+        {/* Add Borrower Dialog */}
+        <Dialog open={showAddBorrowerDialog} onOpenChange={setShowAddBorrowerDialog}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Add Additional Borrower</DialogTitle>
+              <DialogDescription>
+                Add a new borrower to this loan application
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="new-first-name">First Name *</Label>
+                  <Input
+                    id="new-first-name"
+                    value={newBorrower.first_name}
+                    onChange={(e) => setNewBorrower({...newBorrower, first_name: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="new-last-name">Last Name *</Label>
+                  <Input
+                    id="new-last-name"
+                    value={newBorrower.last_name}
+                    onChange={(e) => setNewBorrower({...newBorrower, last_name: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="new-email">Email *</Label>
+                <Input
+                  id="new-email"
+                  type="email"
+                  value={newBorrower.email}
+                  onChange={(e) => setNewBorrower({...newBorrower, email: e.target.value})}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="new-home-address">Home Address</Label>
+                <Input
+                  id="new-home-address"
+                  value={newBorrower.home_address}
+                  onChange={(e) => setNewBorrower({...newBorrower, home_address: e.target.value})}
+                  className="mt-1"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="new-city">City</Label>
+                  <Input
+                    id="new-city"
+                    value={newBorrower.home_city}
+                    onChange={(e) => setNewBorrower({...newBorrower, home_city: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="new-state">State</Label>
+                  <Input
+                    id="new-state"
+                    value={newBorrower.home_state}
+                    onChange={(e) => setNewBorrower({...newBorrower, home_state: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="new-zip">ZIP Code</Label>
+                  <Input
+                    id="new-zip"
+                    value={newBorrower.home_zip_code}
+                    onChange={(e) => setNewBorrower({...newBorrower, home_zip_code: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="new-ownership">Ownership Percentage</Label>
+                <Input
+                  id="new-ownership"
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={newBorrower.ownership_percentage}
+                  onChange={(e) => setNewBorrower({...newBorrower, ownership_percentage: e.target.value})}
+                  className="mt-1"
+                  placeholder="e.g., 50"
+                />
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setShowAddBorrowerDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={saveNewBorrower}
+                disabled={!newBorrower.first_name || !newBorrower.last_name || !newBorrower.email}
+              >
+                Add Borrower
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     )
   }
