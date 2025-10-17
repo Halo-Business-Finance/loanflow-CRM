@@ -61,12 +61,13 @@ export default function Dashboard() {
     totalLeads: 0,
     activeDeals: 0,
     pendingTasks: 0,
-    recentActivity: 0,
+    recentActivities: 0,
     totalRevenue: 2500000,
     pipelineValue: 4800000,
     conversionRate: 15.3,
     avgDealSize: 185000
   });
+  const [recentActivityList, setRecentActivityList] = useState<Array<{type: string; message: string; time: string}>>([]);
 
   const [pipelineStages, setPipelineStages] = useState<{ name: string; value: number; color: string }[]>([]);
   const [conversionFunnel, setConversionFunnel] = useState<{ stage: string; count: number; conversion: number }[]>([]);
@@ -181,12 +182,49 @@ export default function Dashboard() {
       });
       setRevenuePerformance(revenueData);
 
+      // Calculate pending tasks (leads that need follow-up - contacted or qualified stages)
+      const pendingTasks = leads?.filter(l => {
+        const stage = (l.contact_entities as any)?.stage;
+        return stage === 'Contacted' || stage === 'Qualified';
+      }).length || 0;
+
+      // Get recent activities from lead updates
+      const recentLeads = [...(leads || [])].sort((a, b) => 
+        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+      ).slice(0, 3);
+
+      const activities = recentLeads.map(lead => {
+        const stage = (lead.contact_entities as any)?.stage;
+        const updatedAt = new Date(lead.updated_at);
+        const now = new Date();
+        const diffMs = now.getTime() - updatedAt.getTime();
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffHours / 24);
+        
+        let timeStr = '';
+        if (diffDays > 0) {
+          timeStr = diffDays === 1 ? 'Yesterday' : `${diffDays} days ago`;
+        } else if (diffHours > 0) {
+          timeStr = `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+        } else {
+          timeStr = 'Just now';
+        }
+
+        return {
+          type: stage === 'Closed Won' ? 'converted' : stage === 'New Lead' ? 'created' : 'updated',
+          message: stage === 'Closed Won' ? 'Lead converted' : stage === 'New Lead' ? 'New lead created' : `Lead moved to ${stage}`,
+          time: timeStr
+        };
+      });
+
+      setRecentActivityList(activities);
+
       setStats(prev => ({
         ...prev,
         totalLeads: leads?.length || 0,
         activeDeals: activeDeals,
-        pendingTasks: 5,
-        recentActivity: 12
+        pendingTasks: pendingTasks,
+        recentActivities: activities.length
       }));
 
     } catch (error) {
@@ -426,22 +464,22 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-light text-[#161616] mb-4">{stats.pendingTasks}</div>
-              <div className="space-y-3">
-                <div className="flex items-start gap-2 text-sm pb-2 border-b border-[#e0e0e0]">
-                  <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <span className="text-[#161616]">Follow up with 3 leads</span>
-                    <p className="text-xs text-[#525252] mt-0.5">Due today</p>
+              {stats.pendingTasks > 0 ? (
+                <div className="space-y-3">
+                  <div className="flex items-start gap-2 text-sm pb-2 border-b border-[#e0e0e0]">
+                    <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <span className="text-[#161616]">Follow up with {stats.pendingTasks} lead{stats.pendingTasks > 1 ? 's' : ''}</span>
+                      <p className="text-xs text-[#525252] mt-0.5">Contacted and qualified stages</p>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-start gap-2 text-sm pb-2 border-b border-[#e0e0e0]">
-                  <Clock className="h-4 w-4 text-[#0f62fe] mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <span className="text-[#161616]">Review loan applications</span>
-                    <p className="text-xs text-[#525252] mt-0.5">Due tomorrow</p>
-                  </div>
+              ) : (
+                <div className="flex items-center gap-2 text-sm text-[#525252]">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span>All caught up!</span>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
@@ -456,29 +494,25 @@ export default function Dashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3 pb-2 border-b border-[#e0e0e0]">
-                  <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm text-[#161616]">Lead converted</p>
-                    <p className="text-xs text-[#525252] mt-0.5">2 hours ago</p>
-                  </div>
+              {recentActivityList.length > 0 ? (
+                <div className="space-y-3">
+                  {recentActivityList.map((activity, index) => (
+                    <div key={index} className={`flex items-start gap-3 ${index < recentActivityList.length - 1 ? 'pb-2 border-b border-[#e0e0e0]' : ''}`}>
+                      {activity.type === 'converted' && <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />}
+                      {activity.type === 'created' && <UserPlus className="h-4 w-4 text-[#0f62fe] mt-0.5 flex-shrink-0" />}
+                      {activity.type === 'updated' && <Activity className="h-4 w-4 text-[#8a3ffc] mt-0.5 flex-shrink-0" />}
+                      <div className="flex-1">
+                        <p className="text-sm text-[#161616]">{activity.message}</p>
+                        <p className="text-xs text-[#525252] mt-0.5">{activity.time}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-start gap-3 pb-2 border-b border-[#e0e0e0]">
-                  <FileText className="h-4 w-4 text-[#0f62fe] mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm text-[#161616]">Document uploaded</p>
-                    <p className="text-xs text-[#525252] mt-0.5">5 hours ago</p>
-                  </div>
+              ) : (
+                <div className="flex items-center justify-center h-24 text-[#525252] text-sm">
+                  No recent activity
                 </div>
-                <div className="flex items-start gap-3">
-                  <Calendar className="h-4 w-4 text-[#8a3ffc] mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm text-[#161616]">Meeting scheduled</p>
-                    <p className="text-xs text-[#525252] mt-0.5">Yesterday</p>
-                  </div>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
