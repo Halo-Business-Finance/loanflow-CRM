@@ -79,12 +79,6 @@ export default function Reports() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="widget-glass widget-glow border-0">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
-                  <FileText className="h-5 w-5 text-primary" />
-                </div>
-                <Badge variant="outline" className="text-xs">TOTAL</Badge>
-              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Reports</h3>
               <p className="text-2xl font-bold text-foreground">{overview.totalReports}</p>
             </CardContent>
@@ -92,12 +86,6 @@ export default function Reports() {
           
           <Card className="widget-glass widget-glow border-0">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
-                  <Target className="h-5 w-5 text-primary" />
-                </div>
-                <Badge variant="outline" className="text-xs">ACCURACY</Badge>
-              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Data Accuracy</h3>
               <p className="text-2xl font-bold text-foreground">{overview.dataAccuracy}%</p>
             </CardContent>
@@ -105,12 +93,6 @@ export default function Reports() {
           
           <Card className="widget-glass widget-glow border-0">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
-                  <Activity className="h-5 w-5 text-primary" />
-                </div>
-                <Badge variant="outline" className="text-xs">SPEED</Badge>
-              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Processing Time</h3>
               <p className="text-2xl font-bold text-foreground">{overview.processingTime}s</p>
             </CardContent>
@@ -118,12 +100,6 @@ export default function Reports() {
           
           <Card className="widget-glass widget-glow border-0">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
-                  <CheckCircle className="h-5 w-5 text-primary" />
-                </div>
-                <Badge variant="outline" className="text-xs">COMPLIANCE</Badge>
-              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Compliance Score</h3>
               <p className="text-2xl font-bold text-foreground">{overview.complianceScore}%</p>
             </CardContent>
@@ -160,12 +136,6 @@ export default function Reports() {
             <div className="grid gap-6 md:grid-cols-2">
               <Card className="widget-glass border-0">
                 <CardHeader>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
-                      <TrendingUp className="h-4 w-4 text-primary" />
-                    </div>
-                    <Badge variant="outline" className="text-xs">REVENUE</Badge>
-                  </div>
                   <CardTitle className="text-lg font-semibold">
                     Revenue Analytics
                   </CardTitle>
@@ -193,8 +163,7 @@ export default function Reports() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-blue-500" />
+                  <CardTitle>
                     Lead Performance
                   </CardTitle>
                   <CardDescription>
@@ -222,8 +191,7 @@ export default function Reports() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-purple-500" />
+                <CardTitle>
                   Quick Report Generation
                 </CardTitle>
                 <CardDescription>
@@ -253,8 +221,7 @@ export default function Reports() {
             <div className="grid gap-6 md:grid-cols-2">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Target className="h-5 w-5 text-orange-500" />
+                  <CardTitle>
                     Goal Achievement
                   </CardTitle>
                   <CardDescription>
@@ -281,8 +248,7 @@ export default function Reports() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-teal-500" />
+                  <CardTitle>
                     Time-Based Metrics
                   </CardTitle>
                   <CardDescription>
@@ -313,8 +279,7 @@ export default function Reports() {
             <div className="grid gap-6 md:grid-cols-3">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-indigo-500" />
+                  <CardTitle>
                     Data Insights
                   </CardTitle>
                 </CardHeader>
@@ -326,8 +291,7 @@ export default function Reports() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Activity className="h-5 w-5 text-pink-500" />
+                  <CardTitle>
                     Processing Speed
                   </CardTitle>
                 </CardHeader>
@@ -339,8 +303,7 @@ export default function Reports() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5 text-emerald-500" />
+                  <CardTitle>
                     Cost Efficiency
                   </CardTitle>
                 </CardHeader>
@@ -355,8 +318,7 @@ export default function Reports() {
           <TabsContent value="compliance" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
+                <CardTitle>
                   Compliance Dashboard
                 </CardTitle>
                 <CardDescription>
