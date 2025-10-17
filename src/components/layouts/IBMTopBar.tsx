@@ -14,7 +14,6 @@ import { useToast } from '@/hooks/use-toast';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { NotificationBell } from '@/components/NotificationBell';
 import { LoanCalculator } from '@/components/LoanCalculator';
-import { GlobalSearch } from '@/components/GlobalSearch';
 
 interface IBMTopBarProps {
   onMenuClick: () => void;
@@ -79,8 +78,13 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
 
       {/* Center search bar */}
       <div className="flex justify-center items-center gap-2">
-        <div className="w-[420px]">
-          <GlobalSearch />
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Input
+            placeholder="Search by the borrower or company name..."
+            className="pl-10 h-9 bg-[#262626] border-[#393939] text-white placeholder:text-gray-400 focus:bg-[#393939] rounded-none"
+            style={{ width: '420px' }}
+          />
         </div>
       </div>
 
