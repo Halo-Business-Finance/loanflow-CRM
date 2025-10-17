@@ -1505,6 +1505,34 @@ export default function LeadDetail() {
             </Card>
 
 
+            {/* General Notes Card */}
+            <Card className="border-0 shadow-sm bg-card lg:col-span-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-base font-semibold text-foreground">
+                  General Notes
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Notes</Label>
+                  {isEditing ? (
+                    <Textarea
+                      value={generalNotes}
+                      onChange={(e) => setGeneralNotes(e.target.value)}
+                      placeholder="Add general notes..."
+                      className="mt-1 min-h-[100px] text-sm"
+                    />
+                  ) : (
+                    <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
+                      <p className="text-sm text-foreground whitespace-pre-wrap">
+                        {generalNotes || 'No general notes yet...'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Financial Information Card */}
             <Card className="border-0 shadow-sm bg-card lg:col-span-2">
               <CardHeader className="pb-4">
@@ -1702,49 +1730,30 @@ export default function LeadDetail() {
               </CardContent>
             </Card>
 
-            {/* Notes and Communication Card */}
+            {/* Call Notes Card */}
             <Card className="border-0 shadow-sm bg-card lg:col-span-2">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base font-semibold text-foreground">
-                  Notes & Communication
+                  Call Notes
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">Call Notes</Label>
-                    {isEditing ? (
-                      <Textarea
-                        value={callNotes}
-                        onChange={(e) => setCallNotes(e.target.value)}
-                        placeholder="Add call notes..."
-                        className="mt-1 min-h-[100px] text-sm"
-                      />
-                    ) : (
-                      <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
-                        <p className="text-sm text-foreground whitespace-pre-wrap">
-                          {callNotes || 'No call notes yet...'}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">General Notes</Label>
-                    {isEditing ? (
-                      <Textarea
-                        value={generalNotes}
-                        onChange={(e) => setGeneralNotes(e.target.value)}
-                        placeholder="Add general notes..."
-                        className="mt-1 min-h-[100px] text-sm"
-                      />
-                    ) : (
-                      <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
-                        <p className="text-sm text-foreground whitespace-pre-wrap">
-                          {generalNotes || 'No general notes yet...'}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+              <CardContent className="pt-0">
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Notes</Label>
+                  {isEditing ? (
+                    <Textarea
+                      value={callNotes}
+                      onChange={(e) => setCallNotes(e.target.value)}
+                      placeholder="Add call notes..."
+                      className="mt-1 min-h-[100px] text-sm"
+                    />
+                  ) : (
+                    <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
+                      <p className="text-sm text-foreground whitespace-pre-wrap">
+                        {callNotes || 'No call notes yet...'}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
