@@ -794,9 +794,25 @@ export default function LeadDetail() {
             {/* Borrower Information Card */}
             <Card className="border border-border shadow-sm bg-white">
               <CardHeader className="pb-4">
-                <CardTitle className="text-base font-semibold text-foreground">
-                  Borrower Information
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base font-semibold text-foreground">
+                    Borrower Information
+                  </CardTitle>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs"
+                    onClick={() => {
+                      toast({
+                        title: "Add Borrower",
+                        description: "Additional borrower functionality coming soon",
+                      })
+                    }}
+                  >
+                    <UserPlus className="h-3 w-3 mr-2" />
+                    Add Borrower
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="pt-0 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
