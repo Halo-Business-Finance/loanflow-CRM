@@ -860,14 +860,14 @@ export default function LeadDetail() {
                         <Label className="text-xs font-medium text-muted-foreground">Loan Originator</Label>
                         {isEditing ? (
                           <Select
-                            value={assignments.loan_originator_id}
-                            onValueChange={(value) => setAssignments({...assignments, loan_originator_id: value})}
+                            value={assignments.loan_originator_id || "unassigned"}
+                            onValueChange={(value) => setAssignments({...assignments, loan_originator_id: value === "unassigned" ? "" : value})}
                           >
                             <SelectTrigger className="mt-1 h-9 text-sm">
                               <SelectValue placeholder="Select originator" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="">Unassigned</SelectItem>
+                              <SelectItem value="unassigned">Unassigned</SelectItem>
                               {teamMembers.map(member => (
                                 <SelectItem key={member.id} value={member.id}>
                                   {member.name}
@@ -885,14 +885,14 @@ export default function LeadDetail() {
                         <Label className="text-xs font-medium text-muted-foreground">Loan Processor</Label>
                         {isEditing ? (
                           <Select
-                            value={assignments.processor_id}
-                            onValueChange={(value) => setAssignments({...assignments, processor_id: value})}
+                            value={assignments.processor_id || "unassigned"}
+                            onValueChange={(value) => setAssignments({...assignments, processor_id: value === "unassigned" ? "" : value})}
                           >
                             <SelectTrigger className="mt-1 h-9 text-sm">
                               <SelectValue placeholder="Select processor" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="">Unassigned</SelectItem>
+                              <SelectItem value="unassigned">Unassigned</SelectItem>
                               {teamMembers.map(member => (
                                 <SelectItem key={member.id} value={member.id}>
                                   {member.name}
@@ -910,14 +910,14 @@ export default function LeadDetail() {
                         <Label className="text-xs font-medium text-muted-foreground">Underwriter</Label>
                         {isEditing ? (
                           <Select
-                            value={assignments.underwriter_id}
-                            onValueChange={(value) => setAssignments({...assignments, underwriter_id: value})}
+                            value={assignments.underwriter_id || "unassigned"}
+                            onValueChange={(value) => setAssignments({...assignments, underwriter_id: value === "unassigned" ? "" : value})}
                           >
                             <SelectTrigger className="mt-1 h-9 text-sm">
                               <SelectValue placeholder="Select underwriter" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="">Unassigned</SelectItem>
+                              <SelectItem value="unassigned">Unassigned</SelectItem>
                               {teamMembers.map(member => (
                                 <SelectItem key={member.id} value={member.id}>
                                   {member.name}
