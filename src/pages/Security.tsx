@@ -65,36 +65,20 @@ const SecurityPage: React.FC = () => {
           {/* Enterprise Header */}
           <div className="flex items-start justify-between">
             <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
-                  <ShieldCheck className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h1 className="text-4xl font-bold tracking-tight text-foreground">
-                    Enterprise Security Center
-                  </h1>
-                  <p className="text-muted-foreground mt-1">
-                    Military-grade security monitoring and threat intelligence
-                  </p>
-                </div>
-              </div>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">
+                Enterprise Security Center
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                Military-grade security monitoring and threat intelligence
+              </p>
             </div>
             <div className="flex items-center gap-3">
               <Button 
                 onClick={() => window.location.reload()}
-                variant="outline" 
-                className="gap-2"
+                variant="outline"
               >
-                <RefreshCw className="h-4 w-4" />
                 Refresh
               </Button>
-              <Badge 
-                variant={systemStatus === 'operational' ? 'default' : 'destructive'}
-                className="px-4 py-2 text-sm font-semibold"
-              >
-                <Radio className="h-3 w-3 mr-2 animate-pulse" />
-                {systemStatus.toUpperCase()}
-              </Badge>
             </div>
           </div>
 
@@ -115,7 +99,6 @@ const SecurityPage: React.FC = () => {
                         <span className="text-2xl text-muted-foreground">/100</span>
                       </div>
                     </div>
-                    <Shield className="h-16 w-16 text-primary opacity-20" />
                   </div>
                   <Progress value={securityScore} className="h-3" />
                   <div className="grid grid-cols-3 gap-4 pt-2">
@@ -140,44 +123,20 @@ const SecurityPage: React.FC = () => {
                   </h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Server className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">Database</span>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        <CheckCircle className="h-3 w-3 mr-1 text-primary" />
-                        Healthy
-                      </Badge>
+                      <span className="text-sm">Database</span>
+                      <span className="text-xs text-muted-foreground">Healthy</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Network className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">Network</span>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        <CheckCircle className="h-3 w-3 mr-1 text-primary" />
-                        Secured
-                      </Badge>
+                      <span className="text-sm">Network</span>
+                      <span className="text-xs text-muted-foreground">Secured</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Activity className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">Monitoring</span>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        <CheckCircle className="h-3 w-3 mr-1 text-primary" />
-                        Active
-                      </Badge>
+                      <span className="text-sm">Monitoring</span>
+                      <span className="text-xs text-muted-foreground">Active</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <UserCheck className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">MFA</span>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        <CheckCircle className="h-3 w-3 mr-1 text-primary" />
-                        Enforced
-                      </Badge>
+                      <span className="text-sm">MFA</span>
+                      <span className="text-xs text-muted-foreground">Enforced</span>
                     </div>
                   </div>
                 </div>
@@ -192,14 +151,6 @@ const SecurityPage: React.FC = () => {
               onClick={() => navigate('/security/compliance')}
             >
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
-                    <Shield className="h-5 w-5 text-primary" />
-                  </div>
-                  <Badge variant="outline" className="text-xs font-semibold">
-                    ACTIVE
-                  </Badge>
-                </div>
                 <h3 className="text-sm font-medium text-muted-foreground mb-1">Security Status</h3>
                 <p className="text-2xl font-bold text-foreground">Optimal</p>
                 <Progress value={98} className="h-1 mt-3" />
@@ -211,14 +162,6 @@ const SecurityPage: React.FC = () => {
               onClick={() => navigate('/security/audit')}
             >
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
-                    <Eye className="h-5 w-5 text-primary" />
-                  </div>
-                  <Badge variant="outline" className="text-xs font-semibold">
-                    LIVE
-                  </Badge>
-                </div>
                 <h3 className="text-sm font-medium text-muted-foreground mb-1">Active Monitors</h3>
                 <p className="text-2xl font-bold text-foreground">6</p>
                 <p className="text-xs text-muted-foreground mt-2">Real-time tracking</p>
@@ -230,14 +173,6 @@ const SecurityPage: React.FC = () => {
               onClick={() => navigate('/security/threats')}
             >
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-2 rounded-lg bg-destructive/10 ring-1 ring-destructive/20 group-hover:bg-destructive/20 transition-colors">
-                    <AlertTriangle className="h-5 w-5 text-destructive" />
-                  </div>
-                  <Badge variant="outline" className="text-xs font-semibold">
-                    24H
-                  </Badge>
-                </div>
                 <h3 className="text-sm font-medium text-muted-foreground mb-1">Threats Blocked</h3>
                 <p className="text-2xl font-bold text-foreground">127</p>
                 <p className="text-xs text-muted-foreground mt-2">Last 24 hours</p>
@@ -249,14 +184,6 @@ const SecurityPage: React.FC = () => {
               onClick={() => navigate('/security/access')}
             >
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
-                    <Lock className="h-5 w-5 text-primary" />
-                  </div>
-                  <Badge variant="outline" className="text-xs font-semibold">
-                    ENFORCED
-                  </Badge>
-                </div>
                 <h3 className="text-sm font-medium text-muted-foreground mb-1">MFA Status</h3>
                 <p className="text-2xl font-bold text-foreground">Active</p>
                 <Progress value={100} className="h-1 mt-3" />
@@ -271,28 +198,24 @@ const SecurityPage: React.FC = () => {
                 value="monitoring" 
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium"
               >
-                <Activity className="h-4 w-4 mr-2" />
                 Live Monitoring
               </TabsTrigger>
               <TabsTrigger 
                 value="access-control" 
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium"
               >
-                <Database className="h-4 w-4 mr-2" />
                 Access Control
               </TabsTrigger>
               <TabsTrigger 
                 value="mfa" 
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium"
               >
-                <Smartphone className="h-4 w-4 mr-2" />
                 MFA Setup
               </TabsTrigger>
               <TabsTrigger 
                 value="dashboard" 
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all py-3 text-sm font-medium"
               >
-                <Shield className="h-4 w-4 mr-2" />
                 Command Center
               </TabsTrigger>
             </TabsList>
