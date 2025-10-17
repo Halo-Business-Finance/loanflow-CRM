@@ -80,8 +80,8 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           
           return {
             id: d.id,
-            name: d.business_name || borrowerName,
-            businessName: d.business_name ? borrowerName : undefined,
+            name: borrowerName,
+            businessName: d.business_name || undefined,
             email: d.email || undefined
           };
         }) || []);
