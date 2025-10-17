@@ -238,7 +238,7 @@ export function IBMSidebar({ collapsed }: IBMSidebarProps) {
         collapsed ? 'w-16' : 'w-60'
       )}
     >
-      <nav className="space-y-0.5 pt-4">
+      <nav className="space-y-0.5 pt-8">
         {navItems.map((item) => (
           <NavItem key={item.to || item.label} {...item} collapsed={collapsed} />
         ))}
