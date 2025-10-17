@@ -154,7 +154,6 @@ export const AdvancedThreatDetection: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
             Advanced Threat Detection
           </CardTitle>
         </CardHeader>
@@ -174,12 +173,10 @@ export const AdvancedThreatDetection: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
             Advanced Threat Detection
           </CardTitle>
           <div className="flex gap-2">
             <Button onClick={runThreatScan} disabled={scanningProgress > 0 && scanningProgress < 100}>
-              <Activity className="h-4 w-4 mr-2" />
               {scanningProgress > 0 && scanningProgress < 100 ? `Scanning... ${scanningProgress}%` : 'Run Deep Scan'}
             </Button>
           </div>
@@ -199,7 +196,6 @@ export const AdvancedThreatDetection: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="p-4 border rounded-lg">
               <h3 className="font-semibold flex items-center gap-2 mb-2">
-                <TrendingUp className="h-4 w-4" />
                 Threat Patterns
               </h3>
               <p className="text-2xl font-bold">{threatPatterns.length}</p>
@@ -208,7 +204,6 @@ export const AdvancedThreatDetection: React.FC = () => {
             
             <div className="p-4 border rounded-lg">
               <h3 className="font-semibold flex items-center gap-2 mb-2">
-                <Globe className="h-4 w-4" />
                 Suspicious IPs
               </h3>
               <p className="text-2xl font-bold">{ipReputations.filter(ip => ip.risk_level !== 'low').length}</p>
@@ -223,7 +218,6 @@ export const AdvancedThreatDetection: React.FC = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5" />
               Active Threat Patterns
             </CardTitle>
           </CardHeader>
@@ -236,9 +230,9 @@ export const AdvancedThreatDetection: React.FC = () => {
                   <div key={pattern.id} className="flex items-center justify-between p-3 border rounded">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <Badge variant={pattern.severity === 'critical' ? 'destructive' : 'secondary'}>
+                        <span className="text-sm">
                           {pattern.severity}
-                        </Badge>
+                        </span>
                         <span className="font-medium">{pattern.pattern_type}</span>
                       </div>
                       <p className="text-sm text-muted-foreground">{pattern.description}</p>
@@ -252,7 +246,6 @@ export const AdvancedThreatDetection: React.FC = () => {
                         variant="outline"
                         onClick={() => mitigateThreat(pattern.id)}
                       >
-                        <Lock className="h-3 w-3 mr-1" />
                         Mitigate
                       </Button>
                     )}
@@ -267,7 +260,6 @@ export const AdvancedThreatDetection: React.FC = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Globe className="h-5 w-5" />
               IP Reputation Analysis
             </CardTitle>
           </CardHeader>
@@ -280,22 +272,22 @@ export const AdvancedThreatDetection: React.FC = () => {
                   <div key={index} className="p-3 border rounded">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-mono text-sm">{ip.ip_address}</span>
-                      <Badge variant={ip.risk_level === 'high' ? 'destructive' : ip.risk_level === 'medium' ? 'default' : 'secondary'}>
+                      <span className="text-sm">
                         {ip.risk_level} risk
-                      </Badge>
+                      </span>
                     </div>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                       <span>Score: {ip.reputation_score}/100</span>
                       <span>Country: {ip.country}</span>
-                      {ip.is_vpn && <Badge variant="outline">VPN</Badge>}
-                      {ip.is_tor && <Badge variant="outline">Tor</Badge>}
+                      {ip.is_vpn && <span className="text-xs">VPN</span>}
+                      {ip.is_tor && <span className="text-xs">Tor</span>}
                     </div>
                     {ip.threat_categories.length > 0 && (
                       <div className="mt-2 flex gap-1">
                         {ip.threat_categories.map((category, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-xs">
+                          <span key={idx} className="text-xs">
                             {category}
-                          </Badge>
+                          </span>
                         ))}
                       </div>
                     )}
@@ -309,7 +301,6 @@ export const AdvancedThreatDetection: React.FC = () => {
 
       {threatPatterns.some(p => p.severity === 'critical') && (
         <Alert>
-          <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             Critical threat patterns detected! Review and mitigate immediately to maintain system security.
           </AlertDescription>

@@ -233,7 +233,6 @@ export function DarkWebSecurityBot() {
     return (
       <div className="p-6">
         <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             You do not have permission to view dark web threat intelligence.
           </AlertDescription>
@@ -247,7 +246,6 @@ export function DarkWebSecurityBot() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Globe className="h-5 w-5" />
             Dark Web Security Bot
           </CardTitle>
         </CardHeader>
@@ -265,20 +263,18 @@ export function DarkWebSecurityBot() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Globe className="h-5 w-5" />
             Dark Web Security Bot
-            <Badge variant="destructive" className="animate-pulse">
+            <span className="text-sm text-destructive animate-pulse">
               HIGH ALERT - CONTINUOUS MONITORING
-            </Badge>
+            </span>
           </CardTitle>
           <CardDescription>
-            🚨 HIGH ALERT MODE: Continuous AI monitoring for dark web threats, Tor networks, and credential leaks
+            HIGH ALERT MODE: Continuous AI monitoring for dark web threats, Tor networks, and credential leaks
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {metrics.threat_level === "critical" && (
             <Alert variant="destructive">
-              <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
                 Critical dark web threat level detected! Multiple suspicious activities have been blocked.
               </AlertDescription>
@@ -297,7 +293,6 @@ export function DarkWebSecurityBot() {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
-                      <Shield className="h-4 w-4 text-green-600" />
                       <div>
                         <p className="text-sm font-medium">Threats Blocked</p>
                         <p className="text-2xl font-bold">{metrics.threats_blocked}</p>
@@ -309,7 +304,6 @@ export function DarkWebSecurityBot() {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
-                      <Globe className="h-4 w-4 text-orange-600" />
                       <div>
                         <p className="text-sm font-medium">Suspicious Domains</p>
                         <p className="text-2xl font-bold">{metrics.suspicious_domains}</p>
@@ -321,7 +315,6 @@ export function DarkWebSecurityBot() {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
-                      <Eye className="h-4 w-4 text-purple-600" />
                       <div>
                         <p className="text-sm font-medium">Tor Attempts</p>
                         <p className="text-2xl font-bold">{metrics.tor_attempts}</p>
@@ -333,7 +326,6 @@ export function DarkWebSecurityBot() {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
-                      <Users className="h-4 w-4 text-red-600" />
                       <div>
                         <p className="text-sm font-medium">Credential Leaks</p>
                         <p className="text-2xl font-bold">{metrics.credential_leaks}</p>
@@ -347,9 +339,9 @@ export function DarkWebSecurityBot() {
                 <CardContent className="p-4">
                   <div className="flex justify-between items-center">
                     <span className="font-medium">Current Threat Level:</span>
-                    <Badge variant={getSeverityColor(metrics.threat_level)} className={getThreatLevelColor(metrics.threat_level)}>
+                    <span className={getThreatLevelColor(metrics.threat_level)}>
                       {metrics.threat_level.toUpperCase()}
-                    </Badge>
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -363,14 +355,12 @@ export function DarkWebSecurityBot() {
                       <div className="flex justify-between items-start">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <Badge variant={getSeverityColor(threat.severity)}>
-                              {threat.severity.toUpperCase()}
-                            </Badge>
+                            <span className="text-sm">{threat.severity.toUpperCase()}</span>
                             <span className="font-medium">{threat.type}</span>
                             {threat.blocked && (
-                              <Badge variant="outline" className="text-green-600">
+                              <span className="text-sm text-green-600">
                                 BLOCKED
-                              </Badge>
+                              </span>
                             )}
                           </div>
                           <p className="text-sm text-muted-foreground">{threat.description}</p>
@@ -378,7 +368,6 @@ export function DarkWebSecurityBot() {
                             Source: {threat.source} | {new Date(threat.timestamp).toLocaleString()}
                           </p>
                         </div>
-                        <Activity className="h-4 w-4 text-red-500" />
                       </div>
                     </CardContent>
                   </Card>
@@ -393,7 +382,6 @@ export function DarkWebSecurityBot() {
                   disabled={isMonitoring}
                   className="flex items-center gap-2"
                 >
-                  <Shield className="h-4 w-4" />
                   Start Dark Web Monitoring
                 </Button>
                 
@@ -403,7 +391,6 @@ export function DarkWebSecurityBot() {
                   variant="outline"
                   className="flex items-center gap-2"
                 >
-                  <Activity className="h-4 w-4" />
                   Stop Monitoring
                 </Button>
               </div>

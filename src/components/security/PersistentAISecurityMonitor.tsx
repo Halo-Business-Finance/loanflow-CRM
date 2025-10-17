@@ -214,7 +214,6 @@ export const PersistentAISecurityMonitor: React.FC = () => {
       {/* Emergency Alerts */}
       {emergencyAlerts.filter(alert => !alert.acknowledged).length > 0 && (
         <Alert variant="destructive" className="border-red-600 bg-red-50 animate-pulse">
-          <Zap className="h-4 w-4" />
           <AlertDescription className="font-bold">
             🚨 EMERGENCY: {emergencyAlerts.filter(alert => !alert.acknowledged).length} critical threats detected by AI security bots!
             <div className="mt-2">
@@ -241,11 +240,10 @@ export const PersistentAISecurityMonitor: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Bot className="h-5 w-5" />
               Persistent AI Security Bots
-              <Badge variant={activeBots.length === aiBots.length ? "default" : "destructive"}>
+              <span className="text-sm">
                 {activeBots.length}/{aiBots.length} Active
-              </Badge>
+              </span>
             </div>
             <Button onClick={triggerManualScan} size="sm" variant="outline">
               Manual Scan
@@ -257,7 +255,6 @@ export const PersistentAISecurityMonitor: React.FC = () => {
             {aiBots.map((bot) => (
               <div key={bot.id} className="flex items-center justify-between p-3 border rounded-lg">
                 <div className="flex items-center gap-3">
-                  {getBotIcon(bot.bot_type)}
                   <div>
                     <div className="font-medium">{bot.bot_name}</div>
                     <div className="text-sm text-muted-foreground capitalize">
@@ -266,9 +263,9 @@ export const PersistentAISecurityMonitor: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant={bot.status === 'active' ? 'default' : 'destructive'}>
+                  <span className="text-sm">
                     {bot.status}
-                  </Badge>
+                  </span>
                   <div className="text-xs text-muted-foreground">
                     {new Date(bot.last_activity).toLocaleTimeString()}
                   </div>
@@ -283,11 +280,10 @@ export const PersistentAISecurityMonitor: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5" />
             AI Security Alerts (Last Hour)
-            <Badge variant={criticalAlerts.length > 0 ? "destructive" : "secondary"}>
+            <span className="text-sm text-muted-foreground">
               {alerts.length} Total | {criticalAlerts.length} Critical
-            </Badge>
+            </span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -298,7 +294,6 @@ export const PersistentAISecurityMonitor: React.FC = () => {
                 alert.severity === 'critical' ? 'bg-orange-50 border-orange-200' : ''
               }`}>
                 <div className="flex items-center gap-3">
-                  {getSeverityIcon(alert.severity)}
                   <div className="flex-1">
                     <div className="font-medium text-sm">{alert.title}</div>
                     <div className="text-xs text-muted-foreground">
@@ -310,9 +305,9 @@ export const PersistentAISecurityMonitor: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant={getSeverityColor(alert.severity) as any} className="text-xs">
+                  <span className="text-xs">
                     {alert.severity}
-                  </Badge>
+                  </span>
                   {alert.requires_human_review && !alert.acknowledged && (
                     <Button
                       size="sm"
@@ -331,7 +326,6 @@ export const PersistentAISecurityMonitor: React.FC = () => {
             ))}
             {alerts.length === 0 && (
               <div className="text-center text-muted-foreground py-8">
-                <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
                 <p>No security alerts in the last hour</p>
                 <p className="text-xs">AI security bots are actively monitoring</p>
               </div>
@@ -344,7 +338,6 @@ export const PersistentAISecurityMonitor: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5" />
             Security Coverage Status
           </CardTitle>
         </CardHeader>
@@ -376,9 +369,9 @@ export const PersistentAISecurityMonitor: React.FC = () => {
             </div>
           </div>
           <div className="mt-4 text-center">
-            <Badge variant="default" className="text-sm">
-              🤖 AI Bots Running Every 10-30 Seconds • High Alert Mode Active
-            </Badge>
+            <p className="text-sm text-muted-foreground">
+              AI Bots Running Every 10-30 Seconds - High Alert Mode Active
+            </p>
           </div>
         </CardContent>
       </Card>

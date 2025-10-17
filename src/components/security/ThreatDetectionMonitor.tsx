@@ -283,7 +283,6 @@ export function ThreatDetectionMonitor() {
     return (
       <div className="p-6">
         <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             You do not have permission to view hacker threat intelligence.
           </AlertDescription>
@@ -297,7 +296,6 @@ export function ThreatDetectionMonitor() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Bug className="h-5 w-5" />
             Hacker Detection Bot
           </CardTitle>
         </CardHeader>
@@ -315,20 +313,18 @@ export function ThreatDetectionMonitor() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Bug className="h-5 w-5" />
             Hacker Detection Bot
-            <Badge variant="destructive" className="animate-pulse">
+            <span className="text-sm text-destructive animate-pulse">
               HIGH ALERT - CONTINUOUS MONITORING
-            </Badge>
+            </span>
           </CardTitle>
           <CardDescription>
-            🚨 HIGH ALERT MODE: Continuous AI detection for SQL injection, XSS, brute force, and vulnerability scans
+            HIGH ALERT MODE: Continuous AI detection for SQL injection, XSS, brute force, and vulnerability scans
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {metrics.threat_level === "critical" && (
             <Alert variant="destructive">
-              <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
                 Critical hacker activity detected! Multiple attack attempts have been blocked.
               </AlertDescription>
@@ -347,7 +343,6 @@ export function ThreatDetectionMonitor() {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
-                      <Shield className="h-4 w-4 text-green-600" />
                       <div>
                         <p className="text-sm font-medium">Threats Blocked</p>
                         <p className="text-2xl font-bold">{metrics.threats_blocked}</p>
@@ -359,7 +354,6 @@ export function ThreatDetectionMonitor() {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
-                      <Bug className="h-4 w-4 text-red-600" />
                       <div>
                         <p className="text-sm font-medium">SQL Injections</p>
                         <p className="text-2xl font-bold">{metrics.sql_injections}</p>
@@ -371,7 +365,6 @@ export function ThreatDetectionMonitor() {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
-                      <Target className="h-4 w-4 text-orange-600" />
                       <div>
                         <p className="text-sm font-medium">Brute Force</p>
                         <p className="text-2xl font-bold">{metrics.brute_force_attempts}</p>
@@ -383,7 +376,6 @@ export function ThreatDetectionMonitor() {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
-                      <Zap className="h-4 w-4 text-purple-600" />
                       <div>
                         <p className="text-sm font-medium">Vuln Scans</p>
                         <p className="text-2xl font-bold">{metrics.vulnerability_scans}</p>
@@ -397,9 +389,9 @@ export function ThreatDetectionMonitor() {
                 <CardContent className="p-4">
                   <div className="flex justify-between items-center">
                     <span className="font-medium">Current Threat Level:</span>
-                    <Badge variant={getSeverityColor(metrics.threat_level)} className={getThreatLevelColor(metrics.threat_level)}>
+                    <span className={getThreatLevelColor(metrics.threat_level)}>
                       {metrics.threat_level.toUpperCase()}
-                    </Badge>
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -413,15 +405,14 @@ export function ThreatDetectionMonitor() {
                       <div className="flex justify-between items-start">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            {getAttackIcon(attempt.type)}
-                            <Badge variant={getSeverityColor(attempt.severity)}>
+                            <span className="text-sm">
                               {attempt.severity.toUpperCase()}
-                            </Badge>
+                            </span>
                             <span className="font-medium">{attempt.type}</span>
                             {attempt.blocked && (
-                              <Badge variant="outline" className="text-green-600">
+                              <span className="text-sm text-green-600">
                                 BLOCKED
-                              </Badge>
+                              </span>
                             )}
                           </div>
                           <p className="text-sm text-muted-foreground">{attempt.description}</p>
@@ -429,7 +420,6 @@ export function ThreatDetectionMonitor() {
                             From: {attempt.source_ip} | Vector: {attempt.attack_vector} | {new Date(attempt.timestamp).toLocaleString()}
                           </p>
                         </div>
-                        <Activity className="h-4 w-4 text-red-500" />
                       </div>
                     </CardContent>
                   </Card>
@@ -451,10 +441,9 @@ export function ThreatDetectionMonitor() {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-green-500" />
-                  <Badge variant="default" className="text-green-800 border-green-300">
+                  <span className="text-sm text-green-800">
                     PROTECTED
-                  </Badge>
+                  </span>
                 </div>
               </div>
 
