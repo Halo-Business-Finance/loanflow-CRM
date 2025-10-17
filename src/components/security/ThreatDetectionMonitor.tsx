@@ -309,116 +309,120 @@ export function ThreatDetectionMonitor() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            Hacker Detection Bot
-            <span className="text-sm text-destructive animate-pulse">
-              HIGH ALERT - CONTINUOUS MONITORING
-            </span>
-          </CardTitle>
-          <CardDescription>
-            HIGH ALERT MODE: Continuous AI detection for SQL injection, XSS, brute force, and vulnerability scans
+    <div className="space-y-5">
+      <Card className="border shadow-sm">
+        <CardHeader className="space-y-1 pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl font-semibold">
+              Intrusion Prevention System
+            </CardTitle>
+            <Badge variant={isMonitoring ? "default" : "secondary"} className="text-xs">
+              {isMonitoring ? "ACTIVE" : "INACTIVE"}
+            </Badge>
+          </div>
+          <CardDescription className="text-sm">
+            Continuous AI detection for SQL injection, XSS, brute force, and vulnerability scans
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5">
           {metrics.threat_level === "critical" && (
-            <Alert variant="destructive">
-              <AlertDescription>
+            <Alert variant="destructive" className="border shadow-sm">
+              <AlertDescription className="text-sm">
                 Critical hacker activity detected! Multiple attack attempts have been blocked.
               </AlertDescription>
             </Alert>
           )}
 
-          <Tabs defaultValue="metrics" className="space-y-4">
-            <TabsList>
-              <TabsTrigger value="metrics">Attack Metrics</TabsTrigger>
-              <TabsTrigger value="attempts">Recent Attacks</TabsTrigger>
-              <TabsTrigger value="control">Bot Control</TabsTrigger>
+          <Tabs defaultValue="metrics" className="space-y-5">
+            <TabsList className="inline-flex h-10 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground w-full max-w-2xl">
+              <TabsTrigger value="metrics" className="rounded-md px-3 py-1.5 text-sm font-medium">
+                Attack Metrics
+              </TabsTrigger>
+              <TabsTrigger value="attempts" className="rounded-md px-3 py-1.5 text-sm font-medium">
+                Recent Attacks
+              </TabsTrigger>
+              <TabsTrigger value="control" className="rounded-md px-3 py-1.5 text-sm font-medium">
+                Bot Control
+              </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="metrics" className="space-y-4">
+            <TabsContent value="metrics" className="space-y-5">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-2">
-                      <div>
-                        <p className="text-sm font-medium">Threats Blocked</p>
-                        <p className="text-2xl font-bold">{metrics.threats_blocked}</p>
-                      </div>
+                <Card className="border shadow-sm">
+                  <CardContent className="p-5">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Threats Blocked</p>
+                      <p className="text-3xl font-semibold">{metrics.threats_blocked}</p>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-2">
-                      <div>
-                        <p className="text-sm font-medium">SQL Injections</p>
-                        <p className="text-2xl font-bold">{metrics.sql_injections}</p>
-                      </div>
+                <Card className="border shadow-sm">
+                  <CardContent className="p-5">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">SQL Injections</p>
+                      <p className="text-3xl font-semibold">{metrics.sql_injections}</p>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-2">
-                      <div>
-                        <p className="text-sm font-medium">Brute Force</p>
-                        <p className="text-2xl font-bold">{metrics.brute_force_attempts}</p>
-                      </div>
+                <Card className="border shadow-sm">
+                  <CardContent className="p-5">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Brute Force</p>
+                      <p className="text-3xl font-semibold">{metrics.brute_force_attempts}</p>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-2">
-                      <div>
-                        <p className="text-sm font-medium">Vuln Scans</p>
-                        <p className="text-2xl font-bold">{metrics.vulnerability_scans}</p>
-                      </div>
+                <Card className="border shadow-sm">
+                  <CardContent className="p-5">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Vuln Scans</p>
+                      <p className="text-3xl font-semibold">{metrics.vulnerability_scans}</p>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
-              <Card>
-                <CardContent className="p-4">
+              <Card className="border shadow-sm">
+                <CardContent className="p-5">
                   <div className="flex justify-between items-center">
-                    <span className="font-medium">Current Threat Level:</span>
-                    <span className={getThreatLevelColor(metrics.threat_level)}>
+                    <span className="text-sm font-medium text-muted-foreground">Current Threat Level</span>
+                    <Badge variant={metrics.threat_level === 'critical' || metrics.threat_level === 'high' ? 'destructive' : 'secondary'} className="text-xs">
                       {metrics.threat_level.toUpperCase()}
-                    </span>
+                    </Badge>
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="attempts" className="space-y-4">
-              <div className="space-y-2">
+            <TabsContent value="attempts" className="space-y-3">
+              <div className="space-y-3">
                 {attempts.map((attempt) => (
-                  <Card key={attempt.id}>
+                  <Card key={attempt.id} className="border shadow-sm">
                     <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-1">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="text-sm">
+                            <Badge variant={getSeverityColor(attempt.severity)} className="text-xs">
                               {attempt.severity.toUpperCase()}
-                            </span>
-                            <span className="font-medium">{attempt.type}</span>
-                            {attempt.blocked && (
-                              <span className="text-sm text-green-600">
-                                BLOCKED
-                              </span>
-                            )}
+                            </Badge>
+                            <span className="text-sm font-medium">{attempt.type}</span>
                           </div>
-                          <p className="text-sm text-muted-foreground">{attempt.description}</p>
-                          <p className="text-xs text-muted-foreground">
-                            From: {attempt.source_ip} | Vector: {attempt.attack_vector} | {new Date(attempt.timestamp).toLocaleString()}
-                          </p>
+                          {attempt.blocked && (
+                            <Badge variant="outline" className="text-xs text-green-600 border-green-600">
+                              BLOCKED
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground">{attempt.description}</p>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          <span>IP: {attempt.source_ip}</span>
+                          <span>•</span>
+                          <span>Vector: {attempt.attack_vector}</span>
+                          <span>•</span>
+                          <span>{new Date(attempt.timestamp).toLocaleString()}</span>
                         </div>
                       </div>
                     </CardContent>
@@ -427,36 +431,55 @@ export function ThreatDetectionMonitor() {
               </div>
             </TabsContent>
 
-            <TabsContent value="control" className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-green-600">
-                    Status: ACTIVE - Continuous High Alert Monitoring
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    🛡️ Monitoring for hacker attacks every 4 seconds - SQL injection, XSS, brute force protection
-                  </p>
-                  <p className="text-xs text-orange-600 font-medium mt-1">
-                    ⚡ Auto-activated for maximum security - cannot be disabled
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-green-800">
-                    PROTECTED
-                  </span>
-                </div>
-              </div>
+            <TabsContent value="control" className="space-y-5">
+              <Card className="border shadow-sm bg-muted/50">
+                <CardContent className="p-5">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Monitoring Status</span>
+                      <Badge variant="default" className="text-xs">
+                        {isMonitoring ? "ACTIVE" : "INACTIVE"}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Continuous monitoring for SQL injection, XSS, brute force attacks, and vulnerability scans
+                    </p>
+                    {isMonitoring && (
+                      <p className="text-xs text-muted-foreground">
+                        Scanning every 4 seconds for maximum protection
+                      </p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
 
-              <Card>
-                <CardContent className="p-4">
-                  <h4 className="font-medium mb-2">Bot Capabilities:</h4>
-                  <ul className="text-sm space-y-1 text-muted-foreground">
-                    <li>• Real-time SQL injection detection</li>
-                    <li>• Brute force attack prevention</li>
-                    <li>• XSS and CSRF protection</li>
-                    <li>• Vulnerability scan detection</li>
-                    <li>• Automated threat response</li>
-                  </ul>
+              <Card className="border shadow-sm">
+                <CardHeader className="space-y-1 pb-4">
+                  <CardTitle className="text-base font-semibold">Detection Capabilities</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="grid gap-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      <span>Real-time SQL injection detection</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      <span>Brute force attack prevention</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      <span>XSS and CSRF protection</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      <span>Vulnerability scan detection</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      <span>Automated threat response</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
