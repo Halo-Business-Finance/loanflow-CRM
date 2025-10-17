@@ -44,7 +44,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         </Button>
         
         {/* Navigation Controls */}
-        <div className="flex items-center gap-0 border-l border-[#393939]">
+        <div className="flex items-center gap-0">
           <Button
             variant="ghost"
             size="icon"
