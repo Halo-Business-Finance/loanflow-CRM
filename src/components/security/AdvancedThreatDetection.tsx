@@ -151,91 +151,69 @@ export const AdvancedThreatDetection: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            Advanced Threat Detection
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="h-4 bg-muted animate-pulse rounded" />
-            <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
-            <div className="h-4 bg-muted animate-pulse rounded w-1/2" />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-3">
+        <div className="h-4 bg-muted animate-pulse rounded" />
+        <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
+        <div className="h-4 bg-muted animate-pulse rounded w-1/2" />
+      </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            Advanced Threat Detection
-          </CardTitle>
-          <div className="flex gap-2">
-            <Button onClick={runThreatScan} disabled={scanningProgress > 0 && scanningProgress < 100}>
-              {scanningProgress > 0 && scanningProgress < 100 ? `Scanning... ${scanningProgress}%` : 'Run Deep Scan'}
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {scanningProgress > 0 && scanningProgress < 100 && (
-            <div className="mb-4">
-              <div className="w-full bg-muted rounded-full h-2">
-                <div 
-                  className="bg-primary h-2 rounded-full transition-all duration-300" 
-                  style={{ width: `${scanningProgress}%` }}
-                />
-              </div>
-            </div>
-          )}
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div className="p-4 border rounded-lg">
-              <h3 className="font-semibold flex items-center gap-2 mb-2">
-                Threat Patterns
-              </h3>
-              <p className="text-2xl font-bold">{threatPatterns.length}</p>
-              <p className="text-sm text-muted-foreground">Active patterns detected</p>
-            </div>
-            
-            <div className="p-4 border rounded-lg">
-              <h3 className="font-semibold flex items-center gap-2 mb-2">
-                Suspicious IPs
-              </h3>
-              <p className="text-2xl font-bold">{ipReputations.filter(ip => ip.risk_level !== 'low').length}</p>
-              <p className="text-sm text-muted-foreground">High-risk IP addresses</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold">Threat Analysis</h3>
+        <Button 
+          onClick={runThreatScan} 
+          disabled={scanningProgress > 0 && scanningProgress < 100}
+          size="sm"
+          variant="outline"
+        >
+          {scanningProgress > 0 && scanningProgress < 100 ? `Scanning ${scanningProgress}%` : 'Run Scan'}
+        </Button>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Threat Patterns */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              Active Threat Patterns
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {threatPatterns.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No active threat patterns detected</p>
-              ) : (
-                threatPatterns.map((pattern) => (
-                  <div key={pattern.id} className="flex items-center justify-between p-3 border rounded">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm">
+      {scanningProgress > 0 && scanningProgress < 100 && (
+        <div className="w-full bg-muted rounded-full h-1.5">
+          <div 
+            className="bg-primary h-1.5 rounded-full transition-all duration-300" 
+            style={{ width: `${scanningProgress}%` }}
+          />
+        </div>
+      )}
+      
+      <div className="grid grid-cols-2 gap-4">
+        <div className="p-5 border rounded-lg bg-card space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Threat Patterns</p>
+          <p className="text-3xl font-semibold">{threatPatterns.length}</p>
+          <p className="text-xs text-muted-foreground">Active patterns</p>
+        </div>
+        
+        <div className="p-5 border rounded-lg bg-card space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Suspicious IPs</p>
+          <p className="text-3xl font-semibold">{ipReputations.filter(ip => ip.risk_level !== 'low').length}</p>
+          <p className="text-xs text-muted-foreground">High-risk addresses</p>
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-5">
+        <div className="space-y-4">
+          <h4 className="text-sm font-semibold">Active Threat Patterns</h4>
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {threatPatterns.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">No active threats detected</p>
+            ) : (
+              threatPatterns.map((pattern) => (
+                <div key={pattern.id} className="p-4 border rounded-lg bg-card space-y-2">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium uppercase px-2 py-0.5 rounded bg-muted">
                           {pattern.severity}
                         </span>
-                        <span className="font-medium">{pattern.pattern_type}</span>
+                        <span className="font-medium text-sm">{pattern.pattern_type}</span>
                       </div>
-                      <p className="text-sm text-muted-foreground">{pattern.description}</p>
+                      <p className="text-xs text-muted-foreground">{pattern.description}</p>
                       <p className="text-xs text-muted-foreground">
                         {pattern.occurrences} occurrences • Last: {new Date(pattern.last_detected).toLocaleDateString()}
                       </p>
@@ -245,62 +223,56 @@ export const AdvancedThreatDetection: React.FC = () => {
                         size="sm" 
                         variant="outline"
                         onClick={() => mitigateThreat(pattern.id)}
+                        className="ml-2"
                       >
                         Mitigate
                       </Button>
                     )}
                   </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
 
-        {/* IP Reputation */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              IP Reputation Analysis
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {ipReputations.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No suspicious IP addresses detected</p>
-              ) : (
-                ipReputations.map((ip, index) => (
-                  <div key={index} className="p-3 border rounded">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-sm">{ip.ip_address}</span>
-                      <span className="text-sm">
-                        {ip.risk_level} risk
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>Score: {ip.reputation_score}/100</span>
-                      <span>Country: {ip.country}</span>
-                      {ip.is_vpn && <span className="text-xs">VPN</span>}
-                      {ip.is_tor && <span className="text-xs">Tor</span>}
-                    </div>
-                    {ip.threat_categories.length > 0 && (
-                      <div className="mt-2 flex gap-1">
-                        {ip.threat_categories.map((category, idx) => (
-                          <span key={idx} className="text-xs">
-                            {category}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+        <div className="space-y-4">
+          <h4 className="text-sm font-semibold">IP Reputation Analysis</h4>
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {ipReputations.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">No suspicious IPs detected</p>
+            ) : (
+              ipReputations.map((ip, index) => (
+                <div key={index} className="p-4 border rounded-lg bg-card space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-sm font-medium">{ip.ip_address}</span>
+                    <span className="text-xs font-medium uppercase px-2 py-0.5 rounded bg-muted">
+                      {ip.risk_level} risk
+                    </span>
                   </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <span>Score: {ip.reputation_score}/100</span>
+                    <span>Country: {ip.country}</span>
+                    {ip.is_vpn && <span>VPN</span>}
+                    {ip.is_tor && <span>Tor</span>}
+                  </div>
+                  {ip.threat_categories.length > 0 && (
+                    <div className="flex gap-2 flex-wrap">
+                      {ip.threat_categories.map((category, idx) => (
+                        <span key={idx} className="text-xs px-2 py-0.5 rounded bg-muted">
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
 
       {threatPatterns.some(p => p.severity === 'critical') && (
-        <Alert>
+        <Alert variant="destructive">
           <AlertDescription>
             Critical threat patterns detected! Review and mitigate immediately to maintain system security.
           </AlertDescription>

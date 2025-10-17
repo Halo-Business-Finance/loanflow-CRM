@@ -210,21 +210,20 @@ export const PersistentAISecurityMonitor: React.FC = () => {
   const criticalAlerts = alerts.filter(alert => alert.severity === 'critical' || alert.severity === 'emergency');
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Emergency Alerts */}
       {emergencyAlerts.filter(alert => !alert.acknowledged).length > 0 && (
-        <Alert variant="destructive" className="border-red-600 bg-red-50 animate-pulse">
-          <AlertDescription className="font-bold">
-            🚨 EMERGENCY: {emergencyAlerts.filter(alert => !alert.acknowledged).length} critical threats detected by AI security bots!
-            <div className="mt-2">
+        <Alert variant="destructive" className="border-red-600">
+          <AlertDescription className="font-semibold">
+            EMERGENCY: {emergencyAlerts.filter(alert => !alert.acknowledged).length} critical threats detected by AI security bots
+            <div className="mt-3 space-y-2">
               {emergencyAlerts.filter(alert => !alert.acknowledged).slice(0, 2).map(alert => (
-                <div key={alert.id} className="text-sm mt-1 flex justify-between items-center">
+                <div key={alert.id} className="text-sm flex justify-between items-center">
                   <span>{alert.title} ({alert.confidence_score}% confidence)</span>
                   <Button 
                     size="sm" 
                     variant="outline" 
                     onClick={() => handleAlertReview(alert.id)}
-                    className="ml-2"
                   >
                     Acknowledge
                   </Button>
@@ -236,145 +235,130 @@ export const PersistentAISecurityMonitor: React.FC = () => {
       )}
 
       {/* AI Bots Status */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              Persistent AI Security Bots
-              <span className="text-sm">
-                {activeBots.length}/{aiBots.length} Active
-              </span>
-            </div>
-            <Button onClick={triggerManualScan} size="sm" variant="outline">
-              Manual Scan
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {aiBots.map((bot) => (
-              <div key={bot.id} className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div>
-                    <div className="font-medium">{bot.bot_name}</div>
-                    <div className="text-sm text-muted-foreground capitalize">
-                      {bot.bot_type.replace('_', ' ')} | {bot.sensitivity_level} sensitivity
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">
-                    {bot.status}
-                  </span>
-                  <div className="text-xs text-muted-foreground">
-                    {new Date(bot.last_activity).toLocaleTimeString()}
-                  </div>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <h3 className="text-lg font-semibold">AI Security Bots</h3>
+            <p className="text-sm text-muted-foreground">
+              {activeBots.length}/{aiBots.length} bots active
+            </p>
+          </div>
+          <Button onClick={triggerManualScan} size="sm" variant="outline">
+            Manual Scan
+          </Button>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-3">
+          {aiBots.map((bot) => (
+            <div key={bot.id} className="flex items-center justify-between p-4 border rounded-lg bg-card">
+              <div>
+                <div className="font-medium text-sm">{bot.bot_name}</div>
+                <div className="text-xs text-muted-foreground capitalize">
+                  {bot.bot_type.replace('_', ' ')} • {bot.sensitivity_level} sensitivity
                 </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium uppercase px-2 py-0.5 rounded bg-muted">
+                  {bot.status}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(bot.last_activity).toLocaleTimeString()}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Recent AI Alerts */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            AI Security Alerts (Last Hour)
-            <span className="text-sm text-muted-foreground">
-              {alerts.length} Total | {criticalAlerts.length} Critical
-            </span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2 max-h-64 overflow-y-auto">
-            {alerts.slice(0, 10).map((alert) => (
-              <div key={alert.id} className={`flex items-center justify-between p-3 border rounded ${
-                alert.severity === 'emergency' ? 'bg-red-50 border-red-200' : 
-                alert.severity === 'critical' ? 'bg-orange-50 border-orange-200' : ''
-              }`}>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1">
-                    <div className="font-medium text-sm">{alert.title}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {alert.alert_type} | Confidence: {alert.confidence_score}%
-                      {alert.auto_response_taken && (
-                        <span className="ml-2 text-blue-600">• Auto-response executed</span>
-                      )}
-                    </div>
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold">AI Security Alerts</h3>
+          <p className="text-sm text-muted-foreground">
+            {alerts.length} total • {criticalAlerts.length} critical (last hour)
+          </p>
+        </div>
+
+        <div className="space-y-2 max-h-72 overflow-y-auto">
+          {alerts.slice(0, 10).map((alert) => (
+            <div key={alert.id} className={`p-4 border rounded-lg ${
+              alert.severity === 'emergency' ? 'bg-red-50 border-red-200 dark:bg-red-950/20' : 
+              alert.severity === 'critical' ? 'bg-orange-50 border-orange-200 dark:bg-orange-950/20' : 'bg-card'
+            }`}>
+              <div className="flex items-start justify-between">
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium uppercase px-2 py-0.5 rounded bg-muted">
+                      {alert.severity}
+                    </span>
+                    <span className="font-medium text-sm">{alert.title}</span>
                   </div>
+                  <p className="text-xs text-muted-foreground">
+                    {alert.alert_type} • Confidence: {alert.confidence_score}%
+                    {alert.auto_response_taken && (
+                      <span className="ml-2 text-blue-600">• Auto-response executed</span>
+                    )}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs">
-                    {alert.severity}
-                  </span>
                   {alert.requires_human_review && !alert.acknowledged && (
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleAlertReview(alert.id)}
-                      className="text-xs"
                     >
                       Review
                     </Button>
                   )}
-                  <div className="text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">
                     {new Date(alert.created_at).toLocaleTimeString()}
-                  </div>
+                  </span>
                 </div>
               </div>
-            ))}
-            {alerts.length === 0 && (
-              <div className="text-center text-muted-foreground py-8">
-                <p>No security alerts in the last hour</p>
-                <p className="text-xs">AI security bots are actively monitoring</p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+            </div>
+          ))}
+          {alerts.length === 0 && (
+            <div className="text-center text-muted-foreground py-8 border rounded-lg bg-card">
+              <p className="text-sm">No security alerts in the last hour</p>
+              <p className="text-xs mt-1">AI security bots are actively monitoring</p>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Bot Performance Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            Security Coverage Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div className="p-3 border rounded">
-              <div className="text-2xl font-bold text-green-600">
-                {aiBots.filter(b => b.bot_type === 'threat_detection' && b.status === 'active').length}
-              </div>
-              <div className="text-sm text-muted-foreground">Threat Detection</div>
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Security Coverage Status</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="p-4 border rounded-lg bg-card text-center space-y-2">
+            <div className="text-3xl font-semibold text-green-600">
+              {aiBots.filter(b => b.bot_type === 'threat_detection' && b.status === 'active').length}
             </div>
-            <div className="p-3 border rounded">
-              <div className="text-2xl font-bold text-blue-600">
-                {aiBots.filter(b => b.bot_type === 'behavior_analysis' && b.status === 'active').length}
-              </div>
-              <div className="text-sm text-muted-foreground">Behavior Analysis</div>
-            </div>
-            <div className="p-3 border rounded">
-              <div className="text-2xl font-bold text-purple-600">
-                {aiBots.filter(b => b.bot_type === 'network_monitor' && b.status === 'active').length}
-              </div>
-              <div className="text-sm text-muted-foreground">Network Monitor</div>
-            </div>
-            <div className="p-3 border rounded">
-              <div className="text-2xl font-bold text-orange-600">
-                {aiBots.filter(b => b.bot_type === 'data_protection' && b.status === 'active').length}
-              </div>
-              <div className="text-sm text-muted-foreground">Data Protection</div>
-            </div>
+            <div className="text-xs text-muted-foreground">Threat Detection</div>
           </div>
-          <div className="mt-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              AI Bots Running Every 10-30 Seconds - High Alert Mode Active
-            </p>
+          <div className="p-4 border rounded-lg bg-card text-center space-y-2">
+            <div className="text-3xl font-semibold text-blue-600">
+              {aiBots.filter(b => b.bot_type === 'behavior_analysis' && b.status === 'active').length}
+            </div>
+            <div className="text-xs text-muted-foreground">Behavior Analysis</div>
           </div>
-        </CardContent>
-      </Card>
+          <div className="p-4 border rounded-lg bg-card text-center space-y-2">
+            <div className="text-3xl font-semibold text-purple-600">
+              {aiBots.filter(b => b.bot_type === 'network_monitor' && b.status === 'active').length}
+            </div>
+            <div className="text-xs text-muted-foreground">Network Monitor</div>
+          </div>
+          <div className="p-4 border rounded-lg bg-card text-center space-y-2">
+            <div className="text-3xl font-semibold text-orange-600">
+              {aiBots.filter(b => b.bot_type === 'data_protection' && b.status === 'active').length}
+            </div>
+            <div className="text-xs text-muted-foreground">Data Protection</div>
+          </div>
+        </div>
+        <p className="text-xs text-center text-muted-foreground">
+          AI Bots Running Every 10-30 Seconds - High Alert Mode Active
+        </p>
+      </div>
     </div>
   );
 };
