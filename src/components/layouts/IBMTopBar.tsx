@@ -38,9 +38,11 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300"
+          className="h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent group transition-all duration-300"
         >
-          <Grid3x3 className="h-4 w-4" />
+          <div className="p-2 group-hover:outline group-hover:outline-2 group-hover:outline-blue-500 transition-all duration-300 rounded">
+            <Grid3x3 className="h-4 w-4" />
+          </div>
         </Button>
         
         {/* Navigation Controls */}
