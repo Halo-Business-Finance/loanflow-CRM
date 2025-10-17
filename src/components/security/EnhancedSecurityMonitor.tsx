@@ -260,7 +260,6 @@ export const EnhancedSecurityMonitor: React.FC = () => {
             size="sm"
             variant="outline"
           >
-            <Zap className="h-4 w-4 mr-2" />
             {isScanning ? 'Scanning...' : 'Run Scan'}
           </Button>
           <Button
@@ -268,7 +267,6 @@ export const EnhancedSecurityMonitor: React.FC = () => {
             size="sm"
             variant={autoMonitoring ? "default" : "outline"}
           >
-            <Eye className="h-4 w-4 mr-2" />
             Auto Monitor
           </Button>
         </div>
@@ -278,51 +276,39 @@ export const EnhancedSecurityMonitor: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Threat Level</p>
-                <p className={`text-2xl font-bold ${getThreatLevelColor(metrics?.threat_level || 'low')}`}>
-                  {metrics?.threat_level?.toUpperCase() || 'LOW'}
-                </p>
-              </div>
-              <Shield className="h-8 w-8 text-muted-foreground" />
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Threat Level</p>
+              <p className={`text-2xl font-bold ${getThreatLevelColor(metrics?.threat_level || 'low')}`}>
+                {metrics?.threat_level?.toUpperCase() || 'LOW'}
+              </p>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Security Score</p>
-                <p className="text-2xl font-bold">{metrics?.security_score || 85}%</p>
-                <Progress value={metrics?.security_score || 85} className="mt-2" />
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Security Score</p>
+              <p className="text-2xl font-bold">{metrics?.security_score || 85}%</p>
+              <Progress value={metrics?.security_score || 85} className="mt-2" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Active Sessions</p>
-                <p className="text-2xl font-bold">{metrics?.active_sessions || 0}</p>
-              </div>
-              <Activity className="h-8 w-8 text-blue-600" />
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Active Sessions</p>
+              <p className="text-2xl font-bold">{metrics?.active_sessions || 0}</p>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Auto Responses</p>
-                <p className="text-2xl font-bold">{metrics?.automated_responses || 0}</p>
-              </div>
-              <Zap className="h-8 w-8 text-purple-600" />
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Auto Responses</p>
+              <p className="text-2xl font-bold">{metrics?.automated_responses || 0}</p>
             </div>
           </CardContent>
         </Card>
@@ -373,7 +359,6 @@ export const EnhancedSecurityMonitor: React.FC = () => {
               alerts.map((alert) => (
                 <div key={alert.id} className="flex items-start justify-between p-3 border rounded-lg">
                   <div className="flex items-start gap-3">
-                    <AlertTriangle className={`h-5 w-5 mt-0.5 ${alert.severity === 'critical' ? 'text-red-600' : alert.severity === 'high' ? 'text-orange-600' : 'text-yellow-600'}`} />
                     <div>
                       <div className="flex items-center gap-2">
                         <p className="font-medium">{alert.event_type.replace(/_/g, ' ')}</p>
@@ -406,7 +391,6 @@ export const EnhancedSecurityMonitor: React.FC = () => {
       {/* System Status */}
       {autoMonitoring && (
         <Alert>
-          <Activity className="h-4 w-4" />
           <AlertDescription>
             Automated security monitoring is active. System is continuously scanning for threats and anomalies.
           </AlertDescription>
