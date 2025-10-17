@@ -2372,6 +2372,9 @@ export type Database = {
           is_converted_to_client: boolean | null
           last_contact: string | null
           lead_number: number
+          loan_originator_id: string | null
+          processor_id: string | null
+          underwriter_id: string | null
           updated_at: string
           user_id: string
         }
@@ -2383,6 +2386,9 @@ export type Database = {
           is_converted_to_client?: boolean | null
           last_contact?: string | null
           lead_number?: number
+          loan_originator_id?: string | null
+          processor_id?: string | null
+          underwriter_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -2394,6 +2400,9 @@ export type Database = {
           is_converted_to_client?: boolean | null
           last_contact?: string | null
           lead_number?: number
+          loan_originator_id?: string | null
+          processor_id?: string | null
+          underwriter_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -2403,6 +2412,27 @@ export type Database = {
             columns: ["contact_entity_id"]
             isOneToOne: false
             referencedRelation: "contact_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_loan_originator_id_fkey"
+            columns: ["loan_originator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_processor_id_fkey"
+            columns: ["processor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_underwriter_id_fkey"
+            columns: ["underwriter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
