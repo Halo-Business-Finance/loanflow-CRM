@@ -22,6 +22,7 @@ interface IBMTopBarProps {
 
 interface SearchResult {
   id: string;
+  leadId: string;
   name: string;
   businessName?: string;
   email?: string;
@@ -66,20 +67,28 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
 
         const { data, error } = await supabase
           .from('contact_entities')
-          .select('id, first_name, last_name, business_name, email')
+          .select(`
+            id, 
+            first_name, 
+            last_name, 
+            business_name, 
+            email,
+            leads!contact_entity_id(id)
+          `)
           .eq('user_id', session.session.user.id)
           .or(`first_name.ilike.%${searchQuery}%,last_name.ilike.%${searchQuery}%,business_name.ilike.%${searchQuery}%`)
           .limit(10);
 
         if (error) throw error;
 
-        setSearchResults(data?.map(d => {
+        setSearchResults(data?.filter(d => d.leads && d.leads.length > 0).map(d => {
           const borrowerName = d.first_name && d.last_name 
             ? `${d.first_name} ${d.last_name}`.trim()
             : d.first_name || d.last_name || 'Unknown';
           
           return {
             id: d.id,
+            leadId: d.leads[0].id,
             name: borrowerName,
             businessName: d.business_name || undefined,
             email: d.email || undefined
@@ -97,8 +106,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
   }, [searchQuery]);
 
   const handleResultClick = (result: SearchResult) => {
-    // Navigate to leads page and let it filter by contact_entity_id
-    navigate(`/leads?contact=${result.id}`);
+    navigate(`/leads/${result.leadId}`);
     setSearchQuery('');
     setShowResults(false);
   };
