@@ -242,12 +242,6 @@ const SecurityPage: React.FC = () => {
                   onClick={() => navigate('/security/threats')}
                 >
                   <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition-colors">
-                        <Bot className="h-5 w-5 text-primary" />
-                      </div>
-                      <Badge variant="outline" className="text-xs">AI-POWERED</Badge>
-                    </div>
                     <CardTitle className="text-lg font-semibold">
                       AI Protection Monitor
                     </CardTitle>
@@ -265,12 +259,6 @@ const SecurityPage: React.FC = () => {
                   onClick={() => navigate('/security/threats')}
                 >
                   <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="p-2 rounded-lg bg-destructive/10 ring-1 ring-destructive/20 group-hover:bg-destructive/20 transition-colors">
-                        <Globe className="h-5 w-5 text-destructive" />
-                      </div>
-                      <Badge variant="outline" className="text-xs">THREAT INTEL</Badge>
-                    </div>
                     <CardTitle className="text-lg font-semibold">
                       Dark Web Monitoring
                     </CardTitle>
@@ -288,12 +276,6 @@ const SecurityPage: React.FC = () => {
                   onClick={() => navigate('/security/threats')}
                 >
                   <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="p-2 rounded-lg bg-warning/10 ring-1 ring-warning/20 group-hover:bg-warning/20 transition-colors">
-                        <Zap className="h-5 w-5 text-warning" />
-                      </div>
-                      <Badge variant="outline" className="text-xs">REAL-TIME</Badge>
-                    </div>
                     <CardTitle className="text-lg font-semibold">
                       Advanced Threat Detection
                     </CardTitle>
@@ -311,12 +293,6 @@ const SecurityPage: React.FC = () => {
                   onClick={() => navigate('/security/threats')}
                 >
                   <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="p-2 rounded-lg bg-destructive/10 ring-1 ring-destructive/20 group-hover:bg-destructive/20 transition-colors">
-                        <Target className="h-5 w-5 text-destructive" />
-                      </div>
-                      <Badge variant="outline" className="text-xs">INTRUSION</Badge>
-                    </div>
                     <CardTitle className="text-lg font-semibold">
                       Intrusion Prevention
                     </CardTitle>
@@ -334,12 +310,6 @@ const SecurityPage: React.FC = () => {
             <TabsContent value="access-control" className="space-y-6">
               <Card className="widget-glass border-0">
                 <CardHeader>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
-                      <Database className="h-5 w-5 text-primary" />
-                    </div>
-                    <Badge variant="outline" className="text-xs">RBAC</Badge>
-                  </div>
                   <CardTitle className="text-xl font-semibold">
                     Data Access Control Management
                   </CardTitle>
@@ -356,12 +326,6 @@ const SecurityPage: React.FC = () => {
             <TabsContent value="mfa" className="space-y-6">
               <Card className="widget-glass border-0">
                 <CardHeader>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-2 rounded-lg bg-primary/10 ring-1 ring-primary/20">
-                      <Smartphone className="h-5 w-5 text-primary" />
-                    </div>
-                    <Badge variant="outline" className="text-xs">REQUIRED</Badge>
-                  </div>
                   <CardTitle className="text-xl font-semibold">
                     Multi-Factor Authentication
                   </CardTitle>
