@@ -71,6 +71,12 @@ export default function LeadDetail() {
   const [callNotes, setCallNotes] = useState("")
   const [generalNotes, setGeneralNotes] = useState("")
   const [showReminderDialog, setShowReminderDialog] = useState(false)
+  const [teamMembers, setTeamMembers] = useState<Array<{ id: string; name: string; role: string }>>([])
+  const [assignments, setAssignments] = useState({
+    loan_originator_id: "",
+    processor_id: "",
+    underwriter_id: ""
+  })
   const [editableFields, setEditableFields] = useState({
     name: "",
     email: "",
@@ -131,7 +137,30 @@ export default function LeadDetail() {
     }
     
     fetchLead()
+    fetchTeamMembers()
   }, [id, user])
+
+  const fetchTeamMembers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, user_roles(role)')
+        .eq('is_active', true)
+        .order('first_name')
+
+      if (error) throw error
+
+      const formattedMembers = data?.map((member: any) => ({
+        id: member.id,
+        name: `${member.first_name || ''} ${member.last_name || ''}`.trim() || 'Unknown',
+        role: member.user_roles?.[0]?.role || 'agent'
+      })) || []
+
+      setTeamMembers(formattedMembers)
+    } catch (error) {
+      console.error('Error fetching team members:', error)
+    }
+  }
 
   const fetchLead = async () => {
     try {
@@ -172,6 +201,11 @@ export default function LeadDetail() {
       setLead(mergedLead)
       setCallNotes(mergedLead.call_notes || "")
       setGeneralNotes(mergedLead.notes || "")
+      setAssignments({
+        loan_originator_id: (data as any).loan_originator_id || "",
+        processor_id: (data as any).processor_id || "",
+        underwriter_id: (data as any).underwriter_id || ""
+      })
       
       setEditableFields({
         name: mergedLead.name || "",
@@ -310,7 +344,10 @@ export default function LeadDetail() {
 
       const leadUpdateData: any = {
         last_contact: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
+        loan_originator_id: assignments.loan_originator_id || null,
+        processor_id: assignments.processor_id || null,
+        underwriter_id: assignments.underwriter_id || null
       }
 
       const { error: leadError } = await supabase
@@ -653,6 +690,90 @@ export default function LeadDetail() {
                     )}
                   </div>
                 </div>
+
+                {/* Team Assignments - Only show when stage is not "New Lead" */}
+                {editableFields.stage && editableFields.stage !== "New Lead" && (
+                  <div className="border-t pt-4 mt-4">
+                    <h3 className="text-sm font-medium text-foreground mb-3">Team Assignments</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label className="text-xs font-medium text-muted-foreground">Loan Originator</Label>
+                        {isEditing ? (
+                          <Select
+                            value={assignments.loan_originator_id}
+                            onValueChange={(value) => setAssignments({...assignments, loan_originator_id: value})}
+                          >
+                            <SelectTrigger className="mt-1 h-9 text-sm">
+                              <SelectValue placeholder="Select originator" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="">Unassigned</SelectItem>
+                              {teamMembers.map(member => (
+                                <SelectItem key={member.id} value={member.id}>
+                                  {member.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="field-display mt-1">
+                            {teamMembers.find(m => m.id === assignments.loan_originator_id)?.name || 'Unassigned'}
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium text-muted-foreground">Loan Processor</Label>
+                        {isEditing ? (
+                          <Select
+                            value={assignments.processor_id}
+                            onValueChange={(value) => setAssignments({...assignments, processor_id: value})}
+                          >
+                            <SelectTrigger className="mt-1 h-9 text-sm">
+                              <SelectValue placeholder="Select processor" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="">Unassigned</SelectItem>
+                              {teamMembers.map(member => (
+                                <SelectItem key={member.id} value={member.id}>
+                                  {member.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="field-display mt-1">
+                            {teamMembers.find(m => m.id === assignments.processor_id)?.name || 'Unassigned'}
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium text-muted-foreground">Underwriter</Label>
+                        {isEditing ? (
+                          <Select
+                            value={assignments.underwriter_id}
+                            onValueChange={(value) => setAssignments({...assignments, underwriter_id: value})}
+                          >
+                            <SelectTrigger className="mt-1 h-9 text-sm">
+                              <SelectValue placeholder="Select underwriter" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="">Unassigned</SelectItem>
+                              {teamMembers.map(member => (
+                                <SelectItem key={member.id} value={member.id}>
+                                  {member.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="field-display mt-1">
+                            {teamMembers.find(m => m.id === assignments.underwriter_id)?.name || 'Unassigned'}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
