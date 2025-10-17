@@ -628,6 +628,52 @@ export default function LeadDetail() {
     }
   }
 
+  // Save General Notes on blur (always editable)
+  const saveGeneralNotesImmediate = async () => {
+    if (!lead?.contact_entity_id) return
+    const safeNotes = (generalNotes || "").slice(0, 5000)
+    const { error } = await supabase
+      .from('contact_entities')
+      .update({ notes: safeNotes })
+      .eq('id', lead.contact_entity_id)
+    if (error) {
+      console.error('Error saving general notes:', error)
+      toast({ title: 'Error', description: 'Failed to save general notes', variant: 'destructive' })
+      return
+    }
+    setLead(prev => prev ? { ...prev, notes: safeNotes } : prev)
+    toast({ title: 'Saved', description: 'General notes saved' })
+  }
+
+  // Save Call Notes on blur with timestamp
+  const saveCallNotesImmediate = async () => {
+    if (!lead?.contact_entity_id) return
+    let updated = callNotes
+    if (callNotes !== lead?.call_notes) {
+      const timestamp = new Date().toLocaleString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true
+      })
+      const noteEntry = callNotes.trim()
+      if (lead?.call_notes && lead.call_notes.trim()) {
+        updated = `${lead.call_notes}\n\n[${timestamp}]\n${noteEntry}`
+      } else {
+        updated = `[${timestamp}]\n${noteEntry}`
+      }
+      setCallNotes(updated)
+    }
+    const { error } = await supabase
+      .from('contact_entities')
+      .update({ call_notes: updated })
+      .eq('id', lead.contact_entity_id)
+    if (error) {
+      console.error('Error saving call notes:', error)
+      toast({ title: 'Error', description: 'Failed to save call notes', variant: 'destructive' })
+      return
+    }
+    setLead(prev => prev ? { ...prev, call_notes: updated } : prev)
+    toast({ title: 'Saved', description: 'Call notes saved' })
+  }
+
   const deleteLead = async () => {
     if (!lead) return
 
@@ -1537,20 +1583,14 @@ export default function LeadDetail() {
               <CardContent className="pt-0">
                 <div>
                   <Label className="text-xs font-medium text-muted-foreground">Notes</Label>
-                  {isEditing ? (
-                    <Textarea
-                      value={generalNotes}
-                      onChange={(e) => setGeneralNotes(e.target.value)}
-                      placeholder="Add general notes..."
-                      className="mt-1 min-h-[100px] text-sm"
-                    />
-                  ) : (
-                    <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
-                      <p className="text-sm text-foreground whitespace-pre-wrap">
-                        {generalNotes || 'No general notes yet...'}
-                      </p>
-                    </div>
-                  )}
+                  <Textarea
+                    value={generalNotes}
+                    onChange={(e) => setGeneralNotes(e.target.value)}
+                    onBlur={saveGeneralNotesImmediate}
+                    placeholder="Add general notes..."
+                    className="mt-1 min-h-[100px] text-sm"
+                  />
+                  <p className="mt-1 text-[11px] text-muted-foreground">Changes save automatically when you click outside.</p>
                 </div>
               </CardContent>
             </Card>
@@ -1762,20 +1802,14 @@ export default function LeadDetail() {
               <CardContent className="pt-0">
                 <div>
                   <Label className="text-xs font-medium text-muted-foreground">Notes</Label>
-                  {isEditing ? (
-                    <Textarea
-                      value={callNotes}
-                      onChange={(e) => setCallNotes(e.target.value)}
-                      placeholder="Add call notes..."
-                      className="mt-1 min-h-[100px] text-sm"
-                    />
-                  ) : (
-                    <div className="mt-1 p-3 bg-muted/30 rounded-md border min-h-[100px]">
-                      <p className="text-sm text-foreground whitespace-pre-wrap">
-                        {callNotes || 'No call notes yet...'}
-                      </p>
-                    </div>
-                  )}
+                  <Textarea
+                    value={callNotes}
+                    onChange={(e) => setCallNotes(e.target.value)}
+                    onBlur={saveCallNotesImmediate}
+                    placeholder="Add call notes..."
+                    className="mt-1 min-h-[100px] text-sm"
+                  />
+                  <p className="mt-1 text-[11px] text-muted-foreground">A timestamp is added automatically when saved.</p>
                 </div>
               </CardContent>
             </Card>
