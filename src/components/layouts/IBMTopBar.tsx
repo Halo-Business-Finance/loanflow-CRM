@@ -49,19 +49,23 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             variant="ghost"
             size="icon"
             onClick={() => window.history.back()}
-            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300"
+            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 group transition-all duration-300"
             title="Go back"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <div className="p-2 group-hover:outline group-hover:outline-2 group-hover:outline-blue-500 transition-all duration-300 rounded">
+              <ChevronLeft className="h-4 w-4" />
+            </div>
           </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => window.history.forward()}
-            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300"
+            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 group transition-all duration-300"
             title="Go forward"
           >
-            <ChevronRight className="h-4 w-4" />
+            <div className="p-2 group-hover:outline group-hover:outline-2 group-hover:outline-blue-500 transition-all duration-300 rounded">
+              <ChevronRight className="h-4 w-4" />
+            </div>
           </Button>
         </div>
         
