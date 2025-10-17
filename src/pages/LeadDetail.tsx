@@ -289,6 +289,16 @@ export default function LeadDetail() {
     if (!lead || !user) return
 
     try {
+      // Check if stage changed from "New Lead" to something else
+      const stageChanged = lead.stage === "New Lead" && editableFields.stage !== "New Lead"
+      
+      // Auto-assign current user as loan originator if stage changed from New Lead
+      let updatedAssignments = { ...assignments }
+      if (stageChanged && !assignments.loan_originator_id) {
+        updatedAssignments.loan_originator_id = user.id
+        setAssignments(updatedAssignments)
+      }
+
       const contactUpdateData: any = {
         name: editableFields.name,
         email: editableFields.email,
@@ -345,9 +355,9 @@ export default function LeadDetail() {
       const leadUpdateData: any = {
         last_contact: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        loan_originator_id: assignments.loan_originator_id || null,
-        processor_id: assignments.processor_id || null,
-        underwriter_id: assignments.underwriter_id || null
+        loan_originator_id: updatedAssignments.loan_originator_id || null,
+        processor_id: updatedAssignments.processor_id || null,
+        underwriter_id: updatedAssignments.underwriter_id || null
       }
 
       const { error: leadError } = await supabase
@@ -376,9 +386,13 @@ export default function LeadDetail() {
         console.error('Error creating audit log:', auditError)
       }
 
+      const successMessage = stageChanged && updatedAssignments.loan_originator_id === user.id
+        ? "Lead updated and you've been assigned as the Loan Originator"
+        : "Lead information updated successfully"
+
       toast({
         title: "Success",
-        description: "Lead information updated successfully",
+        description: successMessage,
       })
       
       setIsEditing(false)
