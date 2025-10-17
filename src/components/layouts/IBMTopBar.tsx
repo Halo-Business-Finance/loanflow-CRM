@@ -38,7 +38,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-24 w-12 rounded-none text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent"
+          className="h-24 w-12 rounded-none text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-[#262626]"
         >
           <Grid3x3 className="h-4 w-4" />
         </Button>
@@ -49,7 +49,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             variant="ghost"
             size="icon"
             onClick={() => window.history.back()}
-            className="h-24 w-10 rounded-none text-white flex-shrink-0 hover:bg-transparent"
+            className="h-24 w-10 rounded-none text-white flex-shrink-0 hover:bg-[#262626]"
             title="Go back"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -58,7 +58,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             variant="ghost"
             size="icon"
             onClick={() => window.history.forward()}
-            className="h-24 w-10 rounded-none text-white flex-shrink-0 hover:bg-transparent"
+            className="h-24 w-10 rounded-none text-white flex-shrink-0 hover:bg-[#262626]"
             title="Go forward"
           >
             <ChevronRight className="h-4 w-4" />
@@ -89,7 +89,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent"
+          className="h-9 w-9 text-white hover:bg-[#262626]"
           onClick={() => window.open('https://outlook.office.com', '_blank')}
           title="Open Microsoft 365 Email"
         >
@@ -99,7 +99,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent"
+          className="h-9 w-9 text-white hover:bg-[#262626]"
           onClick={() => window.open('https://app.ringcentral.com', '_blank')}
           title="Open RingCentral Dial Pad"
         >
@@ -111,7 +111,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent"
+          className="h-9 w-9 text-white hover:bg-[#262626]"
           onClick={() => navigate('/resources')}
         >
           <HelpCircle className="h-5 w-5" />
@@ -124,7 +124,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-white hover:bg-transparent"
+              className="h-9 w-9 text-white hover:bg-[#262626]"
             >
               <User className="h-5 w-5" />
             </Button>
