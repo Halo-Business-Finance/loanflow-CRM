@@ -171,7 +171,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
                 >
                   <div className="text-white font-medium">{result.name}</div>
                   {result.businessName && (
-                    <div className="text-gray-400 text-sm">{result.businessName}</div>
+                    <div className="text-white text-sm">{result.businessName}</div>
                   )}
                 </div>
               ))}
