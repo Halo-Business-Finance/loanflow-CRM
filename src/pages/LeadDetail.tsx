@@ -1655,14 +1655,14 @@ export default function LeadDetail() {
                   {/* Notes History */}
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground mb-2 block">Notes History</Label>
-                    <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                    <div className="space-y-2 max-h-[500px] overflow-y-auto p-3 bg-muted/20 rounded-md border">
                       {notesHistory.filter(n => n.note_type === 'general').length === 0 ? (
                         <p className="text-sm text-muted-foreground italic">No notes yet...</p>
                       ) : (
                         notesHistory
                           .filter(n => n.note_type === 'general')
                           .map(note => (
-                            <div key={note.id} className="p-3 bg-muted/30 rounded-md border text-sm">
+                            <div key={note.id} className="p-3 bg-card rounded-md border shadow-sm text-sm">
                               <div className="flex justify-between items-start gap-2 mb-1">
                                 <span className="font-medium text-xs text-primary">{note.user_name}</span>
                                 <span className="text-[11px] text-muted-foreground whitespace-nowrap">
@@ -1906,14 +1906,14 @@ export default function LeadDetail() {
                   {/* Call Notes History */}
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground mb-2 block">Call Notes History</Label>
-                    <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                    <div className="space-y-2 max-h-[500px] overflow-y-auto p-3 bg-muted/20 rounded-md border">
                       {notesHistory.filter(n => n.note_type === 'call').length === 0 ? (
                         <p className="text-sm text-muted-foreground italic">No call notes yet...</p>
                       ) : (
                         notesHistory
                           .filter(n => n.note_type === 'call')
                           .map(note => (
-                            <div key={note.id} className="p-3 bg-muted/30 rounded-md border text-sm">
+                            <div key={note.id} className="p-3 bg-card rounded-md border shadow-sm text-sm">
                               <div className="flex justify-between items-start gap-2 mb-1">
                                 <span className="font-medium text-xs text-primary">{note.user_name}</span>
                                 <span className="text-[11px] text-muted-foreground whitespace-nowrap">
