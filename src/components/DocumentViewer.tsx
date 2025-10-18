@@ -14,7 +14,9 @@ declare global {
       View: new (config: { clientId: string; divId: string }) => {
         previewFile: (
           fileConfig: {
-            content: { location: { url: string } };
+            content:
+              | { location: { url: string } }
+              | { promise: Promise<ArrayBuffer> };
             metaData: { fileName: string };
           },
           viewerConfig: {
@@ -275,11 +277,21 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
       });
       console.log('✅ Adobe DC View instance created');
 
-      // Preview file with error handling
+      // Preview file with error handling - try ArrayBuffer first for CORS issues
       try {
-        console.log('📖 Calling previewFile...');
+        console.log('📖 Attempting PDF preview with ArrayBuffer for CORS compatibility...');
+        
+        // Fetch the PDF as ArrayBuffer to avoid CORS issues
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch PDF: ${response.status}`);
+        }
+        
+        const arrayBuffer = await response.arrayBuffer();
+        console.log('✅ PDF fetched as ArrayBuffer, size:', arrayBuffer.byteLength);
+        
         adobeDCView.previewFile({
-          content: { location: { url } },
+          content: { promise: Promise.resolve(arrayBuffer) },
           metaData: { fileName: document?.document_name || 'document.pdf' }
         }, {
           embedMode: 'SIZED_CONTAINER',
@@ -290,10 +302,30 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
           showTopToolbar: true,
           defaultViewMode: 'FIT_PAGE'
         });
-        console.log('✅ previewFile called successfully');
-      } catch (previewError) {
-        console.error('❌ Adobe previewFile error:', previewError);
-        throw new Error('Failed to preview PDF: ' + (previewError as Error).message);
+        console.log('✅ Adobe PDF viewer initialized with ArrayBuffer');
+        
+      } catch (arrayBufferError) {
+        console.warn('⚠️ ArrayBuffer method failed, trying URL method:', arrayBufferError);
+        
+        // Fallback to URL method
+        try {
+          adobeDCView.previewFile({
+            content: { location: { url } },
+            metaData: { fileName: document?.document_name || 'document.pdf' }
+          }, {
+            embedMode: 'SIZED_CONTAINER',
+            showAnnotationTools: false,
+            showLeftHandPanel: true,
+            showDownloadPDF: true,
+            showPrintPDF: true,
+            showTopToolbar: true,
+            defaultViewMode: 'FIT_PAGE'
+          });
+          console.log('✅ Adobe PDF viewer initialized with URL fallback');
+        } catch (urlError) {
+          console.error('❌ Both ArrayBuffer and URL methods failed:', urlError);
+          throw new Error('Failed to preview PDF with both methods');
+        }
       }
 
       setAdobeView(adobeDCView);
@@ -306,12 +338,6 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
         stack: (error as Error).stack
       });
       setViewerError(true);
-      
-      toast({
-        title: "Adobe PDF Viewer Issue",
-        description: "Falling back to browser PDF viewer. Check console for details.",
-        variant: "default",
-      });
       
       console.log('⚠️ Falling back to browser PDF viewer');
     }
