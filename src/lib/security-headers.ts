@@ -31,20 +31,20 @@ export const getEnhancedSecurityHeaders = (config: SecurityHeadersConfig = {}) =
   if (enableCSP) {
     const defaultCSP = customCSP || [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://acrobatservices.adobe.com https://documentservices.adobe.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://acrobatservices.adobe.com https://documentservices.adobe.com",
+      "font-src 'self' https://fonts.gstatic.com https://acrobatservices.adobe.com https://documentservices.adobe.com",
       "img-src 'self' data: https: blob:",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.github.com",
-      "frame-src 'none'",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.github.com https://acrobatservices.adobe.com https://documentservices.adobe.com https://*.adobe.io https://*.adobe.com",
+      "frame-src 'self' https://acrobatservices.adobe.com https://documentservices.adobe.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
       "frame-ancestors 'none'",
       "manifest-src 'self'",
       "media-src 'self'",
-      "worker-src 'self'",
-      "child-src 'none'",
+      "worker-src 'self' blob: https://acrobatservices.adobe.com https://documentservices.adobe.com",
+      "child-src 'self' https://acrobatservices.adobe.com https://documentservices.adobe.com",
       "report-uri /csp-violation-report-endpoint",
       "upgrade-insecure-requests"
     ].join('; ');
@@ -93,16 +93,17 @@ export const applyClientSecurityHeaders = () => {
     csp.setAttribute('http-equiv', 'Content-Security-Policy');
     csp.setAttribute('content', [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://acrobatservices.adobe.com https://documentservices.adobe.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://acrobatservices.adobe.com https://documentservices.adobe.com",
+      "font-src 'self' https://fonts.gstatic.com https://acrobatservices.adobe.com https://documentservices.adobe.com",
       "img-src 'self' data: https: blob:",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
-      "frame-src 'none'",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://acrobatservices.adobe.com https://documentservices.adobe.com https://*.adobe.io https://*.adobe.com",
+      "frame-src 'self' https://acrobatservices.adobe.com https://documentservices.adobe.com",
       "object-src 'none'",
       "manifest-src 'self'",
       "media-src 'self'",
-      "worker-src 'self'"
+      "worker-src 'self' blob: https://acrobatservices.adobe.com https://documentservices.adobe.com",
+      "child-src 'self' https://acrobatservices.adobe.com https://documentservices.adobe.com"
     ].join('; '));
     document.head.appendChild(csp);
   }
