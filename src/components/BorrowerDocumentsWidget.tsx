@@ -62,7 +62,7 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
             <FileText className="h-4 w-4" />
-            Borrower Documents
+            Loan Documents
           </CardTitle>
           <Button
             onClick={() => setIsUploadModalOpen(true)}

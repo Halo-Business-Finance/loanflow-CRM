@@ -83,7 +83,7 @@ const navItems: NavItemData[] = [
     to: '/underwriter',
     subItems: [
       { icon: LayoutDashboard, label: 'Underwriter Dashboard', to: '/underwriter' },
-      { icon: FileCheck, label: 'Document Review', to: '/underwriter/documents' },
+      { icon: FileCheck, label: 'Loan Document Review', to: '/underwriter/documents' },
       { icon: AlertTriangle, label: 'Risk Assessment', to: '/underwriter/risk' },
     ]
   },
@@ -99,10 +99,10 @@ const navItems: NavItemData[] = [
   },
   { 
     icon: FileText, 
-    label: 'Documents', 
+    label: 'Loan Documents', 
     to: '/documents',
     subItems: [
-      { icon: FileText, label: 'All Documents', to: '/documents' },
+      { icon: FileText, label: 'All Loan Documents', to: '/documents' },
       { icon: FileText, label: 'Upload Document', to: '/documents/upload' },
       { icon: FileText, label: 'Document Templates', to: '/documents/templates' },
     ]

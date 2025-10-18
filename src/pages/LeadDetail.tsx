@@ -1854,7 +1854,7 @@ export default function LeadDetail() {
               </CardContent>
             </Card>
 
-            {/* Borrower Documents Widget */}
+            {/* Loan Documents Widget */}
             {lead && (
               <BorrowerDocumentsWidget 
                 leadId={lead.id} 
