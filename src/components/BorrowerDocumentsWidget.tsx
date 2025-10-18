@@ -177,93 +177,116 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
           <div className="w-full">
             {/* Folders */}
             <div className="divide-y">
-              {folders.map((folder) => (
-                <div key={folder.id}>
-                  {/* Folder Header */}
-                  <div
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors cursor-pointer"
-                    onClick={() => toggleFolder(folder.id)}
-                  >
-                    {expandedFolders.has(folder.id) ? (
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                    )}
-                    <Folder className="h-5 w-5 text-yellow-500" />
-                    <span className="text-sm font-medium">{folder.name}</span>
-                    <Badge variant="secondary" className="ml-auto">
-                      0
-                    </Badge>
-                  </div>
+              {folders.map((folder) => {
+                // Filter documents for this specific folder
+                const folderDocuments = leadDocuments.filter(doc => {
+                  const docType = doc.document_type?.toLowerCase() || ''
+                  const folderId = folder.id
+                  
+                  // Map document types to folders
+                  if (folderId === 'business-tax' && docType.includes('business') && docType.includes('tax')) return true
+                  if (folderId === 'personal-tax' && docType.includes('personal') && docType.includes('tax')) return true
+                  if (folderId === 'financial-statements' && (docType.includes('p&l') || docType.includes('balance'))) return true
+                  if (folderId === 'bank-statements' && docType.includes('bank') && docType.includes('statement')) return true
+                  if (folderId === 'debt-schedule' && (docType.includes('debt') || docType.includes('schedule'))) return true
+                  if (folderId === 'loan-application' && (docType.includes('loan application') || docType.includes('license'))) return true
+                  if (folderId === 'ar-ap' && (docType.includes('ar') || docType.includes('ap'))) return true
+                  if (folderId === 'projections' && (docType.includes('projection') || docType.includes('resume') || docType.includes('business plan'))) return true
+                  if (folderId === 'sba-bank' && docType.includes('sba')) return true
+                  if (folderId === 'corp-docs' && (docType.includes('corp') || docType.includes('operating') || docType.includes('ein'))) return true
+                  if (folderId === 'pfs-reo' && (docType.includes('pfs') || docType.includes('reo'))) return true
+                  
+                  return false
+                })
 
-                  {/* Folder Contents */}
-                  {expandedFolders.has(folder.id) && (
-                    <div className="bg-muted/20">
-                      {leadDocuments.length > 0 ? (
-                        <div className="divide-y">
-                          {leadDocuments.map((doc) => (
-                            <div
-                              key={doc.id}
-                              className="grid grid-cols-[auto_1fr_200px_120px] gap-4 px-4 py-3 hover:bg-muted/50 transition-colors group items-center"
-                            >
-                              {/* Checkbox */}
-                              <Checkbox
-                                checked={selectedDocuments.has(doc.id)}
-                                onCheckedChange={() => toggleDocumentSelection(doc.id)}
-                                onClick={(e) => e.stopPropagation()}
-                              />
+                return (
+                  <div key={folder.id}>
+                    {/* Folder Header */}
+                    <div
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors cursor-pointer"
+                      onClick={() => toggleFolder(folder.id)}
+                    >
+                      {expandedFolders.has(folder.id) ? (
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      )}
+                      <Folder className="h-5 w-5 text-yellow-500" />
+                      <span className="text-sm font-medium">{folder.name}</span>
+                      <Badge variant="secondary" className="ml-auto">
+                        {folderDocuments.length}
+                      </Badge>
+                    </div>
 
-                              {/* Name Column */}
-                              <div className="flex items-center gap-3 min-w-0">
-                                <FileText className="h-5 w-5 text-blue-500 flex-shrink-0" />
-                                <span className="text-sm font-medium truncate">
-                                  {doc.document_name}
-                                </span>
-                              </div>
+                    {/* Folder Contents */}
+                    {expandedFolders.has(folder.id) && (
+                      <div className="bg-muted/20">
+                        {folderDocuments.length > 0 ? (
+                          <div className="divide-y">
+                            {folderDocuments.map((doc) => (
+                              <div
+                                key={doc.id}
+                                className="grid grid-cols-[auto_1fr_200px_120px] gap-4 px-4 py-3 hover:bg-muted/50 transition-colors group items-center"
+                              >
+                                {/* Checkbox */}
+                                <Checkbox
+                                  checked={selectedDocuments.has(doc.id)}
+                                  onCheckedChange={() => toggleDocumentSelection(doc.id)}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
 
-                              {/* Updated Column */}
-                              <div className="flex items-center text-sm text-muted-foreground">
-                                {format(new Date(doc.created_at), 'MMM d, yyyy')}
-                              </div>
+                                {/* Name Column */}
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <FileText className="h-5 w-5 text-blue-500 flex-shrink-0" />
+                                  <span className="text-sm font-medium truncate">
+                                    {doc.document_name}
+                                  </span>
+                                </div>
 
-                              {/* Size & Actions Column */}
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm text-muted-foreground">
-                                  {formatFileSize(doc.file_size)}
-                                </span>
-                                
-                                {/* Action Buttons */}
-                                <div className="flex items-center gap-1">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-7 w-7 p-0"
-                                    onClick={() => downloadDocument(doc)}
-                                  >
-                                    <Download className="h-3.5 w-3.5" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                                    onClick={() => handleDeleteDocument(doc)}
-                                  >
-                                    <Trash2 className="h-3.5 w-3.5" />
-                                  </Button>
+                                {/* Updated Column */}
+                                <div className="flex items-center text-sm text-muted-foreground">
+                                  {format(new Date(doc.created_at), 'MMM d, yyyy')}
+                                </div>
+
+                                {/* Size & Actions Column */}
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm text-muted-foreground">
+                                    {formatFileSize(doc.file_size)}
+                                  </span>
+                                  
+                                  {/* Action Buttons */}
+                                  <div className="flex items-center gap-1">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-7 w-7 p-0"
+                                      onClick={() => downloadDocument(doc)}
+                                    >
+                                      <Download className="h-3.5 w-3.5" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                                      onClick={() => handleDeleteDocument(doc)}
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="px-4 py-6 text-center text-sm text-muted-foreground italic">
-                          No documents in this folder yet
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="px-4 py-6 text-center text-sm text-muted-foreground italic">
+                            No documents in this folder yet
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         )}
