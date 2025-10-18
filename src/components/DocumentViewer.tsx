@@ -407,8 +407,22 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
   // Initialize Adobe viewer when document URL is ready
   useEffect(() => {
     if (isOpen && documentUrl && isPdf && !viewerError && !adobeView) {
-      console.log('Document URL ready, initializing Adobe viewer...');
+      console.log('🎯 Conditions met for Adobe viewer initialization:');
+      console.log('- Modal open:', isOpen);
+      console.log('- Document URL ready:', !!documentUrl);
+      console.log('- Is PDF:', isPdf);
+      console.log('- No viewer error:', !viewerError);
+      console.log('- No existing Adobe view:', !adobeView);
+      console.log('📄 Document URL:', documentUrl);
+      console.log('🚀 Starting Adobe viewer initialization...');
       initializeAdobeViewer(documentUrl);
+    } else {
+      console.log('❌ Adobe viewer conditions not met:');
+      console.log('- Modal open:', isOpen);
+      console.log('- Document URL ready:', !!documentUrl);
+      console.log('- Is PDF:', isPdf);
+      console.log('- No viewer error:', !viewerError);
+      console.log('- No existing Adobe view:', !adobeView);
     }
   }, [isOpen, documentUrl, isPdf, viewerError, adobeView]);
 
