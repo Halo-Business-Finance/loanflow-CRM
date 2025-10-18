@@ -1856,10 +1856,12 @@ export default function LeadDetail() {
 
             {/* Loan Documents Widget */}
             {lead && (
-              <BorrowerDocumentsWidget 
-                leadId={lead.id} 
-                contactEntityId={lead.contact_entity_id || lead.id}
-              />
+              <div className="lg:col-span-2">
+                <BorrowerDocumentsWidget 
+                  leadId={lead.id} 
+                  contactEntityId={lead.contact_entity_id || lead.id}
+                />
+              </div>
             )}
 
             {/* Call Notes Card */}
