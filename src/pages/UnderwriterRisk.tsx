@@ -8,7 +8,7 @@ export default function UnderwriterRisk() {
   return (
     <StandardPageLayout>
       <StandardPageHeader
-        title="Risk Assessment"
+        title="Loan Risk Assessment"
         description="Comprehensive risk analysis and assessment tools for loan underwriting"
       />
 

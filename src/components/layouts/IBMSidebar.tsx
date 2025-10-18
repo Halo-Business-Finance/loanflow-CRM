@@ -84,7 +84,7 @@ const navItems: NavItemData[] = [
     subItems: [
       { icon: LayoutDashboard, label: 'Underwriter Dashboard', to: '/underwriter' },
       { icon: FileCheck, label: 'Loan Document Review', to: '/underwriter/documents' },
-      { icon: AlertTriangle, label: 'Risk Assessment', to: '/underwriter/risk' },
+      { icon: AlertTriangle, label: 'Loan Risk Assessment', to: '/underwriter/risk' },
     ]
   },
   { 
