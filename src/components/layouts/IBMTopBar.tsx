@@ -119,11 +119,9 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent group transition-all duration-300"
+          className="h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent transition-all duration-300"
         >
-          <div className="p-2 group-hover:outline group-hover:outline-2 group-hover:outline-blue-500 transition-all duration-300 rounded">
-            <Grid3x3 className="h-5 w-5" />
-          </div>
+          <Grid3x3 className="h-5 w-5 hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300 rounded p-0.5" />
         </Button>
         
         {/* Navigation Controls */}
@@ -132,23 +130,19 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             variant="ghost"
             size="icon"
             onClick={() => window.history.back()}
-            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 group transition-all duration-300"
+            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 transition-all duration-300"
             title="Go back"
           >
-            <div className="p-2 group-hover:outline group-hover:outline-2 group-hover:outline-blue-500 transition-all duration-300 rounded">
-              <ChevronLeft className="h-5 w-5" />
-            </div>
+            <ChevronLeft className="h-5 w-5 hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300 rounded p-0.5" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => window.history.forward()}
-            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 group transition-all duration-300"
+            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 transition-all duration-300"
             title="Go forward"
           >
-            <div className="p-2 group-hover:outline group-hover:outline-2 group-hover:outline-blue-500 transition-all duration-300 rounded">
-              <ChevronRight className="h-5 w-5" />
-            </div>
+            <ChevronRight className="h-5 w-5 hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300 rounded p-0.5" />
           </Button>
         </div>
         
