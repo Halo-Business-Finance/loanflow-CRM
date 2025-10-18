@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-//
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-// Badge component removed - using plain text instead
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { StandardPageLayout } from "@/components/StandardPageLayout";
+import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { StandardContentCard } from "@/components/StandardContentCard";
+import { ResponsiveContainer } from "@/components/ResponsiveContainer";
 import { 
   BookOpen, 
   FileText, 
   Video, 
-  Globe,
   Download,
   ExternalLink,
   CheckCircle,
@@ -82,11 +82,17 @@ export default function Resources() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-        {/* Resource Overview Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="hover:shadow-md transition-shadow">
-            <CardContent className="p-5">
+    <StandardPageLayout>
+      <StandardPageHeader 
+        title="Resources"
+        description="Access documentation, training materials, and support resources"
+      />
+
+      <ResponsiveContainer>
+        <div className="space-y-6">
+          {/* Resource Overview Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StandardContentCard className="hover:shadow-md transition-shadow">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-muted-foreground">Total Resources</p>
@@ -94,11 +100,9 @@ export default function Resources() {
                 </div>
                 <p className="text-3xl font-bold">{overview.totalResources}</p>
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
 
-          <Card className="hover:shadow-md transition-shadow">
-            <CardContent className="p-5">
+            <StandardContentCard className="hover:shadow-md transition-shadow">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-muted-foreground">Documentation Score</p>
@@ -106,11 +110,9 @@ export default function Resources() {
                 </div>
                 <p className="text-3xl font-bold text-primary">{overview.documentationScore}%</p>
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
 
-          <Card className="hover:shadow-md transition-shadow">
-            <CardContent className="p-5">
+            <StandardContentCard className="hover:shadow-md transition-shadow">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-muted-foreground">Training Completed</p>
@@ -118,11 +120,9 @@ export default function Resources() {
                 </div>
                 <p className="text-3xl font-bold text-primary">{overview.trainingCompleted}%</p>
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
 
-          <Card className="hover:shadow-md transition-shadow">
-            <CardContent className="p-5">
+            <StandardContentCard className="hover:shadow-md transition-shadow">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-muted-foreground">Support Tickets</p>
@@ -130,158 +130,147 @@ export default function Resources() {
                 </div>
                 <p className="text-3xl font-bold text-primary">{overview.supportTickets}</p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </StandardContentCard>
+          </div>
 
-        {/* Alerts */}
-        <div className="space-y-3">
-          {overview.supportTickets > 0 && (
-            <Alert className="border-l-4 border-l-secondary">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                You have {overview.supportTickets} open support ticket(s) requiring attention.
-              </AlertDescription>
-            </Alert>
-          )}
+          {/* Alerts */}
+          <div className="space-y-3">
+            {overview.supportTickets > 0 && (
+              <Alert className="border-l-4 border-l-secondary">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  You have {overview.supportTickets} open support ticket(s) requiring attention.
+                </AlertDescription>
+              </Alert>
+            )}
 
-          {overview.trainingCompleted < 90 && (
-            <Alert className="border-l-4 border-l-primary">
-              <GraduationCap className="h-4 w-4" />
-              <AlertDescription>
-                Training completion is at {overview.trainingCompleted}%. Consider completing remaining courses.
-              </AlertDescription>
-            </Alert>
-          )}
-        </div>
+            {overview.trainingCompleted < 90 && (
+              <Alert className="border-l-4 border-l-primary">
+                <GraduationCap className="h-4 w-4" />
+                <AlertDescription>
+                  Training completion is at {overview.trainingCompleted}%. Consider completing remaining courses.
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
 
-        {/* Main Resource Dashboard Tabs */}
-        <Tabs defaultValue="overview" className="w-full flex-1 flex flex-col">
-          <TabsList className="w-full justify-start bg-transparent border-b rounded-none h-auto p-0">
-            <TabsTrigger 
-              value="overview" 
-              className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-            >
-              <BookOpen className="h-4 w-4" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger 
-              value="documentation" 
-              className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-            >
-              <FileText className="h-4 w-4" />
-              Documentation
-            </TabsTrigger>
-            <TabsTrigger 
-              value="training" 
-              className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-            >
-              <GraduationCap className="h-4 w-4" />
-              Training
-            </TabsTrigger>
-            <TabsTrigger 
-              value="support" 
-              className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-            >
-              <HelpCircle className="h-4 w-4" />
-              Support
-            </TabsTrigger>
-            <TabsTrigger 
-              value="tools" 
-              className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-            >
-              <Settings className="h-4 w-4" />
-              Tools
-            </TabsTrigger>
-          </TabsList>
+          {/* Main Resource Dashboard Tabs */}
+          <Tabs defaultValue="overview" className="w-full flex-1 flex flex-col">
+            <TabsList className="w-full justify-start bg-transparent border-b rounded-none h-auto p-0">
+              <TabsTrigger 
+                value="overview" 
+                className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+              >
+                <BookOpen className="h-4 w-4" />
+                Overview
+              </TabsTrigger>
+              <TabsTrigger 
+                value="documentation" 
+                className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+              >
+                <FileText className="h-4 w-4" />
+                Documentation
+              </TabsTrigger>
+              <TabsTrigger 
+                value="training" 
+                className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+              >
+                <GraduationCap className="h-4 w-4" />
+                Training
+              </TabsTrigger>
+              <TabsTrigger 
+                value="support" 
+                className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+              >
+                <HelpCircle className="h-4 w-4" />
+                Support
+              </TabsTrigger>
+              <TabsTrigger 
+                value="tools" 
+                className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+              >
+                <Settings className="h-4 w-4" />
+                Tools
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="overview" className="space-y-4 mt-6 flex-1">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Quick Actions */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Quick Resource Actions</CardTitle>
-                  <CardDescription>
+            <TabsContent value="overview" className="space-y-4 mt-6 flex-1">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Quick Actions */}
+                <StandardContentCard title="Quick Resource Actions">
+                  <p className="text-sm text-muted-foreground mb-4">
                     Immediate access to essential resources
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://docs.lovable.dev/', '_blank')}>
-                    <Search className="w-4 h-4 mr-2" />
-                    Search Knowledge Base
-                  </Button>
-                  <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://www.youtube.com/playlist?list=PLbVHz4urQBZkJiAWdG8HWoJTdgEysigIO', '_blank')}>
-                    <Video className="w-4 h-4 mr-2" />
-                    Watch Video Tutorials
-                  </Button>
-                  <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://docs.lovable.dev/user-guides/quickstart', '_blank')}>
-                    <Download className="w-4 h-4 mr-2" />
-                    Download User Guides
-                  </Button>
-                  <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://discord.com/channels/1119885301872070706/1280461670979993613', '_blank')}>
-                    <Users className="w-4 h-4 mr-2" />
-                    Community Support
-                  </Button>
-                </CardContent>
-              </Card>
+                  </p>
+                  <div className="space-y-2">
+                    <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://docs.lovable.dev/', '_blank')}>
+                      <Search className="w-4 h-4 mr-2" />
+                      Search Knowledge Base
+                    </Button>
+                    <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://www.youtube.com/playlist?list=PLbVHz4urQBZkJiAWdG8HWoJTdgEysigIO', '_blank')}>
+                      <Video className="w-4 h-4 mr-2" />
+                      Watch Video Tutorials
+                    </Button>
+                    <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://docs.lovable.dev/user-guides/quickstart', '_blank')}>
+                      <Download className="w-4 h-4 mr-2" />
+                      Download User Guides
+                    </Button>
+                    <Button className="w-full justify-start" variant="ghost" onClick={() => window.open('https://discord.com/channels/1119885301872070706/1280461670979993613', '_blank')}>
+                      <Users className="w-4 h-4 mr-2" />
+                      Community Support
+                    </Button>
+                  </div>
+                </StandardContentCard>
 
-              {/* Resource Health */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Resource System Health</CardTitle>
-                  <CardDescription>
+                {/* Resource Health */}
+                <StandardContentCard title="Resource System Health">
+                  <p className="text-sm text-muted-foreground mb-4">
                     Real-time status of resource components
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-sm text-muted-foreground">Knowledge Base</span>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium">Online</span>
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm text-muted-foreground">Knowledge Base</span>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium">Online</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm text-muted-foreground">Video Platform</span>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium">Available</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm text-muted-foreground">Support Portal</span>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium">Operational</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm text-muted-foreground">Community Forum</span>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium">Active</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm text-muted-foreground">Download Center</span>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium">Accessible</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-sm text-muted-foreground">Video Platform</span>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium">Available</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-sm text-muted-foreground">Support Portal</span>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium">Operational</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-sm text-muted-foreground">Community Forum</span>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium">Active</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-sm text-muted-foreground">Download Center</span>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium">Accessible</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                </StandardContentCard>
+              </div>
 
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Resource Activity</CardTitle>
-                <CardDescription>
+              {/* Recent Activity */}
+              <StandardContentCard title="Recent Resource Activity">
+                <p className="text-sm text-muted-foreground mb-4">
                   Latest updates and resource interactions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
                 <div className="space-y-2">
                   <div className="flex items-center gap-3 p-3 hover:bg-muted/50 rounded-md transition-colors">
                     <FileText className="w-4 h-4 text-primary flex-shrink-0" />
@@ -310,19 +299,14 @@ export default function Resources() {
                     <span className="text-sm font-medium">Downloaded</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              </StandardContentCard>
+            </TabsContent>
 
-          <TabsContent value="documentation" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Documentation Library</CardTitle>
-                <CardDescription>
+            <TabsContent value="documentation" className="mt-6">
+              <StandardContentCard title="Documentation Library">
+                <p className="text-sm text-muted-foreground mb-4">
                   Comprehensive documentation and reference materials
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
                 <div className="space-y-4">
                   {documentationItems.map((item, index) => {
                     const TypeIcon = getTypeIcon(item.type);
@@ -347,19 +331,14 @@ export default function Resources() {
                     );
                   })}
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              </StandardContentCard>
+            </TabsContent>
 
-          <TabsContent value="training" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Training & Development</CardTitle>
-                <CardDescription>
+            <TabsContent value="training" className="mt-6">
+              <StandardContentCard title="Training & Development">
+                <p className="text-sm text-muted-foreground mb-4">
                   Learning materials and progress tracking
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
                 <div className="space-y-4">
                   {trainingMaterials.map((item, index) => {
                     const TypeIcon = getTypeIcon(item.type);
@@ -391,19 +370,14 @@ export default function Resources() {
                     );
                   })}
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              </StandardContentCard>
+            </TabsContent>
 
-          <TabsContent value="support" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Support & Help</CardTitle>
-                <CardDescription>
+            <TabsContent value="support" className="mt-6">
+              <StandardContentCard title="Support & Help">
+                <p className="text-sm text-muted-foreground mb-4">
                   Get assistance and connect with support resources
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <h4 className="font-semibold">Contact Support</h4>
@@ -428,19 +402,14 @@ export default function Resources() {
                     </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              </StandardContentCard>
+            </TabsContent>
 
-          <TabsContent value="tools" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Resource Management Tools</CardTitle>
-                <CardDescription>
+            <TabsContent value="tools" className="mt-6">
+              <StandardContentCard title="Resource Management Tools">
+                <p className="text-sm text-muted-foreground mb-4">
                   Advanced tools for managing and organizing resources
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <Button variant="outline" className="h-20 flex-col" onClick={() => window.open('https://docs.lovable.dev/', '_blank')}>
                     <Download className="w-6 h-6 mb-2" />
@@ -455,10 +424,11 @@ export default function Resources() {
                     <span>Preferences</span>
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+              </StandardContentCard>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </ResponsiveContainer>
+    </StandardPageLayout>
   );
 }
