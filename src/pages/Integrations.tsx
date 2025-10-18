@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-// Badge component removed - using plain text instead
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -11,6 +10,10 @@ import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
+import { StandardPageLayout } from "@/components/StandardPageLayout"
+import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { StandardContentCard } from "@/components/StandardContentCard"
+import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 import { 
   Mail, 
   MessageSquare, 
@@ -310,428 +313,321 @@ export default function Integrations() {
   ]
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-        {/* Header Section */}
-        <div className="flex items-center gap-2 mb-6">
-          <Workflow className="h-6 w-6" />
-          <h1 className="text-3xl font-bold">Integration Command Center</h1>
-          <p className="text-muted-foreground ml-4">
-            Connect external services and configure AI-powered automation tools
-          </p>
-        </div>
+    <StandardPageLayout>
+      <StandardPageHeader 
+        title="Integration Command Center"
+        description="Connect external services and configure AI-powered automation tools"
+      />
+      
+      <ResponsiveContainer padding="md">{/* Integration Metrics Overview */}
 
-        {/* Integration Metrics Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-l-4 border-l-primary">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Connected</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <CheckCircle className="w-5 h-5" />
-                    <p className="text-lg font-bold">{integrations.filter(i => i.status === "connected").length}</p>
-                  </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Connected</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <CheckCircle className="w-5 h-5 text-accent" />
+                  <p className="text-2xl font-bold">{integrations.filter(i => i.status === "connected").length}</p>
                 </div>
-                <span className="text-sm font-medium">
-                  ACTIVE
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Available</p>
-                  <p className="text-2xl font-bold text-primary">{integrations.filter(i => i.status === "available").length}</p>
-                </div>
-                <Clock className="w-8 h-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Categories</p>
-                  <p className="text-2xl font-bold text-primary">{categoryFilters.length - 1}</p>
-                </div>
-                <Filter className="w-8 h-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">AI Tools</p>
-                  <p className="text-2xl font-bold text-primary">{aiTools.filter(t => t.status === 'active').length}</p>
-                </div>
-                <Sparkles className="w-8 h-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-          {/* Search and Filter Bar */}
-          <div className="bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-4 space-y-4">
-            <div className="flex flex-col lg:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search integrations and tools..."
-                  className="pl-10 h-12 border-0 bg-background/80 rounded-xl"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0">
-                {categoryFilters.map((category) => (
-                  <Button
-                    key={category.id}
-                    variant={selectedCategory === category.id ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(category.id)}
-                    className="flex items-center gap-2 whitespace-nowrap rounded-xl"
-                  >
-                    <category.icon className="w-3 h-3" />
-                    {category.name}
-                  </Button>
-                ))}
               </div>
             </div>
-          </div>
+          </StandardContentCard>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm rounded-2xl p-1">
-              <TabsTrigger value="integrations" className="rounded-xl">
-                <Workflow className="w-4 h-4 mr-2" />
-                Third-Party Integrations
-              </TabsTrigger>
-              <TabsTrigger value="ai-tools" className="rounded-xl">
-                <Bot className="w-4 h-4 mr-2" />
-                AI Tools
-              </TabsTrigger>
-              <TabsTrigger value="webhooks" className="rounded-xl">
-                <Zap className="w-4 h-4 mr-2" />
-                Webhooks & API
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="integrations" className="space-y-6">
-              {/* Stats Overview */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <Card className="border border-border shadow-sm">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-accent/10 rounded-lg">
-                        <CheckCircle className="w-4 h-4 text-accent" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-foreground/70">Connected</p>
-                        <p className="text-xl font-bold text-foreground">
-                          {integrations.filter(i => i.status === "connected").length}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="border border-border shadow-sm">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Clock className="w-4 h-4 text-primary" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-foreground/70">Available</p>
-                        <p className="text-xl font-bold text-foreground">
-                          {integrations.filter(i => i.status === "available").length}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-secondary/10 rounded-lg">
-                        <Filter className="w-4 h-4 text-secondary-foreground" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-foreground/70">Categories</p>
-                        <p className="text-xl font-bold text-foreground">{categoryFilters.length - 1}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-warning/10 rounded-lg">
-                        <Sparkles className="w-4 h-4 text-warning" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-foreground/70">Featured</p>
-                        <p className="text-xl font-bold text-foreground">2</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Available</p>
+                <p className="text-2xl font-bold">{integrations.filter(i => i.status === "available").length}</p>
               </div>
+              <Clock className="w-8 h-8 text-primary" />
+            </div>
+          </StandardContentCard>
 
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {filteredIntegrations.map((integration) => (
-                  <Card 
-                    key={integration.id} 
-                    className="group border border-border shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
-                  >
-                    <CardHeader className="pb-4 relative">
-                      <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-primary opacity-5 rounded-full blur-xl group-hover:opacity-10 transition-opacity" />
-                      <div className="flex items-start justify-between relative">
-                        <div className="space-y-1">
-                          <CardTitle className="text-lg text-foreground group-hover:text-primary transition-colors">
-                            {integration.name}
-                          </CardTitle>
-                          <div className="flex items-center space-x-2">
-                            {getStatusIcon(integration.status)}
-                            <span className="text-xs font-medium px-2 py-1 rounded-full">
-                              {integration.status}
-                            </span>
-                          </div>
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Categories</p>
+                <p className="text-2xl font-bold">{categoryFilters.length - 1}</p>
+              </div>
+              <Filter className="w-8 h-8 text-primary" />
+            </div>
+          </StandardContentCard>
+
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">AI Tools</p>
+                <p className="text-2xl font-bold">{aiTools.filter(t => t.status === 'active').length}</p>
+              </div>
+              <Sparkles className="w-8 h-8 text-primary" />
+            </div>
+          </StandardContentCard>
+        </div>
+
+        <StandardContentCard>
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search integrations and tools..."
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0">
+              {categoryFilters.map((category) => (
+                <Button
+                  key={category.id}
+                  variant={selectedCategory === category.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category.id)}
+                  className="flex items-center gap-2 whitespace-nowrap"
+                >
+                  <category.icon className="w-3 h-3" />
+                  {category.name}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </StandardContentCard>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="integrations">
+              <Workflow className="w-4 h-4 mr-2" />
+              Third-Party Integrations
+            </TabsTrigger>
+            <TabsTrigger value="ai-tools">
+              <Bot className="w-4 h-4 mr-2" />
+              AI Tools
+            </TabsTrigger>
+            <TabsTrigger value="webhooks">
+              <Zap className="w-4 h-4 mr-2" />
+              Webhooks & API
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="integrations" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredIntegrations.map((integration) => (
+                <StandardContentCard 
+                  key={integration.id}
+                  className="group hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
+                          {integration.name}
+                        </h3>
+                        <div className="flex items-center space-x-2">
+                          {getStatusIcon(integration.status)}
+                          <span className="text-xs font-medium px-2 py-1 rounded-full bg-muted">
+                            {integration.status}
+                          </span>
                         </div>
-                        <Switch 
-                          checked={integration.status === "connected"}
-                          onCheckedChange={(enabled) => handleIntegrationToggle(integration.id, enabled)}
-                          className="data-[state=checked]:bg-accent"
-                        />
                       </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <CardDescription className="text-foreground/70 leading-relaxed">
-                        {integration.description}
-                      </CardDescription>
-                      
-                      <div className="space-y-3">
-                        <Label className="text-sm font-medium text-foreground/80">Key Features</Label>
-                        <div className="flex flex-wrap gap-2">
-                          {integration.features.slice(0, 3).map((feature) => (
-                            <span key={feature} className="text-xs px-2 py-1 rounded-lg">
-                              {feature}
-                            </span>
-                          ))}
-                          {integration.features.length > 3 && (
-                            <span className="text-xs px-2 py-1 rounded-lg">
-                              +{integration.features.length - 3} more
-                            </span>
+                      <Switch 
+                        checked={integration.status === "connected"}
+                        onCheckedChange={(enabled) => handleIntegrationToggle(integration.id, enabled)}
+                      />
+                    </div>
+                    
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {integration.description}
+                    </p>
+                    
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium">Key Features</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {integration.features.slice(0, 3).map((feature) => (
+                          <span key={feature} className="text-xs px-2 py-1 rounded-lg bg-muted">
+                            {feature}
+                          </span>
+                        ))}
+                        {integration.features.length > 3 && (
+                          <span className="text-xs px-2 py-1 rounded-lg bg-muted">
+                            +{integration.features.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <Button 
+                      className="w-full"
+                      variant={integration.status === "connected" ? "outline" : "default"}
+                      onClick={() => handleIntegrationConfigure(integration.id)}
+                    >
+                      {integration.status === "connected" ? (
+                        <>
+                          <Settings className="w-4 h-4 mr-2" />
+                          Configure
+                        </>
+                      ) : (
+                        <>
+                          <ArrowRight className="w-4 h-4 mr-2" />
+                          Connect Now
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </StandardContentCard>
+              ))}
+
+              {filteredIntegrations.length === 0 && (
+                <div className="col-span-full text-center py-12">
+                  <div className="w-16 h-16 bg-muted/20 rounded-2xl mx-auto mb-4 flex items-center justify-between">
+                    <Search className="w-6 h-6 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">No integrations found</h3>
+                  <p className="text-muted-foreground">Try adjusting your search or filter criteria</p>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+        <TabsContent value="ai-tools" className="space-y-6">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 bg-muted rounded-full px-4 py-2 mb-4">
+                <Bot className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium">AI-Powered Intelligence</span>
+              </div>
+              <h2 className="text-2xl font-bold mb-2">Intelligent Automation Tools</h2>
+              <p className="text-muted-foreground">Leverage AI to automate tasks and gain actionable insights</p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              {filteredAITools.map((tool) => (
+                <StandardContentCard 
+                  key={tool.id}
+                  className="group hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="space-y-5">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
+                          {tool.name}
+                        </h3>
+                        <div className="flex items-center space-x-2">
+                          {getStatusIcon(tool.status)}
+                          <span className="text-xs font-medium px-2 py-1 rounded-full bg-muted">
+                            {tool.status}
+                          </span>
+                          {tool.status === "active" && (
+                            <div className="flex items-center">
+                              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+                              <span className="text-xs text-accent ml-1">Live</span>
+                            </div>
                           )}
                         </div>
                       </div>
-
-                      <Button 
-                        className={`w-full group/btn rounded-xl transition-all ${
-                          integration.status === "connected" 
-                            ? "bg-accent/10 text-accent hover:bg-accent hover:text-accent-foreground border border-accent/20" 
-                            : "bg-gradient-primary hover:shadow-lg hover:shadow-primary/20"
-                        }`}
-                        variant={integration.status === "connected" ? "outline" : "default"}
-                        onClick={() => handleIntegrationConfigure(integration.id)}
-                      >
-                        {integration.status === "connected" ? (
-                          <>
-                            <Settings className="w-4 h-4 mr-2 group-hover/btn:rotate-90 transition-transform" />
-                            Configure
-                          </>
-                        ) : (
-                          <>
-                            <ArrowRight className="w-4 h-4 mr-2 group-hover/btn:translate-x-1 transition-transform" />
-                            Connect Now
-                          </>
-                        )}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              {filteredIntegrations.length === 0 && (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-muted/20 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                    <Search className="w-6 h-6 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-medium text-foreground mb-2">No integrations found</h3>
-                  <p className="text-foreground/70">Try adjusting your search or filter criteria</p>
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="ai-tools" className="space-y-6">
-              {/* AI Tools Header */}
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full px-4 py-2 mb-4">
-                  <Bot className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-foreground">AI-Powered Intelligence</span>
-                </div>
-                <h2 className="text-2xl font-bold text-foreground mb-2">Intelligent Automation Tools</h2>
-                <p className="text-foreground/70">Leverage AI to automate tasks and gain actionable insights</p>
-              </div>
-
-              <div className="grid gap-6 md:grid-cols-2">
-                {filteredAITools.map((tool) => (
-                  <Card 
-                    key={tool.id} 
-                    className="group border-0 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm hover:shadow-2xl hover:shadow-accent/10 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
-                  >
-                    <CardHeader className="pb-4 relative">
-                      <div className="absolute -top-6 -right-6 w-32 h-32 bg-gradient-to-br from-accent/5 to-primary/5 rounded-full blur-2xl group-hover:opacity-20 transition-opacity" />
-                       <div className="flex items-start justify-between relative">
-                         <div className="space-y-1">
-                           <CardTitle className="text-xl text-foreground group-hover:text-accent transition-colors">
-                             {tool.name}
-                           </CardTitle>
-                           <div className="flex items-center space-x-2">
-                             {getStatusIcon(tool.status)}
-                              <span className="text-xs font-medium px-2 py-1 rounded-full">
-                                {tool.status}
-                              </span>
-                             {tool.status === "active" && (
-                               <div className="flex items-center">
-                                 <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-                                 <span className="text-xs text-accent ml-1">Live</span>
-                               </div>
-                             )}
-                           </div>
-                         </div>
-                         <Switch 
-                           checked={tool.status === "active"}
-                           onCheckedChange={(enabled) => handleAIToolToggle(tool.id, enabled)}
-                           className="data-[state=checked]:bg-accent"
-                         />
-                       </div>
-                    </CardHeader>
-                    <CardContent className="space-y-5">
-                      <CardDescription className="text-foreground/70 leading-relaxed text-base">
-                        {tool.description}
-                      </CardDescription>
-                      
-                      <div className="space-y-3">
-                        <Label className="text-sm font-medium text-foreground/80">AI Capabilities</Label>
-                        <div className="grid grid-cols-2 gap-2">
-                          {tool.features.map((feature) => (
-                            <div key={feature} className="flex items-center gap-2 p-2 bg-muted/30 rounded-lg">
-                              <div className="w-1.5 h-1.5 bg-accent rounded-full" />
-                              <span className="text-xs text-foreground/80">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <Button 
-                        className={`w-full group/btn rounded-xl transition-all ${
-                          tool.status === "active" 
-                            ? "bg-gradient-to-r from-accent/10 to-accent/5 text-accent hover:from-accent hover:to-accent/80 hover:text-accent-foreground border border-accent/20" 
-                            : "bg-gradient-to-r from-primary to-primary/80 hover:shadow-lg hover:shadow-primary/20"
-                        }`}
-                        variant={tool.status === "active" ? "outline" : "default"}
-                        onClick={() => handleAIToolAction(tool.id, tool.status)}
-                      >
-                        {tool.status === "active" ? (
-                          <>
-                            <Settings className="w-4 h-4 mr-2 group-hover/btn:rotate-90 transition-transform" />
-                            Configure AI
-                          </>
-                        ) : (
-                          <>
-                            <Sparkles className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
-                            Enable AI
-                          </>
-                        )}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="webhooks" className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2">
-                <Card className="border-0 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-3 text-foreground">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Zap className="w-5 h-5 text-primary" />
-                      </div>
-                      <span>Zapier Integration</span>
-                    </CardTitle>
-                    <CardDescription className="text-foreground/70">
-                      Connect your CRM to 5000+ apps via Zapier webhooks
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="webhook-url" className="text-foreground/80">Webhook URL</Label>
-                      <Input
-                        id="webhook-url"
-                        placeholder="https://hooks.zapier.com/hooks/catch/..."
-                        value={webhookUrl}
-                        onChange={(e) => setWebhookUrl(e.target.value)}
-                        className="border-0 bg-background/80 rounded-xl"
+                      <Switch 
+                        checked={tool.status === "active"}
+                        onCheckedChange={(enabled) => handleAIToolToggle(tool.id, enabled)}
                       />
                     </div>
-                    <Button onClick={handleWebhookSave} className="w-full rounded-xl bg-gradient-primary">
-                      <Zap className="w-4 h-4 mr-2" />
-                      Save Webhook URL
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-0 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-3 text-foreground">
-                      <div className="p-2 bg-accent/10 rounded-lg">
-                        <Settings className="w-5 h-5 text-accent" />
-                      </div>
-                      <span>API Configuration</span>
-                    </CardTitle>
-                    <CardDescription className="text-foreground/70">
-                      Manage API endpoints and developer access
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                    
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {tool.description}
+                    </p>
+                    
                     <div className="space-y-3">
-                      <Label className="text-foreground/80">Active Endpoints</Label>
-                      <div className="space-y-2 text-sm">
-                        {[
-                          { endpoint: "GET /api/leads", status: "Active" },
-                          { endpoint: "POST /api/clients", status: "Active" },
-                          { endpoint: "GET /api/pipeline", status: "Active" }
-                        ].map((api, index) => (
-                          <div key={index} className="flex justify-between items-center p-3 bg-background/50 rounded-lg border">
-                            <span className="font-mono text-foreground">{api.endpoint}</span>
-                            <span className="text-xs font-medium">{api.status}</span>
+                      <Label className="text-sm font-medium">AI Capabilities</Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {tool.features.map((feature) => (
+                          <div key={feature} className="flex items-center gap-2 p-2 bg-muted/30 rounded-lg">
+                            <div className="w-1.5 h-1.5 bg-accent rounded-full" />
+                            <span className="text-xs">{feature}</span>
                           </div>
                         ))}
                       </div>
                     </div>
-                    <Button 
-                      variant="outline" 
-                      className="w-full rounded-xl border-accent/20 text-accent hover:bg-accent hover:text-accent-foreground"
-                      onClick={() => navigate('/api-docs')}
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      API Documentation
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
 
-          {/* Adobe Configuration Dialog */}
-          <Dialog open={showAdobeConfig} onOpenChange={setShowAdobeConfig}>
-            <DialogContent className="max-w-md">
+                    <Button 
+                      className="w-full"
+                      variant={tool.status === "active" ? "outline" : "default"}
+                      onClick={() => handleAIToolAction(tool.id, tool.status)}
+                    >
+                      {tool.status === "active" ? (
+                        <>
+                          <Settings className="w-4 h-4 mr-2" />
+                          Configure AI
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          Enable AI
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </StandardContentCard>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="webhooks" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <StandardContentCard title="Zapier Integration">
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Connect your CRM to 5000+ apps via Zapier webhooks
+                  </p>
+                  <div className="space-y-2">
+                    <Label htmlFor="webhook-url">Webhook URL</Label>
+                    <Input
+                      id="webhook-url"
+                      placeholder="https://hooks.zapier.com/hooks/catch/..."
+                      value={webhookUrl}
+                      onChange={(e) => setWebhookUrl(e.target.value)}
+                    />
+                  </div>
+                  <Button onClick={handleWebhookSave} className="w-full">
+                    <Zap className="w-4 h-4 mr-2" />
+                    Save Webhook URL
+                  </Button>
+                </div>
+              </StandardContentCard>
+
+              <StandardContentCard title="API Configuration">
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Manage API endpoints and developer access
+                  </p>
+                  <div className="space-y-3">
+                    <Label>Active Endpoints</Label>
+                    <div className="space-y-2 text-sm">
+                      {[
+                        { endpoint: "GET /api/leads", status: "Active" },
+                        { endpoint: "POST /api/clients", status: "Active" },
+                        { endpoint: "GET /api/pipeline", status: "Active" }
+                      ].map((api, index) => (
+                        <div key={index} className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                          <span className="font-mono">{api.endpoint}</span>
+                          <span className="text-xs font-medium">{api.status}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => navigate('/api-docs')}
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    API Documentation
+                  </Button>
+                </div>
+              </StandardContentCard>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Adobe Configuration Dialog */}
+        <Dialog open={showAdobeConfig} onOpenChange={setShowAdobeConfig}>
+          <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2 text-lg">
                   <FileImage className="w-5 h-5 text-red-600" />
@@ -875,6 +771,7 @@ export default function Integrations() {
               </div>
             </DialogContent>
           </Dialog>
-      </div>
+      </ResponsiveContainer>
+    </StandardPageLayout>
   )
 }
