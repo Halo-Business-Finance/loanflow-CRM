@@ -2,12 +2,10 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { FileText, Download, Upload, Folder, MoreHorizontal, Link, Share, CheckSquare, ChevronRight, ChevronDown, Trash2 } from "lucide-react"
+import { FileText, Download, Upload, Folder, MoreHorizontal, Link, Share, CheckSquare, ChevronRight, ChevronDown } from "lucide-react"
 import { useDocuments } from "@/hooks/useDocuments"
 import { format } from "date-fns"
 import { DocumentUploadModal } from "@/components/DocumentUploadModal"
-import { useToast } from "@/hooks/use-toast"
 
 interface BorrowerDocumentsWidgetProps {
   leadId: string
@@ -15,12 +13,10 @@ interface BorrowerDocumentsWidgetProps {
 }
 
 export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDocumentsWidgetProps) {
-  const { documents, loading, downloadDocument, uploadDocument, deleteDocument } = useDocuments()
+  const { documents, loading, downloadDocument, uploadDocument } = useDocuments()
   const [leadDocuments, setLeadDocuments] = useState<any[]>([])
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['business-tax', 'personal-tax']))
-  const [selectedDocuments, setSelectedDocuments] = useState<Set<string>>(new Set())
-  const { toast } = useToast()
 
   useEffect(() => {
     if (documents) {
@@ -59,60 +55,6 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
     })
   }
 
-  const toggleDocumentSelection = (docId: string) => {
-    setSelectedDocuments(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(docId)) {
-        newSet.delete(docId)
-      } else {
-        newSet.add(docId)
-      }
-      return newSet
-    })
-  }
-
-  const handleDeleteDocument = async (doc: any) => {
-    try {
-      await deleteDocument(doc.id, doc.file_path)
-      toast({
-        title: "Document deleted",
-        description: "The document has been successfully deleted.",
-      })
-      setSelectedDocuments(prev => {
-        const newSet = new Set(prev)
-        newSet.delete(doc.id)
-        return newSet
-      })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete document. Please try again.",
-        variant: "destructive",
-      })
-    }
-  }
-
-  const handleBulkDelete = async () => {
-    const docsToDelete = leadDocuments.filter(doc => selectedDocuments.has(doc.id))
-    
-    try {
-      await Promise.all(
-        docsToDelete.map(doc => deleteDocument(doc.id, doc.file_path))
-      )
-      toast({
-        title: "Documents deleted",
-        description: `${docsToDelete.length} document(s) have been successfully deleted.`,
-      })
-      setSelectedDocuments(new Set())
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete some documents. Please try again.",
-        variant: "destructive",
-      })
-    }
-  }
-
   const folders = [
     { id: 'business-tax', name: 'Business Tax Returns', icon: Folder },
     { id: 'personal-tax', name: 'Personal Tax Returns', icon: Folder },
@@ -134,24 +76,8 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
           <div className="flex items-center gap-2 text-muted-foreground">
             <FileText className="h-4 w-4" />
             <span className="text-sm font-medium text-foreground">Loan Documents</span>
-            {selectedDocuments.size > 0 && (
-              <Badge variant="secondary" className="ml-2">
-                {selectedDocuments.size} selected
-              </Badge>
-            )}
           </div>
           <div className="flex items-center gap-2">
-            {selectedDocuments.size > 0 && (
-              <Button
-                onClick={handleBulkDelete}
-                size="sm"
-                variant="destructive"
-                className="h-8 px-3 gap-2"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-                Delete ({selectedDocuments.size})
-              </Button>
-            )}
             <Button
               onClick={() => setIsUploadModalOpen(true)}
               size="sm"
