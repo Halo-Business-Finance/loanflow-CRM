@@ -234,42 +234,30 @@ export default function Support() {
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Tickets</p>
-                <p className="text-2xl font-bold text-foreground">{ticketStats.total}</p>
-              </div>
-              <Ticket className="h-8 w-8 text-primary" />
+            <div>
+              <p className="text-sm text-muted-foreground">Total Tickets</p>
+              <p className="text-2xl font-bold text-foreground">{ticketStats.total}</p>
             </div>
           </StandardContentCard>
           
           <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Open</p>
-                <p className="text-2xl font-bold text-blue-500">{ticketStats.open}</p>
-              </div>
-              <Clock className="h-8 w-8 text-blue-500" />
+            <div>
+              <p className="text-sm text-muted-foreground">Open</p>
+              <p className="text-2xl font-bold text-blue-500">{ticketStats.open}</p>
             </div>
           </StandardContentCard>
           
           <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">In Progress</p>
-                <p className="text-2xl font-bold text-yellow-500">{ticketStats.inProgress}</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-yellow-500" />
+            <div>
+              <p className="text-sm text-muted-foreground">In Progress</p>
+              <p className="text-2xl font-bold text-yellow-500">{ticketStats.inProgress}</p>
             </div>
           </StandardContentCard>
           
           <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Resolved</p>
-                <p className="text-2xl font-bold text-green-500">{ticketStats.resolved}</p>
-              </div>
-              <CheckCircle2 className="h-8 w-8 text-green-500" />
+            <div>
+              <p className="text-sm text-muted-foreground">Resolved</p>
+              <p className="text-2xl font-bold text-green-500">{ticketStats.resolved}</p>
             </div>
           </StandardContentCard>
         </div>
