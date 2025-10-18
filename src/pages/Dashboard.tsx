@@ -257,7 +257,7 @@ export default function Dashboard() {
         {/* Enterprise Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               {userName ? `Welcome, ${userName}` : 'Welcome'}
             </h1>
             <p className="text-muted-foreground mt-1">

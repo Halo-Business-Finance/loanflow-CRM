@@ -274,7 +274,7 @@ function Dashboard() {
       <div className="bg-white border-b border-border pl-0 pr-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex-1 pl-6 flex items-center gap-4">
-            <p className="text-lg text-black mt-1 text-left">Welcome {user?.user_metadata?.first_name || getUserDisplayName()}</p>
+            <p className="text-base text-black mt-1 text-left">Welcome {user?.user_metadata?.first_name || getUserDisplayName()}</p>
             
             {/* Navigation Controls */}
             <div className="flex items-center gap-2 pl-4">
