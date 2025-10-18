@@ -4,6 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { StandardPageLayout } from '@/components/StandardPageLayout';
+import { StandardPageHeader } from '@/components/StandardPageHeader';
+import { StandardContentCard } from '@/components/StandardContentCard';
+import { ResponsiveContainer } from '@/components/ResponsiveContainer';
 import { 
   Shield, 
   Clock, 
@@ -23,7 +27,7 @@ import { useToast } from '@/hooks/use-toast';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { AdvancedAnalytics } from '@/components/analytics/AdvancedAnalytics';
 import { TeamCollaboration } from '@/components/collaboration/TeamCollaboration';
-import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, Area, AreaChart } from 'recharts';
+import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer as RechartsResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, Area, AreaChart } from 'recharts';
 import { UnderwriterDocuments } from './UnderwriterDocuments';
 
 interface UnderwriterMetrics {
@@ -155,77 +159,70 @@ export const UnderwriterDashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-card/60 to-card/30 backdrop-blur-sm rounded-xl p-6 border border-border/20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
-            <Shield className="w-5 h-5 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Underwriter Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Review and approve loan applications</p>
-          </div>
+    <StandardPageLayout>
+      <StandardPageHeader 
+        title="Underwriter Dashboard"
+        description="Review and approve loan applications"
+      />
+      
+      <ResponsiveContainer padding="md">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-1">Pending Reviews</h3>
+                <div className="text-2xl font-bold">{formatNumber(metrics.pendingReviews)}</div>
+                <p className="text-xs text-muted-foreground">Awaiting review</p>
+              </div>
+              <Clock className="w-8 h-8 text-primary" />
+            </div>
+          </StandardContentCard>
+
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-1">Approved Today</h3>
+                <div className="text-2xl font-bold text-green-600">{formatNumber(metrics.approvedToday)}</div>
+                <p className="text-xs text-muted-foreground">Applications approved</p>
+              </div>
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+          </StandardContentCard>
+
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-1">Rejected Today</h3>
+                <div className="text-2xl font-bold text-destructive">{formatNumber(metrics.rejectedToday)}</div>
+                <p className="text-xs text-muted-foreground">Applications rejected</p>
+              </div>
+              <AlertTriangle className="w-8 h-8 text-destructive" />
+            </div>
+          </StandardContentCard>
+
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-1">Avg. Review Time</h3>
+                <div className="text-2xl font-bold">{metrics.avgReviewTime} days</div>
+                <p className="text-xs text-muted-foreground">Average review time</p>
+              </div>
+              <BarChart3 className="w-8 h-8 text-primary" />
+            </div>
+          </StandardContentCard>
+
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-1">Approval Rate</h3>
+                <div className="text-2xl font-bold">{metrics.approvalRate}%</div>
+                <p className="text-xs text-muted-foreground">Applications approved</p>
+              </div>
+              <TrendingUp className="w-8 h-8 text-primary" />
+            </div>
+          </StandardContentCard>
         </div>
-      </div>
-
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Reviews</CardTitle>
-            
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatNumber(metrics.pendingReviews)}</div>
-            <p className="text-xs text-muted-foreground">Awaiting review</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Approved Today</CardTitle>
-            
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{formatNumber(metrics.approvedToday)}</div>
-            <p className="text-xs text-muted-foreground">Applications approved</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rejected Today</CardTitle>
-            
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-destructive">{formatNumber(metrics.rejectedToday)}</div>
-            <p className="text-xs text-muted-foreground">Applications rejected</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Review Time</CardTitle>
-            
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.avgReviewTime} days</div>
-            <p className="text-xs text-muted-foreground">Average review time</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Approval Rate</CardTitle>
-            
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.approvalRate}%</div>
-            <p className="text-xs text-muted-foreground">Applications approved</p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Main Content */}
       <Tabs defaultValue="pending" className="space-y-4">
@@ -532,7 +529,7 @@ export const UnderwriterDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <RechartsResponsiveContainer width="100%" height={300}>
                   <RechartsPieChart>
                     <Pie
                       data={[
@@ -554,7 +551,7 @@ export const UnderwriterDashboard = () => {
                     <Tooltip />
                     <Legend />
                   </RechartsPieChart>
-                </ResponsiveContainer>
+                </RechartsResponsiveContainer>
               </CardContent>
             </Card>
 
@@ -567,7 +564,7 @@ export const UnderwriterDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <RechartsResponsiveContainer width="100%" height={300}>
                   <BarChart data={[
                     { range: '$0-100K', count: pendingReviews.filter(app => (app.loan_amount || 0) <= 100000).length },
                     { range: '$100K-250K', count: pendingReviews.filter(app => (app.loan_amount || 0) > 100000 && (app.loan_amount || 0) <= 250000).length },
@@ -580,7 +577,7 @@ export const UnderwriterDashboard = () => {
                     <Tooltip />
                     <Bar dataKey="count" fill="#3b82f6" />
                   </BarChart>
-                </ResponsiveContainer>
+                </RechartsResponsiveContainer>
               </CardContent>
             </Card>
 
@@ -593,7 +590,7 @@ export const UnderwriterDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <RechartsResponsiveContainer width="100%" height={300}>
                   <LineChart data={[
                     { month: 'Jan', approved: 45, rejected: 12 },
                     { month: 'Feb', approved: 52, rejected: 8 },
@@ -610,7 +607,7 @@ export const UnderwriterDashboard = () => {
                     <Line type="monotone" dataKey="approved" stroke="#22c55e" strokeWidth={2} />
                     <Line type="monotone" dataKey="rejected" stroke="#ef4444" strokeWidth={2} />
                   </LineChart>
-                </ResponsiveContainer>
+                </RechartsResponsiveContainer>
               </CardContent>
             </Card>
 
@@ -623,7 +620,7 @@ export const UnderwriterDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <RechartsResponsiveContainer width="100%" height={300}>
                   <AreaChart data={[
                     { score: '300-579', count: pendingReviews.filter(app => (app.credit_score || 0) >= 300 && (app.credit_score || 0) < 580).length },
                     { score: '580-669', count: pendingReviews.filter(app => (app.credit_score || 0) >= 580 && (app.credit_score || 0) < 670).length },
@@ -637,7 +634,7 @@ export const UnderwriterDashboard = () => {
                     <Tooltip />
                     <Area type="monotone" dataKey="count" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
                   </AreaChart>
-                </ResponsiveContainer>
+                </RechartsResponsiveContainer>
               </CardContent>
             </Card>
           </div>
@@ -651,6 +648,7 @@ export const UnderwriterDashboard = () => {
           <TeamCollaboration />
         </TabsContent>
       </Tabs>
-    </div>
+      </ResponsiveContainer>
+    </StandardPageLayout>
   );
 };
