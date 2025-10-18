@@ -9,6 +9,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { 
   MessageSquare, 
   Ticket, 
@@ -293,36 +300,31 @@ export default function Support() {
                     
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Category</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {['General', 'Technical', 'Access'].map((category) => (
-                          <Button
-                            key={category}
-                            variant={newTicketCategory === category ? 'default' : 'outline'}
-                            size="sm"
-                            onClick={() => setNewTicketCategory(category)}
-                            className="text-xs"
-                          >
-                            {category}
-                          </Button>
-                        ))}
-                      </div>
+                      <Select value={newTicketCategory} onValueChange={setNewTicketCategory}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent className="z-50 bg-popover">
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="Technical">Technical</SelectItem>
+                          <SelectItem value="Access">Access</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Priority</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {(['low', 'medium', 'high', 'urgent'] as const).map((priority) => (
-                          <Button
-                            key={priority}
-                            variant={newTicketPriority === priority ? 'default' : 'outline'}
-                            size="sm"
-                            onClick={() => setNewTicketPriority(priority)}
-                            className="capitalize text-xs"
-                          >
-                            {priority}
-                          </Button>
-                        ))}
-                      </div>
+                      <Select value={newTicketPriority} onValueChange={(value: 'low' | 'medium' | 'high' | 'urgent') => setNewTicketPriority(value)}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select priority" />
+                        </SelectTrigger>
+                        <SelectContent className="z-50 bg-popover">
+                          <SelectItem value="low">Low</SelectItem>
+                          <SelectItem value="medium">Medium</SelectItem>
+                          <SelectItem value="high">High</SelectItem>
+                          <SelectItem value="urgent">Urgent</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     
                     <div className="space-y-2">
