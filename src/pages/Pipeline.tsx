@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { StandardPageLayout } from '@/components/StandardPageLayout';
+import { StandardPageHeader } from '@/components/StandardPageHeader';
+import { ResponsiveContainer } from '@/components/ResponsiveContainer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -126,58 +129,43 @@ export default function Pipeline() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="animate-fade-in">
-          <div className="h-8 bg-muted rounded w-64 mb-2"></div>
-          <div className="h-4 bg-muted rounded w-96"></div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="animate-pulse border border-border shadow-sm bg-white rounded-lg p-6">
-              <div className="h-6 bg-muted rounded w-24 mb-4"></div>
-              <div className="h-8 bg-muted rounded w-16 mb-2"></div>
-              <div className="h-8 w-8 bg-muted rounded"></div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <StandardPageLayout>
+        <StandardPageHeader title="Pipeline Management" description="Loading pipeline data..." />
+        <ResponsiveContainer>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="animate-pulse border border-border shadow-sm bg-card rounded-lg p-6">
+                <div className="h-6 bg-muted rounded w-24 mb-4"></div>
+                <div className="h-8 bg-muted rounded w-16 mb-2"></div>
+                <div className="h-8 w-8 bg-muted rounded"></div>
+              </div>
+            ))}
+          </div>
+        </ResponsiveContainer>
+      </StandardPageLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Modern Header */}
-      <div className="bg-card sticky top-0 z-10">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div>
-                <div className="flex items-center gap-3">
-                  <h1 className="text-xl font-semibold text-foreground">
-                    Pipeline Management
-                  </h1>
-                  <Badge variant="default" className="text-xs font-medium px-2 py-1">
-                    {overview.totalOpportunities} Opportunities
-                  </Badge>
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Advanced sales pipeline tracking, opportunity management, and revenue forecasting
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button onClick={fetchPipelineOverview} variant="outline" size="sm" className="h-8 text-xs font-medium">
-                <RefreshCw className="h-3 w-3 mr-2" />
-                Refresh
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <StandardPageLayout>
+      <StandardPageHeader
+        title="Pipeline Management"
+        description="Advanced sales pipeline tracking, opportunity management, and revenue forecasting"
+        actions={
+          <>
+            <Badge variant="default" className="text-xs font-medium px-2 py-1">
+              {overview.totalOpportunities} Opportunities
+            </Badge>
+            <Button onClick={fetchPipelineOverview} variant="outline" size="sm" className="h-8 text-xs font-medium">
+              <RefreshCw className="h-3 w-3 mr-2" />
+              Refresh
+            </Button>
+          </>
+        }
+      />
 
-      {/* Content Area */}
-      <div className="p-6 space-y-6">
+      <ResponsiveContainer>
+        <div className="space-y-6">
 
         {/* Pipeline Overview Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -473,7 +461,8 @@ export default function Pipeline() {
           <WorkflowAutomation />
         </TabsContent>
         </Tabs>
-      </div>
-    </div>
+        </div>
+      </ResponsiveContainer>
+    </StandardPageLayout>
   );
 }
