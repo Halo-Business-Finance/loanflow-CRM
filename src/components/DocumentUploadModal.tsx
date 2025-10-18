@@ -26,16 +26,16 @@ interface DocumentUploadModalProps {
 }
 
 const documentTypes = [
-  'Income Statement',
-  'Bank Statement',
-  'Credit Report',
-  'Employment Verification',
-  'Tax Returns',
-  'Property Appraisal',
-  'Loan Application',
-  'Insurance Documentation',
-  'Business License',
-  'Financial Statement',
+  'Business Tax Returns',
+  'Personal Tax Returns',
+  'P&L and Balance Sheet',
+  'Bank Statements',
+  'Debt Schedule and Notes',
+  'Loan Application & Driver\'s License',
+  'AR & AP',
+  'Projections, Resume & Business Plan',
+  'SBA & Bank Documents',
+  'Corp Articles, Operating Agreement & EIN Form',
   'Other'
 ];
 
