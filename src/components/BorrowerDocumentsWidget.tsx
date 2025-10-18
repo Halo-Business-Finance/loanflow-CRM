@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { FileText, Download, Eye, Upload } from "lucide-react"
 import { useDocuments } from "@/hooks/useDocuments"
 import { format } from "date-fns"
+import { DocumentUploadModal } from "@/components/DocumentUploadModal"
 
 interface BorrowerDocumentsWidgetProps {
   leadId: string
@@ -12,8 +13,9 @@ interface BorrowerDocumentsWidgetProps {
 }
 
 export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDocumentsWidgetProps) {
-  const { documents, loading, downloadDocument } = useDocuments()
+  const { documents, loading, downloadDocument, uploadDocument } = useDocuments()
   const [leadDocuments, setLeadDocuments] = useState<any[]>([])
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
 
   useEffect(() => {
     if (documents) {
@@ -21,6 +23,18 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
       setLeadDocuments(filtered)
     }
   }, [documents, leadId])
+
+  const handleUpload = async (
+    uploadLeadId: string,
+    uploadContactEntityId: string,
+    file: File,
+    documentType: string,
+    notes?: string,
+    customDocumentName?: string
+  ) => {
+    await uploadDocument(uploadLeadId, uploadContactEntityId, file, documentType, notes, customDocumentName)
+    setIsUploadModalOpen(false)
+  }
 
   const getStatusBadge = (status: string) => {
     const variants = {
@@ -50,9 +64,19 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
             <FileText className="h-4 w-4" />
             Borrower Documents
           </CardTitle>
-          <Badge variant="outline" className="font-normal">
-            {leadDocuments.length} {leadDocuments.length === 1 ? 'document' : 'documents'}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="font-normal">
+              {leadDocuments.length} {leadDocuments.length === 1 ? 'document' : 'documents'}
+            </Badge>
+            <Button
+              onClick={() => setIsUploadModalOpen(true)}
+              size="sm"
+              className="gap-2"
+            >
+              <Upload className="h-4 w-4" />
+              Upload
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -102,6 +126,13 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
           </div>
         )}
       </CardContent>
+
+      <DocumentUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUpload={handleUpload}
+        preSelectedLeadId={leadId}
+      />
     </Card>
   )
 }
