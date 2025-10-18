@@ -174,54 +174,79 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
   const loadAdobeSDK = () => {
     return new Promise<void>((resolve, reject) => {
       if (window.AdobeDC) {
-        console.log('Adobe SDK already loaded');
+        console.log('✅ Adobe SDK already loaded');
         resolve();
         return;
       }
 
-      console.log('Loading Adobe PDF SDK...');
+      console.log('📦 Loading Adobe PDF SDK...');
+      
+      // Check if script already exists
+      const existingScript = window.document.querySelector('script[src*="acrobatservices.adobe.com"]');
+      if (existingScript) {
+        console.log('🔄 Adobe script tag already exists, waiting for load...');
+        const checkExisting = setInterval(() => {
+          if (window.AdobeDC) {
+            console.log('✅ Existing Adobe SDK ready');
+            clearInterval(checkExisting);
+            resolve();
+          }
+        }, 100);
+        setTimeout(() => {
+          clearInterval(checkExisting);
+          reject(new Error('Existing Adobe SDK timeout'));
+        }, 10000);
+        return;
+      }
+
       const script = window.document.createElement('script');
       script.src = 'https://acrobatservices.adobe.com/view-sdk/viewer.js';
+      script.async = true;
       
       // Set a timeout for the script loading
       const timeout = setTimeout(() => {
-        console.error('Adobe SDK loading timeout');
-        reject(new Error('Adobe SDK loading timeout - network issue or blocked'));
-      }, 10000); // 10 second timeout
+        console.error('❌ Adobe SDK loading timeout - check network/CSP');
+        script.remove();
+        reject(new Error('Adobe SDK loading timeout - network issue or blocked by CSP'));
+      }, 15000); // 15 second timeout
       
       script.onload = () => {
         clearTimeout(timeout);
-        console.log('Adobe PDF SDK script loaded');
+        console.log('✅ Adobe PDF SDK script loaded successfully');
         
         // Check if AdobeDC is immediately available
         if (window.AdobeDC) {
-          console.log('Adobe SDK ready immediately');
+          console.log('✅ Adobe SDK ready immediately after load');
           resolve();
           return;
         }
         
-        // Wait for Adobe SDK to initialize with shorter intervals
+        // Wait for Adobe SDK to initialize
         let attempts = 0;
         const checkInterval = setInterval(() => {
           attempts++;
+          console.log(`🔄 Checking Adobe SDK availability (attempt ${attempts})`);
+          
           if (window.AdobeDC) {
-            console.log(`Adobe SDK ready after ${attempts} attempts`);
+            console.log(`✅ Adobe SDK ready after ${attempts} attempts`);
             clearInterval(checkInterval);
             resolve();
-          } else if (attempts > 20) { // 10 seconds total (500ms * 20)
-            console.error('Adobe SDK initialization timeout after script load');
+          } else if (attempts > 30) { // 15 seconds total (500ms * 30)
+            console.error('❌ Adobe SDK initialization timeout after script load');
             clearInterval(checkInterval);
-            reject(new Error('Adobe SDK failed to initialize - possible API key/client ID issue'));
+            reject(new Error('Adobe SDK failed to initialize - possible Client ID issue'));
           }
         }, 500);
       };
       
       script.onerror = (error) => {
         clearTimeout(timeout);
-        console.error('Failed to load Adobe PDF SDK script:', error);
-        reject(new Error('Failed to load Adobe PDF SDK - network or CDN issue'));
+        console.error('❌ Failed to load Adobe PDF SDK script:', error);
+        script.remove();
+        reject(new Error('Failed to load Adobe PDF SDK - network or CSP blocking'));
       };
       
+      console.log('🚀 Adding Adobe script to document head...');
       window.document.head.appendChild(script);
     });
   };
@@ -406,14 +431,6 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
 
   // Initialize Adobe viewer when document URL is ready
   useEffect(() => {
-    // Temporarily disable Adobe viewer for debugging
-    // Force viewer error to use browser fallback
-    if (isOpen && documentUrl && isPdf && !viewerError) {
-      console.log('🚧 Adobe viewer temporarily disabled - using browser fallback');
-      setViewerError(true);
-    }
-    
-    /* Original Adobe initialization code (temporarily disabled)
     if (isOpen && documentUrl && isPdf && !viewerError && !adobeView) {
       console.log('🎯 Conditions met for Adobe viewer initialization:');
       console.log('- Modal open:', isOpen);
@@ -432,7 +449,6 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
       console.log('- No viewer error:', !viewerError);
       console.log('- No existing Adobe view:', !adobeView);
     }
-    */
   }, [isOpen, documentUrl, isPdf, viewerError, adobeView]);
 
   // Helper function to format file size
@@ -514,7 +530,8 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
                       <FileText className="h-4 w-4 text-red-600" />
                       <span className="text-sm font-medium">PDF Document</span>
                       <span className="text-xs text-muted-foreground">
-                        Browser PDF Viewer (Adobe temporarily disabled for debugging)
+                        Adobe PDF Embed {adobeConfig?.isDemo ? '(Demo)' : '(Licensed)'}
+                        {viewerError && ' - Error, showing browser fallback'}
                       </span>
                     </div>
                     <div className="flex gap-2">
@@ -530,14 +547,71 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
                     </div>
                   </div>
                   
-                  {/* Browser PDF Viewer (Adobe temporarily disabled) */}
-                  <div className="flex-1 bg-muted">
-                    <iframe
-                      src={documentUrl}
-                      className="w-full h-full border-0"
-                      title={document.document_name}
-                      style={{ minHeight: '500px' }}
-                    />
+                  {/* Adobe PDF Embed SDK Viewer */}
+                  <div className="flex-1">
+                    {viewerError ? (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-muted/50">
+                        <div className="text-center space-y-4">
+                          <div className="w-20 h-24 bg-gradient-to-b from-red-50 to-red-100 rounded-lg flex items-center justify-center mx-auto border-2 border-red-200">
+                            <FileText className="h-10 w-10 text-red-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-lg">Adobe PDF Viewer Error</h3>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              The Adobe PDF viewer encountered an issue. Check browser console for details.
+                            </p>
+                          </div>
+                          <div className="flex gap-2 justify-center">
+                            <Button onClick={() => window.open(documentUrl, '_blank')} className="gap-2">
+                              <ExternalLink className="h-4 w-4" />
+                              Open PDF in Browser
+                            </Button>
+                            <Button variant="outline" onClick={downloadDocument} className="gap-2">
+                              <Download className="h-4 w-4" />
+                              Download PDF
+                            </Button>
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={async () => {
+                              console.log('🔄 Manual retry requested - resetting all states...');
+                              setViewerError(false);
+                              setAdobeView(null);
+                              setAdobeConfig(null);
+                              
+                              // Clear any existing Adobe elements
+                              const existingViewer = window.document.getElementById('adobe-dc-view');
+                              if (existingViewer) {
+                                while (existingViewer.firstChild) {
+                                  existingViewer.removeChild(existingViewer.firstChild);
+                                }
+                              }
+                              
+                              console.log('🔄 Fetching fresh Adobe config...');
+                              const newConfig = await getAdobeConfig();
+                              console.log('📋 Fresh config received:', newConfig);
+                              
+                              if (documentUrl) {
+                                console.log('🚀 Retrying Adobe viewer with fresh config...');
+                                initializeAdobeViewer(documentUrl);
+                              }
+                            }}
+                            className="gap-1"
+                          >
+                            <Loader2 className="h-3 w-3" />
+                            Retry Adobe Viewer
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div 
+                        id="adobe-dc-view" 
+                        ref={viewerRef}
+                        className="w-full h-full"
+                        style={{ minHeight: '500px' }}
+                      />
+                    )}
                   </div>
                 </div>
               ) : isImage ? (
