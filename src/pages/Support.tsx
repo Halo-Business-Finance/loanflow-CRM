@@ -32,8 +32,7 @@ import {
   Users,
   MoreVertical,
   Eye,
-  MessageCircle,
-  Loader2
+  MessageCircle
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -65,7 +64,6 @@ export default function Support() {
   const { toast } = useToast();
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
@@ -129,7 +127,6 @@ export default function Support() {
     }
 
     try {
-      setSubmitting(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
@@ -141,7 +138,7 @@ export default function Support() {
           description: newTicketDescription,
           priority: newTicketPriority,
           category: newTicketCategory,
-          status: 'open',
+          status: 'open'
         });
 
       if (error) throw error;
@@ -155,7 +152,7 @@ export default function Support() {
       setNewTicketDescription('');
       setNewTicketPriority('medium');
       setNewTicketCategory('General');
-      
+
       // Refresh tickets list
       fetchTickets();
     } catch (error) {
@@ -165,8 +162,6 @@ export default function Support() {
         description: "Failed to create support ticket",
         variant: "destructive",
       });
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -259,7 +254,7 @@ export default function Support() {
               <Filter className="h-4 w-4 mr-2" />
               Filter
             </Button>
-            <Button size="sm" onClick={() => document.getElementById('ticket-subject')?.focus()}>
+            <Button size="sm">
               <Plus className="h-4 w-4 mr-2" />
               New Ticket
             </Button>
@@ -322,18 +317,16 @@ export default function Support() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Subject</label>
                       <Input
-                        id="ticket-subject"
                         placeholder="Brief description of your issue"
                         value={newTicketSubject}
                         onChange={(e) => setNewTicketSubject(e.target.value)}
-                        disabled={submitting}
                       />
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-foreground">Category</label>
-                        <Select value={newTicketCategory} onValueChange={setNewTicketCategory} disabled={submitting}>
+                        <Select value={newTicketCategory} onValueChange={setNewTicketCategory}>
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
@@ -347,7 +340,7 @@ export default function Support() {
                       
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-foreground">Priority</label>
-                        <Select value={newTicketPriority} onValueChange={(value: 'low' | 'medium' | 'high' | 'urgent') => setNewTicketPriority(value)} disabled={submitting}>
+                        <Select value={newTicketPriority} onValueChange={(value: 'low' | 'medium' | 'high' | 'urgent') => setNewTicketPriority(value)}>
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select priority" />
                           </SelectTrigger>
@@ -368,22 +361,12 @@ export default function Support() {
                         className="min-h-32"
                         value={newTicketDescription}
                         onChange={(e) => setNewTicketDescription(e.target.value)}
-                        disabled={submitting}
                       />
                     </div>
                     
-                    <Button className="w-full" onClick={handleCreateTicket} disabled={submitting}>
-                      {submitting ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Submitting...
-                        </>
-                      ) : (
-                        <>
-                          <Plus className="h-4 w-4 mr-2" />
-                          Submit Ticket
-                        </>
-                      )}
+                    <Button className="w-full" onClick={handleCreateTicket}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Submit Ticket
                     </Button>
                   </div>
                 </StandardContentCard>
@@ -404,23 +387,21 @@ export default function Support() {
                       />
                     </div>
 
-                    {/* Loading State */}
-                    {loading ? (
-                      <div className="flex items-center justify-center py-8">
-                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                      </div>
-                    ) : filteredTickets.length === 0 ? (
-                      <Alert>
-                        <AlertDescription>
-                          {searchQuery 
-                            ? "No tickets found matching your search." 
-                            : "You haven't created any support tickets yet. Create your first ticket to get help from our support team."}
-                        </AlertDescription>
-                      </Alert>
-                    ) : (
-                      /* Tickets */
-                      <div className="space-y-3">
-                        {filteredTickets.map((ticket) => (
+                    {/* Tickets */}
+                    <div className="space-y-3">
+                      {loading ? (
+                        <div className="flex items-center justify-center py-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                          <p className="ml-3 text-muted-foreground">Loading tickets...</p>
+                        </div>
+                      ) : filteredTickets.length === 0 ? (
+                        <Alert>
+                          <AlertDescription>
+                            {searchQuery ? "No tickets found. Try adjusting your search." : "No support tickets yet. Create your first ticket above."}
+                          </AlertDescription>
+                        </Alert>
+                      ) : (
+                        filteredTickets.map((ticket) => (
                           <div
                             key={ticket.id}
                             className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group"
@@ -471,9 +452,9 @@ export default function Support() {
                               </div>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    )}
+                        ))
+                      )}
+                    </div>
                   </div>
                 </StandardContentCard>
               </div>
