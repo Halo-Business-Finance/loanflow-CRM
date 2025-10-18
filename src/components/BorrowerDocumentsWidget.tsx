@@ -8,6 +8,7 @@ import { FileText, Download, Upload, Folder, MoreHorizontal, Link, Share, CheckS
 import { useDocuments } from "@/hooks/useDocuments"
 import { format } from "date-fns"
 import { DocumentUploadModal } from "@/components/DocumentUploadModal"
+import { DocumentViewer } from "@/components/DocumentViewer"
 
 interface BorrowerDocumentsWidgetProps {
   leadId: string
@@ -20,6 +21,7 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['business-tax', 'personal-tax']))
   const [selectedDocuments, setSelectedDocuments] = useState<Set<string>>(new Set())
+  const [viewingDocument, setViewingDocument] = useState<any | null>(null)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -211,11 +213,16 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
                                   checked={selectedDocuments.has(doc.id)}
                                   onCheckedChange={() => toggleDocumentSelection(doc.id)}
                                 />
-                                <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                  <div className="text-sm font-medium truncate">{doc.document_name}</div>
-                                  <div className="text-xs text-muted-foreground">
-                                    {format(new Date(doc.updated_at), 'MMM d, yyyy')} • {formatFileSize(doc.file_size)}
+                                <div 
+                                  className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer"
+                                  onClick={() => setViewingDocument(doc)}
+                                >
+                                  <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                  <div className="flex-1 min-w-0">
+                                    <div className="text-sm font-medium truncate">{doc.document_name}</div>
+                                    <div className="text-xs text-muted-foreground">
+                                      {format(new Date(doc.updated_at), 'MMM d, yyyy')} • {formatFileSize(doc.file_size)}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1">
@@ -255,6 +262,12 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
         onClose={() => setIsUploadModalOpen(false)}
         onUpload={handleUpload}
         preSelectedLeadId={leadId}
+      />
+
+      <DocumentViewer
+        document={viewingDocument}
+        isOpen={!!viewingDocument}
+        onClose={() => setViewingDocument(null)}
       />
     </Card>
   )
