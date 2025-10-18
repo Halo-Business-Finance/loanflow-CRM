@@ -66,7 +66,7 @@ export default function Documents() {
   )
 
   const handleFolderClick = (leadId: string) => {
-    navigate(`/lead/${leadId}`)
+    navigate(`/leads/${leadId}`)
   }
 
   if (loading) {
