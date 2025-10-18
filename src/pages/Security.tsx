@@ -46,7 +46,7 @@ const SecurityPage: React.FC = () => {
     <SecurityWrapper>
       <StandardPageLayout>
         <StandardPageHeader 
-          title="Enterprise Security Center"
+          title="Security Overview"
           description="Military-grade security monitoring and threat intelligence"
           actions={
             <Button 
