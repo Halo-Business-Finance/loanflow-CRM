@@ -103,7 +103,6 @@ const navItems: NavItemData[] = [
     to: '/documents',
     subItems: [
       { icon: FileText, label: 'All Loan Documents', to: '/documents' },
-      { icon: FileText, label: 'Upload Document', to: '/documents/upload' },
       { icon: FileText, label: 'Document Templates', to: '/documents/templates' },
     ]
   },
