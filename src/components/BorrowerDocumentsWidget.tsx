@@ -54,13 +54,6 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
           </div>
           <div className="flex items-center gap-2">
             <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-            >
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-            <Button
               onClick={() => setIsUploadModalOpen(true)}
               size="sm"
               className="h-8 px-3 gap-2"
