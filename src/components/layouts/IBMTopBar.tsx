@@ -115,41 +115,41 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
     <header className="h-24 bg-[#161616] border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full px-4">
       {/* Left section with hamburger and brand */}
       <div className="flex items-center h-full flex-1" style={{ minWidth: sidebarCollapsed ? '48px' : '240px' }}>
-        <Button
-          variant="ghost"
-          size="icon"
+        <button
+          type="button"
           onClick={onMenuClick}
-          className="group h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent outline-none hover:outline-none focus:outline-none focus:ring-0 focus-visible:ring-0"
+          aria-label="Open menu"
+          className="group h-24 w-12 rounded-none text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent outline-none hover:outline-none focus:outline-none focus:ring-0"
         >
           <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
             <Grid3x3 className="h-5 w-5" />
           </span>
-        </Button>
+        </button>
         
         {/* Navigation Controls */}
         <div className="flex items-center gap-0">
-          <Button
-            variant="ghost"
-            size="icon"
+          <button
+            type="button"
             onClick={() => window.history.back()}
-            className="group h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 outline-none hover:outline-none focus:outline-none focus:ring-0 focus-visible:ring-0"
+            aria-label="Go back"
+            className="group h-24 w-10 rounded-none text-white flex-shrink-0 hover:bg-transparent p-0 outline-none hover:outline-none focus:outline-none focus:ring-0"
             title="Go back"
           >
             <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
               <ChevronLeft className="h-5 w-5" />
             </span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
+          </button>
+          <button
+            type="button"
             onClick={() => window.history.forward()}
-            className="group h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 outline-none hover:outline-none focus:outline-none focus:ring-0 focus-visible:ring-0"
+            aria-label="Go forward"
+            className="group h-24 w-10 rounded-none text-white flex-shrink-0 hover:bg-transparent p-0 outline-none hover:outline-none focus:outline-none focus:ring-0"
             title="Go forward"
           >
             <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
               <ChevronRight className="h-5 w-5" />
             </span>
-          </Button>
+          </button>
         </div>
         
         {!sidebarCollapsed && (
