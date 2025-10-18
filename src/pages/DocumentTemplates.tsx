@@ -130,15 +130,17 @@ export default function DocumentTemplates() {
 
   const getTemplateTypeLabel = (type: string): string => {
     const labels: Record<string, string> = {
-      loan_application: "Loan Application",
-      income_verification: "Income Verification",
-      credit_authorization: "Credit Authorization",
-      property_appraisal: "Property Appraisal",
-      disclosure_statement: "Disclosure Statement",
-      closing_documents: "Closing Documents",
-      tax_returns: "Tax Returns",
-      bank_statements: "Bank Statements",
-      other: "Other"
+      "Business Tax Returns": "Business Tax Returns",
+      "Personal Tax Returns": "Personal Tax Returns",
+      "P&L and Balance Sheet": "P&L and Balance Sheet",
+      "Bank Statements": "Bank Statements",
+      "Debt Schedule and Notes": "Debt Schedule and Notes",
+      "Loan Application & Driver's License": "Loan Application & Driver's License",
+      "AR & AP": "AR & AP",
+      "Projections, Resume & Business Plan": "Projections, Resume & Business Plan",
+      "SBA & Bank Documents": "SBA & Bank Documents",
+      "Corp Articles, Operating Agreement & EIN Form": "Corp Articles, Operating Agreement & EIN Form",
+      "Miscellaneous": "Miscellaneous"
     }
     return labels[type] || type
   }

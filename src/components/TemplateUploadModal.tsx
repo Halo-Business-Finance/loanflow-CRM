@@ -16,15 +16,17 @@ interface TemplateUploadModalProps {
 }
 
 const templateTypes = [
-  { value: "loan_application", label: "Loan Application" },
-  { value: "income_verification", label: "Income Verification" },
-  { value: "credit_authorization", label: "Credit Authorization" },
-  { value: "property_appraisal", label: "Property Appraisal" },
-  { value: "disclosure_statement", label: "Disclosure Statement" },
-  { value: "closing_documents", label: "Closing Documents" },
-  { value: "tax_returns", label: "Tax Returns" },
-  { value: "bank_statements", label: "Bank Statements" },
-  { value: "other", label: "Other" },
+  { value: "Business Tax Returns", label: "Business Tax Returns" },
+  { value: "Personal Tax Returns", label: "Personal Tax Returns" },
+  { value: "P&L and Balance Sheet", label: "P&L and Balance Sheet" },
+  { value: "Bank Statements", label: "Bank Statements" },
+  { value: "Debt Schedule and Notes", label: "Debt Schedule and Notes" },
+  { value: "Loan Application & Driver's License", label: "Loan Application & Driver's License" },
+  { value: "AR & AP", label: "AR & AP" },
+  { value: "Projections, Resume & Business Plan", label: "Projections, Resume & Business Plan" },
+  { value: "SBA & Bank Documents", label: "SBA & Bank Documents" },
+  { value: "Corp Articles, Operating Agreement & EIN Form", label: "Corp Articles, Operating Agreement & EIN Form" },
+  { value: "Miscellaneous", label: "Miscellaneous" },
 ]
 
 export function TemplateUploadModal({ isOpen, onClose, onSuccess }: TemplateUploadModalProps) {
