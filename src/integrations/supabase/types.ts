@@ -1473,6 +1473,54 @@ export type Database = {
         }
         Relationships: []
       }
+      document_templates: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          description: string | null
+          file_format: string
+          file_path: string
+          file_size: number | null
+          id: string
+          is_active: boolean | null
+          last_modified: string | null
+          name: string
+          template_type: string
+          updated_at: string | null
+          usage_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          file_format: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_modified?: string | null
+          name: string
+          template_type: string
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          file_format?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_modified?: string | null
+          name?: string
+          template_type?: string
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Relationships: []
+      }
       email_accounts: {
         Row: {
           access_token: string
@@ -4635,6 +4683,10 @@ export type Database = {
           p_target_user_id: string
         }
         Returns: boolean
+      }
+      increment_template_usage: {
+        Args: { template_id: string }
+        Returns: undefined
       }
       initiate_gdpr_data_deletion: {
         Args: { p_user_id: string }
