@@ -161,11 +161,11 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
         <div
           onClick={handleClick}
           className={cn(
-            'flex items-center h-12 text-xs transition-all duration-300 relative group cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] rounded mx-1',
+            'flex items-center h-12 text-xs transition-all duration-300 relative group cursor-pointer rounded mx-1',
             collapsed ? 'justify-center w-12 px-0' : 'pl-0 pr-4',
             (isActive || hasActiveSubItem)
-              ? 'bg-[#e0e0e0] text-[#161616] font-medium'
-              : 'text-[#525252] hover:bg-[#e0e0e0] hover:text-[#161616]'
+              ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-[#161616] font-medium'
+              : 'text-[#525252] hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-[#161616]'
           )}
         >
           {(isActive || hasActiveSubItem) && !collapsed && (
@@ -192,10 +192,10 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
                 key={subItem.to}
                 to={subItem.to!}
                 className={cn(
-                  'flex items-center h-8 text-xs transition-all duration-300 relative pl-4 hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] rounded mr-1',
+                  'flex items-center h-8 text-xs transition-all duration-300 relative pl-4 rounded mr-1',
                   location.pathname === subItem.to || location.pathname.startsWith(subItem.to! + '/')
-                    ? 'bg-[#f4f4f4] text-[#161616] font-medium'
-                    : 'text-[#525252] hover:bg-[#f4f4f4] hover:text-[#161616]'
+                    ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-[#161616] font-medium'
+                    : 'text-[#525252] hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-[#161616]'
                 )}
               >
                 <subItem.icon className="h-3 w-3 flex-shrink-0 mr-2 text-[#003f88]" />
@@ -212,11 +212,11 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
     <NavLink
       to={to!}
       className={cn(
-        'flex items-center h-12 text-xs transition-all duration-300 relative group hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] rounded mx-1',
+        'flex items-center h-12 text-xs transition-all duration-300 relative group rounded mx-1',
         collapsed ? 'justify-center w-12 px-0' : 'pl-0 pr-4',
         isActive
-          ? 'bg-[#e0e0e0] text-[#161616] font-medium'
-          : 'text-[#525252] hover:bg-[#e0e0e0] hover:text-[#161616]'
+          ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-[#161616] font-medium'
+          : 'text-[#525252] hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-[#161616]'
       )}
     >
       {isActive && !collapsed && (
