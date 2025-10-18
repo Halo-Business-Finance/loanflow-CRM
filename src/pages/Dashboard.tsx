@@ -24,7 +24,11 @@ import {
   PieChart,
   ArrowUpRight,
   ArrowDownRight,
-  UserPlus
+  UserPlus,
+  ClipboardList,
+  Briefcase,
+  FolderOpen,
+  CalendarCheck
 } from 'lucide-react';
 import {
   LineChart,
@@ -66,7 +70,12 @@ export default function Dashboard() {
     totalRevenue: 2500000,
     pipelineValue: 4800000,
     conversionRate: 15.3,
-    avgDealSize: 185000
+    avgDealSize: 185000,
+    // Trend data (percentage change vs last period)
+    revenueTrend: 12.5,
+    pipelineTrend: 8.3,
+    leadsTrend: -3.2,
+    conversionTrend: 5.1
   });
   const [recentActivityList, setRecentActivityList] = useState<Array<{type: string; message: string; time: string}>>([]);
 
@@ -264,15 +273,95 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        {/* Key Performance Metrics */}
+        {/* Quick Access Tiles - Enterprise Style */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card 
+            className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-0 cursor-pointer hover:shadow-lg transition-all group"
+            onClick={() => navigate('/leads')}
+          >
+            <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+              <div className="p-3 rounded-lg bg-white/80 dark:bg-black/20 group-hover:scale-110 transition-transform">
+                <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">{stats.totalLeads}</p>
+                <p className="text-sm font-medium text-muted-foreground">Leads</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-0 cursor-pointer hover:shadow-lg transition-all group"
+            onClick={() => navigate('/pipeline')}
+          >
+            <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+              <div className="p-3 rounded-lg bg-white/80 dark:bg-black/20 group-hover:scale-110 transition-transform">
+                <Briefcase className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">{stats.activeDeals}</p>
+                <p className="text-sm font-medium text-muted-foreground">Opportunities</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-0 cursor-pointer hover:shadow-lg transition-all group"
+            onClick={() => navigate('/documents')}
+          >
+            <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+              <div className="p-3 rounded-lg bg-white/80 dark:bg-black/20 group-hover:scale-110 transition-transform">
+                <FolderOpen className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">—</p>
+                <p className="text-sm font-medium text-muted-foreground">Documents</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 border-0 cursor-pointer hover:shadow-lg transition-all group"
+            onClick={() => navigate('/activities/tasks')}
+          >
+            <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+              <div className="p-3 rounded-lg bg-white/80 dark:bg-black/20 group-hover:scale-110 transition-transform">
+                <ClipboardList className="h-8 w-8 text-orange-600 dark:text-orange-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">{stats.pendingTasks}</p>
+                <p className="text-sm font-medium text-muted-foreground">Tasks</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Key Performance Indicators - Enterprise Style with Trends */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card 
-            className="widget-glass widget-glow border-0 cursor-pointer group transition-all"
+            className="widget-glass widget-glow border-0 cursor-pointer group transition-all hover:shadow-xl"
             onClick={() => navigate('/reports')}
           >
             <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-3">
+                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                  <DollarSign className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                  stats.revenueTrend >= 0 
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                }`}>
+                  {stats.revenueTrend >= 0 ? (
+                    <ArrowUpRight className="h-3 w-3" />
+                  ) : (
+                    <ArrowDownRight className="h-3 w-3" />
+                  )}
+                  {Math.abs(stats.revenueTrend)}%
+                </div>
+              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Revenue</h3>
-              <p className="text-2xl font-bold text-foreground">
+              <p className="text-3xl font-bold text-foreground">
                 ${(stats.totalRevenue / 1000000).toFixed(1)}M
               </p>
               <p className="text-xs text-muted-foreground mt-2">vs last month</p>
@@ -280,12 +369,29 @@ export default function Dashboard() {
           </Card>
 
           <Card 
-            className="widget-glass widget-glow border-0 cursor-pointer group transition-all"
+            className="widget-glass widget-glow border-0 cursor-pointer group transition-all hover:shadow-xl"
             onClick={() => navigate('/pipeline')}
           >
             <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-3">
+                <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
+                  <Target className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                  stats.pipelineTrend >= 0 
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                }`}>
+                  {stats.pipelineTrend >= 0 ? (
+                    <ArrowUpRight className="h-3 w-3" />
+                  ) : (
+                    <ArrowDownRight className="h-3 w-3" />
+                  )}
+                  {Math.abs(stats.pipelineTrend)}%
+                </div>
+              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Pipeline Value</h3>
-              <p className="text-2xl font-bold text-foreground">
+              <p className="text-3xl font-bold text-foreground">
                 ${(stats.pipelineValue / 1000000).toFixed(1)}M
               </p>
               <p className="text-xs text-muted-foreground mt-2">vs last month</p>
@@ -293,23 +399,57 @@ export default function Dashboard() {
           </Card>
 
           <Card 
-            className="widget-glass widget-glow border-0 cursor-pointer group transition-all"
+            className="widget-glass widget-glow border-0 cursor-pointer group transition-all hover:shadow-xl"
             onClick={() => navigate('/leads')}
           >
             <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-3">
+                <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
+                  <Users className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
+                <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                  stats.leadsTrend >= 0 
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                }`}>
+                  {stats.leadsTrend >= 0 ? (
+                    <ArrowUpRight className="h-3 w-3" />
+                  ) : (
+                    <ArrowDownRight className="h-3 w-3" />
+                  )}
+                  {Math.abs(stats.leadsTrend)}%
+                </div>
+              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Active Leads</h3>
-              <p className="text-2xl font-bold text-foreground">{stats.totalLeads}</p>
+              <p className="text-3xl font-bold text-foreground">{stats.totalLeads}</p>
               <p className="text-xs text-muted-foreground mt-2">vs last month</p>
             </CardContent>
           </Card>
 
           <Card 
-            className="widget-glass widget-glow border-0 cursor-pointer group transition-all"
+            className="widget-glass widget-glow border-0 cursor-pointer group transition-all hover:shadow-xl"
             onClick={() => navigate('/pipeline/analytics')}
           >
             <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-3">
+                <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-900/30">
+                  <TrendingUp className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                </div>
+                <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                  stats.conversionTrend >= 0 
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                }`}>
+                  {stats.conversionTrend >= 0 ? (
+                    <ArrowUpRight className="h-3 w-3" />
+                  ) : (
+                    <ArrowDownRight className="h-3 w-3" />
+                  )}
+                  {Math.abs(stats.conversionTrend)}%
+                </div>
+              </div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Conversion Rate</h3>
-              <p className="text-2xl font-bold text-foreground">{stats.conversionRate}%</p>
+              <p className="text-3xl font-bold text-foreground">{stats.conversionRate}%</p>
               <p className="text-xs text-muted-foreground mt-2">vs last month</p>
             </CardContent>
           </Card>
