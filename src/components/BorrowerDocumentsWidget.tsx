@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { FileText, Download, Eye, Upload } from "lucide-react"
+import { FileText, Download, Upload, Folder, MoreHorizontal, Link, Share, CheckSquare } from "lucide-react"
 import { useDocuments } from "@/hooks/useDocuments"
 import { format } from "date-fns"
 import { DocumentUploadModal } from "@/components/DocumentUploadModal"
@@ -36,20 +36,6 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
     setIsUploadModalOpen(false)
   }
 
-  const getStatusBadge = (status: string) => {
-    const variants = {
-      pending: "secondary",
-      verified: "default",
-      rejected: "destructive"
-    } as const
-
-    return (
-      <Badge variant={variants[status as keyof typeof variants] || "secondary"}>
-        {status}
-      </Badge>
-    )
-  }
-
   const formatFileSize = (bytes?: number) => {
     if (!bytes) return "Unknown"
     const mb = bytes / (1024 * 1024)
@@ -58,66 +44,123 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
 
   return (
     <Card className="border-0 shadow-sm bg-card">
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-3 border-b">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <FileText className="h-4 w-4" />
-            Loan Documents
-          </CardTitle>
-          <Button
-            onClick={() => setIsUploadModalOpen(true)}
-            size="sm"
-            className="gap-2"
-          >
-            <Upload className="h-4 w-4" />
-            Upload
-          </Button>
+            <span className="text-sm font-medium">Files</span>
+            <span className="text-sm">&gt;</span>
+            <span className="text-sm font-medium text-foreground">Loan Documents</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+            <Button
+              onClick={() => setIsUploadModalOpen(true)}
+              size="sm"
+              className="h-8 px-3 gap-2"
+            >
+              <Upload className="h-3.5 w-3.5" />
+              Upload
+            </Button>
+          </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-2">
+
+      <CardContent className="p-0">
         {loading ? (
-          <div className="text-sm text-muted-foreground py-4 text-center">
+          <div className="text-sm text-muted-foreground py-8 text-center">
             Loading documents...
           </div>
         ) : leadDocuments.length === 0 ? (
-          <div className="text-sm text-muted-foreground py-4 text-center italic">
+          <div className="text-sm text-muted-foreground py-8 text-center italic">
             No documents uploaded yet
           </div>
         ) : (
-          <div className="space-y-2 max-h-[400px] overflow-y-auto">
-            {leadDocuments.map((doc) => (
-              <div
-                key={doc.id}
-                className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                    <p className="text-sm font-medium truncate">
-                      {doc.document_name}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span className="capitalize">{doc.document_type}</span>
-                    <span>•</span>
-                    <span>{formatFileSize(doc.file_size)}</span>
-                    <span>•</span>
-                    <span>{format(new Date(doc.created_at), 'MMM d, yyyy')}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 ml-3 flex-shrink-0">
-                  {getStatusBadge(doc.status)}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => downloadDocument(doc)}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Download className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
+          <div className="w-full">
+            {/* Table Header */}
+            <div className="grid grid-cols-[1fr_200px_120px] gap-4 px-4 py-2 border-b bg-muted/30 text-xs font-medium text-muted-foreground uppercase">
+              <div className="flex items-center gap-1">
+                Name <span className="text-[10px]">↑</span>
               </div>
-            ))}
+              <div>Updated</div>
+              <div>Size</div>
+            </div>
+
+            {/* Document Rows */}
+            <div className="divide-y max-h-[400px] overflow-y-auto">
+              {leadDocuments.map((doc) => (
+                <div
+                  key={doc.id}
+                  className="grid grid-cols-[1fr_200px_120px] gap-4 px-4 py-3 hover:bg-muted/50 transition-colors group"
+                >
+                  {/* Name Column */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Folder className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                    <span className="text-sm font-medium truncate">
+                      {doc.document_name}
+                    </span>
+                  </div>
+
+                  {/* Updated Column */}
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    {format(new Date(doc.created_at), 'MMM d, yyyy')} by Loan Processing
+                  </div>
+
+                  {/* Size Column */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">
+                      {formatFileSize(doc.file_size)}
+                    </span>
+                    
+                    {/* Action Buttons (visible on hover) */}
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0"
+                      >
+                        <MoreHorizontal className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0"
+                        onClick={() => downloadDocument(doc)}
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0"
+                      >
+                        <Link className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0"
+                      >
+                        <Share className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0"
+                      >
+                        <CheckSquare className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </CardContent>
