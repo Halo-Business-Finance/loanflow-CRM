@@ -119,9 +119,11 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent transition-all duration-300"
+          className="h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent"
         >
-          <Grid3x3 className="h-5 w-5 hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300 rounded p-0.5" />
+          <span className="inline-flex p-0.5 rounded hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300">
+            <Grid3x3 className="h-5 w-5" />
+          </span>
         </Button>
         
         {/* Navigation Controls */}
@@ -130,19 +132,23 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             variant="ghost"
             size="icon"
             onClick={() => window.history.back()}
-            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 transition-all duration-300"
+            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0"
             title="Go back"
           >
-            <ChevronLeft className="h-5 w-5 hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300 rounded p-0.5" />
+            <span className="inline-flex p-0.5 rounded hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300">
+              <ChevronLeft className="h-5 w-5" />
+            </span>
           </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => window.history.forward()}
-            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 transition-all duration-300"
+            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0"
             title="Go forward"
           >
-            <ChevronRight className="h-5 w-5 hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300 rounded p-0.5" />
+            <span className="inline-flex p-0.5 rounded hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300">
+              <ChevronRight className="h-5 w-5" />
+            </span>
           </Button>
         </div>
         
