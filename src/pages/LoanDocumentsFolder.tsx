@@ -92,16 +92,13 @@ export default function LoanDocumentsFolder() {
             <ArrowLeft className="h-4 w-4" />
             Back to All Loans
           </Button>
-          <div className="flex items-center gap-3">
-            <Building2 className="h-8 w-8 text-primary" />
-            <div>
-              <h1 className="text-2xl font-bold">{businessName} - {loanType}</h1>
-              {location && (
-                <p className="text-sm text-muted-foreground">
-                  {location}
-                </p>
-              )}
-            </div>
+          <div>
+            <h1 className="text-2xl font-bold">{businessName} - {loanType}</h1>
+            {location && (
+              <p className="text-sm text-muted-foreground">
+                {location}
+              </p>
+            )}
           </div>
         </div>
       </div>
