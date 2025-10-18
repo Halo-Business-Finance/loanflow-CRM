@@ -46,6 +46,7 @@ import BorrowerDetails from "./pages/BorrowerDetails";
 import LoanHistory from "./pages/LoanHistory";
 import ClientDetail from "./pages/ClientDetail";
 import Documents from "./pages/Documents";
+import LoanDocumentsFolder from "./pages/LoanDocumentsFolder";
 import Activities from "./pages/Activities";
 import Reports from "./pages/Reports";
 const SettingsPage = lazy(() => import("./pages/Settings"));
@@ -144,6 +145,7 @@ function AuthenticatedApp() {
             
             {/* Documents routes */}
             <Route path="/documents" element={<IBMCloudLayout><Documents /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/documents/loan/:leadId" element={<IBMCloudLayout><LoanDocumentsFolder /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/documents/upload" element={<IBMCloudLayout><DocumentUpload /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/documents/templates" element={<IBMCloudLayout><DocumentTemplates /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
