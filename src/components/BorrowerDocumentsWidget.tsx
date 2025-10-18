@@ -48,8 +48,6 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-muted-foreground">
             <FileText className="h-4 w-4" />
-            <span className="text-sm font-medium">Files</span>
-            <span className="text-sm">&gt;</span>
             <span className="text-sm font-medium text-foreground">Loan Documents</span>
           </div>
           <div className="flex items-center gap-2">
