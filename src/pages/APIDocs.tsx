@@ -1,13 +1,14 @@
 import { useState } from "react"
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-// Badge component removed - using plain text instead
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import { Copy, ExternalLink, Code, Database, Lock, Zap, Search } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { StandardPageLayout } from "@/components/StandardPageLayout"
+import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { StandardContentCard } from "@/components/StandardContentCard"
+import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 
 export default function APIDocs() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -135,21 +136,17 @@ export default function APIDocs() {
   const categories = [...new Set(apiEndpoints.map(ep => ep.category))]
 
   return (
-    <>
-      <div className="container mx-auto p-6 space-y-6">
-        {/* Header Section */}
-        <div className="flex items-center gap-2 mb-6">
-          <Code className="h-6 w-6" />
-          <h1 className="text-3xl font-bold">API Command Center</h1>
-          <p className="text-muted-foreground ml-4">
-            Complete API reference and integration documentation
-          </p>
-        </div>
+    <StandardPageLayout>
+      <StandardPageHeader 
+        title="API Command Center"
+        description="Complete API reference and integration documentation"
+      />
 
-        {/* API Metrics Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-l-4 border-l-primary">
-            <CardContent className="p-6">
+      <ResponsiveContainer>
+        <div className="space-y-6">
+          {/* API Metrics Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <StandardContentCard className="border-l-4 border-l-primary">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Total Endpoints</p>
@@ -158,15 +155,11 @@ export default function APIDocs() {
                     <p className="text-lg font-bold">{apiEndpoints.length}</p>
                   </div>
                 </div>
-                <span className="text-sm font-medium">
-                  ACTIVE
-                </span>
+                <span className="text-sm font-medium">ACTIVE</span>
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
 
-          <Card>
-            <CardContent className="p-6">
+            <StandardContentCard>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Categories</p>
@@ -174,11 +167,9 @@ export default function APIDocs() {
                 </div>
                 <Database className="w-8 h-8 text-primary" />
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
 
-          <Card>
-            <CardContent className="p-6">
+            <StandardContentCard>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Authentication</p>
@@ -186,11 +177,9 @@ export default function APIDocs() {
                 </div>
                 <Lock className="w-8 h-8 text-primary" />
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
 
-          <Card>
-            <CardContent className="p-6">
+            <StandardContentCard>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Examples</p>
@@ -198,13 +187,11 @@ export default function APIDocs() {
                 </div>
                 <Code className="w-8 h-8 text-primary" />
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </StandardContentCard>
+          </div>
 
-        {/* Search */}
-        <Card>
-          <CardContent className="p-6">
+          {/* Search */}
+          <StandardContentCard>
             <div className="relative max-w-md mx-auto">
               <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
               <Input
@@ -214,8 +201,7 @@ export default function APIDocs() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-          </CardContent>
-        </Card>
+          </StandardContentCard>
 
           <Tabs defaultValue="overview" className="space-y-8">
             <TabsList className="grid w-full grid-cols-4 bg-card/50 backdrop-blur-sm rounded-2xl p-1">
@@ -238,14 +224,11 @@ export default function APIDocs() {
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
-              <Card className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle>Getting Started</CardTitle>
-                  <CardDescription>
-                    Welcome to the LoanFlow CRM API. This RESTful API allows you to integrate your applications with our CRM system.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
+              <StandardContentCard title="Getting Started" className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Welcome to the LoanFlow CRM API. This RESTful API allows you to integrate your applications with our CRM system.
+                </p>
+                <div className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="p-4 bg-muted/30 rounded-lg">
                       <h3 className="font-medium mb-2">Base URL</h3>
@@ -271,19 +254,16 @@ export default function APIDocs() {
                       ))}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </StandardContentCard>
             </TabsContent>
 
             <TabsContent value="authentication" className="space-y-6">
-              <Card className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle>API Authentication</CardTitle>
-                  <CardDescription>
-                    All API requests require authentication using an API key
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
+              <StandardContentCard title="API Authentication" className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
+                <p className="text-sm text-muted-foreground mb-4">
+                  All API requests require authentication using an API key
+                </p>
+                <div className="space-y-4">
                   <div className="p-4 bg-muted/20 rounded-lg">
                     <h3 className="font-medium mb-2">Authorization Header</h3>
                     <div className="bg-background p-3 rounded border font-mono text-sm">
@@ -307,27 +287,25 @@ export default function APIDocs() {
                       All API requests must be made from your server.
                     </p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </StandardContentCard>
             </TabsContent>
 
             <TabsContent value="endpoints" className="space-y-6">
               <div className="grid gap-6">
                 {filteredEndpoints.map((endpoint) => (
-                  <Card key={endpoint.id} className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <span className="font-mono text-sm font-medium">
-                            {endpoint.method}
-                          </span>
-                          <code className="text-sm font-mono">{endpoint.endpoint}</code>
-                        </div>
-                        <span className="text-sm font-medium">{endpoint.category}</span>
+                  <StandardContentCard key={endpoint.id} className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono text-sm font-medium">
+                          {endpoint.method}
+                        </span>
+                        <code className="text-sm font-mono">{endpoint.endpoint}</code>
                       </div>
-                      <CardDescription>{endpoint.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
+                      <span className="text-sm font-medium">{endpoint.category}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">{endpoint.description}</p>
+                    <div className="space-y-4">
                       <div>
                         <h4 className="font-medium mb-2">Parameters</h4>
                         <div className="space-y-2">
@@ -368,8 +346,8 @@ export default function APIDocs() {
                           <code>{endpoint.example}</code>
                         </pre>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </StandardContentCard>
                 ))}
               </div>
 
@@ -385,14 +363,11 @@ export default function APIDocs() {
             </TabsContent>
 
             <TabsContent value="examples" className="space-y-6">
-              <Card className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle>Code Examples</CardTitle>
-                  <CardDescription>
-                    Sample implementations in different programming languages
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
+              <StandardContentCard title="Code Examples" className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Sample implementations in different programming languages
+                </p>
+                <div className="space-y-6">
                   <div>
                     <h3 className="font-medium mb-3">JavaScript (Node.js)</h3>
                     <div className="bg-background p-4 rounded border">
@@ -544,17 +519,14 @@ leads = api.get_leads(stage='New', limit=10)`)}
                       Copy Code
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </StandardContentCard>
 
-              <Card className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle>External Resources</CardTitle>
-                  <CardDescription>
-                    Additional documentation and tools
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
+              <StandardContentCard title="External Resources" className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Additional documentation and tools
+                </p>
+                <div className="space-y-3">
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
@@ -579,11 +551,12 @@ leads = api.get_leads(stage='New', limit=10)`)}
                     <ExternalLink className="w-4 h-4 mr-2" />
                     REST API Best Practices
                   </Button>
-                </CardContent>
-              </Card>
+                </div>
+              </StandardContentCard>
             </TabsContent>
           </Tabs>
-      </div>
-    </>
+        </div>
+      </ResponsiveContainer>
+    </StandardPageLayout>
   )
 }
