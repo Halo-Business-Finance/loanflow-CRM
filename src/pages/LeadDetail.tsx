@@ -1644,56 +1644,15 @@ export default function LeadDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">Add New Note</Label>
-                    <Textarea
-                      value={generalNotes}
-                      onChange={(e) => setGeneralNotes(e.target.value)}
-                      onBlur={saveGeneralNotesImmediate}
-                      placeholder="Type your note and click outside to save..."
-                      className="mt-1 min-h-[80px] text-sm"
-                    />
-                  </div>
-                  
-                  {/* Notes History */}
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground mb-2 block">Notes History</Label>
-                    <div className="max-h-[500px] overflow-y-auto p-4 bg-muted/20 rounded-lg border space-y-3">
-                      {notesHistory.filter(n => n.note_type === 'general').length === 0 ? (
-                        <p className="text-sm text-muted-foreground italic text-center py-4">No notes yet...</p>
-                      ) : (
-                        notesHistory
-                          .filter(n => n.note_type === 'general')
-                          .map(note => (
-                            <div key={note.id} className="flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                <span className="text-xs font-semibold text-primary">
-                                  {note.user_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-                                </span>
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-baseline gap-2 mb-1">
-                                  <span className="font-semibold text-sm text-foreground">{note.user_name}</span>
-                                  <span className="text-xs text-muted-foreground">
-                                    {new Date(note.created_at).toLocaleString('en-US', {
-                                      month: 'short',
-                                      day: 'numeric',
-                                      hour: 'numeric',
-                                      minute: '2-digit',
-                                      hour12: true
-                                    })}
-                                  </span>
-                                </div>
-                                <div className="bg-card rounded-lg px-3 py-2 shadow-sm border">
-                                  <p className="text-sm text-foreground whitespace-pre-wrap break-words">{note.content}</p>
-                                </div>
-                              </div>
-                            </div>
-                          ))
-                      )}
-                    </div>
-                  </div>
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Add New Note</Label>
+                  <Textarea
+                    value={generalNotes}
+                    onChange={(e) => setGeneralNotes(e.target.value)}
+                    onBlur={saveGeneralNotesImmediate}
+                    placeholder="Type your note and click outside to save..."
+                    className="mt-1 min-h-[80px] text-sm"
+                  />
                 </div>
               </CardContent>
             </Card>
