@@ -404,40 +404,83 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
             <div className="h-[70vh] border rounded-lg overflow-hidden relative">
               {isPdf ? (
                 <div className="w-full h-full bg-gray-50 flex flex-col">
-                  <div className="flex items-center justify-between p-3 bg-white border-b">
+                  <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <FileText className="h-4 w-4 text-red-600" />
                       <span className="text-sm font-medium">PDF Document</span>
+                      <span className="text-xs text-muted-foreground">
+                        Adobe PDF Embed {adobeConfig?.isDemo ? '(Demo)' : '(Licensed)'}
+                        {viewerError && ' - Error, showing browser fallback'}
+                      </span>
                     </div>
                     <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={() => window.open(documentUrl, '_blank')}
-                        className="gap-1"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                        Open in Browser
-                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={downloadDocument}
-                        className="gap-1"
+                        className="gap-2"
                       >
-                        <Download className="h-3 w-3" />
+                        <Download className="h-4 w-4" />
                         Download
                       </Button>
                     </div>
                   </div>
                   
-                  {/* Native Browser PDF Viewer */}
-                  <div className="flex-1 bg-muted">
-                    <iframe
-                      src={documentUrl}
-                      className="w-full h-full"
-                      title={document.document_name}
-                      style={{ border: 'none' }}
-                    />
+                  {/* Adobe PDF Embed SDK Viewer */}
+                  <div className="flex-1">
+                    {viewerError ? (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-muted/50">
+                        <div className="text-center space-y-4">
+                          <div className="w-20 h-24 bg-gradient-to-b from-red-50 to-red-100 rounded-lg flex items-center justify-center mx-auto border-2 border-red-200">
+                            <FileText className="h-10 w-10 text-red-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-lg">Adobe PDF Viewer Error</h3>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              The Adobe PDF viewer encountered an issue, but you can still access the file.
+                            </p>
+                          </div>
+                          <div className="flex gap-2 justify-center">
+                            <Button onClick={() => window.open(documentUrl, '_blank')} className="gap-2">
+                              <ExternalLink className="h-4 w-4" />
+                              Open PDF in Browser
+                            </Button>
+                            <Button variant="outline" onClick={downloadDocument} className="gap-2">
+                              <Download className="h-4 w-4" />
+                              Download PDF
+                            </Button>
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={async () => {
+                              console.log('Retrying Adobe viewer initialization...');
+                              setViewerError(false);
+                              setAdobeView(null);
+                              setAdobeConfig(null);
+                              
+                              const newConfig = await getAdobeConfig();
+                              console.log('Refreshed Adobe config:', newConfig);
+                              
+                              if (documentUrl) {
+                                initializeAdobeViewer(documentUrl);
+                              }
+                            }}
+                            className="gap-1"
+                          >
+                            <Loader2 className="h-3 w-3" />
+                            Try Again with Latest Config
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div 
+                        id="adobe-dc-view" 
+                        ref={viewerRef}
+                        className="w-full h-full"
+                        style={{ minHeight: '500px' }}
+                      />
+                    )}
                   </div>
                 </div>
               ) : isImage ? (
