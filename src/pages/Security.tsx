@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { EnhancedSecurityDashboard } from '@/components/security/EnhancedSecurityDashboard';
 import { PersistentAISecurityMonitor } from '@/components/security/PersistentAISecurityMonitor';
 import { DarkWebSecurityBot } from '@/components/security/DarkWebSecurityBot';
 import { AdvancedThreatDetection } from '@/components/security/AdvancedThreatDetection';
@@ -178,9 +177,6 @@ const SecurityPage: React.FC = () => {
                 <TabsTrigger value="mfa">
                   MFA Setup
                 </TabsTrigger>
-                <TabsTrigger value="dashboard">
-                  Command Center
-                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="monitoring" className="space-y-6 mt-6">
@@ -299,10 +295,6 @@ const SecurityPage: React.FC = () => {
                     <MicrosoftAuthenticatorSetup />
                   </CardContent>
                 </Card>
-              </TabsContent>
-
-              <TabsContent value="dashboard" className="space-y-6 mt-6">
-                <EnhancedSecurityDashboard />
               </TabsContent>
             </Tabs>
           </div>

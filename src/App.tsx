@@ -14,7 +14,6 @@ import { GeoSecurityCheck } from "@/components/GeoSecurityCheck";
 import { AsyncErrorBoundary } from "@/components/AsyncErrorBoundary";
 import { CSPHeaders } from "@/components/security/CSPHeaders";
 import { EnterpriseSecurityDashboard } from "@/components/security/EnterpriseSecurityDashboard";
-import { EnhancedSecurityDashboard } from "@/components/security/EnhancedSecurityDashboard";
 import { ThreatMonitoringDashboard } from "@/components/security/ThreatMonitoringDashboard";
 import { CloserDashboard } from "@/components/dashboards/CloserDashboard";
 import { FunderDashboard } from "@/components/dashboards/FunderDashboard";
@@ -170,7 +169,6 @@ function AuthenticatedApp() {
             {canProcessLoans && <Route path="/dashboards/processor" element={<IBMCloudLayout><LoanProcessorDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             
             {/* Security Dashboard Routes */}
-            {canAccessAdminFeatures && <Route path="/dashboards/security-enhanced" element={<IBMCloudLayout><EnhancedSecurityDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             {canAccessAdminFeatures && <Route path="/dashboards/threat-monitoring" element={<IBMCloudLayout><ThreatMonitoringDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             
             {/* Enterprise Dashboard Routes */}
