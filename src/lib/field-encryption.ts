@@ -106,17 +106,35 @@ export class FieldEncryption {
     }
   }
 
-  // Get or generate master encryption key
+  // Get or generate master encryption key without persisting to localStorage
   private static async getMasterKey(): Promise<string> {
-    const stored = localStorage.getItem('_master_enc_key');
-    if (stored) return stored;
-    
-    // Generate new master key
+    // Ephemeral in-memory cache for the current runtime only
+    // Falls back to sessionStorage to survive page reload in the same browser session
+    // Note: This is a mitigation. For production, fetch a server-derived session key via an Edge Function.
+    // @see: encryption key service plan
+    // Cache on the class to avoid repeated derivations
+    // @ts-ignore - attach to class for ephemeral cache
+    if ((FieldEncryption as any)._ephemeralMasterKey) {
+      return (FieldEncryption as any)._ephemeralMasterKey as string;
+    }
+
+    const sessionKey = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('_master_enc_key_session') : null;
+    if (sessionKey) {
+      // @ts-ignore
+      (FieldEncryption as any)._ephemeralMasterKey = sessionKey;
+      return sessionKey;
+    }
+
+    // Generate new ephemeral master key
     const key = Array.from(crypto.getRandomValues(new Uint8Array(64)))
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
-    
-    localStorage.setItem('_master_enc_key', key);
+
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('_master_enc_key_session', key);
+    }
+    // @ts-ignore
+    (FieldEncryption as any)._ephemeralMasterKey = key;
     return key;
   }
 
@@ -200,8 +218,16 @@ export class FieldEncryption {
 
   // Clear all encryption keys (security measure)
   static clearKeys(): void {
-    localStorage.removeItem('_master_enc_key');
-    localStorage.removeItem('_enc_key');
+    try {
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.removeItem('_master_enc_key_session');
+      }
+      // @ts-ignore
+      if ((FieldEncryption as any)._ephemeralMasterKey) {
+        // @ts-ignore
+        delete (FieldEncryption as any)._ephemeralMasterKey;
+      }
+    } catch {}
   }
 }
 

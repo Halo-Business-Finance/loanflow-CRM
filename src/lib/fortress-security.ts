@@ -54,7 +54,9 @@ export class FortressSecurityManager {
     const masterKey = await this.generateMasterSecurityKey();
     for (const [type, key] of this.encryptionKeys.entries()) {
       const encryptedKey = await SecurityManager.encryptSensitiveData(key, masterKey);
-      localStorage.setItem(`_fortress_key_${type}`, encryptedKey);
+      // Removed persistent storage for keys to prevent client-side exfiltration
+      // Keys remain in-memory only for the current runtime session
+      // Optionally, persist to server-side key vault via Edge Function (recommended)
     }
   }
 
@@ -424,13 +426,14 @@ export class FortressSecurityManager {
   // Public methods for secure data operations
   async secureStoreData(key: string, data: any, dataType: 'financial' | 'pii' | 'business'): Promise<void> {
     const encryptedData = await this.encryptUltraSecure(data, dataType);
-    localStorage.setItem(`_fortress_${key}`, encryptedData);
-    
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem(`_fortress_${key}`, encryptedData);
+    }
     await this.logSecurityIncident('data_stored', { key, dataType, size: JSON.stringify(data).length });
   }
 
   async secureRetrieveData(key: string, dataType: 'financial' | 'pii' | 'business'): Promise<any> {
-    const encryptedData = localStorage.getItem(`_fortress_${key}`);
+    const encryptedData = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(`_fortress_${key}`) : null;
     if (!encryptedData) return null;
     
     const data = await this.decryptUltraSecure(encryptedData, dataType);

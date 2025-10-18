@@ -395,16 +395,31 @@ export class SecurityManager {
     }
   }
 
-  // Generate or retrieve master encryption key
+  // Generate or retrieve master encryption key without persisting to localStorage
   private static async generateMasterKey(): Promise<string> {
-    const stored = localStorage.getItem('_master_security_key');
-    if (stored) return stored;
-    
+    // In-memory ephemeral cache for this runtime
+    // @ts-ignore
+    if ((SecurityManager as any)._ephemeralMasterKey) {
+      // @ts-ignore
+      return (SecurityManager as any)._ephemeralMasterKey as string;
+    }
+
+    const sessionKey = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('_master_security_key_session') : null;
+    if (sessionKey) {
+      // @ts-ignore
+      (SecurityManager as any)._ephemeralMasterKey = sessionKey;
+      return sessionKey;
+    }
+
     const key = Array.from(crypto.getRandomValues(new Uint8Array(64)))
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
-    
-    localStorage.setItem('_master_security_key', key);
+
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('_master_security_key_session', key);
+    }
+    // @ts-ignore
+    (SecurityManager as any)._ephemeralMasterKey = key;
     return key;
   }
 
