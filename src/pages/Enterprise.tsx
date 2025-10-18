@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { StandardPageLayout } from "@/components/StandardPageLayout";
+import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { StandardContentCard } from "@/components/StandardContentCard";
+import { ResponsiveContainer } from "@/components/ResponsiveContainer";
 
 import { CustomObjectsManager } from "@/components/enterprise/CustomObjectsManager";
 import { WorkflowBuilder } from "@/components/enterprise/WorkflowBuilder";
@@ -136,65 +139,58 @@ export default function Enterprise() {
   ];
 
   return (
-      <div className="container mx-auto p-6 space-y-6">
-        {/* Header Section */}
-        <div className="flex items-center gap-2 mb-6">
-          <h1 className="text-3xl font-bold">Enterprise Command Center</h1>
-          <p className="text-muted-foreground ml-4">
-            Advanced CRM capabilities for enterprise-level sales management
-          </p>
-        </div>
+    <StandardPageLayout>
+      <StandardPageHeader 
+        title="Enterprise Command Center"
+        description="Advanced CRM capabilities for enterprise-level sales management"
+      />
+      
+      <ResponsiveContainer padding="md">
 
-        {/* Enterprise Features Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-l-4 border-l-primary">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Available Features</p>
-                  <div className="mt-1">
-                    <p className="text-lg font-bold">{features.length}</p>
-                  </div>
-                </div>
-                <span className="text-sm font-medium">
-                  ENTERPRISE
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Active Workflows</p>
-                  <p className="text-2xl font-bold text-primary">12</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Available Features</p>
+                <div className="mt-1">
+                  <p className="text-2xl font-bold">{features.length}</p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+              <span className="text-xs font-medium px-2 py-1 bg-primary/10 text-primary rounded-full">
+                ENTERPRISE
+              </span>
+            </div>
+          </StandardContentCard>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Custom Objects</p>
-                  <p className="text-2xl font-bold text-primary">8</p>
-                </div>
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Active Workflows</p>
+                <p className="text-2xl font-bold">12</p>
               </div>
-            </CardContent>
-          </Card>
+              <Workflow className="w-8 h-8 text-primary" />
+            </div>
+          </StandardContentCard>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Approval Processes</p>
-                  <p className="text-2xl font-bold text-primary">5</p>
-                </div>
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Custom Objects</p>
+                <p className="text-2xl font-bold">8</p>
               </div>
-            </CardContent>
-          </Card>
+              <Database className="w-8 h-8 text-primary" />
+            </div>
+          </StandardContentCard>
+
+          <StandardContentCard>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Approval Processes</p>
+                <p className="text-2xl font-bold">5</p>
+              </div>
+              <CheckCircle className="w-8 h-8 text-primary" />
+            </div>
+          </StandardContentCard>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -215,24 +211,34 @@ export default function Enterprise() {
               const Icon = feature.icon;
               const isActive = activeTab === feature.id;
               return (
-                <Card 
-                  key={feature.id} 
-                  className={`cursor-pointer transition-colors ${
-                    isActive ? 'border-primary bg-primary text-primary-foreground' : 'hover:border-primary/50'
-                  }`}
+                <div
+                  key={feature.id}
                   onClick={() => setActiveTab(feature.id)}
+                  className="cursor-pointer"
                 >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <Icon className={`h-5 w-5 ${isActive ? 'text-primary-foreground' : 'text-primary-foreground'}`} />
-                      {isActive && <span className="text-sm font-medium">Active</span>}
+                  <StandardContentCard
+                    className={`transition-all hover:shadow-lg ${
+                      isActive ? 'ring-2 ring-primary shadow-lg' : ''
+                    }`}
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Icon className={`h-6 w-6 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                        {isActive && (
+                          <span className="text-xs font-medium px-2 py-1 bg-primary text-primary-foreground rounded-full">
+                            Active
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold mb-1">{feature.label}</h3>
+                        <p className="text-xs text-muted-foreground">
+                          {feature.description}
+                        </p>
+                      </div>
                     </div>
-                    <CardTitle className="text-sm">{feature.label}</CardTitle>
-                    <CardDescription className={`text-xs ${isActive ? 'text-primary-foreground/80' : 'text-primary-foreground/80'}`}>
-                      {feature.description}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
+                  </StandardContentCard>
+                </div>
               );
             })}
           </div>
@@ -261,7 +267,7 @@ export default function Enterprise() {
             <OpportunityManager />
           </TabsContent>
         </Tabs>
-      </div>
-    
+      </ResponsiveContainer>
+    </StandardPageLayout>
   );
 }
