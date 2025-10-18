@@ -398,11 +398,11 @@ export default function Dashboard() {
         {/* Performance Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Revenue Performance */}
-          <Card className="bg-white border border-[#e0e0e0]">
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/reports')}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Revenue Performance</CardTitle>
-                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/reports'); }}>
                   View reports
                 </Button>
               </div>
@@ -430,11 +430,11 @@ export default function Dashboard() {
           </Card>
 
           {/* Pipeline Distribution */}
-          <Card className="bg-white border border-[#e0e0e0]">
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/pipeline')}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Pipeline Distribution</CardTitle>
-                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/pipeline'); }}>
                   View pipeline
                 </Button>
               </div>
@@ -478,11 +478,11 @@ export default function Dashboard() {
           </Card>
 
           {/* Conversion Funnel */}
-          <Card className="bg-white border border-[#e0e0e0]">
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/pipeline/analytics')}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Conversion Funnel</CardTitle>
-                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/pipeline/analytics'); }}>
                   View analytics
                 </Button>
               </div>
@@ -502,11 +502,11 @@ export default function Dashboard() {
           </Card>
 
           {/* Activity Trends - Lead Creation */}
-          <Card className="bg-white border border-[#e0e0e0]">
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/leads')}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Lead Activity</CardTitle>
-                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/leads'); }}>
                   View leads
                 </Button>
               </div>
@@ -536,11 +536,11 @@ export default function Dashboard() {
         {/* Bottom section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Active tasks */}
-          <Card className="bg-white border border-[#e0e0e0]">
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/activities/tasks')}>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Active tasks</CardTitle>
-                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/activities/tasks'); }}>
                   View all
                 </Button>
               </div>
@@ -567,11 +567,11 @@ export default function Dashboard() {
           </Card>
 
           {/* Recent activity */}
-          <Card className="bg-white border border-[#e0e0e0]">
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/activities')}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Recent activity</CardTitle>
-                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0">
+                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/activities'); }}>
                   View all
                 </Button>
               </div>
