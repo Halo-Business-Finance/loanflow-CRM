@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -9,13 +7,15 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-// Badge component removed - using plain text instead
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { LeadScoring } from "@/components/ai/LeadScoring"
 import { PredictiveAnalytics } from "@/components/ai/PredictiveAnalytics"
 import { WorkflowAutomation } from "@/components/ai/WorkflowAutomation"
+import { StandardPageLayout } from "@/components/StandardPageLayout"
+import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { StandardContentCard } from "@/components/StandardContentCard"
+import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 import { 
   Bot, 
   Target, 
@@ -27,8 +27,7 @@ import {
   Brain,
   AlertCircle,
   CheckCircle,
-  Sliders,
-  Database
+  Sliders
 } from "lucide-react"
 
 export default function AITools() {
@@ -145,24 +144,22 @@ export default function AITools() {
     if (!tool) return null
 
     return (
-      <Card className="w-full">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-               <div className="p-2 bg-primary/10 rounded-lg">
-                 <tool.icon className="w-5 h-5 text-white" />
-               </div>
-              <div>
-                <CardTitle>{tool.name} Configuration</CardTitle>
-                <CardDescription>{tool.description}</CardDescription>
-              </div>
+      <StandardContentCard className="w-full">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <tool.icon className="w-5 h-5 text-white" />
             </div>
-            <span className="text-sm font-medium">
-              {config.enabled ? "Active" : "Inactive"}
-            </span>
+            <div>
+              <h3 className="text-lg font-semibold">{tool.name} Configuration</h3>
+              <p className="text-sm text-muted-foreground">{tool.description}</p>
+            </div>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
+          <span className="text-sm font-medium">
+            {config.enabled ? "Active" : "Inactive"}
+          </span>
+        </div>
+        <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-base font-medium text-foreground dark:text-white">Enable {tool.name}</Label>
@@ -388,27 +385,23 @@ export default function AITools() {
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </StandardContentCard>
     )
   }
 
   return (
-    <>
-      <div className="container mx-auto p-6 space-y-6">
-        {/* Header Section */}
-        <div className="flex items-center gap-2 mb-6">
-          <Brain className="h-6 w-6" />
-          <h1 className="text-3xl font-bold">AI Intelligence Center</h1>
-          <p className="text-muted-foreground ml-4">
-            Advanced AI-powered tools for enhanced CRM performance
-          </p>
-        </div>
+    <StandardPageLayout>
+      <StandardPageHeader 
+        title="AI Intelligence Center"
+        description="Advanced AI-powered tools for enhanced CRM performance"
+      />
 
-        {/* AI Tools Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-l-4 border-l-primary">
-            <CardContent className="p-6">
+      <ResponsiveContainer>
+        <div className="space-y-6">
+          {/* AI Tools Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <StandardContentCard className="border-l-4 border-l-primary">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Active Tools</p>
@@ -417,15 +410,11 @@ export default function AITools() {
                     <p className="text-lg font-bold">{aiTools.filter(t => t.status === 'active').length}</p>
                   </div>
                 </div>
-                <span className="text-sm font-medium">
-                  RUNNING
-                </span>
+                <span className="text-sm font-medium">RUNNING</span>
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
 
-          <Card>
-            <CardContent className="p-6">
+            <StandardContentCard>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Lead Scoring</p>
@@ -433,11 +422,9 @@ export default function AITools() {
                 </div>
                 <Target className="w-8 h-8 text-primary" />
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
 
-          <Card>
-            <CardContent className="p-6">
+            <StandardContentCard>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Automation Tasks</p>
@@ -445,11 +432,9 @@ export default function AITools() {
                 </div>
                 <Bot className="w-8 h-8 text-primary" />
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
 
-          <Card>
-            <CardContent className="p-6">
+            <StandardContentCard>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Forecast Accuracy</p>
@@ -457,9 +442,8 @@ export default function AITools() {
                 </div>
                 <TrendingUp className="w-8 h-8 text-primary" />
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </StandardContentCard>
+          </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           <TabsList className="grid w-full grid-cols-5 bg-card/50 backdrop-blur-sm rounded-2xl p-1">
@@ -503,17 +487,13 @@ export default function AITools() {
 
           <TabsContent value="configuration" className="space-y-6">
             <div className="grid gap-6">
-              <Card className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Sliders className="w-5 h-5" />
-                    AI Tools Configuration
-                  </CardTitle>
-                  <CardDescription>
-                    Configure individual AI tools and their parameters
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
+              <StandardContentCard title="AI Tools Configuration" className="border-0 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sliders className="w-5 h-5" />
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Configure individual AI tools and their parameters
+                </p>
                   <div className="grid gap-6">
                     {configureToolId ? (
                       renderToolConfiguration(configureToolId)
@@ -524,16 +504,16 @@ export default function AITools() {
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {aiTools.map((tool) => (
-                            <Card 
+                            <div
                               key={tool.id}
                               className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
                               onClick={() => setConfigureToolId(tool.id)}
                             >
-                              <CardContent className="p-4">
+                              <StandardContentCard>
                                 <div className="flex items-center gap-3">
-                                   <div className="p-2 bg-primary/10 rounded-lg">
-                                     <tool.icon className="w-5 h-5 text-primary" />
-                                   </div>
+                                  <div className="p-2 bg-primary/10 rounded-lg">
+                                    <tool.icon className="w-5 h-5 text-primary" />
+                                  </div>
                                   <div className="flex-1">
                                     <h3 className="font-medium text-foreground">{tool.name}</h3>
                                     <p className="text-sm text-muted-foreground">{tool.description}</p>
@@ -547,8 +527,8 @@ export default function AITools() {
                                     {tool.status}
                                   </span>
                                 </div>
-                              </CardContent>
-                            </Card>
+                              </StandardContentCard>
+                            </div>
                           ))}
                         </div>
                       </div>
@@ -568,12 +548,12 @@ export default function AITools() {
                       </div>
                     )}
                   </div>
-                </CardContent>
-              </Card>
+              </StandardContentCard>
             </div>
           </TabsContent>
         </Tabs>
-      </div>
-    </>
+        </div>
+      </ResponsiveContainer>
+    </StandardPageLayout>
   )
 }
