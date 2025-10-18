@@ -128,6 +128,7 @@ const navItems: NavItemData[] = [
     to: '/security',
     subItems: [
       { icon: Shield, label: 'Security Overview', to: '/security' },
+      { icon: CheckSquare, label: 'Security Compliance', to: '/dashboards/security-compliance' },
       { icon: UserCog, label: 'Access Management', to: '/security/access' },
       { icon: FileText, label: 'Audit Logs', to: '/security/audit' },
       { icon: AlertTriangle, label: 'Threat Detection', to: '/security/threats' },
