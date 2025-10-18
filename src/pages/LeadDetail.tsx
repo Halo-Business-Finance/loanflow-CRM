@@ -1911,48 +1911,15 @@ export default function LeadDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground">Add New Call Note</Label>
-                    <Textarea
-                      value={callNotes}
-                      onChange={(e) => setCallNotes(e.target.value)}
-                      onBlur={saveCallNotesImmediate}
-                      placeholder="Type your call note and click outside to save..."
-                      className="mt-1 min-h-[80px] text-sm"
-                    />
-                  </div>
-                  
-                  {/* Call Notes History */}
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground mb-2 block">Call Notes History</Label>
-                    <div className="max-h-[500px] overflow-y-auto space-y-2">
-                      {notesHistory.filter(n => n.note_type === 'call').length === 0 ? (
-                        <p className="text-sm text-muted-foreground italic py-4">No call notes yet...</p>
-                      ) : (
-                        notesHistory
-                          .filter(n => n.note_type === 'call')
-                          .map(note => (
-                            <div key={note.id} className="pb-2 border-b border-border last:border-0">
-                              <div className="flex items-baseline justify-between mb-1">
-                                <span className="text-xs text-muted-foreground">
-                                  {new Date(note.created_at).toLocaleString('en-US', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                    year: 'numeric',
-                                    hour: 'numeric',
-                                    minute: '2-digit',
-                                    hour12: true
-                                  })}
-                                </span>
-                                <span className="text-xs text-muted-foreground">{note.user_name}</span>
-                              </div>
-                              <p className="text-sm text-foreground whitespace-pre-wrap">{note.content}</p>
-                            </div>
-                          ))
-                      )}
-                    </div>
-                  </div>
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Add New Call Note</Label>
+                  <Textarea
+                    value={callNotes}
+                    onChange={(e) => setCallNotes(e.target.value)}
+                    onBlur={saveCallNotesImmediate}
+                    placeholder="Type your call note and click outside to save..."
+                    className="mt-1 min-h-[80px] text-sm"
+                  />
                 </div>
               </CardContent>
             </Card>
