@@ -64,7 +64,8 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
     { id: 'loan-application', name: 'Loan Application & Driver\'s License', icon: Folder },
     { id: 'ar-ap', name: 'AR & AP', icon: Folder },
     { id: 'projections', name: 'Projections, Resume & Business Plan', icon: Folder },
-    { id: 'sba-bank', name: 'SBA & Bank Documents', icon: Folder }
+    { id: 'sba-bank', name: 'SBA & Bank Documents', icon: Folder },
+    { id: 'corp-docs', name: 'Corp Articles, Operating Agreement & EIN Form', icon: Folder }
   ]
 
   return (
