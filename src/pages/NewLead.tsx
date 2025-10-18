@@ -234,10 +234,10 @@ export default function NewLead() {
         }
       />
       
-      <ResponsiveContainer padding="md" maxWidth="2xl">
+      <ResponsiveContainer padding="md" maxWidth="full">
         <div className="space-y-6">
-          {/* Row 1: Personal Information & Financial Information */}
-          <div className="grid gap-6 md:grid-cols-2">
+          {/* Row 1: Personal, Financial, and Business Information */}
+          <div className="grid gap-6 md:grid-cols-3">
             <StandardContentCard title="Personal Information">
               <p className="text-sm text-muted-foreground mb-4">
                 Basic borrower details and contact information
@@ -437,10 +437,7 @@ export default function NewLead() {
                 </div>
               </div>
             </StandardContentCard>
-          </div>
 
-          {/* Row 2: Business Information & Loan Information */}
-          <div className="grid gap-6 md:grid-cols-2">
             <StandardContentCard title="Business Information">
               <p className="text-sm text-muted-foreground mb-4">
                 Details about the borrower's business
@@ -547,7 +544,10 @@ export default function NewLead() {
                 </div>
               </div>
             </StandardContentCard>
+          </div>
 
+          {/* Row 2: Loan, Merchant Processing, and Banking/BDO Information */}
+          <div className="grid gap-6 md:grid-cols-3">
             <StandardContentCard title="Loan Information">
               <p className="text-sm text-muted-foreground mb-4">
                 Loan requirements and financial details
@@ -621,10 +621,7 @@ export default function NewLead() {
                 </div>
               </div>
             </StandardContentCard>
-          </div>
 
-          {/* Row 3: Merchant Processing & Banking/BDO Information */}
-          <div className="grid gap-6 md:grid-cols-2">
             <StandardContentCard title="Merchant Processing">
               <p className="text-sm text-muted-foreground mb-4">
                 Point of sale and processing information
