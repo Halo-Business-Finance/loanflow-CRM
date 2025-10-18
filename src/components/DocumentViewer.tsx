@@ -121,13 +121,23 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
   // Get Adobe configuration
   const getAdobeConfig = async () => {
     try {
+      console.log('🔍 Fetching Adobe configuration from edge function...');
       const { data, error } = await supabase.functions.invoke('get-adobe-config');
-      if (error) throw error;
-      console.log('Adobe config retrieved:', data);
+      
+      if (error) {
+        console.error('❌ Error from get-adobe-config edge function:', error);
+        throw error;
+      }
+      
+      console.log('✅ Adobe config retrieved successfully:', data);
+      console.log('📋 Client ID:', data?.clientId);
+      console.log('🎯 Is Demo:', data?.isDemo);
+      console.log('🔑 Has API Key:', data?.hasApiKey);
+      
       setAdobeConfig(data);
       return data;
     } catch (error) {
-      console.error('Error getting Adobe config:', error);
+      console.error('❌ Failed to get Adobe config, using demo fallback:', error);
       // Fallback to demo config
       const fallbackConfig = { clientId: 'dc-pdf-embed-demo', isDemo: true };
       setAdobeConfig(fallbackConfig);
@@ -194,44 +204,57 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
   // Initialize Adobe PDF Viewer
   const initializeAdobeViewer = async (url: string) => {
     try {
-      console.log('=== Adobe Viewer Initialization Started ===');
+      console.log('🚀 === Adobe Viewer Initialization Started ===');
+      console.log('📄 PDF URL:', url);
       setViewerError(false); // Reset error state
       
       let config = adobeConfig;
       if (!config) {
-        console.log('Fetching Adobe config...');
+        console.log('⚙️ No config in state, fetching Adobe config...');
         config = await getAdobeConfig();
-        if (!config) throw new Error('Adobe configuration unavailable');
+        if (!config) {
+          console.error('❌ Adobe configuration unavailable');
+          throw new Error('Adobe configuration unavailable');
+        }
+      } else {
+        console.log('✅ Using cached Adobe config:', config);
       }
 
-      console.log('Loading Adobe SDK...');
+      console.log('📦 Loading Adobe SDK...');
       await loadAdobeSDK();
 
       if (!window.AdobeDC) {
+        console.error('❌ Adobe SDK failed to load - window.AdobeDC is undefined');
         throw new Error('Adobe SDK failed to load');
       }
+      console.log('✅ Adobe SDK loaded successfully');
 
       if (!viewerRef.current) {
+        console.error('❌ Viewer container not ready');
         throw new Error('Viewer container not ready');
       }
+      console.log('✅ Viewer container ready');
 
       // Setup container - clear safely
       viewerRef.current.id = 'adobe-dc-view';
       while (viewerRef.current.firstChild) {
         viewerRef.current.removeChild(viewerRef.current.firstChild);
       }
+      console.log('🧹 Viewer container cleared');
 
       // Wait for DOM updates
       await new Promise(resolve => setTimeout(resolve, 200));
 
-      console.log('Creating Adobe DC View...');
+      console.log('🎨 Creating Adobe DC View with Client ID:', config.clientId);
       const adobeDCView = new window.AdobeDC.View({
         clientId: config.clientId,
         divId: 'adobe-dc-view'
       });
+      console.log('✅ Adobe DC View instance created');
 
       // Preview file with error handling
       try {
+        console.log('📖 Calling previewFile...');
         adobeDCView.previewFile({
           content: { location: { url } },
           metaData: { fileName: document?.document_name || 'document.pdf' }
@@ -244,20 +267,30 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
           showTopToolbar: true,
           defaultViewMode: 'FIT_PAGE'
         });
+        console.log('✅ previewFile called successfully');
       } catch (previewError) {
-        console.error('Adobe previewFile error:', previewError);
-        throw new Error('Failed to preview PDF');
+        console.error('❌ Adobe previewFile error:', previewError);
+        throw new Error('Failed to preview PDF: ' + (previewError as Error).message);
       }
 
       setAdobeView(adobeDCView);
-      console.log('Adobe PDF viewer initialized successfully');
+      console.log('✅ Adobe PDF viewer initialized successfully');
       
     } catch (error) {
-      console.error('Adobe viewer initialization failed:', error);
+      console.error('❌ Adobe viewer initialization failed:', error);
+      console.error('Error details:', {
+        message: (error as Error).message,
+        stack: (error as Error).stack
+      });
       setViewerError(true);
       
-      // Don't show toast immediately, let the fallback UI handle it
-      console.log('Falling back to browser PDF viewer');
+      toast({
+        title: "Adobe PDF Viewer Issue",
+        description: "Falling back to browser PDF viewer. Check console for details.",
+        variant: "default",
+      });
+      
+      console.log('⚠️ Falling back to browser PDF viewer');
     }
   };
 
