@@ -1,31 +1,28 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { StandardPageLayout } from "@/components/StandardPageLayout"
+import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { StandardContentCard } from "@/components/StandardContentCard"
+import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 import { Calendar, Clock, Users, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function ActivitiesCalendar() {
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Calendar</h1>
-          <p className="text-muted-foreground">
-            Manage your appointments, meetings, and important deadlines
-          </p>
-        </div>
-        <Button>
-          <Calendar className="h-4 w-4 mr-2" />
-          Schedule Meeting
-        </Button>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-3">
-        <div className="md:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Calendar View</CardTitle>
-              <CardDescription>Your scheduled activities and appointments</CardDescription>
-            </CardHeader>
-            <CardContent>
+    <StandardPageLayout>
+      <StandardPageHeader
+        title="Calendar"
+        description="Manage your appointments, meetings, and important deadlines"
+        actions={
+          <Button>
+            <Calendar className="h-4 w-4 mr-2" />
+            Schedule Meeting
+          </Button>
+        }
+      />
+      
+      <ResponsiveContainer>
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="md:col-span-2">
+            <StandardContentCard title="Calendar View">
               <div className="aspect-square bg-muted/50 rounded-lg flex items-center justify-center">
                 <div className="text-center">
                   <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -35,17 +32,11 @@ export default function ActivitiesCalendar() {
                   </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </StandardContentCard>
+          </div>
 
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Today's Schedule</CardTitle>
-              <CardDescription>Upcoming appointments</CardDescription>
-            </CardHeader>
-            <CardContent>
+          <div className="space-y-6">
+            <StandardContentCard title="Today's Schedule">
               <div className="space-y-4">
                 <div className="flex items-center space-x-3 p-3 border rounded-lg">
                   <Clock className="h-5 w-5 text-primary" />
@@ -71,14 +62,9 @@ export default function ActivitiesCalendar() {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
+            <StandardContentCard title="Quick Actions">
               <div className="space-y-2">
                 <Button className="w-full" variant="outline">
                   <Calendar className="h-4 w-4 mr-2" />
@@ -93,10 +79,10 @@ export default function ActivitiesCalendar() {
                   Team Meeting
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </StandardContentCard>
+          </div>
         </div>
-      </div>
-    </div>
+      </ResponsiveContainer>
+    </StandardPageLayout>
   )
 }
