@@ -18,6 +18,7 @@ import { PhoneDialer } from "@/components/PhoneDialer"
 import { EmailComposer } from "@/components/EmailComposer"
 import { ClickablePhone } from "@/components/ui/clickable-phone"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
+import { BorrowerDocumentsWidget } from "@/components/BorrowerDocumentsWidget"
 
 import { formatNumber, formatCurrency, formatPhoneNumber } from "@/lib/utils"
 import { useNotifications } from "@/hooks/useNotifications"
@@ -1893,6 +1894,14 @@ export default function LeadDetail() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Borrower Documents Widget */}
+            {lead && (
+              <BorrowerDocumentsWidget 
+                leadId={lead.id} 
+                contactEntityId={lead.contact_entity_id || lead.id}
+              />
+            )}
 
             {/* Call Notes Card */}
             <Card className="border-0 shadow-sm bg-card lg:col-span-2">
