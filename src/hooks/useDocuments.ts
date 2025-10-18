@@ -106,11 +106,17 @@ export function useDocuments() {
 
       fetchDocuments();
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading document:', error);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
       toast({
         title: "Error",
-        description: "Failed to upload document",
+        description: error.message || "Failed to upload document",
         variant: "destructive",
       });
       return null;
