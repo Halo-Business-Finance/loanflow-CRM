@@ -226,13 +226,13 @@ export function LeadForm({ lead, onSubmit, onCancel, isSubmitting = false }: Lea
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="stage">Stage</Label>
+          <Label htmlFor="stage">Loan Stage</Label>
           <Select
             value={formData.stage || ""}
             onValueChange={(value) => handleInputChange("stage", value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select stage" />
+              <SelectValue placeholder="Select loan stage" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="New Lead">New Lead</SelectItem>

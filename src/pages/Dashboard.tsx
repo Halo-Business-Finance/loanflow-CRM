@@ -493,7 +493,7 @@ export default function Dashboard() {
                 <BarChart data={conversionFunnel} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis type="number" stroke="#525252" style={{ fontSize: '12px' }} />
-                  <YAxis dataKey="stage" type="category" stroke="#525252" style={{ fontSize: '12px' }} width={80} />
+                  <YAxis dataKey="stage" type="category" stroke="#525252" style={{ fontSize: '12px' }} width={100} label={{ value: 'Loan Stage', angle: -90, position: 'insideLeft' }} />
                   <Tooltip />
                   <Bar dataKey="count" fill="#0f62fe" radius={[0, 4, 4, 0]} />
                 </BarChart>

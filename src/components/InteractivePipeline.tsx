@@ -92,10 +92,10 @@ const LeadCard = ({ lead, onStageChange, onViewDetails }: {
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
-                      <label className="text-sm font-medium text-foreground">Move to Stage:</label>
+                      <label className="text-sm font-medium text-foreground">Move to Loan Stage:</label>
                       <Select onValueChange={(value) => onStageChange(lead.id, value)}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select new stage" />
+                          <SelectValue placeholder="Select new loan stage" />
                         </SelectTrigger>
                         <SelectContent>
                           {stageOrder.map(stage => (
@@ -320,7 +320,7 @@ export function InteractivePipeline() {
               )}
               
               <div>
-                <label className="text-sm font-medium dark:text-white">Current Stage:</label>
+                <label className="text-sm font-medium dark:text-white">Current Loan Stage:</label>
                 <span className="ml-2 text-sm">{selectedLead.stage}</span>
               </div>
               

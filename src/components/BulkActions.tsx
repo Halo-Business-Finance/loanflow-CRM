@@ -111,10 +111,10 @@ export function BulkActions({ selectedItems, onClearSelection, onBulkUpdate, typ
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Update Stage/Status */}
+            {/* Update Loan Stage/Status */}
             <Select onValueChange={(value) => handleAction(type === 'leads' ? 'stage' : 'status', value)}>
               <SelectTrigger className="w-40">
-                <SelectValue placeholder={`Update ${type === 'leads' ? 'Stage' : 'Status'}`} />
+                <SelectValue placeholder={`Update ${type === 'leads' ? 'Loan Stage' : 'Status'}`} />
               </SelectTrigger>
               <SelectContent>
                 {getStageOptions().map(option => (

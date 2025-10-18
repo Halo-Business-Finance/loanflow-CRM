@@ -81,7 +81,7 @@ export function LeadFilters({
         
         <Select value={selectedStage} onValueChange={setSelectedStage}>
           <SelectTrigger className="w-auto min-w-[130px] h-9 bg-background/50 border-muted/30">
-            <SelectValue placeholder="Stage" />
+            <SelectValue placeholder="Loan Stage" />
           </SelectTrigger>
           <SelectContent>
             {stages.map(stage => (

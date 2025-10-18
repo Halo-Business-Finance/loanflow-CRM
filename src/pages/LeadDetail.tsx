@@ -981,14 +981,14 @@ export default function LeadDetail() {
               <CardContent className="pt-0 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-xs font-medium text-muted-foreground">Stage</Label>
+                    <Label className="text-xs font-medium text-muted-foreground">Loan Stage</Label>
                     {isEditing ? (
                       <Select
                         value={editableFields.stage}
                         onValueChange={(value) => setEditableFields({...editableFields, stage: value})}
                       >
                         <SelectTrigger className="mt-1 h-9 text-sm">
-                          <SelectValue placeholder="Select stage" />
+                          <SelectValue placeholder="Select loan stage" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="New Lead">New Lead</SelectItem>

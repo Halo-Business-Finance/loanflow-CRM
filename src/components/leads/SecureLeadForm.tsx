@@ -318,13 +318,13 @@ export function SecureLeadForm({ lead, onSubmit, onCancel, isSubmitting = false 
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="stage" className="text-sm font-medium">Stage</Label>
+            <Label htmlFor="stage" className="text-sm font-medium">Loan Stage</Label>
             <Select
               value={formData.stage || ""}
               onValueChange={(value) => handleInputChange("stage", value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select stage" />
+                <SelectValue placeholder="Select loan stage" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="New Lead">New Lead</SelectItem>

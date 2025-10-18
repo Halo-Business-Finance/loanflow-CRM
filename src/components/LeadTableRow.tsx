@@ -180,7 +180,7 @@ export function LeadTableRow({
         </div>
       </td>
 
-      {/* Column 4: Status (Stage & Priority) */}
+      {/* Column 4: Status (Loan Stage & Priority) */}
       <td className="px-4 py-4">
         <div className="space-y-1.5">
           {lead.stage && (

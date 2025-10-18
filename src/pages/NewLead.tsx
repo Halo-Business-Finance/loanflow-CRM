@@ -390,10 +390,10 @@ export default function NewLead() {
 
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="stage" className="text-sm font-medium text-[#161616]">Stage</Label>
+                <Label htmlFor="stage" className="text-sm font-medium text-[#161616]">Loan Stage</Label>
                 <Select value={formData.stage} onValueChange={(value) => handleInputChange("stage", value)}>
                   <SelectTrigger className="border-[#e0e0e0]">
-                    <SelectValue placeholder="Select stage" />
+                    <SelectValue placeholder="Select loan stage" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
                     {STAGES.filter(stage => stage !== "All").map((stage) => (

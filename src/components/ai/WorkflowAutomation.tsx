@@ -33,7 +33,7 @@ const WEBHOOK_STORAGE_KEY = "loanflow-zapier-webhook"
 const defaultAutomations: Automation[] = [
   {
     id: "1",
-    name: "Lead Stage Change → Send Document",
+    name: "Lead Loan Stage Change → Send Document",
     trigger: "Lead moves to 'Qualified'",
     action: "Send loan application via DocuSign",
     enabled: true,

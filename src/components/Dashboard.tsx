@@ -390,7 +390,7 @@ function Dashboard() {
               <Card className="widget-glass widget-glow">
                 <CardHeader className="widget-content">
                   <CardTitle className="text-lg font-normal text-foreground">Sales Funnel</CardTitle>
-                  <CardDescription className="text-muted-foreground">Leads by stage</CardDescription>
+                  <CardDescription className="text-muted-foreground">Leads by loan stage</CardDescription>
                 </CardHeader>
                 <CardContent className="widget-content">
                   {leadsByStage.length > 0 ? (
