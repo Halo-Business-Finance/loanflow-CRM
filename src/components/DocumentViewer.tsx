@@ -64,8 +64,29 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
     try {
       setLoading(true);
       console.log('Getting document URL for:', filePath);
-      
-      // Try downloading the file and creating a blob URL to avoid CORS issues
+
+      const isPdfPath = filePath.toLowerCase().endsWith('.pdf');
+
+      // For PDFs intended for Adobe viewer, prefer a signed URL first
+      if (isPdfPath) {
+        try {
+          console.log('Attempting signed URL first for PDF...');
+          const { data: signed, error: signedError } = await supabase.storage
+            .from('lead-documents')
+            .createSignedUrl(filePath, 3600);
+
+          if (!signedError && signed?.signedUrl) {
+            console.log('Using signed URL for Adobe viewer');
+            setDocumentUrl(signed.signedUrl);
+            return signed.signedUrl;
+          }
+          console.warn('Signed URL failed, falling back to download for PDF');
+        } catch (e) {
+          console.warn('Signed URL attempt threw, trying download for PDF');
+        }
+      }
+
+      // Download and create a blob URL (works well for images/others)
       try {
         const { data: fileData, error: downloadError } = await supabase.storage
           .from('lead-documents')
@@ -81,7 +102,7 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
         console.log('Download method failed, trying signed URL');
       }
       
-      // Prefer signed URL for private buckets
+      // Try signed URL (for non-PDF or download fallback)
       const { data: signed, error: signedError } = await supabase.storage
         .from('lead-documents')
         .createSignedUrl(filePath, 3600); // 1 hour expiry
@@ -105,6 +126,8 @@ export function DocumentViewer({ document, isOpen, onClose }: DocumentViewerProp
       } catch (e) {
         console.log('Public URL failed as expected for private bucket');
       }
+
+      return null;
     } catch (error) {
       console.error('Error getting document URL:', error);
       toast({
