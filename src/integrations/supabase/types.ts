@@ -2577,6 +2577,45 @@ export type Database = {
           },
         ]
       }
+      loan_stages: {
+        Row: {
+          color: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          order_position: number
+          probability: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          order_position: number
+          probability?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          order_position?: number
+          probability?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       loans: {
         Row: {
           client_id: string | null

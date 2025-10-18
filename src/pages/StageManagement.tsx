@@ -9,15 +9,95 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Settings, Trash2, GripVertical } from "lucide-react"
+import { useEffect, useState } from "react"
+import { supabase } from "@/integrations/supabase/client"
+import { useToast } from "@/hooks/use-toast"
+
+interface LoanStage {
+  id: string
+  name: string
+  order_position: number
+  probability: number
+  color: string
+  is_active: boolean
+  description?: string
+}
 
 export default function StageManagement() {
-  const stages = [
-    { id: 1, name: "Prospecting", order: 1, probability: 10, color: "blue", active: true, dealCount: 15 },
-    { id: 2, name: "Qualification", order: 2, probability: 25, color: "green", active: true, dealCount: 12 },
-    { id: 3, name: "Proposal", order: 3, probability: 50, color: "yellow", active: true, dealCount: 8 },
-    { id: 4, name: "Negotiation", order: 4, probability: 75, color: "orange", active: true, dealCount: 5 },
-    { id: 5, name: "Closing", order: 5, probability: 90, color: "purple", active: true, dealCount: 3 },
-  ]
+  const [stages, setStages] = useState<LoanStage[]>([])
+  const [loading, setLoading] = useState(true)
+  const { toast } = useToast()
+
+  useEffect(() => {
+    fetchStages()
+  }, [])
+
+  const fetchStages = async () => {
+    try {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('loan_stages')
+        .select('*')
+        .order('order_position', { ascending: true })
+
+      if (error) throw error
+
+      setStages(data || [])
+    } catch (error) {
+      console.error('Error fetching loan stages:', error)
+      toast({
+        title: "Error",
+        description: "Failed to load loan stages",
+        variant: "destructive"
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const toggleStageActive = async (stageId: string, currentActive: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('loan_stages')
+        .update({ is_active: !currentActive })
+        .eq('id', stageId)
+
+      if (error) throw error
+
+      await fetchStages()
+      toast({
+        title: "Success",
+        description: `Stage ${!currentActive ? 'activated' : 'deactivated'} successfully`
+      })
+    } catch (error) {
+      console.error('Error updating stage:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update stage",
+        variant: "destructive"
+      })
+    }
+  }
+
+  if (loading) {
+    return (
+      <StandardPageLayout>
+        <StandardPageHeader
+          title="Stage Management"
+          description="Loading stages..."
+        />
+        <ResponsiveContainer>
+          <div className="space-y-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="animate-pulse border border-border rounded-lg p-4">
+                <div className="h-6 bg-muted rounded w-1/4"></div>
+              </div>
+            ))}
+          </div>
+        </ResponsiveContainer>
+      </StandardPageLayout>
+    )
+  }
 
   return (
     <StandardPageLayout>
@@ -49,13 +129,13 @@ export default function StageManagement() {
                     <div className="md:col-span-2">
                       <div className="font-medium">{stage.name}</div>
                       <div className="text-sm text-muted-foreground">
-                        {stage.dealCount} active deals
+                        {stage.description || 'No description'}
                       </div>
                     </div>
                     
                     <div className="text-center">
                       <div className="text-sm text-muted-foreground">Order</div>
-                      <div className="font-medium">{stage.order}</div>
+                      <div className="font-medium">{stage.order_position}</div>
                     </div>
                     
                     <div className="text-center">
@@ -65,7 +145,10 @@ export default function StageManagement() {
                     
                     <div className="text-center">
                       <div className="text-sm text-muted-foreground">Status</div>
-                      <Switch checked={stage.active} />
+                      <Switch 
+                        checked={stage.is_active} 
+                        onCheckedChange={() => toggleStageActive(stage.id, stage.is_active)}
+                      />
                     </div>
                     
                     <div className="flex gap-2 justify-end">
@@ -159,13 +242,13 @@ export default function StageManagement() {
                     <SelectTrigger>
                       <SelectValue placeholder="Select default stage" />
                     </SelectTrigger>
-                    <SelectContent>
-                      {stages.map((stage) => (
-                        <SelectItem key={stage.id} value={stage.id.toString()}>
-                          {stage.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
+                <SelectContent>
+                  {stages.map((stage) => (
+                    <SelectItem key={stage.id} value={stage.id}>
+                      {stage.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
                   </Select>
                 </div>
 
