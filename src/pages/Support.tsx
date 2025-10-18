@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StandardPageLayout } from '@/components/StandardPageLayout';
 import { StandardPageHeader } from '@/components/StandardPageHeader';
 import { StandardContentCard } from '@/components/StandardContentCard';
@@ -32,7 +32,8 @@ import {
   Users,
   MoreVertical,
   Eye,
-  MessageCircle
+  MessageCircle,
+  Loader2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -62,35 +63,9 @@ interface ChatMessage {
 
 export default function Support() {
   const { toast } = useToast();
-  const [tickets] = useState<SupportTicket[]>([
-    {
-      id: '1',
-      subject: 'Unable to upload documents',
-      description: 'Getting an error when uploading PDF files',
-      status: 'in_progress',
-      priority: 'high',
-      category: 'Technical',
-      created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: '2',
-      subject: 'Question about loan calculations',
-      description: 'Need clarification on interest rate calculations',
-      status: 'open',
-      priority: 'medium',
-      category: 'General',
-      created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: '3',
-      subject: 'Access permissions issue',
-      description: 'Cannot access underwriter dashboard',
-      status: 'resolved',
-      priority: 'urgent',
-      category: 'Access',
-      created_at: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-    },
-  ]);
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
@@ -108,6 +83,41 @@ export default function Support() {
   const [chatInput, setChatInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Fetch tickets from database
+  useEffect(() => {
+    fetchTickets();
+  }, []);
+
+  const fetchTickets = async () => {
+    try {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('support_tickets')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setTickets((data || []) as SupportTicket[]);
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load support tickets",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCreateTicket = async () => {
     if (!newTicketSubject || !newTicketDescription) {
       toast({
@@ -119,8 +129,22 @@ export default function Support() {
     }
 
     try {
+      setSubmitting(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
+
+      const { error } = await supabase
+        .from('support_tickets')
+        .insert({
+          user_id: user.id,
+          subject: newTicketSubject,
+          description: newTicketDescription,
+          priority: newTicketPriority,
+          category: newTicketCategory,
+          status: 'open',
+        });
+
+      if (error) throw error;
 
       toast({
         title: "Ticket created",
@@ -131,12 +155,18 @@ export default function Support() {
       setNewTicketDescription('');
       setNewTicketPriority('medium');
       setNewTicketCategory('General');
+      
+      // Refresh tickets list
+      fetchTickets();
     } catch (error) {
+      console.error('Error creating ticket:', error);
       toast({
         title: "Error",
         description: "Failed to create support ticket",
         variant: "destructive",
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -229,7 +259,7 @@ export default function Support() {
               <Filter className="h-4 w-4 mr-2" />
               Filter
             </Button>
-            <Button size="sm">
+            <Button size="sm" onClick={() => document.getElementById('ticket-subject')?.focus()}>
               <Plus className="h-4 w-4 mr-2" />
               New Ticket
             </Button>
@@ -292,16 +322,18 @@ export default function Support() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Subject</label>
                       <Input
+                        id="ticket-subject"
                         placeholder="Brief description of your issue"
                         value={newTicketSubject}
                         onChange={(e) => setNewTicketSubject(e.target.value)}
+                        disabled={submitting}
                       />
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-foreground">Category</label>
-                        <Select value={newTicketCategory} onValueChange={setNewTicketCategory}>
+                        <Select value={newTicketCategory} onValueChange={setNewTicketCategory} disabled={submitting}>
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
@@ -315,7 +347,7 @@ export default function Support() {
                       
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-foreground">Priority</label>
-                        <Select value={newTicketPriority} onValueChange={(value: 'low' | 'medium' | 'high' | 'urgent') => setNewTicketPriority(value)}>
+                        <Select value={newTicketPriority} onValueChange={(value: 'low' | 'medium' | 'high' | 'urgent') => setNewTicketPriority(value)} disabled={submitting}>
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select priority" />
                           </SelectTrigger>
@@ -336,12 +368,22 @@ export default function Support() {
                         className="min-h-32"
                         value={newTicketDescription}
                         onChange={(e) => setNewTicketDescription(e.target.value)}
+                        disabled={submitting}
                       />
                     </div>
                     
-                    <Button className="w-full" onClick={handleCreateTicket}>
-                      <Plus className="h-4 w-4 mr-2" />
-                      Submit Ticket
+                    <Button className="w-full" onClick={handleCreateTicket} disabled={submitting}>
+                      {submitting ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Submit Ticket
+                        </>
+                      )}
                     </Button>
                   </div>
                 </StandardContentCard>
@@ -362,16 +404,23 @@ export default function Support() {
                       />
                     </div>
 
-                    {/* Tickets */}
-                    <div className="space-y-3">
-                      {filteredTickets.length === 0 ? (
-                        <Alert>
-                          <AlertDescription>
-                            No tickets found. {searchQuery && "Try adjusting your search."}
-                          </AlertDescription>
-                        </Alert>
-                      ) : (
-                        filteredTickets.map((ticket) => (
+                    {/* Loading State */}
+                    {loading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                      </div>
+                    ) : filteredTickets.length === 0 ? (
+                      <Alert>
+                        <AlertDescription>
+                          {searchQuery 
+                            ? "No tickets found matching your search." 
+                            : "You haven't created any support tickets yet. Create your first ticket to get help from our support team."}
+                        </AlertDescription>
+                      </Alert>
+                    ) : (
+                      /* Tickets */
+                      <div className="space-y-3">
+                        {filteredTickets.map((ticket) => (
                           <div
                             key={ticket.id}
                             className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group"
@@ -422,9 +471,9 @@ export default function Support() {
                               </div>
                             </div>
                           </div>
-                        ))
-                      )}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </StandardContentCard>
               </div>
