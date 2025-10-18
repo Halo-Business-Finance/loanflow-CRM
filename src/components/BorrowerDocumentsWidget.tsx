@@ -94,12 +94,13 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
           <div className="text-sm text-muted-foreground py-8 text-center">
             Loading documents...
           </div>
-        ) : leadDocuments.length === 0 ? (
-          <div className="text-sm text-muted-foreground py-8 text-center italic">
-            No documents uploaded yet
-          </div>
         ) : (
           <div className="w-full">
+            {leadDocuments.length === 0 && (
+              <div className="text-sm text-muted-foreground py-4 text-center italic">
+                No documents uploaded yet
+              </div>
+            )}
             {/* Folders */}
             <div className="divide-y">
               {folders.map((folder) => (
