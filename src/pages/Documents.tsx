@@ -1,90 +1,85 @@
-
 import { StandardPageLayout } from '@/components/StandardPageLayout'
 import { StandardPageHeader } from '@/components/StandardPageHeader'
-import { StandardKPICard } from '@/components/StandardKPICard'
-import { StandardContentCard } from '@/components/StandardContentCard'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-// Badge component removed - using plain text instead
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Filter, FileText, Calendar, User, DollarSign, Download, Upload, Eye, Trash2, CheckCircle, RefreshCw } from "lucide-react"
-import { useState } from "react"
-import { useAuth } from "@/components/auth/AuthProvider"
-import { useDocuments, LeadDocument } from "@/hooks/useDocuments"
+import { Search, FolderOpen, Upload, Users, ChevronRight, Grid, List } from "lucide-react"
+import { useState, useMemo } from "react"
+import { useDocuments } from "@/hooks/useDocuments"
 import { DocumentUploadModal } from "@/components/DocumentUploadModal"
-import { DocumentViewer } from "@/components/DocumentViewer"
-import { DocumentTest } from "@/components/DocumentTest"
-import { formatDistanceToNow } from "date-fns"
+import { format } from "date-fns"
+import { useNavigate } from "react-router-dom"
+
+interface LoanFolder {
+  leadId: string
+  leadName: string
+  loanType: string
+  location: string
+  documentCount: number
+  lastUpdated: string
+  updatedBy: string
+}
 
 export default function Documents() {
-  const { user } = useAuth()
-  const { documents, loading, uploadDocument, updateDocumentStatus, downloadDocument, deleteDocument } = useDocuments()
+  const { documents, loading, uploadDocument } = useDocuments()
   const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("all")
   const [showUploadModal, setShowUploadModal] = useState(false)
-  const [selectedDocument, setSelectedDocument] = useState<LeadDocument | null>(null)
-  const [showDocumentViewer, setShowDocumentViewer] = useState(false)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
+  const navigate = useNavigate()
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'verified': return 'default'
-      case 'pending': return 'secondary'
-      case 'rejected': return 'destructive'
-      default: return 'secondary'
-    }
-  }
-
-  const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = doc.document_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.contact_entity?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.document_type.toLowerCase().includes(searchTerm.toLowerCase())
+  // Group documents by lead to create folder structure
+  const loanFolders = useMemo(() => {
+    const folderMap = new Map<string, LoanFolder>()
     
-    const matchesStatus = statusFilter === "all" || doc.status === statusFilter
+    documents.forEach(doc => {
+      if (!doc.lead_id) return
+      
+      const leadId = doc.lead_id
+      const existing = folderMap.get(leadId)
+      
+      if (existing) {
+        existing.documentCount++
+        if (new Date(doc.updated_at) > new Date(existing.lastUpdated)) {
+          existing.lastUpdated = doc.updated_at
+        }
+      } else {
+        folderMap.set(leadId, {
+          leadId,
+          leadName: doc.contact_entity?.business_name || doc.contact_entity?.name || 'Unknown Business',
+          loanType: doc.contact_entity?.loan_type || 'General',
+          location: doc.contact_entity?.location || 'Location not specified',
+          documentCount: 1,
+          lastUpdated: doc.updated_at,
+          updatedBy: 'Loan Processing'
+        })
+      }
+    })
     
-    return matchesSearch && matchesStatus
-  })
+    return Array.from(folderMap.values()).sort((a, b) => 
+      new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
+    )
+  }, [documents])
 
-  const statusCounts = {
-    total: documents.length,
-    verified: documents.filter(doc => doc.status === 'verified').length,
-    pending: documents.filter(doc => doc.status === 'pending').length,
-    rejected: documents.filter(doc => doc.status === 'rejected').length
-  }
+  const filteredFolders = loanFolders.filter(folder =>
+    folder.leadName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    folder.loanType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    folder.location.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
-  const handleViewDocument = (document: LeadDocument) => {
-    setSelectedDocument(document)
-    setShowDocumentViewer(true)
-  }
-
-  const formatFileSize = (bytes?: number) => {
-    if (!bytes) return 'Unknown size'
-    if (bytes === 0) return '0 Bytes'
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-  }
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Not uploaded'
-    return formatDistanceToNow(new Date(dateString), { addSuffix: true })
+  const handleFolderClick = (leadId: string) => {
+    navigate(`/lead/${leadId}`)
   }
 
   if (loading) {
     return (
       <StandardPageLayout>
         <StandardPageHeader 
-          title="Document Command Center"
-          description="Enterprise-grade secure document management with advanced upload and verification for SBA and Commercial loan CRM"
+          title="Files"
+          description="Document Command Center - Loan Document Management"
         />
-        <div className="p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse bg-card rounded-lg p-6">
-                <div className="h-6 bg-muted rounded w-24 mb-4"></div>
-                <div className="h-8 bg-muted rounded w-16 mb-2"></div>
-                <div className="h-8 w-8 bg-muted rounded"></div>
-              </div>
+        <div className="p-6">
+          <div className="animate-pulse space-y-4">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-16 bg-muted rounded-lg"></div>
             ))}
           </div>
         </div>
@@ -92,318 +87,145 @@ export default function Documents() {
     )
   }
 
-  // Debug logging - Enhanced
-  console.log('=== DOCUMENTS PAGE DEBUG ===');
-  console.log('Auth State:', { 
-    userExists: !!user, 
-    userId: user?.id,
-    userEmail: user?.email
-  });
-  console.log('Documents State:', {
-    documentsCount: documents.length, 
-    loading,
-    documentsPreview: documents.slice(0, 2).map(d => ({
-      id: d.id.slice(0, 8),
-      name: d.document_name,
-      type: d.document_type,
-      status: d.status,
-      hasFilePath: !!d.file_path
-    }))
-  });
-  console.log('=== END DEBUG ===');
-
   return (
-    <>
-      <DocumentTest />
+    <StandardPageLayout>
+      <StandardPageHeader 
+        title="Files"
+        description="Document Command Center - Loan Document Management"
+        actions={
+          <Button onClick={() => setShowUploadModal(true)} className="gap-2">
+            <Upload className="h-4 w-4" />
+            New
+          </Button>
+        }
+      />
       
-      <StandardPageLayout>
-        <StandardPageHeader 
-          title="Document Command Center"
-          description="Enterprise-grade secure document management with advanced upload and verification for SBA and Commercial loan CRM"
-          actions={
-            <Button onClick={() => setShowUploadModal(true)} className="gap-2">
-              <Upload className="h-4 w-4" />
-              Upload Document
+      <div className="p-6 space-y-6">
+        {/* Search and View Controls */}
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search folders..."
+              className="pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="flex items-center gap-2 border border-border rounded-lg p-1">
+            <Button
+              variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+              className="h-8 w-8 p-0"
+            >
+              <Grid className="h-4 w-4" />
             </Button>
-          }
-        />
-        
-        <div className="p-6 space-y-6">
-          {/* Document Metrics Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <StandardKPICard
-              title="Total Documents"
-              value={statusCounts.total}
-            />
-            
-            <StandardKPICard
-              title="Verified"
-              value={statusCounts.verified}
-            />
-            
-            <StandardKPICard
-              title="Pending Review"
-              value={statusCounts.pending}
-            />
-            
-            <StandardKPICard
-              title="Rejected"
-              value={statusCounts.rejected}
-            />
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+              className="h-8 w-8 p-0"
+            >
+              <List className="h-4 w-4" />
+            </Button>
           </div>
-
-          {/* Search and Filters */}
-          <StandardContentCard>
-            <div className="flex gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search documents, leads, or document types..."
-                  className="pl-10"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-border rounded-md bg-background"
-              >
-                <option value="all">All Status</option>
-                <option value="pending">Pending</option>
-                <option value="verified">Verified</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-          </StandardContentCard>
-
-          {/* Documents List */}
-          <div className="grid gap-6">
-            {filteredDocuments.length === 0 ? (
-              <Card className="border border-border shadow-sm bg-white">
-                <CardContent className="p-12 text-center">
-                  <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-medium mb-2">No documents found</h3>
-                  <p className="text-muted-foreground mb-4">
-                    {searchTerm || statusFilter !== "all" 
-                      ? "Try adjusting your search or filters" 
-                      : "Upload your first document to get started"}
-                  </p>
-                  {!searchTerm && statusFilter === "all" && (
-                    <Button onClick={() => setShowUploadModal(true)} className="gap-2">
-                      <Upload className="h-4 w-4" />
-                      Upload First Document
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            ) : (
-              filteredDocuments.map((document) => (
-                <Card key={document.id} className="border border-border shadow-sm bg-white hover-scale transition-all">
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
-                      {/* Header Row */}
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-3">
-                            <h3 className="font-semibold text-foreground">{document.contact_entity?.name || 'Unknown Lead'}</h3>
-                            <span className="text-xs font-medium">
-                              {document.document_type}
-                            </span>
-                          </div>
-                          <p className="text-muted-foreground">Document ID: {document.id.slice(0, 8)}</p>
-                        </div>
-                        
-                        <div className="text-right space-y-1">
-                          <span className="text-sm font-medium">
-                            {document.status.charAt(0).toUpperCase() + document.status.slice(1)}
-                          </span>
-                          <div className="text-sm text-muted-foreground">
-                            {formatDate(document.uploaded_at)}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* File Information with Preview */}
-                      <div className="bg-muted/30 rounded-lg p-4">
-                        <div className="flex items-center gap-4">
-                          {/* Document Preview Image */}
-                          <div className="w-16 h-20 bg-white rounded-lg border-2 border-border shadow-sm flex-shrink-0 overflow-hidden">
-                            {document.file_mime_type?.includes('pdf') ? (
-                              <div className="w-full h-full bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center">
-                                <FileText className="h-8 w-8 text-red-600" />
-                              </div>
-                            ) : document.file_mime_type?.startsWith('image/') ? (
-                              <img 
-                                src={`https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=64&h=80&fit=crop&auto=format`}
-                                alt="Document preview"
-                                className="w-full h-full object-cover"
-                              />
-                            ) : document.file_mime_type?.includes('word') || document.file_mime_type?.includes('document') ? (
-                              <div className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
-                                <FileText className="h-8 w-8 text-blue-600" />
-                              </div>
-                            ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-                                <FileText className="h-8 w-8 text-gray-600" />
-                              </div>
-                            )}
-                          </div>
-                          
-                          {/* File Details */}
-                          <div className="flex-1">
-                            <div className="font-medium">{document.document_name}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {formatFileSize(document.file_size)} • {document.file_mime_type || 'Unknown type'}
-                            </div>
-                            <div className="text-xs text-muted-foreground mt-1">
-                              Uploaded {formatDate(document.uploaded_at)}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Details Grid */}
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-4 border-t border-border/50">
-                        <div className="flex items-center gap-2">
-                          <DollarSign className="h-4 w-4 text-green-600" />
-                          <div>
-                            <div className="text-sm text-muted-foreground">Loan Amount</div>
-                            <div className="font-medium">
-                              {document.contact_entity?.loan_amount 
-                                ? `$${document.contact_entity.loan_amount.toLocaleString()}` 
-                                : 'Not specified'}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-blue-600" />
-                          <div>
-                            <div className="text-sm text-muted-foreground">Upload Date</div>
-                            <div className="font-medium">{formatDate(document.uploaded_at)}</div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4 text-purple-600" />
-                          <div>
-                            <div className="text-sm text-muted-foreground">Status</div>
-                            <div className="font-medium capitalize">{document.status}</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Notes */}
-                      {document.notes && (
-                        <div className="pt-4 border-t border-border/50">
-                          <div className="text-sm text-muted-foreground mb-1">Notes:</div>
-                          <div className="text-sm">{document.notes}</div>
-                        </div>
-                      )}
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-2 pt-4 border-t border-border/50">
-                        {document.file_path && (
-                          <>
-                            <Button 
-                              size="sm" 
-                              variant="outline" 
-                              className="flex-1 gap-2"
-                              onClick={() => handleViewDocument(document)}
-                            >
-                              <Eye className="h-4 w-4" />
-                              View
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline" 
-                              className="flex-1 gap-2"
-                              onClick={() => downloadDocument(document)}
-                            >
-                              <Download className="h-4 w-4" />
-                              Download
-                            </Button>
-                          </>
-                        )}
-                        
-                        {document.status === 'pending' && (
-                          <Button 
-                            size="sm" 
-                            className="flex-1 gap-2"
-                            onClick={() => updateDocumentStatus(document.id, 'verified')}
-                          >
-                            <CheckCircle className="h-4 w-4" />
-                            Verify
-                          </Button>
-                        )}
-
-                        {document.status === 'pending' && (
-                          <Button 
-                            size="sm" 
-                            variant="destructive" 
-                            className="flex-1 gap-2"
-                            onClick={() => updateDocumentStatus(document.id, 'rejected')}
-                          >
-                            Reject
-                          </Button>
-                        )}
-
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="gap-2"
-                          onClick={() => deleteDocument(document.id, document.file_path)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Delete
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
-
-          {/* Upload Modal */}
-          <DocumentUploadModal
-            isOpen={showUploadModal}
-            onClose={() => setShowUploadModal(false)}
-            onUpload={uploadDocument}
-          />
-
-          {/* Document Viewer */}
-          <DocumentViewer
-            document={selectedDocument}
-            isOpen={showDocumentViewer}
-            onClose={() => {
-              setShowDocumentViewer(false)
-              setSelectedDocument(null)
-            }}
-          />
         </div>
-      </StandardPageLayout>
 
-      {/* Modals */}
-      {showUploadModal && (
-        <DocumentUploadModal
-          isOpen={showUploadModal}
-          onClose={() => setShowUploadModal(false)}
-          onUpload={uploadDocument}
-        />
-      )}
+        {/* Folder Header */}
+        <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground border-b">
+          <div className="col-span-5 flex items-center gap-2">
+            NAME
+            <ChevronRight className="h-3 w-3 rotate-90" />
+          </div>
+          <div className="col-span-4">UPDATED</div>
+          <div className="col-span-3 text-right">SIZE</div>
+        </div>
 
-      {showDocumentViewer && selectedDocument && (
-        <DocumentViewer
-          document={selectedDocument}
-          isOpen={showDocumentViewer}
-          onClose={() => {
-            setShowDocumentViewer(false)
-            setSelectedDocument(null)
-          }}
-        />
-      )}
-    </>
+        {/* Folder List */}
+        <div className="space-y-2">
+          {filteredFolders.length === 0 ? (
+            <div className="text-center py-12">
+              <FolderOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2">No loan folders found</h3>
+              <p className="text-muted-foreground mb-4">
+                {searchTerm 
+                  ? "Try adjusting your search" 
+                  : "Upload documents to create loan folders"}
+              </p>
+              {!searchTerm && (
+                <Button onClick={() => setShowUploadModal(true)} className="gap-2">
+                  <Upload className="h-4 w-4" />
+                  Upload First Document
+                </Button>
+              )}
+            </div>
+          ) : (
+            filteredFolders.map((folder) => (
+              <button
+                key={folder.leadId}
+                onClick={() => handleFolderClick(folder.leadId)}
+                className="w-full grid grid-cols-12 gap-4 px-4 py-3 rounded-lg hover:bg-muted/50 transition-colors text-left items-center group"
+              >
+                {/* Folder Icon and Name */}
+                <div className="col-span-5 flex items-center gap-3">
+                  <div className="relative">
+                    <FolderOpen className="h-8 w-8 text-blue-500 group-hover:text-blue-600 transition-colors" />
+                    <Users className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 text-blue-600 bg-white rounded-full p-0.5" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-foreground">
+                      {folder.leadName} - {folder.loanType}
+                    </div>
+                    {folder.location && (
+                      <div className="text-xs text-muted-foreground">
+                        {folder.location}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Updated Info */}
+                <div className="col-span-4 text-sm text-muted-foreground">
+                  {format(new Date(folder.lastUpdated), 'MMM d, yyyy')} by {folder.updatedBy}
+                </div>
+
+                {/* File Count */}
+                <div className="col-span-3 text-right text-sm text-muted-foreground">
+                  {folder.documentCount} {folder.documentCount === 1 ? 'File' : 'Files'}
+                </div>
+              </button>
+            ))
+          )}
+        </div>
+
+        {/* Empty State Illustration */}
+        {filteredFolders.length === 0 && !searchTerm && (
+          <div className="flex justify-center mt-8">
+            <div className="text-center space-y-4 max-w-md">
+              <div className="relative inline-block">
+                <FolderOpen className="h-32 w-32 text-blue-500/20" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-4xl">📁</div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Select a file or folder to view details.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Upload Modal */}
+      <DocumentUploadModal
+        isOpen={showUploadModal}
+        onClose={() => setShowUploadModal(false)}
+        onUpload={uploadDocument}
+      />
+    </StandardPageLayout>
   )
 }

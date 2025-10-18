@@ -23,7 +23,10 @@ export interface LeadDocument {
   updated_at: string;
   contact_entity?: {
     name: string;
+    business_name?: string;
     loan_amount?: number;
+    loan_type?: string;
+    location?: string;
   };
 }
 
@@ -40,7 +43,7 @@ export function useDocuments() {
         .from('lead_documents')
         .select(`
           *,
-          contact_entity:contact_entities(name, loan_amount)
+          contact_entity:contact_entities(name, business_name, loan_amount, loan_type, location)
         `)
         .order('created_at', { ascending: false });
 
