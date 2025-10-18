@@ -225,7 +225,8 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           variant="ghost"
           size="icon"
           className="h-9 w-9 text-white hover:text-white hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300 rounded"
-          onClick={() => navigate('/resources')}
+          onClick={() => navigate('/support')}
+          title="Support Center"
         >
           <HelpCircle className="h-6 w-6" />
         </Button>

@@ -47,6 +47,7 @@ import Documents from "./pages/Documents";
 import LoanDocumentsFolder from "./pages/LoanDocumentsFolder";
 import Activities from "./pages/Activities";
 import Reports from "./pages/Reports";
+import Support from "./pages/Support";
 const SettingsPage = lazy(() => import("./pages/Settings"));
 import UserDirectory from "./pages/UserDirectory";
 import Resources from "./pages/Resources";
@@ -150,6 +151,7 @@ function AuthenticatedApp() {
             <Route path="/activities/tasks" element={<IBMCloudLayout><ActivitiesTasks /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/reports" element={<IBMCloudLayout><Reports /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/support" element={<IBMCloudLayout><Support /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/user-directory" element={<IBMCloudLayout><UserDirectory /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/settings" element={<IBMCloudLayout key="settings-layout"><Suspense fallback={<div className="p-6">Loading...</div>}><SettingsPage /></Suspense></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
