@@ -119,9 +119,9 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent outline-none hover:outline-none focus:outline-none focus:ring-0 focus-visible:ring-0"
+          className="group h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent outline-none hover:outline-none focus:outline-none focus:ring-0 focus-visible:ring-0"
         >
-          <span className="inline-flex p-0.5 rounded hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300">
+          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
             <Grid3x3 className="h-5 w-5" />
           </span>
         </Button>
@@ -132,10 +132,10 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             variant="ghost"
             size="icon"
             onClick={() => window.history.back()}
-            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 outline-none hover:outline-none focus:outline-none focus:ring-0 focus-visible:ring-0"
+            className="group h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 outline-none hover:outline-none focus:outline-none focus:ring-0 focus-visible:ring-0"
             title="Go back"
           >
-            <span className="inline-flex p-0.5 rounded hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300">
+            <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
               <ChevronLeft className="h-5 w-5" />
             </span>
           </Button>
@@ -143,10 +143,10 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             variant="ghost"
             size="icon"
             onClick={() => window.history.forward()}
-            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 outline-none hover:outline-none focus:outline-none focus:ring-0 focus-visible:ring-0"
+            className="group h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 outline-none hover:outline-none focus:outline-none focus:ring-0 focus-visible:ring-0"
             title="Go forward"
           >
-            <span className="inline-flex p-0.5 rounded hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300">
+            <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
               <ChevronRight className="h-5 w-5" />
             </span>
           </Button>
