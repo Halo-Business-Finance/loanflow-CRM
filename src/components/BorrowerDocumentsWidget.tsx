@@ -60,7 +60,8 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
     { id: 'personal-tax', name: 'Personal Tax Returns', icon: Folder },
     { id: 'financial-statements', name: 'P&L and Balance Sheet', icon: Folder },
     { id: 'bank-statements', name: 'Bank Statements', icon: Folder },
-    { id: 'debt-schedule', name: 'Debt Schedule and Notes', icon: Folder }
+    { id: 'debt-schedule', name: 'Debt Schedule and Notes', icon: Folder },
+    { id: 'loan-application', name: 'Loan Application & Driver\'s License', icon: Folder }
   ]
 
   return (
