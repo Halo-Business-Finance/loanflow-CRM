@@ -1,24 +1,25 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, Download, Edit, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { StandardPageLayout } from "@/components/StandardPageLayout"
+import { StandardPageHeader } from "@/components/StandardPageHeader"
 
 export default function DocumentTemplates() {
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Document Templates</h1>
-          <p className="text-muted-foreground">
-            Manage and customize loan document templates
-          </p>
-        </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Template
-        </Button>
-      </div>
+    <StandardPageLayout>
+      <StandardPageHeader
+        title="Document Templates"
+        description="Manage and customize loan document templates"
+        actions={
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Template
+          </Button>
+        }
+      />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="p-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -186,7 +187,8 @@ export default function DocumentTemplates() {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
-    </div>
+    </StandardPageLayout>
   )
 }
