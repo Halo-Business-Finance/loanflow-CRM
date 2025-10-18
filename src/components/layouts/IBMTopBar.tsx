@@ -119,7 +119,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent"
+          className="h-24 w-12 rounded-none text-white hover:text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0"
         >
           <span className="inline-flex p-0.5 rounded hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300">
             <Grid3x3 className="h-5 w-5" />
@@ -132,7 +132,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             variant="ghost"
             size="icon"
             onClick={() => window.history.back()}
-            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0"
+            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 focus:outline-none focus:ring-0 focus-visible:ring-0"
             title="Go back"
           >
             <span className="inline-flex p-0.5 rounded hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300">
@@ -143,7 +143,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             variant="ghost"
             size="icon"
             onClick={() => window.history.forward()}
-            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0"
+            className="h-24 w-10 rounded-none text-white hover:text-white flex-shrink-0 hover:bg-transparent p-0 focus:outline-none focus:ring-0 focus-visible:ring-0"
             title="Go forward"
           >
             <span className="inline-flex p-0.5 rounded hover:outline hover:outline-2 hover:outline-blue-500 transition-all duration-300">
