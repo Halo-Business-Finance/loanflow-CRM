@@ -19,7 +19,7 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
   const { documents, loading, downloadDocument, uploadDocument, deleteDocument } = useDocuments()
   const [leadDocuments, setLeadDocuments] = useState<any[]>([])
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
-  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['business-tax', 'personal-tax']))
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set())
   const [selectedDocuments, setSelectedDocuments] = useState<Set<string>>(new Set())
   const [viewingDocument, setViewingDocument] = useState<any | null>(null)
   const { toast } = useToast()
@@ -182,15 +182,17 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
                 return (
                   <div key={folder.id}>
                     {/* Folder Header */}
-                    <div
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors cursor-pointer"
-                      onClick={() => toggleFolder(folder.id)}
-                    >
-                      {expandedFolders.has(folder.id) ? (
-                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                      )}
+                    <div className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors">
+                      <button
+                        onClick={() => toggleFolder(folder.id)}
+                        className="cursor-pointer hover:opacity-70 transition-opacity"
+                      >
+                        {expandedFolders.has(folder.id) ? (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </button>
                       <Folder className="h-5 w-5 text-yellow-500" />
                       <span className="text-sm font-medium">{folder.name}</span>
                       <Badge variant="secondary" className="ml-auto">
