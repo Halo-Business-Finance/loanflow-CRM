@@ -34,7 +34,7 @@ const defaultAutomations: Automation[] = [
   {
     id: "1",
     name: "Lead Loan Stage Change → Send Document",
-    trigger: "Lead moves to 'Qualified'",
+    trigger: "Lead moves to 'Loan Application Signed'",
     action: "Send loan application via DocuSign",
     enabled: true,
     runs: 23

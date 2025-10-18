@@ -70,12 +70,15 @@ export function BulkActions({ selectedItems, onClearSelection, onBulkUpdate, typ
   const getStageOptions = () => {
     if (type === 'leads') {
       return [
+        { value: 'New Lead', label: 'New Lead' },
         { value: 'Initial Contact', label: 'Initial Contact' },
-        { value: 'Qualified', label: 'Qualified' },
-        { value: 'Proposal', label: 'Proposal' },
-        { value: 'Negotiation', label: 'Negotiation' },
-        { value: 'Closed Won', label: 'Closed Won' },
-        { value: 'Closed Lost', label: 'Closed Lost' },
+        { value: 'Loan Application Signed', label: 'Loan Application Signed' },
+        { value: 'Waiting for Documentation', label: 'Waiting for Documentation' },
+        { value: 'Pre-Approved', label: 'Pre-Approved' },
+        { value: 'Term Sheet Signed', label: 'Term Sheet Signed' },
+        { value: 'Loan Approved', label: 'Loan Approved' },
+        { value: 'Closing', label: 'Closing' },
+        { value: 'Loan Funded', label: 'Loan Funded' },
       ]
     } else {
       return [

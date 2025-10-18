@@ -55,12 +55,14 @@ const getStageColor = (stage: string) => {
   switch (stage) {
     case 'New Lead': return 'outline'
     case 'Initial Contact': return 'secondary'
-    case 'Qualified': return 'default'
-    case 'Application': return 'default'
+    case 'Loan Application Signed': return 'default'
+    case 'Waiting for Documentation': return 'default'
+    case 'Pre-Approved': return 'default'
+    case 'Term Sheet Signed': return 'default'
     case 'Loan Approved': return 'default'
-    case 'Documentation': return 'default'
     case 'Closing': return 'default'
-    case 'Funded': return 'default'
+    case 'Loan Funded': return 'default'
+    case 'Archive': return 'secondary'
     default: return 'secondary'
   }
 }

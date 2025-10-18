@@ -124,11 +124,15 @@ export function AdvancedAnalytics() {
       }));
 
       const sampleConversionData = [
-        { stage: 'Lead', count: 1245, rate: 100 },
-        { stage: 'Qualified', count: 687, rate: 55.2 },
-        { stage: 'Proposal', count: 234, rate: 18.8 },
-        { stage: 'Negotiation', count: 145, rate: 11.6 },
-        { stage: 'Closed Won', count: 89, rate: 7.2 }
+        { stage: 'New Lead', count: 1245, rate: 100 },
+        { stage: 'Initial Contact', count: 892, rate: 71.6 },
+        { stage: 'Loan Application Signed', count: 687, rate: 55.2 },
+        { stage: 'Waiting for Documentation', count: 456, rate: 36.6 },
+        { stage: 'Pre-Approved', count: 324, rate: 26.0 },
+        { stage: 'Term Sheet Signed', count: 234, rate: 18.8 },
+        { stage: 'Loan Approved', count: 145, rate: 11.6 },
+        { stage: 'Closing', count: 112, rate: 9.0 },
+        { stage: 'Loan Funded', count: 89, rate: 7.2 }
       ];
 
       const samplePipelineData = [

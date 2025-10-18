@@ -526,7 +526,7 @@ export default function Leads() {
         <Tabs defaultValue="active" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="active">Active Leads</TabsTrigger>
-            <TabsTrigger value="qualified">Qualified</TabsTrigger>
+            <TabsTrigger value="qualified">Pre-Qualified</TabsTrigger>
             <TabsTrigger value="analytics">Performance</TabsTrigger>
             <TabsTrigger value="management">Lead Tools</TabsTrigger>
           </TabsList>
@@ -597,10 +597,10 @@ export default function Leads() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-green-500" />
-                  Qualified Prospects
+                  Pre-Qualified Prospects
                 </CardTitle>
                 <CardDescription>
-                  Leads that have been qualified and are ready for advanced nurturing
+                  Leads that have been pre-approved or have signed term sheets
                 </CardDescription>
               </CardHeader>
               <CardContent>

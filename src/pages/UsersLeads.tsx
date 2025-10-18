@@ -172,10 +172,13 @@ export default function UsersLeads() {
     switch (stage) {
       case 'Loan Funded': return 'bg-green-100 text-green-800'
       case 'Closing': return 'bg-blue-100 text-blue-800'
-      case 'Underwriting': return 'bg-purple-100 text-purple-800'
-      case 'Processing': return 'bg-orange-100 text-orange-800'
-      case 'Qualified': return 'bg-yellow-100 text-yellow-800'
-      case 'New': return 'bg-gray-100 text-gray-800'
+      case 'Loan Approved': return 'bg-purple-100 text-purple-800'
+      case 'Term Sheet Signed': return 'bg-indigo-100 text-indigo-800'
+      case 'Pre-Approved': return 'bg-orange-100 text-orange-800'
+      case 'Waiting for Documentation': return 'bg-yellow-100 text-yellow-800'
+      case 'Loan Application Signed': return 'bg-yellow-100 text-yellow-800'
+      case 'Initial Contact': return 'bg-gray-100 text-gray-800'
+      case 'New Lead': return 'bg-gray-100 text-gray-800'
       default: return 'bg-gray-100 text-gray-600'
     }
   }

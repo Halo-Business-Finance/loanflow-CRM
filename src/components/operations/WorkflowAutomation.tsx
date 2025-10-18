@@ -169,7 +169,7 @@ export function WorkflowAutomation() {
         description: 'Create follow-up tasks for leads without activity for 3 days',
         trigger: {
           type: 'time_based',
-          conditions: { inactivityDays: 3, stages: ['Qualified', 'Application'] }
+          conditions: { inactivityDays: 3, stages: ['Loan Application Signed', 'Waiting for Documentation'] }
         },
         actions: [
           { type: 'create_task', config: { title: 'Follow up with lead', priority: 'medium' } },

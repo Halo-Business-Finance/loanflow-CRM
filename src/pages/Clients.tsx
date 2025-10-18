@@ -359,13 +359,15 @@ export default function ExistingBorrowers() {
   const getStageColor = (stage?: string) => {
     if (!stage) return 'secondary'
     switch (stage) {
+      case 'New Lead': return 'secondary'
       case 'Initial Contact': return 'secondary'
-      case 'Qualified': return 'default'
-      case 'Application': return 'default'
-      case 'Pre-approval': return 'default'
-      case 'Documentation': return 'default'
+      case 'Loan Application Signed': return 'default'
+      case 'Waiting for Documentation': return 'default'
+      case 'Pre-Approved': return 'default'
+      case 'Term Sheet Signed': return 'default'
+      case 'Loan Approved': return 'default'
       case 'Closing': return 'default'
-      case 'Funded': return 'default'
+      case 'Loan Funded': return 'default'
       default: return 'secondary'
     }
   }

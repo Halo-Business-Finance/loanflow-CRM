@@ -131,7 +131,7 @@ export default function Dashboard() {
       setPipelineStages(computedStages);
 
       // Calculate real conversion funnel data
-      const stageOrder = ['New Lead', 'Contacted', 'Qualified', 'Proposal', 'Negotiation', 'Closed Won'];
+      const stageOrder = ['New Lead', 'Initial Contact', 'Loan Application Signed', 'Waiting for Documentation', 'Pre-Approved', 'Term Sheet Signed', 'Loan Approved', 'Closing', 'Loan Funded'];
       const totalLeadsCount = leads?.length || 0;
       const funnelData = stageOrder.map(stageName => {
         const count = stageCountMap.get(stageName) || 0;
@@ -192,10 +192,10 @@ export default function Dashboard() {
       });
       setRevenuePerformance(revenueData);
 
-      // Calculate pending tasks (leads that need follow-up - contacted or qualified stages)
+      // Calculate pending tasks (leads that need follow-up - initial contact or waiting for documentation)
       const pendingTasks = leads?.filter(l => {
         const stage = (l.contact_entities as any)?.stage;
-        return stage === 'Contacted' || stage === 'Qualified';
+        return stage === 'Initial Contact' || stage === 'Waiting for Documentation';
       }).length || 0;
 
       // Get recent activities from lead updates
@@ -553,7 +553,7 @@ export default function Dashboard() {
                     <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
                       <span className="text-[#161616]">Follow up with {stats.pendingTasks} lead{stats.pendingTasks > 1 ? 's' : ''}</span>
-                      <p className="text-xs text-[#525252] mt-0.5">Contacted and qualified stages</p>
+                      <p className="text-xs text-[#525252] mt-0.5">Initial contact and waiting for documentation stages</p>
                     </div>
                   </div>
                 </div>

@@ -103,7 +103,7 @@ export default function Reports() {
         // Active alerts - leads needing attention
         const alertsActive = leads?.filter(l => {
           const stage = (l.contact_entities as any)?.stage;
-          return stage === 'Contacted' || stage === 'Qualified';
+          return stage === 'Initial Contact' || stage === 'Waiting for Documentation';
         }).length || 0;
 
         setOverview({

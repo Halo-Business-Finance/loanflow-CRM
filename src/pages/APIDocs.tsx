@@ -108,7 +108,7 @@ export default function APIDocs() {
       "total_value": 1500000
     },
     {
-      "name": "Qualified",
+      "name": "Loan Application Signed",
       "count": 8,
       "total_value": 800000
     }

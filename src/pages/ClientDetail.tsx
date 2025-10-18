@@ -509,12 +509,14 @@ export default function ClientDetail() {
     switch (stage) {
       case 'New Lead': return 'outline'
       case 'Initial Contact': return 'secondary'
-      case 'Qualified': return 'default'
-      case 'Application': return 'secondary'
+      case 'Loan Application Signed': return 'default'
+      case 'Waiting for Documentation': return 'secondary'
+      case 'Pre-Approved': return 'default'
+      case 'Term Sheet Signed': return 'secondary'
       case 'Loan Approved': return 'outline'
-      case 'Documentation': return 'secondary'
       case 'Closing': return 'default'
-      case 'Funded': return 'default'
+      case 'Loan Funded': return 'default'
+      case 'Archive': return 'secondary'
       default: return 'secondary'
     }
   }
@@ -1233,12 +1235,13 @@ export default function ClientDetail() {
                            <SelectContent>
                              <SelectItem value="New Lead">New Lead</SelectItem>
                              <SelectItem value="Initial Contact">Initial Contact</SelectItem>
-                             <SelectItem value="Qualified">Qualified</SelectItem>
-                             <SelectItem value="Application">Application</SelectItem>
+                             <SelectItem value="Loan Application Signed">Loan Application Signed</SelectItem>
+                             <SelectItem value="Waiting for Documentation">Waiting for Documentation</SelectItem>
+                             <SelectItem value="Pre-Approved">Pre-Approved</SelectItem>
+                             <SelectItem value="Term Sheet Signed">Term Sheet Signed</SelectItem>
                              <SelectItem value="Loan Approved">Loan Approved</SelectItem>
-                             <SelectItem value="Documentation">Documentation</SelectItem>
                              <SelectItem value="Closing">Closing</SelectItem>
-                             <SelectItem value="Funded">Funded</SelectItem>
+                             <SelectItem value="Loan Funded">Loan Funded</SelectItem>
                            </SelectContent>
                         </Select>
                       ) : (
