@@ -352,4 +352,27 @@ All colors MUST be HSL.
   .btn-primary {
     @apply bg-gradient-primary shadow-medium hover:shadow-large transition-all duration-200;
   }
+
+  /* Global IBM-style hover effects */
+  .hover-outline {
+    @apply transition-all duration-200;
+  }
+  
+  .hover-outline:hover {
+    @apply outline outline-2 outline-blue-500 outline-offset-[-2px];
+  }
+
+  /* Interactive card/widget hover effect */
+  .interactive-card {
+    @apply cursor-pointer transition-all duration-200;
+  }
+  
+  .interactive-card:hover {
+    @apply outline outline-2 outline-blue-500 outline-offset-[-2px];
+  }
+
+  /* Button hover override - apply blue outline to all outline buttons */
+  button[class*="outline"]:not([class*="destructive"]):hover {
+    @apply outline outline-2 outline-blue-500 outline-offset-[-2px] bg-transparent;
+  }
 }

@@ -276,7 +276,7 @@ export default function Dashboard() {
         {/* Quick Access Tiles - Clean Style */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card 
-            className="bg-card border cursor-pointer hover:shadow-md transition-all"
+            className="bg-card border cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all"
             onClick={() => navigate('/leads')}
           >
             <CardContent className="p-6 text-center">
@@ -286,7 +286,7 @@ export default function Dashboard() {
           </Card>
 
           <Card 
-            className="bg-card border cursor-pointer hover:shadow-md transition-all"
+            className="bg-card border cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all"
             onClick={() => navigate('/pipeline')}
           >
             <CardContent className="p-6 text-center">
@@ -296,7 +296,7 @@ export default function Dashboard() {
           </Card>
 
           <Card 
-            className="bg-card border cursor-pointer hover:shadow-md transition-all"
+            className="bg-card border cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all"
             onClick={() => navigate('/documents')}
           >
             <CardContent className="p-6 text-center">
@@ -306,7 +306,7 @@ export default function Dashboard() {
           </Card>
 
           <Card 
-            className="bg-card border cursor-pointer hover:shadow-md transition-all"
+            className="bg-card border cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all"
             onClick={() => navigate('/activities/tasks')}
           >
             <CardContent className="p-6 text-center">
@@ -319,7 +319,7 @@ export default function Dashboard() {
         {/* Key Performance Indicators - Clean Style with Trends */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card 
-            className="bg-card border cursor-pointer group transition-all hover:shadow-md"
+            className="bg-card border cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
             onClick={() => navigate('/reports')}
           >
             <CardContent className="p-6">
@@ -339,7 +339,7 @@ export default function Dashboard() {
           </Card>
 
           <Card 
-            className="bg-card border cursor-pointer group transition-all hover:shadow-md"
+            className="bg-card border cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
             onClick={() => navigate('/pipeline')}
           >
             <CardContent className="p-6">
@@ -359,7 +359,7 @@ export default function Dashboard() {
           </Card>
 
           <Card 
-            className="bg-card border cursor-pointer group transition-all hover:shadow-md"
+            className="bg-card border cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
             onClick={() => navigate('/leads')}
           >
             <CardContent className="p-6">
@@ -377,7 +377,7 @@ export default function Dashboard() {
           </Card>
 
           <Card 
-            className="bg-card border cursor-pointer group transition-all hover:shadow-md"
+            className="bg-card border cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
             onClick={() => navigate('/pipeline/analytics')}
           >
             <CardContent className="p-6">
@@ -398,7 +398,7 @@ export default function Dashboard() {
         {/* Performance Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Revenue Performance */}
-          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/reports')}>
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/reports')}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Revenue Performance</CardTitle>
@@ -430,7 +430,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Pipeline Distribution */}
-          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/pipeline')}>
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/pipeline')}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Pipeline Distribution</CardTitle>
@@ -478,7 +478,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Conversion Funnel */}
-          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/pipeline/analytics')}>
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/pipeline/analytics')}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Conversion Funnel</CardTitle>
@@ -502,7 +502,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Activity Trends - Lead Creation */}
-          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/leads')}>
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/leads')}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Lead Activity</CardTitle>
@@ -536,7 +536,7 @@ export default function Dashboard() {
         {/* Bottom section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Active tasks */}
-          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/activities/tasks')}>
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/activities/tasks')}>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Active tasks</CardTitle>
@@ -567,7 +567,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Recent activity */}
-          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/activities')}>
+          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/activities')}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-normal text-[#161616]">Recent activity</CardTitle>
@@ -608,7 +608,7 @@ export default function Dashboard() {
               <div className="space-y-2">
                 <Button 
                   variant="outline" 
-                  className="w-full justify-start h-auto py-3 hover:bg-[#f4f4f4]"
+                  className="w-full justify-start h-auto py-3"
                   onClick={() => navigate('/leads/new')}
                 >
                   <Users className="h-4 w-4 mr-3 text-[#0f62fe]" />
@@ -619,7 +619,7 @@ export default function Dashboard() {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="w-full justify-start h-auto py-3 hover:bg-[#f4f4f4]"
+                  className="w-full justify-start h-auto py-3"
                   onClick={() => navigate('/pipeline')}
                 >
                   <BarChart3 className="h-4 w-4 mr-3 text-[#0f62fe]" />
@@ -630,7 +630,7 @@ export default function Dashboard() {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="w-full justify-start h-auto py-3 hover:bg-[#f4f4f4]"
+                  className="w-full justify-start h-auto py-3"
                   onClick={() => navigate('/reports')}
                 >
                   <FileText className="h-4 w-4 mr-3 text-[#0f62fe]" />
