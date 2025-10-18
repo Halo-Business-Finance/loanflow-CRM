@@ -64,19 +64,14 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
             <FileText className="h-4 w-4" />
             Borrower Documents
           </CardTitle>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="font-normal">
-              {leadDocuments.length} {leadDocuments.length === 1 ? 'document' : 'documents'}
-            </Badge>
-            <Button
-              onClick={() => setIsUploadModalOpen(true)}
-              size="sm"
-              className="gap-2"
-            >
-              <Upload className="h-4 w-4" />
-              Upload
-            </Button>
-          </div>
+          <Button
+            onClick={() => setIsUploadModalOpen(true)}
+            size="sm"
+            className="gap-2"
+          >
+            <Upload className="h-4 w-4" />
+            Upload
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
