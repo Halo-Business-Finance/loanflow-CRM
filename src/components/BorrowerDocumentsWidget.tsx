@@ -119,7 +119,8 @@ export function BorrowerDocumentsWidget({ leadId, contactEntityId }: BorrowerDoc
     { id: 'ar-ap', name: 'AR & AP', icon: Folder, documentType: 'AR & AP' },
     { id: 'projections', name: 'Projections, Resume & Business Plan', icon: Folder, documentType: 'Projections, Resume & Business Plan' },
     { id: 'sba-bank', name: 'SBA & Bank Documents', icon: Folder, documentType: 'SBA & Bank Documents' },
-    { id: 'corp-docs', name: 'Corp Articles, Operating Agreement & EIN Form', icon: Folder, documentType: 'Corp Articles, Operating Agreement & EIN Form' }
+    { id: 'corp-docs', name: 'Corp Articles, Operating Agreement & EIN Form', icon: Folder, documentType: 'Corp Articles, Operating Agreement & EIN Form' },
+    { id: 'miscellaneous', name: 'Miscellaneous', icon: Folder, documentType: 'Miscellaneous' }
   ]
 
   const getDocumentsForFolder = (documentType: string) => {
