@@ -294,7 +294,7 @@ export default function Support() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Category</label>
                       <div className="grid grid-cols-2 gap-2">
-                        {['General', 'Technical', 'Billing', 'Access'].map((category) => (
+                        {['General', 'Technical', 'Access'].map((category) => (
                           <Button
                             key={category}
                             variant={newTicketCategory === category ? 'default' : 'outline'}
