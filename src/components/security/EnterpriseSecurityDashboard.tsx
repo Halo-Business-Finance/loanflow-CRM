@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPageLayout } from "@/components/StandardPageLayout";
+import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { StandardContentCard } from "@/components/StandardContentCard";
+import { StandardKPICard } from "@/components/StandardKPICard";
+import { ResponsiveContainer } from "@/components/ResponsiveContainer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 import { 
   Shield, 
   Activity, 
   Key, 
   AlertTriangle,
   CheckCircle,
-  Settings,
-  Eye,
-  Users,
   Brain,
-  FileText,
   Zap,
   Lock,
   Radar,
@@ -24,104 +26,166 @@ import {
   Command,
   Globe,
   Satellite,
-  Fingerprint,
   Cpu,
   Radio,
   Download,
-  MoreVertical,
-  Bell,
-  Sliders
+  Database,
+  Users,
+  Eye
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
-interface MilitarySecurityMetrics {
+interface SecurityMetrics {
   threatLevel: 'DEFCON-1' | 'DEFCON-2' | 'DEFCON-3' | 'DEFCON-4' | 'DEFCON-5';
+  activeSessions: number;
+  activeThreats: number;
+  blockedAttempts: number;
+  securityScore: number;
   quantumResistance: number;
   zeroTrustScore: number;
-  behavioralAnalytics: {
-    anomalies: number;
-    riskScore: number;
-    modelAccuracy: number;
-  };
-  cryptographicStatus: {
-    algorithm: string;
-    keyStrength: number;
-    rotationStatus: string;
-  };
-  complianceFrameworks: {
-    fisma: number;
-    fedramp: number;
-    cmmc: number;
-    itar: number;
-  };
-  emergencyProtocols: {
-    active: boolean;
-    responseTime: string;
-    automaticCountermeasures: boolean;
-  };
+  complianceScore: number;
+}
+
+interface SecurityEvent {
+  id: string;
+  event_type: string;
+  severity: string;
+  details: any;
+  created_at: string;
+}
+
+interface ActiveSession {
+  id: string;
+  user_id: string;
+  security_alerts_count: number;
+  is_active: boolean;
+  last_activity: string;
 }
 
 export function EnterpriseSecurityDashboard() {
-  const [metrics, setMetrics] = useState<MilitarySecurityMetrics>({
+  const { toast } = useToast();
+  const [metrics, setMetrics] = useState<SecurityMetrics>({
     threatLevel: 'DEFCON-3',
+    activeSessions: 0,
+    activeThreats: 0,
+    blockedAttempts: 0,
+    securityScore: 0,
     quantumResistance: 98.7,
     zeroTrustScore: 96.2,
-    behavioralAnalytics: {
-      anomalies: 3,
-      riskScore: 15,
-      modelAccuracy: 99.1
-    },
-    cryptographicStatus: {
-      algorithm: 'AES-256-GCM + CRYSTALS-Kyber',
-      keyStrength: 4096,
-      rotationStatus: 'ACTIVE'
-    },
-    complianceFrameworks: {
-      fisma: 100,
-      fedramp: 98,
-      cmmc: 97,
-      itar: 95
-    },
-    emergencyProtocols: {
-      active: true,
-      responseTime: '< 100ms',
-      automaticCountermeasures: true
-    }
+    complianceScore: 97.5
   });
+  
+  const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
+  const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
+  const [blockchainRecords, setBlockchainRecords] = useState<number>(0);
+  const [auditLogs, setAuditLogs] = useState<number>(0);
 
-  const [realTimeAlerts, setRealTimeAlerts] = useState([
-    {
-      id: 1,
-      type: 'QUANTUM_THREAT',
-      severity: 'HIGH',
-      message: 'Quantum decryption attempt detected and neutralized',
-      timestamp: new Date(Date.now() - 300000),
-      status: 'MITIGATED'
-    },
-    {
-      id: 2,
-      type: 'ZERO_TRUST_VIOLATION',
-      severity: 'MEDIUM',
-      message: 'Device fingerprint anomaly in session validation',
-      timestamp: new Date(Date.now() - 600000),
-      status: 'INVESTIGATING'
-    },
-    {
-      id: 3,
-      type: 'BEHAVIORAL_ANOMALY',
-      severity: 'LOW',
-      message: 'Unusual access pattern detected for user agent activities',
-      timestamp: new Date(Date.now() - 900000),
-      status: 'MONITORING'
+  useEffect(() => {
+    fetchSecurityData();
+    
+    // Set up real-time subscriptions
+    const eventsChannel = supabase
+      .channel('security_events_changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'security_events' },
+        () => fetchSecurityData()
+      )
+      .subscribe();
+
+    const sessionsChannel = supabase
+      .channel('active_sessions_changes')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'active_sessions' },
+        () => fetchSecurityData()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(eventsChannel);
+      supabase.removeChannel(sessionsChannel);
+    };
+  }, []);
+
+  const fetchSecurityData = async () => {
+    try {
+      // Fetch recent security events
+      const { data: events, error: eventsError } = await supabase
+        .from('security_events')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (eventsError) throw eventsError;
+      setSecurityEvents(events || []);
+
+      // Fetch active sessions
+      const { data: sessions, error: sessionsError } = await supabase
+        .from('active_sessions')
+        .select('*')
+        .eq('is_active', true)
+        .order('last_activity', { ascending: false });
+
+      if (sessionsError) throw sessionsError;
+      setActiveSessions(sessions || []);
+
+      // Fetch blockchain records count
+      const { count: blockchainCount, error: blockchainError } = await supabase
+        .from('blockchain_records')
+        .select('*', { count: 'exact', head: true })
+        .eq('verification_status', 'verified');
+
+      if (blockchainError) throw blockchainError;
+      setBlockchainRecords(blockchainCount || 0);
+
+      // Fetch audit logs count (last 24 hours)
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const { count: auditCount, error: auditError } = await supabase
+        .from('audit_logs')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', twentyFourHoursAgo);
+
+      if (auditError) throw auditError;
+      setAuditLogs(auditCount || 0);
+
+      // Calculate metrics
+      const criticalEvents = events?.filter(e => e.severity === 'critical').length || 0;
+      const highEvents = events?.filter(e => e.severity === 'high').length || 0;
+      const totalEvents = events?.length || 0;
+
+      const avgRiskScore = sessions?.length 
+        ? sessions.reduce((acc, s) => acc + (s.security_alerts_count || 0), 0) / sessions.length 
+        : 0;
+
+      const securityScore = Math.max(0, 100 - (criticalEvents * 10) - (highEvents * 5) - avgRiskScore);
+
+      let threatLevel: SecurityMetrics['threatLevel'] = 'DEFCON-5';
+      if (criticalEvents > 5) threatLevel = 'DEFCON-1';
+      else if (criticalEvents > 2) threatLevel = 'DEFCON-2';
+      else if (highEvents > 5) threatLevel = 'DEFCON-3';
+      else if (highEvents > 2) threatLevel = 'DEFCON-4';
+
+      setMetrics({
+        threatLevel,
+        activeSessions: sessions?.length || 0,
+        activeThreats: criticalEvents + highEvents,
+        blockedAttempts: events?.filter(e => 
+          e.event_type?.includes('blocked') || 
+          e.event_type?.includes('denied')
+        ).length || 0,
+        securityScore: Math.round(securityScore),
+        quantumResistance: 98.7,
+        zeroTrustScore: Math.max(0, 100 - avgRiskScore * 2),
+        complianceScore: 97.5
+      });
+
+    } catch (error) {
+      console.error('Error fetching security data:', error);
+      toast({
+        title: "Error loading security data",
+        description: "Could not fetch the latest security metrics",
+        variant: "destructive"
+      });
     }
-  ]);
+  };
 
   const getThreatLevelColor = (level: string) => {
     switch (level) {
@@ -135,10 +199,11 @@ export function EnterpriseSecurityDashboard() {
   };
 
   const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'HIGH': return 'destructive';
-      case 'MEDIUM': return 'secondary';
-      case 'LOW': return 'default';
+    switch (severity?.toLowerCase()) {
+      case 'critical': return 'destructive';
+      case 'high': return 'destructive';
+      case 'medium': return 'secondary';
+      case 'low': return 'default';
       default: return 'outline';
     }
   };
@@ -146,14 +211,11 @@ export function EnterpriseSecurityDashboard() {
   const exportSecurityReport = () => {
     const reportData = {
       timestamp: new Date().toISOString(),
-      threatLevel: metrics.threatLevel,
-      zeroTrustScore: metrics.zeroTrustScore,
-      quantumResistance: metrics.quantumResistance,
-      behavioralAnalytics: metrics.behavioralAnalytics,
-      complianceFrameworks: metrics.complianceFrameworks,
-      emergencyProtocols: metrics.emergencyProtocols,
-      cryptographicStatus: metrics.cryptographicStatus,
-      alerts: realTimeAlerts
+      metrics,
+      securityEvents: securityEvents.slice(0, 20),
+      activeSessions: activeSessions.length,
+      blockchainRecords,
+      auditLogs
     };
 
     const dataStr = JSON.stringify(reportData, null, 2);
@@ -165,416 +227,345 @@ export function EnterpriseSecurityDashboard() {
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
+
+    toast({
+      title: "Security Report Exported",
+      description: "Enterprise security report has been downloaded"
+    });
   };
 
-  useEffect(() => {
-    // Simulate real-time updates
-    const interval = setInterval(() => {
-      setMetrics(prev => ({
-        ...prev,
-        zeroTrustScore: prev.zeroTrustScore + (Math.random() - 0.5) * 0.5,
-        behavioralAnalytics: {
-          ...prev.behavioralAnalytics,
-          riskScore: Math.max(0, prev.behavioralAnalytics.riskScore + (Math.random() - 0.5) * 2)
-        }
-      }));
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <div className="container mx-auto p-6 space-y-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen text-white">
-      <div className="flex items-center gap-3 mb-6">
-        <Command className="h-8 w-8 text-primary" />
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
-          ENTERPRISE SECURITY COMMAND CENTER
-        </h1>
-        <div className="ml-auto flex items-center gap-3">
-          <Button 
-            onClick={exportSecurityReport}
-            variant="outline" 
-            size="sm"
-            className="h-8 text-xs font-medium gap-2 text-white border-white/20 hover:bg-white/10"
-          >
-            <Download className="h-3 w-3" />
-            Export Security Report
-          </Button>
-          <Button 
-            size="sm"
-            className="h-8 text-xs font-medium gap-2 bg-primary hover:bg-primary/90"
-          >
-            <Sliders className="h-3 w-3" />
-            Configure Defense
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="h-8 text-xs font-medium gap-2 text-white border-white/20 hover:bg-white/10"
-              >
-                <Settings className="h-3 w-3" />
-                Security Options
-                <MoreVertical className="h-3 w-3" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Command Center Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Bell className="mr-2 h-4 w-4" />
-                Alert Configuration
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Target className="mr-2 h-4 w-4" />
-                Threat Response
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Lock className="mr-2 h-4 w-4" />
-                Access Controls
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Radar className="mr-2 h-4 w-4" />
-                Defense Systems
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Badge variant="destructive" className="text-lg px-4 py-2">
-            {metrics.threatLevel}
-          </Badge>
+    <StandardPageLayout>
+      <StandardPageHeader
+        title="ENTERPRISE SECURITY COMMAND CENTER"
+        description="Military-grade security monitoring and threat intelligence"
+        actions={
+          <>
+            <Badge variant={getThreatLevelColor(metrics.threatLevel) as any} className="mr-2">
+              {metrics.threatLevel}
+            </Badge>
+            <Button onClick={exportSecurityReport} variant="outline" size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Export Report
+            </Button>
+          </>
+        }
+      />
+
+      <ResponsiveContainer>
+        {/* Critical Status Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <StandardKPICard
+            title="Threat Level"
+            value={metrics.threatLevel}
+            trend={{
+              value: metrics.activeThreats > 0 ? `${metrics.activeThreats} active` : 'Secure',
+              direction: metrics.activeThreats > 3 ? 'down' : 'neutral'
+            }}
+          />
+          
+          <StandardKPICard
+            title="Security Score"
+            value={`${metrics.securityScore}%`}
+            trend={{
+              value: metrics.securityScore > 90 ? 'Excellent' : 'Good',
+              direction: metrics.securityScore > 90 ? 'up' : 'neutral'
+            }}
+          />
+
+          <StandardKPICard
+            title="Zero Trust Score"
+            value={`${metrics.zeroTrustScore.toFixed(1)}%`}
+            trend={{
+              value: metrics.zeroTrustScore > 95 ? 'High' : 'Medium',
+              direction: metrics.zeroTrustScore > 95 ? 'up' : 'neutral'
+            }}
+          />
+
+          <StandardKPICard
+            title="Active Sessions"
+            value={metrics.activeSessions}
+            trend={{
+              value: `${metrics.blockedAttempts} blocked`,
+              direction: 'up'
+            }}
+          />
         </div>
-      </div>
 
-      {/* Critical Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-primary/20 bg-slate-800/50 backdrop-blur">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-300">Threat Level</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <Radar className="w-6 h-6 text-primary animate-pulse" />
-                  <p className="text-2xl font-bold text-primary">{metrics.threatLevel}</p>
+        {/* Advanced Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <StandardKPICard
+            title="Quantum Resistance"
+            value={`${metrics.quantumResistance}%`}
+          />
+          
+          <StandardKPICard
+            title="Blockchain Records"
+            value={blockchainRecords}
+          />
+
+          <StandardKPICard
+            title="Audit Logs (24h)"
+            value={auditLogs}
+          />
+        </div>
+
+        {/* Compliance Framework Status */}
+        <StandardContentCard title="Government Compliance Frameworks" className="mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center">
+              <Globe className="h-8 w-8 mx-auto mb-2 text-primary" />
+              <p className="text-sm text-muted-foreground mb-1">FISMA</p>
+              <p className="text-2xl font-bold text-foreground">100%</p>
+              <Progress value={100} className="mt-2" />
+            </div>
+            <div className="text-center">
+              <Shield className="h-8 w-8 mx-auto mb-2 text-primary" />
+              <p className="text-sm text-muted-foreground mb-1">FedRAMP</p>
+              <p className="text-2xl font-bold text-foreground">98%</p>
+              <Progress value={98} className="mt-2" />
+            </div>
+            <div className="text-center">
+              <Lock className="h-8 w-8 mx-auto mb-2 text-primary" />
+              <p className="text-sm text-muted-foreground mb-1">CMMC Level 5</p>
+              <p className="text-2xl font-bold text-foreground">97%</p>
+              <Progress value={97} className="mt-2" />
+            </div>
+            <div className="text-center">
+              <Key className="h-8 w-8 mx-auto mb-2 text-primary" />
+              <p className="text-sm text-muted-foreground mb-1">ITAR</p>
+              <p className="text-2xl font-bold text-foreground">95%</p>
+              <Progress value={95} className="mt-2" />
+            </div>
+          </div>
+        </StandardContentCard>
+
+        {/* Real-time Security Events */}
+        <StandardContentCard 
+          title="CLASSIFIED THREAT INTELLIGENCE FEED"
+          className="mb-6"
+        >
+          <div className="space-y-3">
+            {securityEvents.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <CheckCircle className="h-12 w-12 mx-auto mb-2 text-primary" />
+                <p>No security events detected</p>
+                <p className="text-sm">All systems operating normally</p>
+              </div>
+            ) : (
+              securityEvents.map((event) => (
+                <div key={event.id} className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg border">
+                  <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {event.event_type?.replace(/_/g, ' ').toUpperCase()}
+                      </p>
+                      <Badge variant={getSeverityColor(event.severity) as any} className="text-xs">
+                        {event.severity?.toUpperCase()}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {format(new Date(event.created_at), 'MMM dd, yyyy HH:mm:ss')}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <Badge variant={getThreatLevelColor(metrics.threatLevel)} className="text-lg px-3 py-1">
-                ACTIVE
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-green-500/20 bg-slate-800/50 backdrop-blur">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-300">Zero Trust Score</p>
-                <p className="text-2xl font-bold text-green-400">{metrics.zeroTrustScore.toFixed(1)}%</p>
-                <Progress value={metrics.zeroTrustScore} className="w-full mt-2" />
-              </div>
-              <Crosshair className="w-8 h-8 text-green-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-blue-500/20 bg-slate-800/50 backdrop-blur">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-300">Quantum Resistance</p>
-                <p className="text-2xl font-bold text-blue-400">{metrics.quantumResistance}%</p>
-                <Progress value={metrics.quantumResistance} className="w-full mt-2" />
-              </div>
-              <Cpu className="w-8 h-8 text-blue-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-purple-500/20 bg-slate-800/50 backdrop-blur">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-300">AI Risk Score</p>
-                <p className="text-2xl font-bold text-purple-400">{metrics.behavioralAnalytics.riskScore.toFixed(0)}</p>
-                <p className="text-xs text-purple-300">{metrics.behavioralAnalytics.modelAccuracy}% accuracy</p>
-              </div>
-              <Brain className="w-8 h-8 text-purple-400" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Compliance Framework Status */}
-      <Card className="border-primary/20 bg-slate-800/50 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-white">
-            <Globe className="h-5 w-5" />
-            Government Compliance Frameworks
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <p className="text-sm text-slate-300">FISMA</p>
-            <p className="text-2xl font-bold text-green-400">{metrics.complianceFrameworks.fisma}%</p>
-            <Progress value={metrics.complianceFrameworks.fisma} className="mt-1" />
+              ))
+            )}
           </div>
-          <div className="text-center">
-            <p className="text-sm text-slate-300">FedRAMP</p>
-            <p className="text-2xl font-bold text-green-400">{metrics.complianceFrameworks.fedramp}%</p>
-            <Progress value={metrics.complianceFrameworks.fedramp} className="mt-1" />
-          </div>
-          <div className="text-center">
-            <p className="text-sm text-slate-300">CMMC Level 5</p>
-            <p className="text-2xl font-bold text-yellow-400">{metrics.complianceFrameworks.cmmc}%</p>
-            <Progress value={metrics.complianceFrameworks.cmmc} className="mt-1" />
-          </div>
-          <div className="text-center">
-            <p className="text-sm text-slate-300">ITAR</p>
-            <p className="text-2xl font-bold text-yellow-400">{metrics.complianceFrameworks.itar}%</p>
-            <Progress value={metrics.complianceFrameworks.itar} className="mt-1" />
-          </div>
-        </CardContent>
-      </Card>
+        </StandardContentCard>
 
-      {/* Real-time Security Alerts */}
-      <Card className="border-red-500/20 bg-slate-800/50 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-white">
-            <Satellite className="h-5 w-5 text-red-400" />
-            CLASSIFIED THREAT INTELLIGENCE FEED
-          </CardTitle>
-          <CardDescription className="text-slate-300">
-            Real-time security events and automated responses
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {realTimeAlerts.map((alert) => (
-            <div key={alert.id} className="flex items-center gap-3 p-4 bg-slate-700/50 rounded-lg border border-slate-600/30">
-              <AlertTriangle className="w-5 h-5 text-red-400" />
-              <div className="flex-1">
+        {/* Emergency Response & Cryptographic Controls */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <StandardContentCard 
+            title="Emergency Response Protocols"
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Automatic Countermeasures</span>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-white">{alert.message}</p>
-                  <Badge variant={getSeverityColor(alert.severity)} className="text-xs">
-                    {alert.severity}
-                  </Badge>
-                </div>
-                <p className="text-xs text-slate-400">
-                  {alert.timestamp.toLocaleString()} • Type: {alert.type}
-                </p>
-              </div>
-              <Badge variant="outline" className="text-xs">
-                {alert.status}
-              </Badge>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      {/* Emergency Response Protocols */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border-red-500/20 bg-slate-800/50 backdrop-blur">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <Zap className="h-5 w-5 text-red-400" />
-              Emergency Response Protocols
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-300">Automatic Countermeasures</span>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-400" />
-                <span className="text-sm font-medium text-green-400">ENABLED</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-300">Response Time</span>
-              <span className="text-sm font-medium text-blue-400">{metrics.emergencyProtocols.responseTime}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-300">Kill Switch Status</span>
-              <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-red-400" />
-                <span className="text-sm font-medium text-red-400">ARMED</span>
-              </div>
-            </div>
-            <Button className="w-full bg-red-600 hover:bg-red-700 text-white" variant="destructive">
-              <AlertTriangle className="w-4 h-4 mr-2" />
-              INITIATE EMERGENCY LOCKDOWN
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="border-blue-500/20 bg-slate-800/50 backdrop-blur">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <Lock className="h-5 w-5 text-blue-400" />
-              Cryptographic Controls
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-300">Encryption Algorithm</span>
-              <span className="text-sm font-medium text-blue-400">{metrics.cryptographicStatus.algorithm}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-300">Key Strength</span>
-              <span className="text-sm font-medium text-blue-400">{metrics.cryptographicStatus.keyStrength}-bit</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-300">Rotation Status</span>
-              <div className="flex items-center gap-2">
-                <Radio className="w-4 h-4 text-green-400 animate-pulse" />
-                <span className="text-sm font-medium text-green-400">{metrics.cryptographicStatus.rotationStatus}</span>
-              </div>
-            </div>
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-              <Key className="w-4 h-4 mr-2" />
-              QUANTUM-SAFE KEY ROTATION
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Advanced Security Tabs */}
-      <Tabs defaultValue="behavioral" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
-          <TabsTrigger value="behavioral" className="text-white">Behavioral AI</TabsTrigger>
-          <TabsTrigger value="quantum" className="text-white">Quantum Defense</TabsTrigger>
-          <TabsTrigger value="zerotrust" className="text-white">Zero Trust</TabsTrigger>
-          <TabsTrigger value="intelligence" className="text-white">Threat Intel</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="behavioral" className="mt-6">
-          <Card className="border-purple-500/20 bg-slate-800/50 backdrop-blur">
-            <CardHeader>
-              <CardTitle className="text-white">AI-Powered Behavioral Analytics</CardTitle>
-              <CardDescription className="text-slate-300">
-                Machine learning models monitoring user behavior patterns
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center">
-                  <Brain className="w-12 h-12 text-purple-400 mx-auto mb-2" />
-                  <p className="text-2xl font-bold text-purple-400">{metrics.behavioralAnalytics.anomalies}</p>
-                  <p className="text-sm text-slate-300">Active Anomalies</p>
-                </div>
-                <div className="text-center">
-                  <Eye className="w-12 h-12 text-blue-400 mx-auto mb-2" />
-                  <p className="text-2xl font-bold text-blue-400">{metrics.behavioralAnalytics.modelAccuracy}%</p>
-                  <p className="text-sm text-slate-300">Model Accuracy</p>
-                </div>
-                <div className="text-center">
-                  <Fingerprint className="w-12 h-12 text-green-400 mx-auto mb-2" />
-                  <p className="text-2xl font-bold text-green-400">24/7</p>
-                  <p className="text-sm text-slate-300">Continuous Monitoring</p>
+                  <CheckCircle className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">ENABLED</span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Response Time</span>
+                <span className="text-sm font-medium text-foreground">&lt; 100ms</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Kill Switch Status</span>
+                <div className="flex items-center gap-2">
+                  <Target className="w-4 h-4 text-destructive" />
+                  <span className="text-sm font-medium text-destructive">ARMED</span>
+                </div>
+              </div>
+              <Button className="w-full" variant="destructive">
+                <AlertTriangle className="w-4 h-4 mr-2" />
+                INITIATE EMERGENCY LOCKDOWN
+              </Button>
+            </div>
+          </StandardContentCard>
 
-        <TabsContent value="quantum" className="mt-6">
-          <Card className="border-blue-500/20 bg-slate-800/50 backdrop-blur">
-            <CardHeader>
-              <CardTitle className="text-white">Quantum-Resistant Cryptography</CardTitle>
-              <CardDescription className="text-slate-300">
-                Post-quantum cryptographic algorithms protecting against future threats
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+          <StandardContentCard 
+            title="Cryptographic Controls"
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Encryption Algorithm</span>
+                <span className="text-sm font-medium text-foreground">AES-256-GCM</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Key Strength</span>
+                <span className="text-sm font-medium text-foreground">4096-bit</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Rotation Status</span>
+                <div className="flex items-center gap-2">
+                  <Radio className="w-4 h-4 text-primary animate-pulse" />
+                  <span className="text-sm font-medium text-primary">ACTIVE</span>
+                </div>
+              </div>
+              <Button className="w-full" variant="default">
+                <Key className="w-4 h-4 mr-2" />
+                QUANTUM-SAFE KEY ROTATION
+              </Button>
+            </div>
+          </StandardContentCard>
+        </div>
+
+        {/* Advanced Security Tabs */}
+        <Tabs defaultValue="sessions" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="sessions">Active Sessions</TabsTrigger>
+            <TabsTrigger value="behavioral">Behavioral AI</TabsTrigger>
+            <TabsTrigger value="quantum">Quantum Defense</TabsTrigger>
+            <TabsTrigger value="intelligence">Threat Intel</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="sessions" className="mt-6">
+            <StandardContentCard title="Active Security Sessions">
+              <div className="space-y-3">
+                {activeSessions.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Users className="h-12 w-12 mx-auto mb-2" />
+                    <p>No active sessions</p>
+                  </div>
+                ) : (
+                  activeSessions.slice(0, 10).map((session) => (
+                    <div key={session.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border">
+                      <div className="flex items-center gap-3">
+                        <Activity className="h-5 w-5 text-primary" />
+                        <div>
+                          <p className="text-sm font-medium">Session {session.id.slice(0, 8)}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Last activity: {format(new Date(session.last_activity), 'HH:mm:ss')}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={session.security_alerts_count > 3 ? 'destructive' : 'default'}>
+                          Alerts: {session.security_alerts_count}
+                        </Badge>
+                        {session.is_active && (
+                          <Badge variant="outline" className="text-primary">ACTIVE</Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </StandardContentCard>
+          </TabsContent>
+
+          <TabsContent value="behavioral" className="mt-6">
+            <StandardContentCard title="AI-Powered Behavioral Analytics">
               <div className="space-y-4">
-                <Alert className="border-blue-500/20 bg-blue-500/10">
-                  <Cpu className="h-4 w-4 text-blue-400" />
-                  <AlertDescription className="text-blue-300">
-                    CRYSTALS-Kyber and CRYSTALS-Dilithium algorithms active for quantum-resistant encryption
-                  </AlertDescription>
-                </Alert>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 bg-slate-700/50 rounded-lg">
-                    <h4 className="font-semibold text-white mb-2">Key Encapsulation</h4>
-                    <p className="text-sm text-slate-300">CRYSTALS-Kyber 1024-bit</p>
-                    <Progress value={98.7} className="mt-2" />
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Brain className="h-8 w-8 text-primary" />
+                    <div>
+                      <p className="font-medium">Machine Learning Model</p>
+                      <p className="text-sm text-muted-foreground">Real-time anomaly detection</p>
+                    </div>
                   </div>
-                  <div className="p-4 bg-slate-700/50 rounded-lg">
-                    <h4 className="font-semibold text-white mb-2">Digital Signatures</h4>
-                    <p className="text-sm text-slate-300">CRYSTALS-Dilithium</p>
-                    <Progress value={99.1} className="mt-2" />
+                  <Badge variant="default">99.1% Accuracy</Badge>
+                </div>
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  <div className="text-center p-4 bg-muted/50 rounded-lg">
+                    <p className="text-2xl font-bold text-foreground">{securityEvents.filter(e => e.event_type?.includes('anomaly')).length}</p>
+                    <p className="text-sm text-muted-foreground">Anomalies Detected</p>
+                  </div>
+                  <div className="text-center p-4 bg-muted/50 rounded-lg">
+                    <p className="text-2xl font-bold text-foreground">{metrics.blockedAttempts}</p>
+                    <p className="text-sm text-muted-foreground">Threats Blocked</p>
+                  </div>
+                  <div className="text-center p-4 bg-muted/50 rounded-lg">
+                    <p className="text-2xl font-bold text-foreground">{Math.round(metrics.securityScore / 10)}</p>
+                    <p className="text-sm text-muted-foreground">Risk Score</p>
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </StandardContentCard>
+          </TabsContent>
 
-        <TabsContent value="zerotrust" className="mt-6">
-          <Card className="border-green-500/20 bg-slate-800/50 backdrop-blur">
-            <CardHeader>
-              <CardTitle className="text-white">Zero Trust Architecture</CardTitle>
-              <CardDescription className="text-slate-300">
-                Never trust, always verify - continuous validation of every access request
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+          <TabsContent value="quantum" className="mt-6">
+            <StandardContentCard title="Quantum-Resistant Cryptography">
               <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-slate-700/50 rounded-lg">
-                    <Shield className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                    <p className="text-lg font-bold text-green-400">100%</p>
-                    <p className="text-sm text-slate-300">Micro-segmentation</p>
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Cpu className="h-8 w-8 text-primary" />
+                    <div>
+                      <p className="font-medium">Post-Quantum Algorithms</p>
+                      <p className="text-sm text-muted-foreground">CRYSTALS-Kyber + Dilithium</p>
+                    </div>
                   </div>
-                  <div className="text-center p-4 bg-slate-700/50 rounded-lg">
-                    <Users className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                    <p className="text-lg font-bold text-blue-400">MFA+</p>
-                    <p className="text-sm text-slate-300">Multi-Factor Auth</p>
+                  <Badge variant="default">{metrics.quantumResistance}% Protected</Badge>
+                </div>
+                <Progress value={metrics.quantumResistance} className="h-3" />
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="p-4 bg-muted/50 rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">Key Exchange</p>
+                    <p className="font-medium">CRYSTALS-Kyber</p>
                   </div>
-                  <div className="text-center p-4 bg-slate-700/50 rounded-lg">
-                    <Activity className="w-8 h-8 text-purple-400 mx-auto mb-2" />
-                    <p className="text-lg font-bold text-purple-400">Real-time</p>
-                    <p className="text-sm text-slate-300">Risk Assessment</p>
+                  <div className="p-4 bg-muted/50 rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">Digital Signatures</p>
+                    <p className="font-medium">CRYSTALS-Dilithium</p>
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </StandardContentCard>
+          </TabsContent>
 
-        <TabsContent value="intelligence" className="mt-6">
-          <Card className="border-red-500/20 bg-slate-800/50 backdrop-blur">
-            <CardHeader>
-              <CardTitle className="text-white">Threat Intelligence Integration</CardTitle>
-              <CardDescription className="text-slate-300">
-                Real-time feeds from government and military threat intelligence sources
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+          <TabsContent value="intelligence" className="mt-6">
+            <StandardContentCard title="Classified Threat Intelligence">
               <div className="space-y-4">
-                <Alert className="border-red-500/20 bg-red-500/10">
-                  <Satellite className="h-4 w-4 text-red-400" />
-                  <AlertDescription className="text-red-300">
-                    Connected to classified threat intelligence feeds • Last update: 3 minutes ago
-                  </AlertDescription>
-                </Alert>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 bg-slate-700/50 rounded-lg">
-                    <h4 className="font-semibold text-white mb-2">Active Threats</h4>
-                    <p className="text-2xl font-bold text-red-400">147</p>
-                    <p className="text-sm text-slate-300">Blocked in last 24h</p>
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Radar className="h-8 w-8 text-primary" />
+                    <div>
+                      <p className="font-medium">Global Threat Monitoring</p>
+                      <p className="text-sm text-muted-foreground">Real-time intelligence feeds</p>
+                    </div>
                   </div>
-                  <div className="p-4 bg-slate-700/50 rounded-lg">
-                    <h4 className="font-semibold text-white mb-2">Intelligence Sources</h4>
-                    <p className="text-2xl font-bold text-green-400">8</p>
-                    <p className="text-sm text-slate-300">Active feeds</p>
+                  <Badge variant="default">ACTIVE</Badge>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-muted/50 rounded-lg">
+                    <Database className="h-6 w-6 text-primary mb-2" />
+                    <p className="text-sm text-muted-foreground mb-1">Blockchain Integrity</p>
+                    <p className="text-xl font-bold">{blockchainRecords} Records</p>
+                  </div>
+                  <div className="p-4 bg-muted/50 rounded-lg">
+                    <Eye className="h-6 w-6 text-primary mb-2" />
+                    <p className="text-sm text-muted-foreground mb-1">Monitored Events</p>
+                    <p className="text-xl font-bold">{auditLogs} Today</p>
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+            </StandardContentCard>
+          </TabsContent>
+        </Tabs>
+      </ResponsiveContainer>
+    </StandardPageLayout>
   );
 }
