@@ -96,22 +96,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       if (error) {
-        console.error('Error checking email verification:', error)
+        logSecureError(error, 'Email verification check', supabase)
         setIsEmailVerified(false)
         return
       }
 
       setIsEmailVerified(data === true)
     } catch (error) {
-      console.error('Error in checkEmailVerification:', error)
+      logSecureError(error, 'Email verification check exception', supabase)
       setIsEmailVerified(false)
     }
   }
 
   const fetchUserRole = async (userId: string) => {
     try {
-      console.log('🔍 Fetching roles for user:', userId)
-
       // Fetch all active roles AND the server-determined primary role in parallel
       const [rolesRes, primaryRes] = await Promise.all([
         supabase
@@ -124,7 +122,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // If both calls failed, fall back
       if (rolesRes.error && (!primaryRes || primaryRes.error)) {
-        console.error('❌ Error fetching user roles:', rolesRes.error)
+        logSecureError(rolesRes.error, 'Role fetch failed', supabase)
         setUserRole('loan_originator')
         setUserRoles(['loan_originator'])
         return
@@ -133,11 +131,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Extract all roles (may be empty)
       const roles: string[] = rolesRes.data?.map((r: { role: any }) => String(r.role)) || []
       const serverPrimary: string | null = (primaryRes && !primaryRes.error && primaryRes.data) ? String(primaryRes.data) : null
-
-      console.log('✅ Roles fetched successfully:', { userId, roles, dataLength: rolesRes.data?.length })
-      if (serverPrimary) {
-        console.log('✅ Server primary role:', serverPrimary)
-      }
 
       // Determine primary role (prefer secure server value)
       const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'manager', 'admin', 'super_admin']
@@ -150,7 +143,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         : 'loan_originator'
 
       const primaryRole = serverPrimary || derivedPrimary
-      console.log('✅ Primary role determined:', primaryRole)
 
       // Ensure roles includes the primary role and is de-duplicated
       const normalizedRoles = Array.from(new Set([...(roles || []), primaryRole].filter(Boolean))) as string[]
@@ -158,7 +150,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUserRole(primaryRole)
       setUserRoles(normalizedRoles.length > 0 ? normalizedRoles : ['loan_originator'])
     } catch (error) {
-      console.error('❌ EXCEPTION fetching user roles:', error)
+      logSecureError(error, 'Role fetch exception', supabase)
       setUserRole('loan_originator')
       setUserRoles(['loan_originator'])
     }
@@ -319,10 +311,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: "Check your email for password reset instructions.",
       })
     } catch (error: any) {
-      console.error('Password reset error:', error)
+      logSecureError(error, 'Password reset', supabase)
       toast({
         title: "Password reset failed",
-        description: error.message,
+        description: sanitizeError(error),
         variant: "destructive",
       })
       throw error
@@ -347,10 +339,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: "Please check your inbox for the verification link.",
       })
     } catch (error: any) {
-      console.error('Resend verification error:', error)
+      logSecureError(error, 'Resend verification', supabase)
       toast({
         title: "Failed to resend email",
-        description: error.message,
+        description: sanitizeError(error),
         variant: "destructive",
       })
       throw error
