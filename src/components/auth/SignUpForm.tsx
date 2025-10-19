@@ -65,36 +65,19 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
       }
       
       if (oauthResponse.data?.url) {
-        console.log('🌐 Redirecting to Microsoft registration page...')
-        console.log('🔗 Full redirect URL:', oauthResponse.data.url)
-        
-        // Store additional context for post-redirect handling
-        localStorage.setItem('ms_signup_redirect_url', oauthResponse.data.url)
-        
         // Notify user of redirect
         toast.success('Redirecting to Microsoft...')
         
-        // Perform redirect
+        // Perform redirect - state is managed server-side via OAuth flow
         window.location.href = oauthResponse.data.url
       } else {
-        console.warn('⚠️ No redirect URL provided by Microsoft OAuth')
         toast.error('Microsoft sign-up setup failed: No redirect URL received')
-        localStorage.removeItem('ms_signup_flow')
         setIsMicrosoftLoading(false)
       }
       
     } catch (error: any) {
-      console.error('💥 Microsoft Sign-up Critical Error:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      })
-      
-      // Clean up on error
-      localStorage.removeItem('ms_signup_flow')
-      localStorage.removeItem('ms_signup_redirect_url')
-      
-      toast.error(`Sign-up failed: ${error.message || 'Unexpected error occurred'}`)
+      logSecureError(error, 'Microsoft sign-up', supabase)
+      toast.error(sanitizeError(error))
       setIsMicrosoftLoading(false)
     }
   }
