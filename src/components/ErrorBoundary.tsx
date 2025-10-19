@@ -25,15 +25,13 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Always log errors for debugging
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
-    
-    // Log to production console as well for debugging
-    console.log('Production Error Details:', {
-      message: error.message,
-      stack: error.stack,
-      componentStack: errorInfo.componentStack,
-      timestamp: new Date().toISOString()
+    // Production-safe error logging
+    import('@/lib/production-logger').then(({ logger }) => {
+      logger.error('ErrorBoundary caught an error', {
+        message: error.message,
+        componentStack: errorInfo.componentStack?.slice(0, 500),
+        timestamp: new Date().toISOString()
+      })
     })
     
     this.setState({

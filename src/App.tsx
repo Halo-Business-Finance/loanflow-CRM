@@ -202,10 +202,9 @@ const App = () => {
   
   return (
     <AsyncErrorBoundary onError={(error) => {
-      // Only log errors in development
-      if (import.meta.env.DEV) {
-        console.error('AsyncErrorBoundary caught:', error);
-      }
+      import('@/lib/production-logger').then(({ logger }) => {
+        logger.error('AsyncErrorBoundary caught error', error);
+      })
     }}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
