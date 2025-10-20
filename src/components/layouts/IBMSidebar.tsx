@@ -150,13 +150,33 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
   );
 
   const handleClick = (e: React.MouseEvent) => {
-    if (subItems && subItems.length > 0) {
+    if (subItems && subItems.length > 0 && !collapsed) {
       e.preventDefault();
       setIsOpen(!isOpen);
     }
   };
 
   if (subItems && subItems.length > 0) {
+    // When collapsed, use NavLink to navigate; when expanded, use div to toggle
+    if (collapsed && to) {
+      return (
+        <NavLink
+          to={to}
+          className={cn(
+            'flex items-center h-12 text-xs transition-all duration-300 relative group rounded mx-1',
+            'justify-center w-12 px-0',
+            (isActive || hasActiveSubItem)
+              ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-[#161616] font-medium'
+              : 'text-[#525252] hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-[#161616]'
+          )}
+        >
+          <div className="w-12 flex items-center justify-center">
+            <Icon className="h-4 w-4 flex-shrink-0 text-[#003f88]" />
+          </div>
+        </NavLink>
+      );
+    }
+    
     return (
       <div>
         <div
