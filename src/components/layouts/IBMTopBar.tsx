@@ -152,9 +152,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           </button>
         </div>
         
-        {!sidebarCollapsed && (
-          <div className="text-white font-medium text-xl px-12 whitespace-nowrap">LoanFlow CRM</div>
-        )}
+        <div className="text-white font-medium text-xl px-12 whitespace-nowrap">LoanFlow CRM</div>
       </div>
 
       {/* Center search bar */}
