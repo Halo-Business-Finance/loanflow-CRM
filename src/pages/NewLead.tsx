@@ -368,6 +368,12 @@ export default function NewLead() {
                           const value = e.target.value.replace(/[^0-9]/g, '');
                           handleInputChange("income", value);
                         }}
+                        onBlur={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '');
+                          if (value) {
+                            handleInputChange("income", value);
+                          }
+                        }}
                         className="pl-7"
                       />
                     </div>
