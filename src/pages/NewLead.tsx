@@ -495,11 +495,13 @@ export default function NewLead() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="yearEstablished">Year Established</Label>
+                    <Label htmlFor="yearEstablished">Year</Label>
                     <Input 
                       id="yearEstablished" 
                       type="number"
                       placeholder="YYYY"
+                      min="1800"
+                      max="2100"
                       value={formData.yearEstablished}
                       onChange={(e) => handleInputChange("yearEstablished", e.target.value)}
                     />
