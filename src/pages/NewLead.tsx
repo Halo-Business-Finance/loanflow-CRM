@@ -500,7 +500,7 @@ export default function NewLead() {
                       id="yearEstablished" 
                       type="number"
                       placeholder="YYYY"
-                      min="1960"
+                      min="1950"
                       max="2100"
                       value={formData.yearEstablished}
                       onChange={(e) => handleInputChange("yearEstablished", e.target.value)}
