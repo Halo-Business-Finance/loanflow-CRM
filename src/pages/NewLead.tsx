@@ -78,7 +78,8 @@ export default function NewLead() {
 
   const [displayValues, setDisplayValues] = useState({
     income: "",
-    annualRevenue: ""
+    annualRevenue: "",
+    existingLoanAmount: ""
   })
 
   const formatCurrencyInput = (value: string): string => {
@@ -415,13 +416,17 @@ export default function NewLead() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="existingLoanAmount">Existing Loan Amount</Label>
-                    <Input 
-                      id="existingLoanAmount" 
-                      type="number"
-                      placeholder="$50,000"
-                      value={formData.existingLoanAmount}
-                      onChange={(e) => handleInputChange("existingLoanAmount", e.target.value)}
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                      <Input 
+                        id="existingLoanAmount" 
+                        type="text"
+                        placeholder="50,000"
+                        value={displayValues.existingLoanAmount}
+                        onChange={(e) => handleCurrencyChange("existingLoanAmount", e.target.value)}
+                        className="pl-7"
+                      />
+                    </div>
                   </div>
                 </div>
 
