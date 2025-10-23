@@ -76,8 +76,25 @@ export default function NewLead() {
     callNotes: ""
   })
 
+  const [displayValues, setDisplayValues] = useState({
+    income: "",
+    annualRevenue: ""
+  })
+
+  const formatCurrencyInput = (value: string): string => {
+    const numbers = value.replace(/[^0-9]/g, '')
+    if (!numbers) return ''
+    return Number(numbers).toLocaleString('en-US')
+  }
+
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleCurrencyChange = (field: string, value: string) => {
+    const numbers = value.replace(/[^0-9]/g, '')
+    setFormData(prev => ({ ...prev, [field]: numbers }))
+    setDisplayValues(prev => ({ ...prev, [field]: formatCurrencyInput(value) }))
   }
 
   const handleSubmit = async () => {
@@ -363,17 +380,8 @@ export default function NewLead() {
                         id="income" 
                         type="text"
                         placeholder="75,000"
-                        value={formData.income ? Number(formData.income).toLocaleString('en-US') : ''}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/[^0-9]/g, '');
-                          handleInputChange("income", value);
-                        }}
-                        onBlur={(e) => {
-                          const value = e.target.value.replace(/[^0-9]/g, '');
-                          if (value) {
-                            handleInputChange("income", value);
-                          }
-                        }}
+                        value={displayValues.income}
+                        onChange={(e) => handleCurrencyChange("income", e.target.value)}
                         className="pl-7"
                       />
                     </div>
@@ -386,11 +394,8 @@ export default function NewLead() {
                         id="annualRevenue" 
                         type="text"
                         placeholder="500,000"
-                        value={formData.annualRevenue ? Number(formData.annualRevenue).toLocaleString('en-US') : ''}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/[^0-9]/g, '');
-                          handleInputChange("annualRevenue", value);
-                        }}
+                        value={displayValues.annualRevenue}
+                        onChange={(e) => handleCurrencyChange("annualRevenue", e.target.value)}
                         className="pl-7"
                       />
                     </div>
