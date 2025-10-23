@@ -357,15 +357,20 @@ export default function NewLead() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="income">Annual Income</Label>
-                    <Input 
-                      id="income" 
-                      type="number"
-                      step="0.01"
-                      placeholder="75000.00"
-                      value={formData.income}
-                      onChange={(e) => handleInputChange("income", e.target.value)}
-                      className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                      <Input 
+                        id="income" 
+                        type="text"
+                        placeholder="75,000"
+                        value={formData.income ? Number(formData.income).toLocaleString('en-US') : ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '');
+                          handleInputChange("income", value);
+                        }}
+                        className="pl-7"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="annualRevenue">Annual Revenue</Label>
