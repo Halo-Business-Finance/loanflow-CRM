@@ -80,7 +80,8 @@ export default function NewLead() {
     income: "",
     annualRevenue: "",
     existingLoanAmount: "",
-    netOperatingIncome: ""
+    netOperatingIncome: "",
+    propertyPaymentAmount: ""
   })
 
   const formatCurrencyInput = (value: string): string => {
@@ -448,13 +449,17 @@ export default function NewLead() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="propertyPaymentAmount">Property Payment</Label>
-                    <Input 
-                      id="propertyPaymentAmount" 
-                      type="number"
-                      placeholder="$2,500"
-                      value={formData.propertyPaymentAmount}
-                      onChange={(e) => handleInputChange("propertyPaymentAmount", e.target.value)}
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                      <Input 
+                        id="propertyPaymentAmount" 
+                        type="text"
+                        placeholder="2,500"
+                        value={displayValues.propertyPaymentAmount}
+                        onChange={(e) => handleCurrencyChange("propertyPaymentAmount", e.target.value)}
+                        className="pl-7"
+                      />
+                    </div>
                   </div>
                 </div>
 
