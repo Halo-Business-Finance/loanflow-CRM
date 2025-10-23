@@ -380,13 +380,20 @@ export default function NewLead() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="annualRevenue">Annual Revenue</Label>
-                    <Input 
-                      id="annualRevenue" 
-                      type="number"
-                      placeholder="$500,000"
-                      value={formData.annualRevenue}
-                      onChange={(e) => handleInputChange("annualRevenue", e.target.value)}
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                      <Input 
+                        id="annualRevenue" 
+                        type="text"
+                        placeholder="500,000"
+                        value={formData.annualRevenue ? Number(formData.annualRevenue).toLocaleString('en-US') : ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '');
+                          handleInputChange("annualRevenue", value);
+                        }}
+                        className="pl-7"
+                      />
+                    </div>
                   </div>
                 </div>
 
