@@ -360,9 +360,11 @@ export default function NewLead() {
                     <Input 
                       id="income" 
                       type="number"
-                      placeholder="$75,000"
+                      step="0.01"
+                      placeholder="75000.00"
                       value={formData.income}
                       onChange={(e) => handleInputChange("income", e.target.value)}
+                      className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
                   <div className="space-y-2">
