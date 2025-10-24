@@ -11,7 +11,7 @@ import {
   Users, 
   DollarSign,
   FileText,
-  Calendar,
+  Calendar as CalendarIcon,
   AlertCircle,
   CheckCircle,
   Clock,
@@ -54,6 +54,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useCalendarData } from '@/hooks/useCalendarData';
 import { format } from 'date-fns';
+import { Calendar } from '@/components/ui/calendar';
 
 const COLORS = ['#0f62fe', '#0353e9', '#8a3ffc', '#33b1ff', '#d12771'];
 
@@ -87,8 +88,9 @@ export default function Dashboard() {
   const [revenuePerformance, setRevenuePerformance] = useState<{ month: string; revenue: number; pipeline: number }[]>([]);
   
   // Calendar data
-  const { getEventsForDate } = useCalendarData(new Date());
+  const { getEventsForDate, getDatesWithEvents } = useCalendarData(new Date());
   const todayEvents = getEventsForDate(new Date());
+  const datesWithEvents = getDatesWithEvents();
 
   const fetchDashboardData = async () => {
     if (!user?.id) return;
@@ -370,41 +372,68 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        {/* Today's Calendar Section */}
-        <Card className="bg-card border">
-          <CardHeader>
-            <div className="flex items-center justify-between">
+        {/* Calendar and Today's Schedule Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Full Calendar Widget */}
+          <Card className="bg-card border">
+            <CardHeader>
               <div className="flex items-center gap-2">
-                <CalendarCheck className="h-5 w-5 text-primary" />
-                <CardTitle className="text-lg">Today's Schedule</CardTitle>
+                <CalendarIcon className="h-5 w-5 text-primary" />
+                <CardTitle className="text-lg">Calendar</CardTitle>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/activities/calendar')}
-              >
-                View Full Calendar
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {todayEvents.length === 0 ? (
-              <div className="text-center py-8">
-                <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">No events scheduled for today</p>
+              <CardDescription>Click a date to view scheduled events</CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-center">
+              <Calendar
+                mode="single"
+                selected={new Date()}
+                className="rounded-md"
+                modifiers={{
+                  hasEvents: datesWithEvents
+                }}
+                modifiersClassNames={{
+                  hasEvents: "bg-primary/10 font-semibold relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:rounded-full after:bg-primary"
+                }}
+                onDayClick={(date) => navigate('/activities/calendar')}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Today's Schedule */}
+          <Card className="bg-card border">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CalendarCheck className="h-5 w-5 text-primary" />
+                  <CardTitle className="text-lg">Today's Schedule</CardTitle>
+                </div>
                 <Button 
-                  variant="link" 
+                  variant="ghost" 
                   size="sm"
                   onClick={() => navigate('/activities/calendar')}
-                  className="mt-2"
                 >
-                  Schedule an event
+                  View All
                 </Button>
               </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {todayEvents.slice(0, 6).map((event) => (
+              <CardDescription>{format(new Date(), 'EEEE, MMMM d, yyyy')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {todayEvents.length === 0 ? (
+                <div className="text-center py-8">
+                  <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground">No events scheduled for today</p>
+                  <Button 
+                    variant="link" 
+                    size="sm"
+                    onClick={() => navigate('/activities/calendar')}
+                    className="mt-2"
+                  >
+                    Schedule an event
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {todayEvents.map((event) => (
                     <div
                       key={event.id}
                       className="flex items-start gap-3 p-3 border rounded-lg bg-background/50 hover:bg-accent/50 transition-colors cursor-pointer"
@@ -425,29 +454,21 @@ export default function Dashboard() {
                         {event.type === 'reminder' && <Clock className="h-4 w-4 text-primary" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">{event.title}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="font-medium text-sm">{event.title}</p>
+                        {event.description && (
+                          <p className="text-xs text-muted-foreground mt-1">{event.description}</p>
+                        )}
+                        <p className="text-xs text-muted-foreground mt-1">
                           {format(event.startTime, 'h:mm a')}
                         </p>
                       </div>
                     </div>
                   ))}
                 </div>
-                {todayEvents.length > 6 && (
-                  <div className="mt-3 text-center">
-                    <Button 
-                      variant="link" 
-                      size="sm"
-                      onClick={() => navigate('/activities/calendar')}
-                    >
-                      +{todayEvents.length - 6} more events
-                    </Button>
-                  </div>
-                )}
-              </>
-            )}
-          </CardContent>
-        </Card>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Quick Access Tiles - Clean Style */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
