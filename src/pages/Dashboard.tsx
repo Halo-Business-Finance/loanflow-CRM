@@ -28,7 +28,8 @@ import {
   ClipboardList,
   Briefcase,
   FolderOpen,
-  CalendarCheck
+  CalendarCheck,
+  MessageSquare
 } from 'lucide-react';
 import {
   LineChart,
@@ -55,6 +56,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCalendarData } from '@/hooks/useCalendarData';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
+import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
 
 const COLORS = ['#0f62fe', '#0353e9', '#8a3ffc', '#33b1ff', '#d12771'];
 
@@ -372,8 +374,11 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        {/* Calendar and Today's Schedule Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Messages, Calendar and Today's Schedule Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Messages Widget */}
+          <CompactMessagesWidget />
+
           {/* Full Calendar Widget */}
           <Card className="bg-card border">
             <CardHeader className="pb-3">
