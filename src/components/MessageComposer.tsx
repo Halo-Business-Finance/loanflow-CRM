@@ -54,13 +54,33 @@ export function MessageComposer({ replyTo, onClose, onSent }: MessageComposerPro
 
   const fetchUsers = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      // Fetch users excluding current user
+      let query = supabase
         .from('profiles')
         .select('id, email')
         .order('email');
 
+      // Exclude current user
+      if (currentUser) {
+        query = query.neq('id', currentUser.id);
+      }
+
+      const { data, error } = await query;
+
       if (error) throw error;
-      setRecipients((data || []).map(u => ({ ...u, full_name: null })));
+      
+      // Format users - filter out those without email
+      const formattedUsers = (data || [])
+        .filter(u => u.email)
+        .map(u => ({
+          id: u.id,
+          email: u.email,
+          full_name: null
+        }));
+      
+      setRecipients(formattedUsers);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast({
