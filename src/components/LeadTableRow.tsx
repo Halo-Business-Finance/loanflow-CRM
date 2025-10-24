@@ -95,6 +95,12 @@ export function LeadTableRow({
             aria-label={`Select ${lead.name}`}
           />
           <div className="flex flex-col gap-1.5 min-w-0">
+            {lead.business_name && (
+              <div className="flex items-center gap-1.5">
+                <Building2 className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                <span className="text-xs text-muted-foreground truncate">{lead.business_name}</span>
+              </div>
+            )}
             <span className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors truncate">
               {lead.name}
             </span>
@@ -144,12 +150,6 @@ export function LeadTableRow({
               >
                 {lead.email}
               </a>
-            </div>
-          )}
-          {lead.business_name && (
-            <div className="flex items-center gap-2">
-              <Building2 className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-              <span className="text-sm text-muted-foreground truncate">{lead.business_name}</span>
             </div>
           )}
           {!lead.phone && !lead.email && (
