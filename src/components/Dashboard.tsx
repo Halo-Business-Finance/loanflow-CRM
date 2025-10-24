@@ -37,6 +37,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
+import { CompactCalendarWidget } from '@/components/CompactCalendarWidget';
+import { TodaysTasks } from '@/components/TodaysTasks';
 
 // Real-time dashboard data interfaces
 interface DashboardMetrics {
@@ -382,6 +385,13 @@ function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* Widgets Row - Messages, Calendar, Today's Tasks */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <CompactMessagesWidget />
+              <CompactCalendarWidget />
+              <TodaysTasks />
             </div>
 
             {/* Charts Section */}
