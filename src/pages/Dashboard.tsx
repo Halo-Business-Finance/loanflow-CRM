@@ -562,7 +562,7 @@ export default function Dashboard() {
         </div>
 
         {/* Performance Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Revenue Performance */}
           <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/reports')}>
             <CardHeader>
