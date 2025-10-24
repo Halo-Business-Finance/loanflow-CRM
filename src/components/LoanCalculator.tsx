@@ -93,7 +93,7 @@ export function LoanCalculator() {
           <Calculator className="h-6 w-6" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] bg-white dark:bg-[#262626] border-[#e0e0e0] dark:border-[#393939]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto bg-white dark:bg-[#262626] border-[#e0e0e0] dark:border-[#393939]">
         <DialogHeader>
           <DialogTitle className="text-[#161616] dark:text-white flex items-center gap-2">
             <Calculator className="h-5 w-5" />
