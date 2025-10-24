@@ -52,6 +52,8 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { useCalendarData } from '@/hooks/useCalendarData';
+import { format } from 'date-fns';
 
 const COLORS = ['#0f62fe', '#0353e9', '#8a3ffc', '#33b1ff', '#d12771'];
 
@@ -83,6 +85,10 @@ export default function Dashboard() {
   const [conversionFunnel, setConversionFunnel] = useState<{ stage: string; count: number; conversion: number }[]>([]);
   const [activityTrend, setActivityTrend] = useState<{ date: string; leads: number }[]>([]);
   const [revenuePerformance, setRevenuePerformance] = useState<{ month: string; revenue: number; pipeline: number }[]>([]);
+  
+  // Calendar data
+  const { getEventsForDate } = useCalendarData(new Date());
+  const todayEvents = getEventsForDate(new Date());
 
   const fetchDashboardData = async () => {
     if (!user?.id) return;
@@ -363,6 +369,70 @@ export default function Dashboard() {
             Create New Lead
           </Button>
         </div>
+
+        {/* Today's Calendar Section */}
+        {todayEvents.length > 0 && (
+          <Card className="bg-card border">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CalendarCheck className="h-5 w-5 text-primary" />
+                  <CardTitle className="text-lg">Today's Schedule</CardTitle>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => navigate('/activities/calendar')}
+                >
+                  View Calendar
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {todayEvents.slice(0, 6).map((event) => (
+                  <div
+                    key={event.id}
+                    className="flex items-start gap-3 p-3 border rounded-lg bg-background/50 hover:bg-accent/50 transition-colors cursor-pointer"
+                    onClick={() => {
+                      if (event.relatedId && event.relatedType === 'lead') {
+                        navigate(`/leads/${event.relatedId}`);
+                      } else if (event.relatedId && event.relatedType === 'client') {
+                        navigate(`/clients/${event.relatedId}`);
+                      }
+                    }}
+                  >
+                    <div className="flex-shrink-0 mt-1">
+                      {event.type === 'meeting' && <Users className="h-4 w-4 text-primary" />}
+                      {event.type === 'call' && <Clock className="h-4 w-4 text-primary" />}
+                      {event.type === 'task' && <CheckCircle className="h-4 w-4 text-primary" />}
+                      {event.type === 'deadline' && <AlertCircle className="h-4 w-4 text-destructive" />}
+                      {event.type === 'followup' && <Activity className="h-4 w-4 text-primary" />}
+                      {event.type === 'reminder' && <Clock className="h-4 w-4 text-primary" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{event.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {format(event.startTime, 'h:mm a')}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {todayEvents.length > 6 && (
+                <div className="mt-3 text-center">
+                  <Button 
+                    variant="link" 
+                    size="sm"
+                    onClick={() => navigate('/activities/calendar')}
+                  >
+                    +{todayEvents.length - 6} more events
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Quick Access Tiles - Clean Style */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
