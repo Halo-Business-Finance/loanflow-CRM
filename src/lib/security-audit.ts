@@ -4,6 +4,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export interface SecurityAuditResult {
   score: number;
@@ -90,7 +91,7 @@ export const runSecurityAudit = async (): Promise<SecurityAuditResult> => {
       complianceStatus
     };
   } catch (error) {
-    console.error('Security audit failed:', error);
+    logger.error('Security audit failed:', error);
     
     await supabase.rpc('log_security_event', {
       p_event_type: 'security_audit_failed',

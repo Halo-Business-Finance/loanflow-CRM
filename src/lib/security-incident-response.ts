@@ -3,6 +3,9 @@
  * Automated incident detection and response for production security
  */
 
+import { logger } from '@/lib/logger';
+import { supabase } from '@/integrations/supabase/client';
+
 export interface SecurityIncident {
   id: string;
   type: 'breach_attempt' | 'data_leak' | 'malware' | 'ddos' | 'privilege_escalation' | 'ai_bot' | 'rate_limit_abuse';
@@ -189,7 +192,7 @@ class SecurityIncidentResponseSystem {
   private async blockSourceIP(source: string): Promise<'success' | 'failure'> {
     try {
       // In real implementation, this would interface with firewall/WAF
-      console.warn(`SECURITY: Blocking IP ${source}`);
+      logger.secureLog('Blocking IP', source);
       return 'success';
     } catch {
       return 'failure';
@@ -255,7 +258,7 @@ class SecurityIncidentResponseSystem {
   private async alertAdministrators(incident: SecurityIncident): Promise<'success' | 'failure'> {
     try {
       // In real implementation, send alerts via email, SMS, Slack, etc.
-      console.warn('SECURITY ALERT:', incident);
+      logger.secureLog('Administrator alert sent for incident', incident.id);
       return 'success';
     } catch {
       return 'failure';
@@ -274,7 +277,7 @@ class SecurityIncidentResponseSystem {
         status: incident.status
       };
       
-      console.log('SECURITY INCIDENT LOGGED:', logEntry);
+      logger.secureLog('Security incident logged', incident.id);
       return 'success';
     } catch {
       return 'failure';
@@ -402,12 +405,12 @@ class SecurityIncidentResponseSystem {
       details
     };
     
-    console.log(`INCIDENT RESPONSE [${incidentId}]:`, response);
+    logger.secureLog(`Incident response completed [${incidentId}]`);
   }
 
   private notifySecurityTeam(incident: SecurityIncident): void {
     // In production, this would send real notifications
-    console.error('CRITICAL SECURITY INCIDENT - SECURITY TEAM NOTIFIED:', incident);
+    logger.secureLog('Critical security incident - security team notified', incident.id);
   }
 
   /**

@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from '@/hooks/use-toast';
+import { logger } from '@/lib/logger';
 
 interface SecurityValidation {
   isValid: boolean;
@@ -33,7 +34,7 @@ export const useSecurityValidation = () => {
       });
 
       if (error) {
-        console.error('Security validation error:', error);
+        logger.error('Security validation error:', error);
         return {
           isValid: false,
           errors: ['Security validation failed'],
@@ -47,7 +48,7 @@ export const useSecurityValidation = () => {
         riskScore: ((data as any)?.errors?.length || 0) * 25
       };
     } catch (error) {
-      console.error('Input validation error:', error);
+      logger.error('Input validation error:', error);
       return {
         isValid: false,
         errors: ['Validation system error'],
@@ -93,7 +94,7 @@ export const useSecurityValidation = () => {
         riskFactors: (data as any)?.risk_factors || []
       };
     } catch (error) {
-      console.error('Session validation error:', error);
+      logger.error('Session validation error:', error);
       return {
         sessionValid: false,
         requiresReauth: true,
@@ -198,7 +199,7 @@ export const useSecurityValidation = () => {
 
   // Security alert handler
   const handleSecurityAlert = useCallback((alertType: string, details: any) => {
-    console.warn('🚨 Security Alert:', alertType, details);
+    logger.secureLog('Security Alert', alertType);
     
     // Log to Supabase
     supabase.functions.invoke('security-monitor', {
@@ -209,7 +210,7 @@ export const useSecurityValidation = () => {
         user_id: user?.id
       }
     }).catch(error => {
-      console.error('Failed to log security alert:', error);
+      logger.error('Failed to log security alert:', error);
     });
 
     // Show user notification for critical alerts

@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from '@/lib/logger';
 
 export interface SecurityConfig {
   enableMFA: boolean;
@@ -44,7 +45,7 @@ export class SecurityManager {
       if (error) throw error;
       return data.validation_result;
     } catch (error: any) {
-      console.error('Password validation error:', error);
+      logger.error('Password validation error:', error);
       return {
         valid: false,
         errors: ['Password validation failed. Please try again.']
@@ -66,7 +67,7 @@ export class SecurityManager {
       if (error) throw error;
       return data.rate_limit_result;
     } catch (error: any) {
-      console.error('Rate limit check error:', error);
+      logger.error('Rate limit check error:', error);
       return {
         allowed: false,
         attempts_remaining: 0,
@@ -88,7 +89,7 @@ export class SecurityManager {
       if (error) throw error;
       return data.event_id;
     } catch (error: any) {
-      console.error('Security event logging error:', error);
+      logger.error('Security event logging error:', error);
       return null;
     }
   }
@@ -122,7 +123,7 @@ export class SecurityManager {
         security: data.security
       };
     } catch (error: any) {
-      console.error('Session validation error:', error);
+      logger.error('Session validation error:', error);
       return { valid: false };
     }
   }
@@ -344,7 +345,7 @@ export class SecurityManager {
 
       return btoa(String.fromCharCode(...combined));
     } catch (error) {
-      console.error('Enhanced encryption error:', error);
+      logger.error('Enhanced encryption error:', error);
       throw new Error('Encryption failed');
     }
   }
@@ -390,7 +391,7 @@ export class SecurityManager {
       
       return new TextDecoder().decode(decrypted);
     } catch (error) {
-      console.error('Decryption error:', error);
+      logger.error('Decryption error:', error);
       throw new Error('Decryption failed');
     }
   }
@@ -441,7 +442,7 @@ export class SecurityManager {
         device_fingerprint: this.generateDeviceFingerprint()
       });
     } catch (error) {
-      console.error('User action logging error:', error);
+      logger.error('User action logging error:', error);
     }
   }
 

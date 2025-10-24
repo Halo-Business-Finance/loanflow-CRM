@@ -128,7 +128,7 @@ export const applyClientSecurityHeaders = () => {
       });
     }
   } catch (error) {
-    console.error('Failed to apply client security measures');
+    // Silently fail in production to avoid exposing security implementation details
   }
 };
 

@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { logger } from '@/lib/logger';
 
 interface SecurityMetrics {
   threatLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -61,7 +62,7 @@ export const useSecurityMonitoring = () => {
         });
       }
     } catch (error) {
-      console.error('Failed to log security event:', error);
+      logger.error('Failed to log security event:', error);
     }
   }, [toast]);
 
@@ -111,7 +112,7 @@ export const useSecurityMonitoring = () => {
         eventsCount: recentEvents.length
       };
     } catch (error) {
-      console.error('Error fetching security metrics:', error);
+      logger.error('Error fetching security metrics:', error);
       return null;
     }
   }, []);
@@ -145,7 +146,7 @@ export const useSecurityMonitoring = () => {
 
       return true;
     } catch (error) {
-      console.error('Security health check failed:', error);
+      logger.error('Security health check failed:', error);
       await logSecurityEvent('security_health_check_failed', 'medium', {
         error: String(error)
       });
@@ -186,7 +187,7 @@ export const useSecurityMonitoring = () => {
         }, true);
       }
     } catch (error) {
-      console.error('Error detecting suspicious patterns:', error);
+      logger.error('Error detecting suspicious patterns:', error);
     }
   }, [logSecurityEvent]);
 
