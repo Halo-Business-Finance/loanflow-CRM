@@ -100,7 +100,7 @@ export function LoanCalculator() {
             <div className="p-2 bg-primary/10 rounded-lg">
               <Calculator className="h-6 w-6 text-primary" />
             </div>
-            Loan Calculator
+            Commercial Loan Calculator
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-base">
             Calculate your monthly payments and see the full breakdown
