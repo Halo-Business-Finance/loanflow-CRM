@@ -217,26 +217,26 @@ export default function Documents() {
           </div>
         )}
 
-        {/* Folder List */}
-        <div className="space-y-2">
-          {filteredFolders.length === 0 ? (
-            <div className="text-center py-12">
-              <FolderOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No loan folders found</h3>
-              <p className="text-muted-foreground mb-4">
-                {searchTerm 
-                  ? "Try adjusting your search" 
-                  : "Upload documents to create loan folders"}
-              </p>
-              {!searchTerm && (
-                <Button onClick={() => setShowUploadModal(true)} className="gap-2">
-                  <Upload className="h-4 w-4" />
-                  Upload First Document
-                </Button>
-              )}
-            </div>
-          ) : (
-            filteredFolders.map((folder) => (
+        {/* Folder List/Grid */}
+        {filteredFolders.length === 0 ? (
+          <div className="text-center py-12">
+            <FolderOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium mb-2">No loan folders found</h3>
+            <p className="text-muted-foreground mb-4">
+              {searchTerm 
+                ? "Try adjusting your search" 
+                : "Upload documents to create loan folders"}
+            </p>
+            {!searchTerm && (
+              <Button onClick={() => setShowUploadModal(true)} className="gap-2">
+                <Upload className="h-4 w-4" />
+                Upload First Document
+              </Button>
+            )}
+          </div>
+        ) : viewMode === 'list' ? (
+          <div className="space-y-2">
+            {filteredFolders.map((folder) => (
               <div
                 key={folder.leadId}
                 onClick={(e) => handleFolderClick(folder.leadId, e)}
@@ -278,9 +278,64 @@ export default function Documents() {
                   {folder.documentCount} {folder.documentCount === 1 ? 'File' : 'Files'}
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredFolders.map((folder) => (
+              <div
+                key={folder.leadId}
+                onClick={(e) => handleFolderClick(folder.leadId, e)}
+                className={`relative p-4 rounded-lg border hover:border-primary/50 hover:shadow-md transition-all cursor-pointer group ${
+                  selectedFolders.has(folder.leadId) ? 'border-primary shadow-md ring-2 ring-primary' : 'border-border'
+                }`}
+              >
+                {/* Checkbox */}
+                <div className="absolute top-3 right-3 z-10" data-checkbox>
+                  <Checkbox
+                    checked={selectedFolders.has(folder.leadId)}
+                    onCheckedChange={() => toggleSelectFolder(folder.leadId)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+
+                {/* Folder Icon */}
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <div className="relative">
+                    <FolderOpen className="h-16 w-16 text-blue-500 group-hover:text-blue-600 transition-colors" />
+                    <Users className="absolute -bottom-1 -right-1 h-5 w-5 text-blue-600 bg-white dark:bg-background rounded-full p-0.5" />
+                  </div>
+                  
+                  {/* Folder Info */}
+                  <div className="w-full">
+                    <h3 className="font-medium text-foreground truncate mb-1">
+                      {folder.leadName}
+                    </h3>
+                    <p className="text-sm text-muted-foreground truncate">
+                      {folder.loanType}
+                    </p>
+                    {folder.location && (
+                      <p className="text-xs text-muted-foreground truncate mt-1">
+                        {folder.location}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Stats */}
+                  <div className="w-full pt-3 border-t border-border space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Files</span>
+                      <span className="font-medium">{folder.documentCount}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {format(new Date(folder.lastUpdated), 'MMM d, yyyy')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Empty State Illustration */}
         {filteredFolders.length === 0 && !searchTerm && (
