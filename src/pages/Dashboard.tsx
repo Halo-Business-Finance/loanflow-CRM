@@ -562,7 +562,7 @@ export default function Dashboard() {
         </div>
 
         {/* Performance Charts */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Revenue Performance */}
           <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/reports')}>
             <CardHeader>
@@ -640,30 +640,6 @@ export default function Dashboard() {
                   ))}
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Conversion Funnel */}
-          <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/pipeline/analytics')}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-normal text-[#161616]">Conversion Funnel</CardTitle>
-                <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/pipeline/analytics'); }}>
-                  View analytics
-                </Button>
-              </div>
-              <CardDescription className="text-[#525252]">Lead to customer journey</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={conversionFunnel} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                  <XAxis type="number" stroke="#525252" style={{ fontSize: '12px' }} />
-                  <YAxis dataKey="stage" type="category" stroke="#525252" style={{ fontSize: '12px' }} width={100} label={{ value: 'Loan Stage', angle: -90, position: 'insideLeft' }} />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#0f62fe" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
             </CardContent>
           </Card>
 
