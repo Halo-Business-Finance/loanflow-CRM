@@ -5,7 +5,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { SecurityManager } from "./security";
-import { fortress } from "./fortress-security";
+import { logger } from "./logger";
 
 export class EnhancedMFA {
   private static totpSecrets = new Map<string, string>();
@@ -58,7 +58,7 @@ export class EnhancedMFA {
       const secret = await SecurityManager.decryptSensitiveData(encryptedSecret);
       return await this.validateTOTPCode(secret, code);
     } catch (error) {
-      console.error('TOTP verification failed:', error);
+      logger.error('TOTP verification failed');
       return false;
     }
   }
@@ -102,7 +102,7 @@ export class EnhancedMFA {
       
       return true;
     } catch (error) {
-      console.error('Backup code verification failed:', error);
+      logger.error('Backup code verification failed');
       return false;
     }
   }
@@ -139,7 +139,7 @@ export class EnhancedMFA {
       });
       
       if (credential) {
-        // Store biometric credential securely
+        // Store biometric credential securely via server-side RPC
         const pkCredential = credential as PublicKeyCredential;
         const credentialData = {
           id: credential.id,
@@ -147,13 +147,17 @@ export class EnhancedMFA {
           type: credential.type
         };
         
-        await fortress.secureStoreData('biometric_credential', credentialData, 'business');
+        const encryptedData = await SecurityManager.encryptSensitiveData(JSON.stringify(credentialData));
+        await supabase.rpc('store_secure_session_data', {
+          p_key: 'biometric_credential',
+          p_value: encryptedData
+        });
         return true;
       }
       
       return false;
     } catch (error) {
-      console.error('Biometric authentication setup failed:', error);
+      logger.error('Biometric authentication setup failed');
       return false;
     }
   }
@@ -163,7 +167,13 @@ export class EnhancedMFA {
     if (!('credentials' in navigator)) return false;
     
     try {
-      const storedCredential = await fortress.secureRetrieveData('biometric_credential', 'business');
+      const { data: encryptedData } = await supabase.rpc('get_secure_session_data', {
+        p_key: 'biometric_credential'
+      });
+      if (!encryptedData) return false;
+      
+      const decryptedData = await SecurityManager.decryptSensitiveData(encryptedData as string);
+      const storedCredential = JSON.parse(decryptedData);
       if (!storedCredential) return false;
       
       const assertion = await navigator.credentials.get({
@@ -180,7 +190,7 @@ export class EnhancedMFA {
       
       return !!assertion;
     } catch (error) {
-      console.error('Biometric authentication failed:', error);
+      logger.error('Biometric authentication failed');
       return false;
     }
   }
@@ -214,7 +224,7 @@ export class EnhancedMFA {
       
       return code; // In production, don't return the actual code
     } catch (error) {
-      console.error('SMS verification failed:', error);
+      logger.error('SMS verification failed');
       throw error;
     }
   }
@@ -237,7 +247,7 @@ export class EnhancedMFA {
       
       return isValid;
     } catch (error) {
-      console.error('SMS code verification failed:', error);
+      logger.error('SMS code verification failed');
       return false;
     }
   }
@@ -275,7 +285,7 @@ export class EnhancedMFA {
         }
       });
     } catch (error) {
-      console.error('Email verification failed:', error);
+      logger.error('Email verification failed');
       throw error;
     }
   }
@@ -302,7 +312,7 @@ export class EnhancedMFA {
       
       return false;
     } catch (error) {
-      console.error('Email token verification failed:', error);
+      logger.error('Email token verification failed');
       return false;
     }
   }
@@ -346,13 +356,17 @@ export class EnhancedMFA {
           type: credential.type
         };
         
-        await fortress.secureStoreData('security_key', credentialData, 'business');
+        const encryptedData = await SecurityManager.encryptSensitiveData(JSON.stringify(credentialData));
+        await supabase.rpc('store_secure_session_data', {
+          p_key: 'security_key',
+          p_value: encryptedData
+        });
         return true;
       }
       
       return false;
     } catch (error) {
-      console.error('Security key registration failed:', error);
+      logger.error('Security key registration failed');
       return false;
     }
   }
@@ -362,7 +376,13 @@ export class EnhancedMFA {
     if (!('credentials' in navigator)) return false;
     
     try {
-      const storedCredential = await fortress.secureRetrieveData('security_key', 'business');
+      const { data: encryptedData } = await supabase.rpc('get_secure_session_data', {
+        p_key: 'security_key'
+      });
+      if (!encryptedData) return false;
+      
+      const decryptedData = await SecurityManager.decryptSensitiveData(encryptedData as string);
+      const storedCredential = JSON.parse(decryptedData);
       if (!storedCredential) return false;
       
       const assertion = await navigator.credentials.get({
@@ -379,7 +399,7 @@ export class EnhancedMFA {
       
       return !!assertion;
     } catch (error) {
-      console.error('Security key verification failed:', error);
+      logger.error('Security key verification failed');
       return false;
     }
   }

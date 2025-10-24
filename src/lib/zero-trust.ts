@@ -5,7 +5,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { SecurityManager } from "./security";
-import { fortress } from "./fortress-security";
+import { logger } from "./logger";
 import { EnhancedMFA } from "./enhanced-mfa";
 
 export class ZeroTrustManager {
@@ -51,7 +51,10 @@ export class ZeroTrustManager {
     
     // Device fingerprint verification
     const currentFingerprint = SecurityManager.generateDeviceFingerprint();
-    const storedFingerprint = await fortress.secureRetrieveData(`device_${userId}`, 'business');
+    const { data: storedFingerprintData } = await supabase.rpc('get_secure_session_data', {
+      p_key: `device_${userId}`
+    });
+    const storedFingerprint = storedFingerprintData as string | null;
     
     if (storedFingerprint && storedFingerprint !== currentFingerprint) {
       await this.handleIdentityAnomaly(userId, 'device_fingerprint_mismatch', {
@@ -62,7 +65,10 @@ export class ZeroTrustManager {
     
     // Location verification
     const locationData = await SecurityManager.getLocationData();
-    const lastKnownLocation = await fortress.secureRetrieveData(`location_${userId}`, 'pii');
+    const { data: lastKnownLocationData } = await supabase.rpc('get_secure_session_data', {
+      p_key: `location_${userId}`
+    });
+    const lastKnownLocation = lastKnownLocationData ? JSON.parse(lastKnownLocationData as string) : null;
     
     if (lastKnownLocation && this.calculateLocationDistance(locationData, lastKnownLocation) > 1000) {
       await this.handleIdentityAnomaly(userId, 'location_anomaly', {
@@ -95,7 +101,7 @@ export class ZeroTrustManager {
         button: event.button
       };
       
-      this.recordBehavioralData('click_pattern', clickData).catch(console.error);
+      this.recordBehavioralData('click_pattern', clickData).catch(() => logger.error('Failed to record click pattern'));
     });
   }
 
@@ -110,7 +116,7 @@ export class ZeroTrustManager {
         timestamp: now,
         timeSinceLastNav: timeDiff,
         url: window.location.href
-      }).catch(console.error);
+      }).catch(() => logger.error('Failed to record navigation pattern'));
       
       lastNavigation = now;
     });
@@ -137,7 +143,7 @@ export class ZeroTrustManager {
           method: init?.method || 'GET',
           responseTime: Date.now() - startTime,
           status: response.status
-        }).catch(console.error);
+        }).catch(() => logger.error('Failed to record API access'));
         
         return response;
       } catch (error) {
@@ -145,7 +151,7 @@ export class ZeroTrustManager {
           timestamp: startTime,
           url,
           error: error.message
-        }).catch(console.error);
+        }).catch(() => logger.error('Failed to record API error'));
         throw error;
       }
     };
@@ -313,11 +319,18 @@ export class ZeroTrustManager {
     
     // Adjust required authentication methods based on risk
     const requiredMethods = await EnhancedMFA.getRequiredAuthMethods(riskScore);
-    await fortress.secureStoreData(`required_auth_${userId}`, requiredMethods, 'business');
+    const encryptedMethods = await SecurityManager.encryptSensitiveData(JSON.stringify(requiredMethods));
+    await supabase.rpc('store_secure_session_data', {
+      p_key: `required_auth_${userId}`,
+      p_value: encryptedMethods
+    });
     
     // Adjust session timeout based on risk
     const sessionTimeout = this.calculateSessionTimeout(riskScore);
-    await fortress.secureStoreData(`session_timeout_${userId}`, sessionTimeout, 'business');
+    await supabase.rpc('store_secure_session_data', {
+      p_key: `session_timeout_${userId}`,
+      p_value: sessionTimeout.toString()
+    });
     
     // Trigger additional verification if risk is high
     if (riskScore > 80) {
@@ -349,7 +362,10 @@ export class ZeroTrustManager {
     
     // Risk from location/device changes
     const deviceFingerprint = SecurityManager.generateDeviceFingerprint();
-    const storedFingerprint = await fortress.secureRetrieveData(`device_${userId}`, 'business');
+    const { data: storedFingerprintData } = await supabase.rpc('get_secure_session_data', {
+      p_key: `device_${userId}`
+    });
+    const storedFingerprint = storedFingerprintData as string | null;
     if (storedFingerprint && deviceFingerprint !== storedFingerprint) {
       riskScore += 25;
     }
@@ -377,11 +393,16 @@ export class ZeroTrustManager {
   private async handleIdentityAnomaly(userId: string, type: string, details: any): Promise<void> {
     const severity = this.getAnomalySeverity(type);
     
-    await fortress.logSecurityIncident(`identity_anomaly_${type}`, {
-      userId,
-      severity,
-      details,
-      timestamp: new Date().toISOString()
+    // Log to security_events table
+    await supabase.from('security_events').insert({
+      user_id: userId,
+      event_type: `identity_anomaly_${type}`,
+      severity: severity >= 8 ? 'critical' : severity >= 5 ? 'high' : 'medium',
+      details: {
+        severity,
+        details,
+        timestamp: new Date().toISOString()
+      }
     });
     
     // Reduce trust level
@@ -395,11 +416,16 @@ export class ZeroTrustManager {
   }
 
   private async handleBehavioralAnomaly(userId: string, type: string, anomalyScore: number, data: any): Promise<void> {
-    await fortress.logSecurityIncident(`behavioral_anomaly_${type}`, {
-      userId,
-      anomalyScore,
-      data,
-      timestamp: new Date().toISOString()
+    // Log to security_events table
+    await supabase.from('security_events').insert({
+      user_id: userId,
+      event_type: `behavioral_anomaly_${type}`,
+      severity: anomalyScore >= 80 ? 'critical' : anomalyScore >= 60 ? 'high' : 'medium',
+      details: {
+        anomalyScore,
+        data,
+        timestamp: new Date().toISOString()
+      }
     });
     
     // Record anomaly in behavioral data
@@ -415,13 +441,18 @@ export class ZeroTrustManager {
   private async triggerAdditionalVerification(userId: string, riskScore: number): Promise<void> {
     const requiredMethods = await EnhancedMFA.getRequiredAuthMethods(riskScore);
     
-    // Store verification requirement
-    await fortress.secureStoreData(`pending_verification_${userId}`, {
+    // Store verification requirement server-side
+    const verificationData = {
       methods: requiredMethods,
       riskScore,
       timestamp: Date.now(),
       expiresAt: Date.now() + (5 * 60 * 1000) // 5 minutes
-    }, 'business');
+    };
+    const encryptedData = await SecurityManager.encryptSensitiveData(JSON.stringify(verificationData));
+    await supabase.rpc('store_secure_session_data', {
+      p_key: `pending_verification_${userId}`,
+      p_value: encryptedData
+    });
     
     // Notify user
     this.notifyAdditionalVerificationRequired(requiredMethods);
@@ -429,7 +460,7 @@ export class ZeroTrustManager {
 
   private notifyAdditionalVerificationRequired(methods: string[]): void {
     // In production, show modal or redirect to verification page
-    console.warn('🔒 Additional verification required:', methods);
+    logger.warn('Additional verification required');
   }
 
   private getAnomalySeverity(type: string): number {
