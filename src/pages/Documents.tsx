@@ -2,7 +2,8 @@ import { StandardPageLayout } from '@/components/StandardPageLayout'
 import { StandardPageHeader } from '@/components/StandardPageHeader'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, FolderOpen, Upload, Users, ChevronRight, Grid, List } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Search, FolderOpen, Upload, Users, ChevronRight, Grid, List, Trash2, Download, CheckSquare } from "lucide-react"
 import { useState, useMemo } from "react"
 import { useDocuments } from "@/hooks/useDocuments"
 import { DocumentUploadModal } from "@/components/DocumentUploadModal"
@@ -24,6 +25,7 @@ export default function Documents() {
   const [searchTerm, setSearchTerm] = useState("")
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
+  const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set())
   const navigate = useNavigate()
 
   // Group documents by lead to create folder structure
@@ -73,8 +75,38 @@ export default function Documents() {
     folder.location.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleFolderClick = (leadId: string) => {
+  const handleFolderClick = (leadId: string, event: React.MouseEvent) => {
+    // Don't navigate if clicking on checkbox area
+    if ((event.target as HTMLElement).closest('[data-checkbox]')) {
+      return
+    }
     navigate(`/documents/loan/${leadId}`)
+  }
+
+  const toggleSelectFolder = (leadId: string) => {
+    setSelectedFolders(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(leadId)) {
+        newSet.delete(leadId)
+      } else {
+        newSet.add(leadId)
+      }
+      return newSet
+    })
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedFolders.size === filteredFolders.length) {
+      setSelectedFolders(new Set())
+    } else {
+      setSelectedFolders(new Set(filteredFolders.map(f => f.leadId)))
+    }
+  }
+
+  const handleBulkDelete = () => {
+    // Placeholder for bulk delete functionality
+    console.log('Bulk delete:', Array.from(selectedFolders))
+    setSelectedFolders(new Set())
   }
 
   if (loading) {
@@ -121,6 +153,30 @@ export default function Documents() {
             />
           </div>
           
+          {selectedFolders.size > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                {selectedFolders.size} selected
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBulkDelete}
+                className="gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedFolders(new Set())}
+              >
+                Clear
+              </Button>
+            </div>
+          )}
+          
           <div className="flex items-center gap-2 border border-border rounded-lg p-1">
             <Button
               variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
@@ -142,14 +198,24 @@ export default function Documents() {
         </div>
 
         {/* Folder Header */}
-        <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground border-b">
-          <div className="col-span-5 flex items-center gap-2">
-            NAME
-            <ChevronRight className="h-3 w-3 rotate-90" />
+        {filteredFolders.length > 0 && (
+          <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground border-b">
+            <div className="col-span-5 flex items-center gap-3">
+              <Checkbox
+                checked={selectedFolders.size === filteredFolders.length && filteredFolders.length > 0}
+                onCheckedChange={toggleSelectAll}
+                className="mt-0.5"
+                data-checkbox
+              />
+              <div className="flex items-center gap-2">
+                NAME
+                <ChevronRight className="h-3 w-3 rotate-90" />
+              </div>
+            </div>
+            <div className="col-span-4">UPDATED</div>
+            <div className="col-span-3 text-right">SIZE</div>
           </div>
-          <div className="col-span-4">UPDATED</div>
-          <div className="col-span-3 text-right">SIZE</div>
-        </div>
+        )}
 
         {/* Folder List */}
         <div className="space-y-2">
@@ -171,16 +237,24 @@ export default function Documents() {
             </div>
           ) : (
             filteredFolders.map((folder) => (
-              <button
+              <div
                 key={folder.leadId}
-                onClick={() => handleFolderClick(folder.leadId)}
-                className="w-full grid grid-cols-12 gap-4 px-4 py-3 rounded-lg hover:bg-muted/50 transition-colors text-left items-center group"
+                onClick={(e) => handleFolderClick(folder.leadId, e)}
+                className={`w-full grid grid-cols-12 gap-4 px-4 py-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer items-center group ${
+                  selectedFolders.has(folder.leadId) ? 'bg-muted/50 ring-2 ring-primary' : ''
+                }`}
               >
-                {/* Folder Icon and Name */}
+                {/* Checkbox and Folder Icon */}
                 <div className="col-span-5 flex items-center gap-3">
+                  <Checkbox
+                    checked={selectedFolders.has(folder.leadId)}
+                    onCheckedChange={() => toggleSelectFolder(folder.leadId)}
+                    onClick={(e) => e.stopPropagation()}
+                    data-checkbox
+                  />
                   <div className="relative">
                     <FolderOpen className="h-8 w-8 text-blue-500 group-hover:text-blue-600 transition-colors" />
-                    <Users className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 text-blue-600 bg-white rounded-full p-0.5" />
+                    <Users className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 text-blue-600 bg-white dark:bg-background rounded-full p-0.5" />
                   </div>
                   <div>
                     <div className="font-medium text-foreground">
@@ -203,7 +277,7 @@ export default function Documents() {
                 <div className="col-span-3 text-right text-sm text-muted-foreground">
                   {folder.documentCount} {folder.documentCount === 1 ? 'File' : 'Files'}
                 </div>
-              </button>
+              </div>
             ))
           )}
         </div>
