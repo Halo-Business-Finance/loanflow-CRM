@@ -71,7 +71,7 @@ export default function LeadStats() {
         totalLeads,
         conversionRate,
         qualifiedLeads,
-        avgResponseTime: 2.4, // Placeholder
+        avgResponseTime: 0,
         convertedLeads,
         newLeads
       })
@@ -157,10 +157,9 @@ export default function LeadStats() {
                   <span className="text-sm font-medium text-muted-foreground">Avg. Response Time</span>
                   <Clock className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-2xl font-bold text-foreground">{stats.avgResponseTime}h</div>
-                <div className="flex items-center text-xs text-primary mt-1">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  15% faster
+                <div className="text-2xl font-bold text-foreground">—</div>
+                <div className="flex items-center text-xs text-muted-foreground mt-1">
+                  <span className="text-muted-foreground">Not tracked</span>
                 </div>
               </CardContent>
             </Card>
@@ -175,43 +174,8 @@ export default function LeadStats() {
                   <span className="text-xs text-muted-foreground">Distribution breakdown</span>
                 }
               >
-              <div className="space-y-4">
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="text-sm font-medium">Website</span>
-                  <div className="flex items-center gap-3">
-                    <div className="w-24 bg-muted rounded-full h-2">
-                      <div className="bg-primary h-2 rounded-full" style={{ width: '45%' }} />
-                    </div>
-                    <span className="text-xs font-medium">45%</span>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="text-sm font-medium">Referrals</span>
-                  <div className="flex items-center gap-3">
-                    <div className="w-24 bg-muted rounded-full h-2">
-                      <div className="bg-primary h-2 rounded-full" style={{ width: '30%' }} />
-                    </div>
-                    <span className="text-xs font-medium">30%</span>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="text-sm font-medium">Social Media</span>
-                  <div className="flex items-center gap-3">
-                    <div className="w-24 bg-muted rounded-full h-2">
-                      <div className="bg-primary h-2 rounded-full" style={{ width: '15%' }} />
-                    </div>
-                    <span className="text-xs font-medium">15%</span>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-sm font-medium">Other</span>
-                  <div className="flex items-center gap-3">
-                    <div className="w-24 bg-muted rounded-full h-2">
-                      <div className="bg-primary h-2 rounded-full" style={{ width: '10%' }} />
-                    </div>
-                    <span className="text-xs font-medium">10%</span>
-                  </div>
-                </div>
+              <div className="text-sm text-muted-foreground text-center py-8">
+                Lead source tracking not yet implemented.
               </div>
               </StandardContentCard>
             </div>
@@ -234,20 +198,8 @@ export default function LeadStats() {
                   </div>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b border-border">
-                  <span className="text-sm font-medium">Contacted</span>
-                  <div className="flex items-center gap-3">
-                    <div className="w-24 bg-muted rounded-full h-2">
-                      <div className="bg-warning h-2 rounded-full" style={{ width: '25%' }} />
-                    </div>
-                    <span className="text-xs font-medium">25%</span>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-border">
                   <span className="text-sm font-medium">Qualified</span>
                   <div className="flex items-center gap-3">
-                    <div className="w-24 bg-muted rounded-full h-2">
-                      <div className="bg-accent h-2 rounded-full" style={{ width: '20%' }} />
-                    </div>
                     <span className="text-xs font-medium">{loading ? "..." : stats.qualifiedLeads}</span>
                   </div>
                 </div>

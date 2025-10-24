@@ -108,11 +108,11 @@ export default function Reports() {
         setOverview({
           totalReports,
           generatedToday,
-          scheduledReports: Math.ceil(totalReports * 0.15), // Estimate
+          scheduledReports: 0,
           dataAccuracy,
           processingTime: Number(avgUpdateTime.toFixed(1)),
-          storageUsed: Number((totalReports * 0.02).toFixed(1)), // Estimate MB
-          complianceScore: Math.max(85, complianceScore), // Minimum 85%
+          storageUsed: 0,
+          complianceScore,
           alertsActive
         });
 
@@ -224,15 +224,15 @@ export default function Reports() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Total Revenue</span>
-                    <span className="font-semibold">${((reportData?.applications?.total || 0) * 185000).toLocaleString()}</span>
+                    <span className="font-semibold">—</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Monthly Growth</span>
-                    <span className="font-semibold">{reportData?.loanVolume?.growth || '+12.5%'}</span>
+                    <span className="font-semibold">—</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Avg Deal Size</span>
-                    <span className="font-semibold text-green-600">$185,000</span>
+                    <span className="font-semibold">—</span>
                   </div>
                 </div>
               </StandardContentCard>
@@ -285,19 +285,8 @@ export default function Reports() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Performance against set targets
                 </p>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Revenue Target</span>
-                    <span className="font-semibold">85%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Lead Generation</span>
-                    <span className="font-semibold">92%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Customer Satisfaction</span>
-                    <span className="font-semibold text-green-600">96%</span>
-                  </div>
+                <div className="text-sm text-muted-foreground text-center py-6">
+                  Goal tracking not configured yet.
                 </div>
               </StandardContentCard>
 
@@ -312,11 +301,11 @@ export default function Reports() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Deal Closure Time</span>
-                    <span className="font-semibold">{Math.ceil(overview.processingTime * 7)} days</span>
+                    <span className="font-semibold">—</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Follow-up Rate</span>
-                    <span className="font-semibold text-teal-600">{Math.min(100, overview.dataAccuracy + 5)}%</span>
+                    <span className="font-semibold">—</span>
                   </div>
                 </div>
               </StandardContentCard>
@@ -354,15 +343,15 @@ export default function Reports() {
                 </div>
                 <div className="flex justify-between items-center p-4 border rounded-lg">
                   <span className="text-sm font-medium">Data Retention</span>
-                  <span className="font-bold text-blue-600">98%</span>
+                  <span className="font-bold text-blue-600">—</span>
                 </div>
                 <div className="flex justify-between items-center p-4 border rounded-lg">
                   <span className="text-sm font-medium">Security Score</span>
-                  <span className="font-bold text-purple-600">97%</span>
+                  <span className="font-bold text-purple-600">—</span>
                 </div>
                 <div className="flex justify-between items-center p-4 border rounded-lg">
                   <span className="text-sm font-medium">Audit Readiness</span>
-                  <span className="font-bold text-orange-600">92%</span>
+                  <span className="font-bold text-orange-600">—</span>
                 </div>
               </div>
             </StandardContentCard>

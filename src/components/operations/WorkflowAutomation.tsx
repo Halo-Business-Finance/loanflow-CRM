@@ -124,99 +124,29 @@ export function WorkflowAutomation() {
     }
   ];
 
-  // Sample workflow data
+  // Fetch workflow data from database
   useEffect(() => {
-    const sampleWorkflows: WorkflowRule[] = [
-      {
-        id: '1',
-        name: 'New Lead Welcome Email',
-        description: 'Send welcome email to new leads and notify sales team',
-        trigger: {
-          type: 'lead_created',
-          conditions: { stage: 'New Lead' }
-        },
-        actions: [
-          { type: 'send_email', config: { template: 'welcome', delay: 0 } },
-          { type: 'notify_user', config: { users: ['sales_team'], message: 'New lead created' } }
-        ],
-        isActive: true,
-        created: '2024-01-10T10:00:00Z',
-        lastRun: '2024-01-15T11:30:00Z',
-        totalRuns: 47,
-        successRate: 96
-      },
-      {
-        id: '2',
-        name: 'Document Processing Alert',
-        description: 'Alert underwriters when loan documents are uploaded',
-        trigger: {
-          type: 'document_uploaded',
-          conditions: { documentType: 'loan_application' }
-        },
-        actions: [
-          { type: 'notify_user', config: { role: 'underwriter', priority: 'high' } },
-          { type: 'create_task', config: { title: 'Review loan documents', assignee: 'auto' } }
-        ],
-        isActive: true,
-        created: '2024-01-08T14:20:00Z',
-        lastRun: '2024-01-15T10:15:00Z',
-        totalRuns: 23,
-        successRate: 100
-      },
-      {
-        id: '3',
-        name: 'Follow-up Reminder System',
-        description: 'Create follow-up tasks for leads without activity for 3 days',
-        trigger: {
-          type: 'time_based',
-          conditions: { inactivityDays: 3, stages: ['Loan Application Signed', 'Waiting for Documentation'] }
-        },
-        actions: [
-          { type: 'create_task', config: { title: 'Follow up with lead', priority: 'medium' } },
-          { type: 'send_email', config: { template: 'follow_up', to: 'lead_owner' } }
-        ],
-        isActive: false,
-        created: '2024-01-05T09:30:00Z',
-        totalRuns: 12,
-        successRate: 85
+    const fetchWorkflows = async () => {
+      setLoading(true);
+      try {
+        // TODO: Fetch real workflow data from database
+        // For now, show empty state
+        setWorkflows([]);
+        setExecutions([]);
+      } catch (error) {
+        console.error('Error fetching workflows:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load workflows",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
       }
-    ];
-
-    const sampleExecutions: WorkflowExecution[] = [
-      {
-        id: '1',
-        workflowId: '1',
-        workflowName: 'New Lead Welcome Email',
-        status: 'completed',
-        startTime: '2024-01-15T11:30:00Z',
-        endTime: '2024-01-15T11:30:15Z',
-        triggerData: { leadId: 'lead_123', leadName: 'ABC Corp' },
-        result: 'Email sent successfully'
-      },
-      {
-        id: '2',
-        workflowId: '2',
-        workflowName: 'Document Processing Alert',
-        status: 'running',
-        startTime: '2024-01-15T11:25:00Z',
-        triggerData: { documentId: 'doc_456', documentName: 'loan_application.pdf' }
-      },
-      {
-        id: '3',
-        workflowId: '1',
-        workflowName: 'New Lead Welcome Email',
-        status: 'failed',
-        startTime: '2024-01-15T10:45:00Z',
-        endTime: '2024-01-15T10:45:10Z',
-        triggerData: { leadId: 'lead_124', leadName: 'XYZ Ltd' },
-        result: 'Email delivery failed - invalid address'
-      }
-    ];
-
-    setWorkflows(sampleWorkflows);
-    setExecutions(sampleExecutions);
-    setLoading(false);
-  }, []);
+    };
+    
+    fetchWorkflows();
+  }, [toast]);
 
   const handleCreateWorkflow = () => {
     setIsCreating(true);
@@ -477,8 +407,8 @@ export function WorkflowAutomation() {
                 <CardTitle className="text-lg">Success Rate</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">94%</div>
-                <p className="text-sm text-muted-foreground">Average across all workflows</p>
+                <div className="text-3xl font-bold">—</div>
+                <p className="text-sm text-muted-foreground">No workflow data yet</p>
               </CardContent>
             </Card>
 
@@ -487,8 +417,8 @@ export function WorkflowAutomation() {
                 <CardTitle className="text-lg">Time Saved</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">47h</div>
-                <p className="text-sm text-muted-foreground">This month</p>
+                <div className="text-3xl font-bold">—</div>
+                <p className="text-sm text-muted-foreground">Not tracked</p>
               </CardContent>
             </Card>
           </div>

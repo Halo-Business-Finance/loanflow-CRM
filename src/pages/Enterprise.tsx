@@ -166,7 +166,7 @@ export default function Enterprise() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Active Workflows</p>
-                <p className="text-2xl font-bold">12</p>
+                <p className="text-2xl font-bold">—</p>
               </div>
               <Workflow className="w-8 h-8 text-primary" />
             </div>
@@ -176,7 +176,7 @@ export default function Enterprise() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Custom Objects</p>
-                <p className="text-2xl font-bold">8</p>
+                <p className="text-2xl font-bold">—</p>
               </div>
               <Database className="w-8 h-8 text-primary" />
             </div>
@@ -186,7 +186,7 @@ export default function Enterprise() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Approval Processes</p>
-                <p className="text-2xl font-bold">5</p>
+                <p className="text-2xl font-bold">—</p>
               </div>
               <CheckCircle className="w-8 h-8 text-primary" />
             </div>

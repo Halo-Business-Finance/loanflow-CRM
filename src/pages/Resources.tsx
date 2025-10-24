@@ -35,14 +35,14 @@ interface ResourceOverview {
 
 export default function Resources() {
   const [overview] = useState<ResourceOverview>({
-    totalResources: 147,
-    documentationScore: 94,
-    trainingCompleted: 87,
-    supportTickets: 3,
-    knowledgeBaseArticles: 42,
-    videoTutorials: 18,
-    userGuides: 25,
-    complianceDocuments: 12
+    totalResources: 0,
+    documentationScore: 0,
+    trainingCompleted: 0,
+    supportTickets: 0,
+    knowledgeBaseArticles: 0,
+    videoTutorials: 0,
+    userGuides: 0,
+    complianceDocuments: 0
   });
 
   const documentationItems = [
