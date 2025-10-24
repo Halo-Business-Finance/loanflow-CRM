@@ -81,6 +81,16 @@ serve(async (req) => {
       throw new Error('Rate limit exceeded. Maximum 5 deletions per hour for security.');
     }
 
+    // CRITICAL: Check MFA requirement for user deletion
+    const { data: mfaRequired } = await supabaseClient.rpc('require_mfa_for_operation', {
+      p_user_id: user.id,
+      p_operation_type: 'user_deletion'
+    });
+
+    if (mfaRequired && !mfaRequired) {
+      throw new Error('MFA verification required for user deletion. Please verify your MFA and try again.');
+    }
+
     // Get the target user ID from request body
     const { userId } = await req.json();
 

@@ -104,6 +104,19 @@ serve(async (req) => {
       })
     }
 
+    // CRITICAL: Check MFA requirement for password reset
+    const { data: mfaRequired } = await supabaseAdmin.rpc('require_mfa_for_operation', {
+      p_user_id: user.id,
+      p_operation_type: 'password_reset'
+    });
+
+    if (mfaRequired && !mfaRequired) {
+      return new Response(JSON.stringify({ error: 'MFA verification required for password reset. Please verify your MFA and try again.' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
     // Update user password using admin privileges
     const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user_id, {
       password: new_password

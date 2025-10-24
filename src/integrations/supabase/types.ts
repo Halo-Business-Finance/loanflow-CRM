@@ -4429,6 +4429,7 @@ export type Database = {
         }
         Returns: Json
       }
+      cleanup_expired_session_data: { Args: never; Returns: undefined }
       cleanup_expired_sessions: { Args: never; Returns: undefined }
       cleanup_expired_sessions_optimized: { Args: never; Returns: Json }
       clear_secure_session_data: { Args: never; Returns: undefined }
@@ -4815,6 +4816,10 @@ export type Database = {
         }
         Returns: string
       }
+      log_mfa_verification: {
+        Args: { p_method: string; p_success: boolean; p_user_id: string }
+        Returns: undefined
+      }
       log_security_event: {
         Args: {
           p_details?: Json
@@ -4846,6 +4851,10 @@ export type Database = {
       remove_secure_session_data: {
         Args: { p_key: string }
         Returns: undefined
+      }
+      require_mfa_for_operation: {
+        Args: { p_operation_type: string; p_user_id: string }
+        Returns: boolean
       }
       restore_user: {
         Args: { p_restored_by?: string; p_user_id: string }
