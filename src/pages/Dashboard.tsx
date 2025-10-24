@@ -373,21 +373,30 @@ export default function Dashboard() {
         </div>
 
         {/* Calendar and Today's Schedule Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Full Calendar Widget */}
           <Card className="bg-card border">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <CalendarIcon className="h-5 w-5 text-primary" />
-                <CardTitle className="text-lg">Calendar</CardTitle>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CalendarIcon className="h-4 w-4 text-primary" />
+                  <CardTitle className="text-base">Calendar</CardTitle>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => navigate('/activities/calendar')}
+                  className="h-7 text-xs"
+                >
+                  View Full
+                </Button>
               </div>
-              <CardDescription>Click a date to view scheduled events</CardDescription>
             </CardHeader>
-            <CardContent className="flex justify-center">
+            <CardContent className="flex justify-center pb-4">
               <Calendar
                 mode="single"
                 selected={new Date()}
-                className="rounded-md"
+                className="rounded-md scale-90 -my-3"
                 modifiers={{
                   hasEvents: datesWithEvents
                 }}
@@ -401,42 +410,43 @@ export default function Dashboard() {
 
           {/* Today's Schedule */}
           <Card className="bg-card border">
-            <CardHeader>
+            <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <CalendarCheck className="h-5 w-5 text-primary" />
-                  <CardTitle className="text-lg">Today's Schedule</CardTitle>
+                  <CalendarCheck className="h-4 w-4 text-primary" />
+                  <CardTitle className="text-base">Today's Schedule</CardTitle>
                 </div>
                 <Button 
                   variant="ghost" 
                   size="sm"
                   onClick={() => navigate('/activities/calendar')}
+                  className="h-7 text-xs"
                 >
                   View All
                 </Button>
               </div>
-              <CardDescription>{format(new Date(), 'EEEE, MMMM d, yyyy')}</CardDescription>
+              <CardDescription className="text-xs">{format(new Date(), 'EEEE, MMMM d, yyyy')}</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pb-4">
               {todayEvents.length === 0 ? (
-                <div className="text-center py-8">
-                  <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">No events scheduled for today</p>
+                <div className="text-center py-6">
+                  <Clock className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-xs text-muted-foreground">No events scheduled for today</p>
                   <Button 
                     variant="link" 
                     size="sm"
                     onClick={() => navigate('/activities/calendar')}
-                    className="mt-2"
+                    className="mt-1 h-7 text-xs"
                   >
                     Schedule an event
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2 max-h-[280px] overflow-y-auto">
                   {todayEvents.map((event) => (
                     <div
                       key={event.id}
-                      className="flex items-start gap-3 p-3 border rounded-lg bg-background/50 hover:bg-accent/50 transition-colors cursor-pointer"
+                      className="flex items-start gap-2 p-2 border rounded-lg bg-background/50 hover:bg-accent/50 transition-colors cursor-pointer"
                       onClick={() => {
                         if (event.relatedId && event.relatedType === 'lead') {
                           navigate(`/leads/${event.relatedId}`);
@@ -445,20 +455,17 @@ export default function Dashboard() {
                         }
                       }}
                     >
-                      <div className="flex-shrink-0 mt-1">
-                        {event.type === 'meeting' && <Users className="h-4 w-4 text-primary" />}
-                        {event.type === 'call' && <Clock className="h-4 w-4 text-primary" />}
-                        {event.type === 'task' && <CheckCircle className="h-4 w-4 text-primary" />}
-                        {event.type === 'deadline' && <AlertCircle className="h-4 w-4 text-destructive" />}
-                        {event.type === 'followup' && <Activity className="h-4 w-4 text-primary" />}
-                        {event.type === 'reminder' && <Clock className="h-4 w-4 text-primary" />}
+                      <div className="flex-shrink-0 mt-0.5">
+                        {event.type === 'meeting' && <Users className="h-3.5 w-3.5 text-primary" />}
+                        {event.type === 'call' && <Clock className="h-3.5 w-3.5 text-primary" />}
+                        {event.type === 'task' && <CheckCircle className="h-3.5 w-3.5 text-primary" />}
+                        {event.type === 'deadline' && <AlertCircle className="h-3.5 w-3.5 text-destructive" />}
+                        {event.type === 'followup' && <Activity className="h-3.5 w-3.5 text-primary" />}
+                        {event.type === 'reminder' && <Clock className="h-3.5 w-3.5 text-primary" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm">{event.title}</p>
-                        {event.description && (
-                          <p className="text-xs text-muted-foreground mt-1">{event.description}</p>
-                        )}
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="font-medium text-xs leading-tight">{event.title}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {format(event.startTime, 'h:mm a')}
                         </p>
                       </div>
