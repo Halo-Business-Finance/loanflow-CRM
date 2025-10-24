@@ -968,12 +968,18 @@ export type Database = {
           business_city: string | null
           business_name: string | null
           business_state: string | null
+          business_type: string | null
           business_zip_code: string | null
           call_notes: string | null
+          campaign_source: string | null
+          collateral_value: number | null
+          conversion_probability: number | null
           created_at: string
           credit_score: number | null
           current_processing_rate: number | null
+          debt_to_income_ratio: number | null
           email: string
+          employees: number | null
           existing_loan_amount: number | null
           first_name: string | null
           home_address: string | null
@@ -982,17 +988,22 @@ export type Database = {
           home_zip_code: string | null
           id: string
           income: number | null
+          industry: string | null
           interest_rate: number | null
+          last_activity: string | null
           last_name: string | null
+          lead_score: number | null
           loan_amount: number | null
           loan_type: string | null
           location: string | null
           maturity_date: string | null
           mobile_phone: string | null
           monthly_processing_volume: number | null
+          monthly_revenue: number | null
           naics_code: string | null
           name: string
           net_operating_income: number | null
+          next_follow_up: string | null
           notes: string | null
           ownership_percentage: number | null
           ownership_structure: string | null
@@ -1003,11 +1014,19 @@ export type Database = {
           priority: string | null
           processor_name: string | null
           property_payment_amount: number | null
+          purpose_of_loan: string | null
+          referral_source: string | null
+          requested_amount: number | null
+          social_media: string | null
           source: string | null
           stage: string | null
+          tax_id: string | null
+          time_in_business: string | null
           updated_at: string
           user_id: string
+          website: string | null
           year_established: number | null
+          years_in_business: number | null
         }
         Insert: {
           annual_revenue?: number | null
@@ -1020,12 +1039,18 @@ export type Database = {
           business_city?: string | null
           business_name?: string | null
           business_state?: string | null
+          business_type?: string | null
           business_zip_code?: string | null
           call_notes?: string | null
+          campaign_source?: string | null
+          collateral_value?: number | null
+          conversion_probability?: number | null
           created_at?: string
           credit_score?: number | null
           current_processing_rate?: number | null
+          debt_to_income_ratio?: number | null
           email: string
+          employees?: number | null
           existing_loan_amount?: number | null
           first_name?: string | null
           home_address?: string | null
@@ -1034,17 +1059,22 @@ export type Database = {
           home_zip_code?: string | null
           id?: string
           income?: number | null
+          industry?: string | null
           interest_rate?: number | null
+          last_activity?: string | null
           last_name?: string | null
+          lead_score?: number | null
           loan_amount?: number | null
           loan_type?: string | null
           location?: string | null
           maturity_date?: string | null
           mobile_phone?: string | null
           monthly_processing_volume?: number | null
+          monthly_revenue?: number | null
           naics_code?: string | null
           name: string
           net_operating_income?: number | null
+          next_follow_up?: string | null
           notes?: string | null
           ownership_percentage?: number | null
           ownership_structure?: string | null
@@ -1055,11 +1085,19 @@ export type Database = {
           priority?: string | null
           processor_name?: string | null
           property_payment_amount?: number | null
+          purpose_of_loan?: string | null
+          referral_source?: string | null
+          requested_amount?: number | null
+          social_media?: string | null
           source?: string | null
           stage?: string | null
+          tax_id?: string | null
+          time_in_business?: string | null
           updated_at?: string
           user_id: string
+          website?: string | null
           year_established?: number | null
+          years_in_business?: number | null
         }
         Update: {
           annual_revenue?: number | null
@@ -1072,12 +1110,18 @@ export type Database = {
           business_city?: string | null
           business_name?: string | null
           business_state?: string | null
+          business_type?: string | null
           business_zip_code?: string | null
           call_notes?: string | null
+          campaign_source?: string | null
+          collateral_value?: number | null
+          conversion_probability?: number | null
           created_at?: string
           credit_score?: number | null
           current_processing_rate?: number | null
+          debt_to_income_ratio?: number | null
           email?: string
+          employees?: number | null
           existing_loan_amount?: number | null
           first_name?: string | null
           home_address?: string | null
@@ -1086,17 +1130,22 @@ export type Database = {
           home_zip_code?: string | null
           id?: string
           income?: number | null
+          industry?: string | null
           interest_rate?: number | null
+          last_activity?: string | null
           last_name?: string | null
+          lead_score?: number | null
           loan_amount?: number | null
           loan_type?: string | null
           location?: string | null
           maturity_date?: string | null
           mobile_phone?: string | null
           monthly_processing_volume?: number | null
+          monthly_revenue?: number | null
           naics_code?: string | null
           name?: string
           net_operating_income?: number | null
+          next_follow_up?: string | null
           notes?: string | null
           ownership_percentage?: number | null
           ownership_structure?: string | null
@@ -1107,11 +1156,19 @@ export type Database = {
           priority?: string | null
           processor_name?: string | null
           property_payment_amount?: number | null
+          purpose_of_loan?: string | null
+          referral_source?: string | null
+          requested_amount?: number | null
+          social_media?: string | null
           source?: string | null
           stage?: string | null
+          tax_id?: string | null
+          time_in_business?: string | null
           updated_at?: string
           user_id?: string
+          website?: string | null
           year_established?: number | null
+          years_in_business?: number | null
         }
         Relationships: []
       }
