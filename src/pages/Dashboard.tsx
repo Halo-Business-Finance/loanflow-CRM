@@ -67,15 +67,15 @@ export default function Dashboard() {
     activeDeals: 0,
     pendingTasks: 0,
     recentActivities: 0,
-    totalRevenue: 2500000,
-    pipelineValue: 4800000,
-    conversionRate: 15.3,
-    avgDealSize: 185000,
+    totalRevenue: 0,
+    pipelineValue: 0,
+    conversionRate: 0,
+    avgDealSize: 0,
     // Trend data (percentage change vs last period)
-    revenueTrend: 12.5,
-    pipelineTrend: 8.3,
-    leadsTrend: -3.2,
-    conversionTrend: 5.1
+    revenueTrend: 0,
+    pipelineTrend: 0,
+    leadsTrend: 0,
+    conversionTrend: 0
   });
   const [recentActivityList, setRecentActivityList] = useState<Array<{type: string; message: string; time: string}>>([]);
 
@@ -104,11 +104,12 @@ export default function Dashboard() {
       }
       setUserName(firstName);
       
+      // Fetch leads with contact entity data including loan amounts
       const { data: leads } = await supabase
         .from('leads')
         .select(`
           *,
-          contact_entities(stage)
+          contact_entities(stage, loan_amount)
         `)
         .eq('user_id', user.id);
 
@@ -229,13 +230,103 @@ export default function Dashboard() {
 
       setRecentActivityList(activities);
 
-      setStats(prev => ({
-        ...prev,
+      // Calculate real metrics from contact_entities data
+      const currentMonth = new Date();
+      const currentMonthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+      const lastMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+      const lastMonthEnd = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 0, 23, 59, 59, 999);
+
+      // Current month leads
+      const currentMonthLeads = leads?.filter(l => {
+        const createdAt = new Date(l.created_at);
+        return createdAt >= currentMonthStart;
+      }) || [];
+
+      // Last month leads
+      const lastMonthLeads = leads?.filter(l => {
+        const createdAt = new Date(l.created_at);
+        return createdAt >= lastMonth && createdAt <= lastMonthEnd;
+      }) || [];
+
+      // Calculate Total Revenue (sum of loan_amount for 'Loan Funded' or 'Closed Won' stages)
+      const closedWonStages = ['Loan Funded', 'Closed Won'];
+      const totalRevenue = (leads || []).reduce((sum, lead) => {
+        const contactEntity = lead.contact_entities as any;
+        const stage = contactEntity?.stage;
+        const loanAmount = contactEntity?.loan_amount || 0;
+        return closedWonStages.includes(stage) ? sum + loanAmount : sum;
+      }, 0);
+
+      // Calculate Pipeline Value (sum of loan_amount for active/open stages)
+      const excludedStages = ['Loan Funded', 'Closed Won', 'Closed Lost', 'Archive', 'Lost'];
+      const pipelineValue = (leads || []).reduce((sum, lead) => {
+        const contactEntity = lead.contact_entities as any;
+        const stage = contactEntity?.stage;
+        const loanAmount = contactEntity?.loan_amount || 0;
+        return stage && !excludedStages.includes(stage) ? sum + loanAmount : sum;
+      }, 0);
+
+      // Calculate Conversion Rate (closed won / total leads * 100)
+      const closedWonCount = (leads || []).filter(l => {
+        const stage = (l.contact_entities as any)?.stage;
+        return closedWonStages.includes(stage);
+      }).length;
+      const conversionRate = leads && leads.length > 0 ? (closedWonCount / leads.length) * 100 : 0;
+
+      // Calculate trends (current month vs last month)
+      const lastMonthRevenue = lastMonthLeads.reduce((sum, lead) => {
+        const contactEntity = lead.contact_entities as any;
+        const stage = contactEntity?.stage;
+        const loanAmount = contactEntity?.loan_amount || 0;
+        return closedWonStages.includes(stage) ? sum + loanAmount : sum;
+      }, 0);
+
+      const lastMonthPipeline = lastMonthLeads.reduce((sum, lead) => {
+        const contactEntity = lead.contact_entities as any;
+        const stage = contactEntity?.stage;
+        const loanAmount = contactEntity?.loan_amount || 0;
+        return stage && !excludedStages.includes(stage) ? sum + loanAmount : sum;
+      }, 0);
+
+      const lastMonthClosedWon = lastMonthLeads.filter(l => {
+        const stage = (l.contact_entities as any)?.stage;
+        return closedWonStages.includes(stage);
+      }).length;
+
+      const lastMonthConversionRate = lastMonthLeads.length > 0 
+        ? (lastMonthClosedWon / lastMonthLeads.length) * 100 
+        : 0;
+
+      const revenueTrend = lastMonthRevenue > 0 
+        ? ((totalRevenue - lastMonthRevenue) / lastMonthRevenue) * 100 
+        : 0;
+      
+      const pipelineTrend = lastMonthPipeline > 0 
+        ? ((pipelineValue - lastMonthPipeline) / lastMonthPipeline) * 100 
+        : 0;
+      
+      const leadsTrend = lastMonthLeads.length > 0 
+        ? (((leads?.length || 0) - lastMonthLeads.length) / lastMonthLeads.length) * 100 
+        : 0;
+      
+      const conversionTrend = lastMonthConversionRate > 0 
+        ? ((conversionRate - lastMonthConversionRate) / lastMonthConversionRate) * 100 
+        : 0;
+
+      setStats({
         totalLeads: leads?.length || 0,
         activeDeals: activeDeals,
         pendingTasks: pendingTasks,
-        recentActivities: activities.length
-      }));
+        recentActivities: activities.length,
+        totalRevenue,
+        pipelineValue,
+        conversionRate: parseFloat(conversionRate.toFixed(1)),
+        avgDealSize: closedWonCount > 0 ? totalRevenue / closedWonCount : 0,
+        revenueTrend: parseFloat(revenueTrend.toFixed(1)),
+        pipelineTrend: parseFloat(pipelineTrend.toFixed(1)),
+        leadsTrend: parseFloat(leadsTrend.toFixed(1)),
+        conversionTrend: parseFloat(conversionTrend.toFixed(1))
+      });
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
