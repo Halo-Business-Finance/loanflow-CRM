@@ -121,6 +121,9 @@ export function MessageComposer({ replyTo, onClose, onSent }: MessageComposerPro
           title: 'New Message',
           message: `${user.email} sent you a message: ${subject}`,
           type: 'message',
+          scheduled_for: new Date().toISOString(), // Add to calendar
+          related_id: null,
+          related_type: 'message',
         });
       } catch (notifError) {
         console.warn('Notifications insert skipped:', notifError);

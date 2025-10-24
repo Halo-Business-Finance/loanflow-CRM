@@ -107,6 +107,8 @@ function mapNotificationTypeToEventType(type: string): CalendarEvent['type'] {
     case 'follow_up':
     case 'follow_up_reminder':
       return 'followup';
+    case 'message':
+      return 'reminder'; // Messages show as reminders in calendar
     default:
       return 'reminder';
   }
