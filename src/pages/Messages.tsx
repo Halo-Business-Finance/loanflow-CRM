@@ -210,92 +210,115 @@ export default function Messages() {
   const unreadCount = messages.filter(msg => !msg.is_read && msg.recipient_id === currentUserId).length;
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-6 md:p-8 space-y-6 max-w-[1600px] mx-auto">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Messages</h1>
-          <p className="text-muted-foreground">Internal communication system</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Messages</h1>
+          <p className="text-sm text-muted-foreground mt-1">Internal communication system</p>
         </div>
-        <Button onClick={handleCompose}>
-          <Send className="mr-2 h-4 w-4" />
+        <Button onClick={handleCompose} size="lg" className="gap-2 shadow-md hover:shadow-lg transition-shadow">
+          <Send className="h-4 w-4" />
           New Message
         </Button>
       </div>
 
-      <Card className="p-6">
+      <Card className="border-2 shadow-sm">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="inbox" className="relative">
-              <Inbox className="mr-2 h-4 w-4" />
-              Inbox
-              {unreadCount > 0 && (
-                <Badge variant="destructive" className="ml-2">
-                  {unreadCount}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="sent">
-              <Send className="mr-2 h-4 w-4" />
-              Sent
-            </TabsTrigger>
-          </TabsList>
+          <div className="border-b bg-muted/30 px-6 py-4">
+            <TabsList className="bg-background border shadow-sm h-11">
+              <TabsTrigger value="inbox" className="relative data-[state=active]:shadow-sm gap-2 px-6">
+                <Inbox className="h-4 w-4" />
+                <span className="font-medium">Inbox</span>
+                {unreadCount > 0 && (
+                  <Badge variant="default" className="ml-1 px-1.5 py-0 text-xs h-5 min-w-5 rounded-full bg-primary">
+                    {unreadCount}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="sent" className="data-[state=active]:shadow-sm gap-2 px-6">
+                <Send className="h-4 w-4" />
+                <span className="font-medium">Sent</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x">
             <div className="lg:col-span-1">
-              <ScrollArea className="h-[600px]">
+              <ScrollArea className="h-[650px]">
                 {!currentUserId ? (
-                  <div className="flex items-center justify-center p-8">
-                    <p className="text-muted-foreground">Loading...</p>
+                  <div className="flex items-center justify-center p-12">
+                    <div className="text-center space-y-2">
+                      <div className="animate-pulse h-8 w-8 bg-primary/20 rounded-full mx-auto mb-3" />
+                      <p className="text-sm text-muted-foreground">Loading...</p>
+                    </div>
                   </div>
                 ) : loading ? (
-                  <div className="flex items-center justify-center p-8">
-                    <p className="text-muted-foreground">Loading messages...</p>
+                  <div className="flex items-center justify-center p-12">
+                    <div className="text-center space-y-2">
+                      <div className="animate-pulse h-8 w-8 bg-primary/20 rounded-full mx-auto mb-3" />
+                      <p className="text-sm text-muted-foreground">Loading messages...</p>
+                    </div>
                   </div>
                 ) : messages.length === 0 ? (
-                  <div className="flex items-center justify-center p-8">
-                    <p className="text-muted-foreground">No messages yet</p>
+                  <div className="flex items-center justify-center p-12">
+                    <div className="text-center space-y-3">
+                      <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mx-auto">
+                        <Mail className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">No messages yet</p>
+                        <p className="text-xs text-muted-foreground mt-1">Start a conversation by sending a message</p>
+                      </div>
+                      <Button onClick={handleCompose} variant="outline" size="sm" className="mt-2">
+                        <Send className="h-3 w-3 mr-2" />
+                        Send Message
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   <>
                     <TabsContent value="inbox" className="mt-0">
                       {messages
                         .filter(msg => msg.recipient_id === currentUserId)
-                        .map((message) => (
+                        .map((message, index) => (
                           <div
                             key={message.id}
                             onClick={() => handleMessageClick(message)}
-                            className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors border-b ${
-                              selectedMessage?.id === message.id ? 'bg-muted' : ''
-                            } ${!message.is_read ? 'font-semibold' : ''}`}
+                            className={`
+                              group relative p-4 cursor-pointer transition-all duration-200
+                              hover:bg-accent/50 border-b last:border-b-0
+                              ${selectedMessage?.id === message.id ? 'bg-accent border-l-4 border-l-primary' : 'border-l-4 border-l-transparent'}
+                              ${!message.is_read ? 'bg-primary/5' : ''}
+                            `}
                           >
                             <div className="flex items-start gap-3">
-                              <Avatar className="h-10 w-10">
-                                <AvatarFallback>
-                                  {getInitials(
-                                    message.sender_profile?.full_name || null,
-                                    message.sender_profile?.email || ''
-                                  )}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2">
-                                  {!message.is_read ? (
-                                    <Mail className="h-4 w-4 text-primary" />
-                                  ) : (
-                                    <MailOpen className="h-4 w-4 text-muted-foreground" />
-                                  )}
-                                  <p className="text-sm font-medium truncate">
+                              <div className="relative">
+                                <Avatar className={`h-11 w-11 border-2 transition-colors ${!message.is_read ? 'border-primary/40' : 'border-border'}`}>
+                                  <AvatarFallback className={!message.is_read ? 'bg-primary/10 text-primary font-semibold' : ''}>
+                                    {getInitials(
+                                      message.sender_profile?.full_name || null,
+                                      message.sender_profile?.email || ''
+                                    )}
+                                  </AvatarFallback>
+                                </Avatar>
+                                {!message.is_read && (
+                                  <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full border-2 border-background" />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0 space-y-1">
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className={`text-sm truncate ${!message.is_read ? 'font-semibold text-foreground' : 'font-medium text-foreground/90'}`}>
                                     {message.sender_profile?.full_name || message.sender_profile?.email}
                                   </p>
+                                  <p className="text-xs text-muted-foreground whitespace-nowrap flex-shrink-0">
+                                    {formatDistanceToNow(new Date(message.created_at), { addSuffix: true }).replace('about ', '')}
+                                  </p>
                                 </div>
-                                <p className="text-sm font-medium truncate mt-1">
+                                <p className={`text-sm truncate ${!message.is_read ? 'font-semibold text-foreground' : 'text-foreground/80'}`}>
                                   {message.subject}
                                 </p>
-                                <p className="text-xs text-muted-foreground truncate mt-1">
+                                <p className="text-xs text-muted-foreground truncate">
                                   {message.message}
-                                </p>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
                                 </p>
                               </div>
                             </div>
@@ -310,12 +333,14 @@ export default function Messages() {
                           <div
                             key={message.id}
                             onClick={() => handleMessageClick(message)}
-                            className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors border-b ${
-                              selectedMessage?.id === message.id ? 'bg-muted' : ''
-                            }`}
+                            className={`
+                              group relative p-4 cursor-pointer transition-all duration-200
+                              hover:bg-accent/50 border-b last:border-b-0
+                              ${selectedMessage?.id === message.id ? 'bg-accent border-l-4 border-l-primary' : 'border-l-4 border-l-transparent'}
+                            `}
                           >
                             <div className="flex items-start gap-3">
-                              <Avatar className="h-10 w-10">
+                              <Avatar className="h-11 w-11 border-2 border-border">
                                 <AvatarFallback>
                                   {getInitials(
                                     message.recipient_profile?.full_name || null,
@@ -323,21 +348,23 @@ export default function Messages() {
                                   )}
                                 </AvatarFallback>
                               </Avatar>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2">
-                                  <Send className="h-4 w-4 text-muted-foreground" />
-                                  <p className="text-sm font-medium truncate">
-                                    To: {message.recipient_profile?.full_name || message.recipient_profile?.email}
+                              <div className="flex-1 min-w-0 space-y-1">
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <span className="text-xs text-muted-foreground flex-shrink-0">To:</span>
+                                    <p className="text-sm font-medium text-foreground/90 truncate">
+                                      {message.recipient_profile?.full_name || message.recipient_profile?.email}
+                                    </p>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground whitespace-nowrap flex-shrink-0">
+                                    {formatDistanceToNow(new Date(message.created_at), { addSuffix: true }).replace('about ', '')}
                                   </p>
                                 </div>
-                                <p className="text-sm font-medium truncate mt-1">
+                                <p className="text-sm text-foreground/80 truncate">
                                   {message.subject}
                                 </p>
-                                <p className="text-xs text-muted-foreground truncate mt-1">
+                                <p className="text-xs text-muted-foreground truncate">
                                   {message.message}
-                                </p>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
                                 </p>
                               </div>
                             </div>
@@ -349,88 +376,103 @@ export default function Messages() {
               </ScrollArea>
             </div>
 
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 bg-muted/20">
               {isComposing ? (
-                <MessageComposer
-                  replyTo={replyTo}
-                  onClose={() => {
-                    setIsComposing(false);
-                    setReplyTo(null);
-                  }}
-                  onSent={handleMessageSent}
-                />
+                <div className="p-6">
+                  <MessageComposer
+                    replyTo={replyTo}
+                    onClose={() => {
+                      setIsComposing(false);
+                      setReplyTo(null);
+                    }}
+                    onSent={handleMessageSent}
+                  />
+                </div>
               ) : selectedMessage ? (
-                <Card className="p-6">
-                  <div className="space-y-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3">
-                        <Avatar className="h-12 w-12">
-                          <AvatarFallback>
-                            {getInitials(
-                              activeTab === 'inbox'
-                                ? selectedMessage.sender_profile?.full_name || null
-                                : selectedMessage.recipient_profile?.full_name || null,
-                              activeTab === 'inbox'
-                                ? selectedMessage.sender_profile?.email || ''
-                                : selectedMessage.recipient_profile?.email || ''
-                            )}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-semibold">
-                            {activeTab === 'inbox'
-                              ? selectedMessage.sender_profile?.full_name || selectedMessage.sender_profile?.email
-                              : selectedMessage.recipient_profile?.full_name || selectedMessage.recipient_profile?.email}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {activeTab === 'inbox'
-                              ? selectedMessage.sender_profile?.email
-                              : selectedMessage.recipient_profile?.email}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {formatDistanceToNow(new Date(selectedMessage.created_at), { addSuffix: true })}
-                          </p>
+                <div className="p-6">
+                  <Card className="shadow-sm border-2">
+                    <div className="p-6 space-y-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-4 min-w-0">
+                          <Avatar className="h-14 w-14 border-2 border-primary/20 shadow-sm">
+                            <AvatarFallback className="text-base font-semibold">
+                              {getInitials(
+                                activeTab === 'inbox'
+                                  ? selectedMessage.sender_profile?.full_name || null
+                                  : selectedMessage.recipient_profile?.full_name || null,
+                                activeTab === 'inbox'
+                                  ? selectedMessage.sender_profile?.email || ''
+                                  : selectedMessage.recipient_profile?.email || ''
+                              )}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-base text-foreground">
+                              {activeTab === 'inbox'
+                                ? selectedMessage.sender_profile?.full_name || selectedMessage.sender_profile?.email
+                                : selectedMessage.recipient_profile?.full_name || selectedMessage.recipient_profile?.email}
+                            </p>
+                            <p className="text-sm text-muted-foreground truncate">
+                              {activeTab === 'inbox'
+                                ? selectedMessage.sender_profile?.email
+                                : `To: ${selectedMessage.recipient_profile?.email}`}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1.5">
+                              <span className="h-1 w-1 rounded-full bg-muted-foreground" />
+                              {formatDistanceToNow(new Date(selectedMessage.created_at), { addSuffix: true })}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex gap-2">
-                        {activeTab === 'inbox' && (
+                        <div className="flex gap-2 flex-shrink-0">
+                          {activeTab === 'inbox' && (
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={() => handleReply(selectedMessage)}
+                              className="gap-2"
+                            >
+                              <Reply className="h-3.5 w-3.5" />
+                              Reply
+                            </Button>
+                          )}
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleReply(selectedMessage)}
+                            onClick={() => deleteMessage(selectedMessage.id)}
+                            className="gap-2"
                           >
-                            <Reply className="h-4 w-4 mr-2" />
-                            Reply
+                            <Trash2 className="h-3.5 w-3.5" />
                           </Button>
-                        )}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => deleteMessage(selectedMessage.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-foreground">{selectedMessage.subject}</h3>
+                        <div className="prose prose-sm max-w-none">
+                          <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">
+                            {selectedMessage.message}
+                          </p>
+                        </div>
                       </div>
                     </div>
-
-                    <Separator />
-
+                  </Card>
+                </div>
+              ) : (
+                <div className="p-12 flex items-center justify-center h-full">
+                  <div className="text-center space-y-4 max-w-sm">
+                    <div className="h-24 w-24 rounded-full bg-muted/50 flex items-center justify-center mx-auto">
+                      <Mail className="h-12 w-12 text-muted-foreground" />
+                    </div>
                     <div>
-                      <h3 className="text-lg font-semibold mb-2">{selectedMessage.subject}</h3>
-                      <p className="text-sm whitespace-pre-wrap">{selectedMessage.message}</p>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">No message selected</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Select a message from the list to view its contents
+                      </p>
                     </div>
                   </div>
-                </Card>
-              ) : (
-                <Card className="p-12">
-                  <div className="flex flex-col items-center justify-center text-center">
-                    <Mail className="h-16 w-16 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">No message selected</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Select a message from the list to view its contents
-                    </p>
-                  </div>
-                </Card>
+                </div>
               )}
             </div>
           </div>
