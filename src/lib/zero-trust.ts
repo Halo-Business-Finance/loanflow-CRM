@@ -527,9 +527,21 @@ export class ZeroTrustManager {
     const riskScore = this.riskScores.get(userId) || 50;
     
     // Check if additional verification is required
-    const pendingVerification = await fortress.secureRetrieveData(`pending_verification_${userId}`, 'business');
-    if (pendingVerification && Date.now() < pendingVerification.expiresAt) {
-      return false; // Block access until verification is complete
+    const { data: encryptedVerificationData } = await supabase.rpc('get_secure_session_data', {
+      p_key: `pending_verification_${userId}`
+    });
+    
+    if (encryptedVerificationData) {
+      try {
+        const decryptedData = await SecurityManager.decryptSensitiveData(encryptedVerificationData as string);
+        const pendingVerification = JSON.parse(decryptedData);
+        
+        if (pendingVerification && Date.now() < pendingVerification.expiresAt) {
+          return false; // Block access until verification is complete
+        }
+      } catch (error) {
+        logger.error('Failed to check pending verification');
+      }
     }
     
     // Risk-based access control
