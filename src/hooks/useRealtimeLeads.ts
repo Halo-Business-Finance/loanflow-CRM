@@ -17,16 +17,14 @@ export function useRealtimeLeads() {
     try {
       setLoading(true)
       
-      // Add debugging
-      const { data: { session } } = await supabase.auth.getSession()
-      console.log('Current session:', session)
-      console.log('User authenticated:', !!session?.user)
-      
-      if (!session?.user) {
-        console.warn('No authenticated user found, skipping leads fetch')
+      // Use auth context; avoid brittle session check race conditions
+      if (!user) {
+        console.warn('No authenticated user in context, skipping leads fetch')
         setLeads([])
+        setLoading(false)
         return
       }
+      console.log('Fetching leads for user:', user.id)
       
       const { data, error } = await supabase
         .from('leads')
