@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calculator, X, DollarSign, Percent, Calendar, TrendingUp } from 'lucide-react';
+import { Calculator, X, DollarSign, Percent, Calendar, TrendingUp, ToggleLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 
 export function LoanCalculator() {
   const [open, setOpen] = useState(false);
@@ -27,6 +28,9 @@ export function LoanCalculator() {
   const [interestRate, setInterestRate] = useState('6.5');
   const [loanTerm, setLoanTerm] = useState('30');
   const [termUnit, setTermUnit] = useState<'years' | 'months'>('years');
+  const [isInterestOnly, setIsInterestOnly] = useState(false);
+  const [interestOnlyPeriod, setInterestOnlyPeriod] = useState('5');
+  const [interestOnlyUnit, setInterestOnlyUnit] = useState<'years' | 'months'>('years');
 
   const calculatePayment = () => {
     const principal = parseFloat(loanAmount) || 0;
@@ -34,41 +38,107 @@ export function LoanCalculator() {
     const term = parseFloat(loanTerm) || 0;
     
     if (principal <= 0 || rate < 0 || term <= 0) {
-      return { monthly: 0, total: 0, totalInterest: 0 };
+      return { 
+        monthly: 0, 
+        total: 0, 
+        totalInterest: 0,
+        interestOnlyPayment: 0,
+        principalAndInterestPayment: 0,
+        interestOnlyTotal: 0
+      };
     }
 
     // Convert term to months
-    const months = termUnit === 'years' ? term * 12 : term;
+    const totalMonths = termUnit === 'years' ? term * 12 : term;
     
     // Monthly interest rate
     const monthlyRate = rate / 12;
     
-    // Calculate monthly payment using standard loan formula
-    // Handle both interest-bearing and zero-interest loans
-    let monthlyPayment: number;
-    if (monthlyRate === 0) {
-      // Zero interest loan - simple division
-      monthlyPayment = principal / months;
+    if (isInterestOnly) {
+      const ioPeriodMonths = interestOnlyUnit === 'years' 
+        ? parseFloat(interestOnlyPeriod) * 12 
+        : parseFloat(interestOnlyPeriod);
+      
+      // Interest-only payment (just the interest each month)
+      const interestOnlyPayment = principal * monthlyRate;
+      
+      // Remaining months for principal + interest
+      const remainingMonths = totalMonths - ioPeriodMonths;
+      
+      // Calculate principal + interest payment for remaining period
+      let principalAndInterestPayment: number;
+      if (monthlyRate === 0) {
+        principalAndInterestPayment = principal / remainingMonths;
+      } else if (remainingMonths <= 0) {
+        // If interest-only period equals or exceeds total term
+        principalAndInterestPayment = 0;
+      } else {
+        principalAndInterestPayment = 
+          (principal * monthlyRate * Math.pow(1 + monthlyRate, remainingMonths)) /
+          (Math.pow(1 + monthlyRate, remainingMonths) - 1);
+      }
+      
+      const interestOnlyTotal = interestOnlyPayment * ioPeriodMonths;
+      const principalAndInterestTotal = principalAndInterestPayment * remainingMonths;
+      const totalPayment = interestOnlyTotal + principalAndInterestTotal;
+      const totalInterest = totalPayment - principal;
+      
+      // Check for invalid results
+      if (!isFinite(interestOnlyPayment) || isNaN(interestOnlyPayment) ||
+          !isFinite(principalAndInterestPayment) || isNaN(principalAndInterestPayment)) {
+        return { 
+          monthly: 0, 
+          total: 0, 
+          totalInterest: 0,
+          interestOnlyPayment: 0,
+          principalAndInterestPayment: 0,
+          interestOnlyTotal: 0
+        };
+      }
+
+      return {
+        monthly: principalAndInterestPayment, // This is for display compatibility
+        total: totalPayment,
+        totalInterest: totalInterest,
+        interestOnlyPayment: interestOnlyPayment,
+        principalAndInterestPayment: principalAndInterestPayment,
+        interestOnlyTotal: interestOnlyTotal
+      };
     } else {
-      // Standard amortization formula
-      monthlyPayment = 
-        (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) /
-        (Math.pow(1 + monthlyRate, months) - 1);
-    }
-    
-    const totalPayment = monthlyPayment * months;
-    const totalInterest = totalPayment - principal;
+      // Standard amortization (no interest-only period)
+      let monthlyPayment: number;
+      if (monthlyRate === 0) {
+        monthlyPayment = principal / totalMonths;
+      } else {
+        monthlyPayment = 
+          (principal * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
+          (Math.pow(1 + monthlyRate, totalMonths) - 1);
+      }
+      
+      const totalPayment = monthlyPayment * totalMonths;
+      const totalInterest = totalPayment - principal;
 
-    // Check for invalid results
-    if (!isFinite(monthlyPayment) || isNaN(monthlyPayment)) {
-      return { monthly: 0, total: 0, totalInterest: 0 };
-    }
+      // Check for invalid results
+      if (!isFinite(monthlyPayment) || isNaN(monthlyPayment)) {
+        return { 
+          monthly: 0, 
+          total: 0, 
+          totalInterest: 0,
+          interestOnlyPayment: 0,
+          principalAndInterestPayment: 0,
+          interestOnlyTotal: 0
+        };
+      }
 
-    return {
-      monthly: monthlyPayment,
-      total: totalPayment,
-      totalInterest: totalInterest
-    };
+      return {
+        monthly: monthlyPayment,
+        total: totalPayment,
+        totalInterest: totalInterest,
+        interestOnlyPayment: 0,
+        principalAndInterestPayment: 0,
+        interestOnlyTotal: 0
+      };
+    }
   };
 
   const results = calculatePayment();
@@ -175,6 +245,55 @@ export function LoanCalculator() {
                 </Select>
               </div>
             </div>
+
+            {/* Interest-Only Option */}
+            <Card className="bg-primary/5 border-2 border-primary/20">
+              <CardContent className="pt-5 pb-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <ToggleLeft className="h-4 w-4 text-primary" />
+                    <Label htmlFor="interest-only" className="text-sm font-semibold text-foreground cursor-pointer">
+                      Interest-Only Period
+                    </Label>
+                  </div>
+                  <Switch
+                    id="interest-only"
+                    checked={isInterestOnly}
+                    onCheckedChange={setIsInterestOnly}
+                  />
+                </div>
+                
+                {isInterestOnly && (
+                  <div className="space-y-2 animate-fade-in">
+                    <Label htmlFor="io-period" className="text-xs text-muted-foreground">
+                      Interest-Only Duration
+                    </Label>
+                    <div className="flex gap-3">
+                      <Input
+                        id="io-period"
+                        type="number"
+                        value={interestOnlyPeriod}
+                        onChange={(e) => setInterestOnlyPeriod(e.target.value)}
+                        className="flex-1 h-10 text-base bg-background border-2 border-border focus:border-primary transition-colors"
+                        placeholder="5"
+                      />
+                      <Select value={interestOnlyUnit} onValueChange={(value: 'years' | 'months') => setInterestOnlyUnit(value)}>
+                        <SelectTrigger className="w-[140px] h-10 text-sm bg-background border-2 border-border">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background">
+                          <SelectItem value="years" className="text-sm">Years</SelectItem>
+                          <SelectItem value="months" className="text-sm">Months</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <p className="text-xs text-muted-foreground italic mt-2">
+                      Pay only interest for the initial period, then principal + interest
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
 
           <Separator className="my-6" />
@@ -187,19 +306,64 @@ export function LoanCalculator() {
             </div>
 
             {/* Monthly Payment - Highlighted */}
-            <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-2 border-primary/20 shadow-lg">
-              <CardContent className="pt-6">
-                <div className="text-center space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Monthly Payment</p>
-                  <p className="text-5xl font-bold text-primary animate-fade-in">
-                    {formatCurrency(results.monthly)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Based on {termUnit === 'years' ? `${loanTerm} years` : `${loanTerm} months`} at {interestRate}% APR
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            {isInterestOnly ? (
+              <>
+                {/* Interest-Only Payment */}
+                <Card className="bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-transparent border-2 border-blue-500/20 shadow-lg">
+                  <CardContent className="pt-6">
+                    <div className="text-center space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Interest-Only Payment</p>
+                      <p className="text-4xl font-bold text-blue-600 dark:text-blue-400 animate-fade-in">
+                        {formatCurrency(results.interestOnlyPayment)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        For {interestOnlyUnit === 'years' ? `${interestOnlyPeriod} years` : `${interestOnlyPeriod} months`}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Principal + Interest Payment */}
+                <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-2 border-primary/20 shadow-lg">
+                  <CardContent className="pt-6">
+                    <div className="text-center space-y-2">
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Then Principal + Interest</p>
+                      <p className="text-4xl font-bold text-primary animate-fade-in">
+                        {formatCurrency(results.principalAndInterestPayment)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        For remaining {(() => {
+                          const ioPeriodMonths = interestOnlyUnit === 'years' 
+                            ? parseFloat(interestOnlyPeriod) * 12 
+                            : parseFloat(interestOnlyPeriod);
+                          const totalMonths = termUnit === 'years' ? parseFloat(loanTerm) * 12 : parseFloat(loanTerm);
+                          const remaining = totalMonths - ioPeriodMonths;
+                          const years = Math.floor(remaining / 12);
+                          const months = remaining % 12;
+                          return years > 0 
+                            ? `${years} year${years > 1 ? 's' : ''}${months > 0 ? ` ${months} month${months > 1 ? 's' : ''}` : ''}`
+                            : `${months} month${months > 1 ? 's' : ''}`;
+                        })()}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            ) : (
+              <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-2 border-primary/20 shadow-lg">
+                <CardContent className="pt-6">
+                  <div className="text-center space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Monthly Payment</p>
+                    <p className="text-5xl font-bold text-primary animate-fade-in">
+                      {formatCurrency(results.monthly)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Based on {termUnit === 'years' ? `${loanTerm} years` : `${loanTerm} months`} at {interestRate}% APR
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Additional Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
