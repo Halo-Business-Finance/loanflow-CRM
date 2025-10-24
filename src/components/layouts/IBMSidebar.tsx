@@ -27,6 +27,7 @@ import {
   FileCheck,
   AlertTriangle,
   Headset,
+  Mail,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -108,6 +109,7 @@ const navItems: NavItemData[] = [
     ]
   },
   { icon: BarChart3, label: 'Reports', to: '/reports' },
+  { icon: Mail, label: 'Messages', to: '/messages' },
   { icon: Headset, label: 'Support', to: '/support' },
   { icon: UserCog, label: 'User Directory', to: '/user-directory' },
   { 

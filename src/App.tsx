@@ -70,6 +70,7 @@ import SecurityThreats from "./pages/SecurityThreats";
 import SecurityCompliance from "./pages/SecurityCompliance";
 import SettingsUsers from "./pages/SettingsUsers";
 import SettingsSystem from "./pages/SettingsSystem";
+import Messages from "./pages/Messages";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useEnhancedSecurity } from "@/hooks/useEnhancedSecurity";
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess";
@@ -149,6 +150,8 @@ function AuthenticatedApp() {
             <Route path="/activities" element={<IBMCloudLayout><Activities /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/activities/calendar" element={<IBMCloudLayout><ActivitiesCalendar /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/activities/tasks" element={<IBMCloudLayout><ActivitiesTasks /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            
+            <Route path="/messages" element={<IBMCloudLayout><Messages /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/reports" element={<IBMCloudLayout><Reports /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/support" element={<IBMCloudLayout><Support /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
