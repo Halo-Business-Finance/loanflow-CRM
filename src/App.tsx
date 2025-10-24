@@ -98,6 +98,13 @@ function AuthenticatedApp() {
     canAccessAdminFeatures
   } = useRoleBasedAccess();
   
+  const isPreview = typeof window !== 'undefined' && (
+    window.self !== window.top ||
+    /(?:^|\.)lovableproject\.com$/.test(window.location.hostname) ||
+    /(?:^|\.)lovable\.app$/.test(window.location.hostname) ||
+    /localhost/.test(window.location.hostname)
+  );
+  
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -191,8 +198,18 @@ function AuthenticatedApp() {
           </>
         ) : (
           <>
-            {/* Redirect all other routes to auth when not logged in */}
-            <Route path="*" element={<AuthPage />} errorElement={<RouteErrorBoundary />} />
+            {isPreview ? (
+              <>
+                <Route path="/" element={<IBMCloudLayout key="dashboard-layout"><Suspense fallback={<div className="p-6">Loading...</div>}><DashboardPage /></Suspense></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+                <Route path="/dashboard" element={<IBMCloudLayout key="dashboard-layout"><Suspense fallback={<div className="p-6">Loading...</div>}><DashboardPage /></Suspense></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} errorElement={<RouteErrorBoundary />} />
+              </>
+            ) : (
+              <>
+                {/* Redirect all other routes to auth when not logged in */}
+                <Route path="*" element={<AuthPage />} errorElement={<RouteErrorBoundary />} />
+              </>
+            )}
           </>
         )}
       </Routes>

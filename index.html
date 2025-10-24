@@ -38,13 +38,15 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Register service worker for offline capability only when top-level (avoid iframe preview caching)
+      // In preview iframes, unregister any existing service workers to prevent cached CSP or routing issues
+      if ('serviceWorker' in navigator && window.self !== window.top) {
+        navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister())).catch(() => {});
+      }
+
+      // Register service worker only when top-level (avoid iframe preview caching)
       if ('serviceWorker' in navigator && window.self === window.top) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .catch(() => {
-              // Silently fail in development/preview
-            });
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
         });
       }
     </script>
