@@ -39,7 +39,16 @@ export default function Messages() {
   const [isComposing, setIsComposing] = useState(false);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUserId(user?.id || null);
+    };
+    getCurrentUser();
+  }, []);
 
   const fetchMessages = async () => {
     try {
@@ -133,9 +142,9 @@ export default function Messages() {
     }
   };
 
-  const handleMessageClick = async (message: Message) => {
+  const handleMessageClick = (message: Message) => {
     setSelectedMessage(message);
-    if (!message.is_read && message.recipient_id === (await supabase.auth.getUser()).data.user?.id) {
+    if (!message.is_read && message.recipient_id === currentUserId) {
       markAsRead(message.id);
     }
   };
@@ -176,7 +185,7 @@ export default function Messages() {
     return email.slice(0, 2).toUpperCase();
   };
 
-  const unreadCount = messages.filter(msg => !msg.is_read).length;
+  const unreadCount = messages.filter(msg => !msg.is_read && msg.recipient_id === currentUserId).length;
 
   return (
     <div className="p-6 space-y-6">
@@ -220,7 +229,7 @@ export default function Messages() {
                   <>
                     <TabsContent value="inbox" className="mt-0">
                       {messages
-                        .filter(msg => msg.recipient_id)
+                        .filter(msg => msg.recipient_id === currentUserId)
                         .map((message) => (
                           <div
                             key={message.id}
@@ -266,7 +275,7 @@ export default function Messages() {
 
                     <TabsContent value="sent" className="mt-0">
                       {messages
-                        .filter(msg => msg.sender_id)
+                        .filter(msg => msg.sender_id === currentUserId)
                         .map((message) => (
                           <div
                             key={message.id}
