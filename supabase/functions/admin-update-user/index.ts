@@ -76,6 +76,30 @@ serve(async (req) => {
       );
     }
 
+    // Parse request body
+    const { userId, firstName, lastName, phone, city, state, isActive, mfa_token } = await req.json();
+
+    // CRITICAL: Require MFA verification for user updates
+    if (mfa_token) {
+      const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
+        p_user_id: user.id,
+        p_mfa_token: mfa_token,
+        p_operation_type: 'user_update'
+      });
+
+      if (mfaError || !mfaVerified) {
+        await supabaseClient.rpc('log_security_event', {
+          p_event_type: 'mfa_verification_failed',
+          p_severity: 'high',
+          p_details: { operation: 'user_update', admin_id: user.id, target_user: userId }
+        });
+        return new Response(
+          JSON.stringify({ error: 'MFA verification failed. Please try again.' }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
     // Rate limiting for admin operations
     const rateLimitKey = `admin_update:${user.id}`;
     const rateLimitResult = await supabaseClient.rpc('check_rate_limit', {
@@ -91,8 +115,6 @@ serve(async (req) => {
         { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    const { userId, firstName, lastName, phone, city, state, isActive } = await req.json();
 
     if (!userId) {
       return new Response(

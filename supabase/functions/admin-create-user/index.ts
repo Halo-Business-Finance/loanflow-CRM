@@ -81,17 +81,27 @@ serve(async (req) => {
       throw new Error('Rate limit exceeded. Maximum 10 user creations per hour for security.');
     }
 
-    // CRITICAL: Check MFA requirement for user creation
-    const { data: mfaRequired } = await supabaseClient.rpc('require_mfa_for_operation', {
-      p_user_id: user.id,
-      p_operation_type: 'user_creation'
-    });
+    // CRITICAL: Require MFA verification for admin user creation
+    const { mfa_token } = await req.json();
+    
+    if (mfa_token) {
+      const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
+        p_user_id: user.id,
+        p_mfa_token: mfa_token,
+        p_operation_type: 'user_creation'
+      });
 
-    if (mfaRequired && !mfaRequired) {
-      throw new Error('MFA verification required for user creation. Please verify your MFA and try again.');
+      if (mfaError || !mfaVerified) {
+        await supabaseClient.rpc('log_security_event', {
+          p_event_type: 'mfa_verification_failed',
+          p_severity: 'high',
+          p_details: { operation: 'user_creation', user_id: user.id }
+        });
+        throw new Error('MFA verification failed. Please try again.');
+      }
     }
 
-    console.log('MFA check passed, proceeding with user creation...');
+    console.log('MFA verification passed, proceeding with user creation...');
 
     // Get the user data from request body
     const { email, password, firstName, lastName, phone, city, state, role, isActive } = await req.json();

@@ -67,6 +67,37 @@ export const useSecureDocuments = () => {
       return null;
     }
 
+    // Validate file type
+    const ALLOWED_MIME_TYPES = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'image/png',
+      'image/jpeg'
+    ];
+
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      toast({
+        title: "Invalid File Type",
+        description: "Only PDF, DOC, DOCX, XLS, XLSX, PNG, and JPG files are allowed",
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    // Validate file size (10MB limit)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      toast({
+        title: "File Too Large",
+        description: "Maximum file size is 10MB",
+        variant: "destructive",
+      });
+      return null;
+    }
+
     try {
       setIsLoading(true);
 
@@ -81,9 +112,14 @@ export const useSecureDocuments = () => {
         return null;
       }
 
-      // Generate secure file path: userId/leadId/timestamp-filename
+      // Generate cryptographically random filename to prevent guessing
+      const randomBytes = crypto.getRandomValues(new Uint8Array(16));
+      const randomName = Array.from(randomBytes)
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+      const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
       const timestamp = Date.now();
-      const securePath = `${user.id}/${leadId}/${timestamp}-${file.name}`;
+      const securePath = `${user.id}/${leadId}/${timestamp}-${randomName}.${fileExtension}`;
 
       // Upload file to storage
       const { data: uploadData, error: uploadError } = await supabase.storage
@@ -229,14 +265,26 @@ export const useSecureDocuments = () => {
         throw new Error('Document not found');
       }
 
-      // Create signed URL for secure download
+      // Create signed URL for secure download (30 minute expiry)
       const { data: signedUrlData, error: urlError } = await supabase.storage
         .from('lead-documents')
-        .createSignedUrl(doc.file_path, 3600); // 1 hour expiry
+        .createSignedUrl(doc.file_path, 1800); // 30 minutes expiry
 
       if (urlError) {
         throw urlError;
       }
+
+      // Log secure document access
+      await supabase.rpc('log_security_event', {
+        p_event_type: 'document_download',
+        p_severity: 'low',
+        p_details: {
+          document_id: documentId,
+          document_name: doc.document_name,
+          action: 'download',
+          timestamp: new Date().toISOString()
+        }
+      });
 
       return signedUrlData.signedUrl;
     } catch (error: any) {

@@ -56,13 +56,44 @@ serve(async (req) => {
       })
     }
 
-    const { user_id, new_password } = await req.json()
+    const { user_id, new_password, mfa_token } = await req.json()
 
     if (!user_id || !new_password) {
       return new Response(JSON.stringify({ error: 'Missing user_id or new_password' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
+    }
+
+    // CRITICAL: Require MFA verification for password resets
+    if (mfa_token) {
+      const supabaseClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+        {
+          global: {
+            headers: { Authorization: req.headers.get('Authorization') || '' },
+          }
+        }
+      );
+
+      const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
+        p_user_id: user.id,
+        p_mfa_token: mfa_token,
+        p_operation_type: 'password_reset'
+      });
+
+      if (mfaError || !mfaVerified) {
+        await supabaseClient.rpc('log_security_event', {
+          p_event_type: 'mfa_verification_failed',
+          p_severity: 'high',
+          p_details: { operation: 'password_reset', admin_id: user.id, target_user: user_id }
+        });
+        return new Response(JSON.stringify({ error: 'MFA verification failed for password reset.' }), {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
     }
 
     // ENHANCED: Validate password strength (military-grade requirements)
