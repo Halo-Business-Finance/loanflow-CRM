@@ -32,7 +32,7 @@ export function LoanCalculator() {
     const rate = (parseFloat(interestRate) || 0) / 100;
     const term = parseFloat(loanTerm) || 0;
     
-    if (principal <= 0 || rate <= 0 || term <= 0) {
+    if (principal <= 0 || rate < 0 || term <= 0) {
       return { monthly: 0, total: 0, totalInterest: 0 };
     }
 
@@ -43,12 +43,25 @@ export function LoanCalculator() {
     const monthlyRate = rate / 12;
     
     // Calculate monthly payment using standard loan formula
-    const monthlyPayment = 
-      (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) /
-      (Math.pow(1 + monthlyRate, months) - 1);
+    // Handle both interest-bearing and zero-interest loans
+    let monthlyPayment: number;
+    if (monthlyRate === 0) {
+      // Zero interest loan - simple division
+      monthlyPayment = principal / months;
+    } else {
+      // Standard amortization formula
+      monthlyPayment = 
+        (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) /
+        (Math.pow(1 + monthlyRate, months) - 1);
+    }
     
     const totalPayment = monthlyPayment * months;
     const totalInterest = totalPayment - principal;
+
+    // Check for invalid results
+    if (!isFinite(monthlyPayment) || isNaN(monthlyPayment)) {
+      return { monthly: 0, total: 0, totalInterest: 0 };
+    }
 
     return {
       monthly: monthlyPayment,
