@@ -140,31 +140,31 @@ export function MessageComposer({ replyTo, onClose, onSent }: MessageComposerPro
   };
 
   return (
-    <Card className="p-6">
-      <div className="space-y-4">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">
+    <Card className="p-4">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-base font-semibold">
             {replyTo ? 'Reply to Message' : 'New Message'}
           </h3>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
+          <Button variant="ghost" size="sm" onClick={onClose} className="h-7 w-7 p-0">
+            <X className="h-3.5 w-3.5" />
           </Button>
         </div>
 
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="recipient">To</Label>
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <Label htmlFor="recipient" className="text-xs">To</Label>
             <Select
               value={selectedRecipient}
               onValueChange={setSelectedRecipient}
               disabled={!!replyTo}
             >
-              <SelectTrigger id="recipient">
+              <SelectTrigger id="recipient" className="h-9 text-sm">
                 <SelectValue placeholder="Select recipient" />
               </SelectTrigger>
               <SelectContent>
                 {recipients.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
+                  <SelectItem key={user.id} value={user.id} className="text-sm">
                     {user.full_name || user.email}
                   </SelectItem>
                 ))}
@@ -172,34 +172,36 @@ export function MessageComposer({ replyTo, onClose, onSent }: MessageComposerPro
             </Select>
           </div>
 
-          <div>
-            <Label htmlFor="subject">Subject</Label>
+          <div className="space-y-1">
+            <Label htmlFor="subject" className="text-xs">Subject</Label>
             <Input
               id="subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Enter subject"
+              className="h-9 text-sm"
             />
           </div>
 
-          <div>
-            <Label htmlFor="message">Message</Label>
+          <div className="space-y-1">
+            <Label htmlFor="message" className="text-xs">Message</Label>
             <Textarea
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Type your message here..."
-              rows={10}
+              rows={6}
+              className="text-sm resize-none"
             />
           </div>
 
-          <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={onClose}>
+          <div className="flex gap-2 justify-end pt-1">
+            <Button variant="outline" onClick={onClose} size="sm" className="h-8 text-xs">
               Cancel
             </Button>
-            <Button onClick={handleSend} disabled={sending}>
-              <Send className="mr-2 h-4 w-4" />
-              {sending ? 'Sending...' : 'Send Message'}
+            <Button onClick={handleSend} disabled={sending} size="sm" className="h-8 text-xs">
+              <Send className="mr-1.5 h-3 w-3" />
+              {sending ? 'Sending...' : 'Send'}
             </Button>
           </div>
         </div>
