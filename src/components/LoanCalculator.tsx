@@ -184,10 +184,7 @@ export function LoanCalculator() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-gradient-to-br from-background via-background to-primary/5 border-border">
         <DialogHeader className="space-y-3">
-          <DialogTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Calculator className="h-6 w-6 text-primary" />
-            </div>
+          <DialogTitle className="text-2xl font-bold text-foreground">
             Commercial Loan Calculator
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-base">
@@ -200,8 +197,7 @@ export function LoanCalculator() {
           <div className="space-y-5">
             {/* Loan Amount */}
             <div className="space-y-2">
-              <Label htmlFor="amount" className="text-sm font-semibold text-foreground flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-primary" />
+              <Label htmlFor="amount" className="text-sm font-semibold text-foreground">
                 Loan Amount
               </Label>
               <div className="relative">
@@ -223,8 +219,7 @@ export function LoanCalculator() {
 
             {/* Interest Rate */}
             <div className="space-y-2">
-              <Label htmlFor="rate" className="text-sm font-semibold text-foreground flex items-center gap-2">
-                <Percent className="h-4 w-4 text-primary" />
+              <Label htmlFor="rate" className="text-sm font-semibold text-foreground">
                 Interest Rate (Annual)
               </Label>
               <div className="relative">
@@ -247,8 +242,7 @@ export function LoanCalculator() {
 
             {/* Loan Term */}
             <div className="space-y-2">
-              <Label htmlFor="term" className="text-sm font-semibold text-foreground flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
+              <Label htmlFor="term" className="text-sm font-semibold text-foreground">
                 Loan Term
               </Label>
               <div className="flex gap-3">
@@ -280,12 +274,9 @@ export function LoanCalculator() {
             <Card className="bg-primary/5 border-2 border-primary/20">
               <CardContent className="pt-5 pb-5">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <ToggleLeft className="h-4 w-4 text-primary" />
-                    <Label htmlFor="interest-only" className="text-sm font-semibold text-foreground cursor-pointer">
-                      Interest-Only Period
-                    </Label>
-                  </div>
+                  <Label htmlFor="interest-only" className="text-sm font-semibold text-foreground cursor-pointer">
+                    Interest-Only Period
+                  </Label>
                   <Switch
                     id="interest-only"
                     checked={isInterestOnly}
@@ -334,10 +325,7 @@ export function LoanCalculator() {
 
           {/* Results Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold text-foreground">Payment Breakdown</h3>
-            </div>
+            <h3 className="text-lg font-semibold text-foreground">Payment Breakdown</h3>
 
             {/* Monthly Payment - Highlighted */}
             {isInterestOnly ? (
