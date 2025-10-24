@@ -224,6 +224,15 @@ export function NotificationBell() {
                     setUnreadCount(newUnreadCount)
                     return updated
                   })
+                } else if (payload.eventType === 'DELETE') {
+                  const deletedId = (payload.old as any).id
+                  setNotifications(prev => {
+                    const filtered = prev.filter(n => n.id !== deletedId)
+                    // Recalculate unread count
+                    const newUnreadCount = filtered.filter(n => !n.is_read).length
+                    setUnreadCount(newUnreadCount)
+                    return filtered
+                  })
                 }
               }
             )
