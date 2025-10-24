@@ -81,6 +81,24 @@ export function MessageComposer({ replyTo, onClose, onSent }: MessageComposerPro
       return;
     }
 
+    if (subject.trim().length > 200) {
+      toast({
+        title: 'Validation Error',
+        description: 'Subject must be 200 characters or less',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (message.trim().length > 10000) {
+      toast({
+        title: 'Validation Error',
+        description: 'Message must be 10,000 characters or less',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       setSending(true);
       const { data: { user } } = await supabase.auth.getUser();
@@ -96,13 +114,17 @@ export function MessageComposer({ replyTo, onClose, onSent }: MessageComposerPro
 
       if (error) throw error;
 
-      // Create notification for recipient
-      await supabase.from('notifications').insert({
-        user_id: selectedRecipient,
-        title: 'New Message',
-        message: `${user.email} sent you a message: ${subject}`,
-        type: 'message',
-      });
+      // Best-effort notification
+      try {
+        await supabase.from('notifications').insert({
+          user_id: selectedRecipient,
+          title: 'New Message',
+          message: `${user.email} sent you a message: ${subject}`,
+          type: 'message',
+        });
+      } catch (notifError) {
+        console.warn('Notifications insert skipped:', notifError);
+      }
 
       onSent();
     } catch (error) {

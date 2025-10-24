@@ -51,10 +51,12 @@ export default function Messages() {
   }, []);
 
   const fetchMessages = async () => {
+    let isMounted = true;
+    
     try {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user || !isMounted) return;
 
       const { data, error } = await supabase
         .from('user_messages')
@@ -63,32 +65,53 @@ export default function Messages() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+      if (!isMounted) return;
       
-      // Fetch sender and recipient profiles separately
-      const messagesWithProfiles = await Promise.all((data || []).map(async (msg) => {
-        const [senderProfile, recipientProfile] = await Promise.all([
-          supabase.from('profiles').select('email').eq('id', msg.sender_id).single(),
-          supabase.from('profiles').select('email').eq('id', msg.recipient_id).single()
-        ]);
-        
-        return {
-          ...msg,
-          sender_profile: { full_name: null, email: senderProfile.data?.email || '' },
-          recipient_profile: { full_name: null, email: recipientProfile.data?.email || '' }
-        };
+      // Batch profile lookups
+      const uniqueIds = Array.from(new Set((data || []).flatMap(d => [d.sender_id, d.recipient_id])));
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, email')
+        .in('id', uniqueIds);
+      
+      if (!isMounted) return;
+      
+      const emailById = new Map((profiles || []).map(p => [p.id, p.email]));
+      
+      const messagesWithProfiles = (data || []).map(msg => ({
+        ...msg,
+        sender_profile: { 
+          full_name: null, 
+          email: emailById.get(msg.sender_id) || msg.sender_id 
+        },
+        recipient_profile: { 
+          full_name: null, 
+          email: emailById.get(msg.recipient_id) || msg.recipient_id 
+        }
       }));
       
-      setMessages(messagesWithProfiles);
+      if (isMounted) {
+        setMessages(messagesWithProfiles);
+      }
     } catch (error) {
       console.error('Error fetching messages:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load messages',
-        variant: 'destructive',
-      });
+      if (isMounted) {
+        setMessages([]);
+        toast({
+          title: 'Error',
+          description: 'Failed to load messages',
+          variant: 'destructive',
+        });
+      }
     } finally {
-      setLoading(false);
+      if (isMounted) {
+        setLoading(false);
+      }
     }
+    
+    return () => {
+      isMounted = false;
+    };
   };
 
   useEffect(() => {
@@ -98,16 +121,23 @@ export default function Messages() {
   useRealtimeSubscription({
     table: 'user_messages',
     onChange: () => {
-      fetchMessages();
+      try {
+        fetchMessages();
+      } catch (e) {
+        console.warn('Realtime fetch failed:', e);
+      }
     },
   });
 
   const markAsRead = async (messageId: string) => {
+    if (!currentUserId) return;
+    
     try {
       const { error } = await supabase
         .from('user_messages')
         .update({ is_read: true, read_at: new Date().toISOString() })
-        .eq('id', messageId);
+        .eq('id', messageId)
+        .eq('recipient_id', currentUserId);
 
       if (error) throw error;
       fetchMessages();
@@ -169,14 +199,6 @@ export default function Messages() {
     });
   };
 
-  const filterMessages = (tab: string) => {
-    return messages.filter(async (msg) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (tab === 'inbox') return msg.recipient_id === user?.id;
-      if (tab === 'sent') return msg.sender_id === user?.id;
-      return false;
-    });
-  };
 
   const getInitials = (name: string | null, email: string) => {
     if (name) {
@@ -221,9 +243,17 @@ export default function Messages() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
               <ScrollArea className="h-[600px]">
-                {loading ? (
+                {!currentUserId ? (
+                  <div className="flex items-center justify-center p-8">
+                    <p className="text-muted-foreground">Loading...</p>
+                  </div>
+                ) : loading ? (
                   <div className="flex items-center justify-center p-8">
                     <p className="text-muted-foreground">Loading messages...</p>
+                  </div>
+                ) : messages.length === 0 ? (
+                  <div className="flex items-center justify-center p-8">
+                    <p className="text-muted-foreground">No messages yet</p>
                   </div>
                 ) : (
                   <>
