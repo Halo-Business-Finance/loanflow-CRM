@@ -4,6 +4,7 @@ import { Lead } from '@/types/lead'
 import { useToast } from '@/hooks/use-toast'
 import { useRealtimeSubscription } from './useRealtimeSubscription'
 import { useAuth } from '@/components/auth/AuthProvider'
+import { LEAD_WITH_CONTACT_QUERY } from '@/lib/field-mapping'
 
 export function useRealtimeLeads() {
   const [leads, setLeads] = useState<Lead[]>([])
@@ -29,10 +30,7 @@ export function useRealtimeLeads() {
       
       const { data, error } = await supabase
         .from('leads')
-        .select(`
-          *,
-          contact_entity:contact_entities(*)
-        `)
+        .select(LEAD_WITH_CONTACT_QUERY)
         .order('created_at', { ascending: false })
 
       if (error) {
