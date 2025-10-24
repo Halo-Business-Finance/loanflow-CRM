@@ -51,7 +51,7 @@ import {
   UserPlus
 } from "lucide-react"
 
-import { Lead, Client as ClientType, LOAN_TYPES } from "@/types/lead"
+import { Lead, Client as ClientType, LOAN_TYPES, LEAD_SOURCES } from "@/types/lead"
 import { mapLeadFields, mapClientFields, extractContactEntityData, LEAD_WITH_CONTACT_QUERY, CLIENT_WITH_CONTACT_QUERY } from "@/lib/field-mapping"
 
 export default function LeadDetail() {
@@ -124,6 +124,7 @@ export default function LeadDetail() {
     loan_type: "",
     stage: "",
     priority: "",
+    source: "",
     credit_score: "",
     net_operating_income: "",
     bank_lender_name: "",
@@ -438,6 +439,7 @@ export default function LeadDetail() {
         loan_type: mergedLead.loan_type || "",
         stage: mergedLead.stage || "",
         priority: mergedLead.priority || "",
+        source: (mergedLead as any).source || "",
         credit_score: mergedLead.credit_score?.toString() || "",
         net_operating_income: mergedLead.net_operating_income?.toString() || "",
         bank_lender_name: mergedLead.bank_lender_name || "",
@@ -551,6 +553,7 @@ export default function LeadDetail() {
         loan_type: editableFields.loan_type,
         stage: editableFields.stage,
         priority: editableFields.priority,
+        source: editableFields.source,
         credit_score: editableFields.credit_score ? parseInt(editableFields.credit_score) : null,
         net_operating_income: editableFields.net_operating_income ? parseFloat(editableFields.net_operating_income) : null,
         bank_lender_name: editableFields.bank_lender_name,
@@ -983,6 +986,30 @@ export default function LeadDetail() {
               </CardHeader>
               <CardContent className="pt-0 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Lead Source</Label>
+                    {isEditing ? (
+                      <Select
+                        value={editableFields.source}
+                        onValueChange={(value) => setEditableFields({...editableFields, source: value})}
+                      >
+                        <SelectTrigger className="mt-1 h-9 text-sm">
+                          <SelectValue placeholder="Select lead source" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {LEAD_SOURCES.map((source) => (
+                            <SelectItem key={source} value={source}>
+                              {source}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="field-display mt-1">
+                        {editableFields.source || 'N/A'}
+                      </div>
+                    )}
+                  </div>
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground">Loan Stage</Label>
                     {isEditing ? (
