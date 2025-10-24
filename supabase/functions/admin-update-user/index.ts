@@ -50,6 +50,32 @@ serve(async (req) => {
       );
     }
 
+    // Verify admin role using service role client (bypasses RLS)
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const { data: rolesData, error: roleError } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id);
+
+    const roleList = rolesData?.map((r: { role: string }) => r.role) || [];
+    if (roleError || (!roleList.includes('admin') && !roleList.includes('super_admin'))) {
+      // Log unauthorized attempt
+      await supabaseClient.from('security_events').insert({
+        user_id: user.id,
+        event_type: 'unauthorized_admin_function_attempt',
+        severity: 'high',
+        details: { attempted_function: 'admin-update-user' }
+      });
+      return new Response(
+        JSON.stringify({ error: 'Insufficient privileges' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { userId, firstName, lastName, phone, city, state, isActive } = await req.json();
 
     if (!userId) {

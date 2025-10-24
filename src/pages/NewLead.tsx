@@ -13,6 +13,7 @@ import { LOAN_TYPES, STAGES, PRIORITIES } from "@/types/lead"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
+import { useSecureForm } from "@/hooks/useSecureForm"
 
 export default function NewLead() {
   const { toast } = useToast()
@@ -100,6 +101,8 @@ export default function NewLead() {
     setDisplayValues(prev => ({ ...prev, [field]: formatCurrencyInput(value) }))
   }
 
+  const { validateFormData, sanitizeNumeric } = useSecureForm()
+
   const handleSubmit = async () => {
     if (!formData.firstName || !formData.lastName || !formData.email) {
       toast({
@@ -119,65 +122,108 @@ export default function NewLead() {
       return
     }
 
+    // Server-side validation and sanitization of critical fields
+    const { isValid, sanitizedData, errors } = await validateFormData({
+      email: formData.email,
+      phone: formData.phone,
+      business_name: formData.businessName,
+      business_address: formData.businessAddress,
+      notes: formData.notes || '',
+      call_notes: formData.callNotes || '',
+      credit_score: formData.creditScore || ''
+    })
+
+    if (!isValid) {
+      const errList = Object.values(errors).flat().slice(0, 4).join(', ')
+      toast({
+        title: "Validation Error",
+        description: errList || "Please correct the highlighted fields",
+        variant: "destructive"
+      })
+      return
+    }
+
+    // Sanitize numeric amounts
+    const sanitizeNumber = async (v?: string) => {
+      if (!v) return undefined
+      const res = await sanitizeNumeric(String(v))
+      const cleaned = res.sanitized?.replace(/[^0-9.\-]/g, '')
+      const num = cleaned ? Number(cleaned) : undefined
+      return Number.isFinite(num!) ? num : undefined
+    }
+
+    const annual_revenue = await sanitizeNumber(formData.annualRevenue)
+    const income = await sanitizeNumber(formData.income)
+    const existing_loan_amount = await sanitizeNumber(formData.existingLoanAmount)
+    const net_operating_income = await sanitizeNumber(formData.netOperatingIncome)
+    const property_payment_amount = await sanitizeNumber(formData.propertyPaymentAmount)
+    const loan_amount = await sanitizeNumber(formData.loanAmount)
+    const interest_rate = await sanitizeNumber(formData.interestRate)
+    const ownership_percentage = await sanitizeNumber(formData.ownershipPercentage)
+    const current_processing_rate = await sanitizeNumber(formData.currentProcessingRate)
+    const monthly_processing_volume = await sanitizeNumber(formData.monthlyProcessingVolume)
+    const average_transaction_size = await sanitizeNumber(formData.averageTransactionSize)
+    const credit_score = sanitizedData.credit_score ? Number(sanitizedData.credit_score) : undefined
+
     try {
-      // Create contact entity with all fields
+      // Create contact entity with sanitized fields
       const contactData = {
         // Personal fields
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        personal_email: formData.personalEmail,
-        phone: formData.phone,
-        mobile_phone: formData.mobilePhone,
-        home_address: formData.homeAddress,
-        home_city: formData.homeCity,
-        home_state: formData.homeState,
-        home_zip_code: formData.homeZipCode,
+        first_name: formData.firstName.trim(),
+        last_name: formData.lastName.trim(),
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: sanitizedData.email,
+        personal_email: formData.personalEmail?.trim() || null,
+        phone: sanitizedData.phone || null,
+        mobile_phone: formData.mobilePhone?.trim() || null,
+        home_address: formData.homeAddress?.trim() || null,
+        home_city: formData.homeCity?.trim() || null,
+        home_state: formData.homeState?.trim() || null,
+        home_zip_code: formData.homeZipCode?.trim() || null,
         
         // Business fields
-        business_name: formData.businessName,
-        business_address: formData.businessAddress,
-        business_city: formData.businessCity,
-        business_state: formData.businessState,
-        business_zip_code: formData.businessZipCode,
+        business_name: sanitizedData.business_name || formData.businessName?.trim() || null,
+        business_address: sanitizedData.business_address || formData.businessAddress?.trim() || null,
+        business_city: formData.businessCity?.trim() || null,
+        business_state: formData.businessState?.trim() || null,
+        business_zip_code: formData.businessZipCode?.trim() || null,
         year_established: formData.yearEstablished ? Number(formData.yearEstablished) : undefined,
-        naics_code: formData.naicsCode,
-        ownership_structure: formData.ownershipStructure,
-        ownership_percentage: formData.ownershipPercentage ? Number(formData.ownershipPercentage) : undefined,
+        naics_code: formData.naicsCode?.trim() || null,
+        ownership_structure: formData.ownershipStructure?.trim() || null,
+        ownership_percentage,
         
         // Financial fields
-        annual_revenue: formData.annualRevenue ? Number(formData.annualRevenue) : undefined,
-        income: formData.income ? Number(formData.income) : undefined,
-        credit_score: formData.creditScore ? Number(formData.creditScore) : undefined,
-        existing_loan_amount: formData.existingLoanAmount ? Number(formData.existingLoanAmount) : undefined,
-        net_operating_income: formData.netOperatingIncome ? Number(formData.netOperatingIncome) : undefined,
-        property_payment_amount: formData.propertyPaymentAmount ? Number(formData.propertyPaymentAmount) : undefined,
-        owns_property: formData.ownsProperty,
+        annual_revenue,
+        income,
+        credit_score,
+        existing_loan_amount,
+        net_operating_income,
+        property_payment_amount,
+        owns_property: !!formData.ownsProperty,
         
         // Loan fields
-        loan_amount: formData.loanAmount ? Number(formData.loanAmount) : undefined,
-        loan_type: formData.loanType,
-        interest_rate: formData.interestRate ? Number(formData.interestRate) : undefined,
+        loan_amount,
+        loan_type: formData.loanType || null,
+        interest_rate,
         
         // Merchant processing
-        pos_system: formData.posSystem,
-        processor_name: formData.processorName,
-        current_processing_rate: formData.currentProcessingRate ? Number(formData.currentProcessingRate) : undefined,
-        monthly_processing_volume: formData.monthlyProcessingVolume ? Number(formData.monthlyProcessingVolume) : undefined,
-        average_transaction_size: formData.averageTransactionSize ? Number(formData.averageTransactionSize) : undefined,
+        pos_system: formData.posSystem || null,
+        processor_name: formData.processorName || null,
+        current_processing_rate,
+        monthly_processing_volume,
+        average_transaction_size,
         
         // Banking & BDO
-        bdo_name: formData.bdoName,
-        bdo_telephone: formData.bdoTelephone,
-        bdo_email: formData.bdoEmail,
-        bank_lender_name: formData.bankLenderName,
+        bdo_name: formData.bdoName || null,
+        bdo_telephone: formData.bdoTelephone || null,
+        bdo_email: formData.bdoEmail || null,
+        bank_lender_name: formData.bankLenderName || null,
         
         // Lead management
         priority: formData.priority.toLowerCase(),
         stage: formData.stage,
-        notes: formData.notes,
-        call_notes: formData.callNotes,
+        notes: sanitizedData.notes || null,
+        call_notes: sanitizedData.call_notes || null,
         user_id: user.id
       }
 
@@ -215,9 +261,9 @@ export default function NewLead() {
           record_id: leadData.id,
           new_values: {
             name: `${formData.firstName} ${formData.lastName}`,
-            business_name: formData.businessName,
-            email: formData.email,
-            phone: formData.phone
+            business_name: sanitizedData.business_name || formData.businessName,
+            email: sanitizedData.email,
+            phone: sanitizedData.phone
           }
         })
 
@@ -226,7 +272,6 @@ export default function NewLead() {
         description: "New lead has been added to your pipeline",
       })
 
-      // Navigate to the lead detail page
       navigate(`/leads/${leadData.id}`)
 
     } catch (error: any) {
