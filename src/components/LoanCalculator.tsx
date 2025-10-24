@@ -32,6 +32,24 @@ export function LoanCalculator() {
   const [interestOnlyPeriod, setInterestOnlyPeriod] = useState('0');
   const [interestOnlyUnit, setInterestOnlyUnit] = useState<'years' | 'months'>('years');
 
+  const formatNumberWithCommas = (value: string): string => {
+    // Remove all non-digit characters except decimal point
+    const cleanValue = value.replace(/[^\d.]/g, '');
+    if (!cleanValue) return '';
+    
+    // Split into integer and decimal parts
+    const parts = cleanValue.split('.');
+    // Add commas to integer part
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    
+    return parts.join('.');
+  };
+
+  const parseNumberFromFormatted = (value: string): string => {
+    // Remove commas for storage
+    return value.replace(/,/g, '');
+  };
+
   const calculatePayment = () => {
     const principal = parseFloat(loanAmount) || 0;
     const rate = (parseFloat(interestRate) || 0) / 100;
@@ -190,12 +208,12 @@ export function LoanCalculator() {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">$</span>
                 <Input
                   id="amount"
-                  type="number"
-                  min="0"
-                  value={loanAmount}
+                  type="text"
+                  value={formatNumberWithCommas(loanAmount)}
                   onChange={(e) => {
-                    const value = parseFloat(e.target.value);
-                    setLoanAmount(value < 0 ? '0' : e.target.value);
+                    const parsed = parseNumberFromFormatted(e.target.value);
+                    const value = parseFloat(parsed);
+                    setLoanAmount(isNaN(value) || value < 0 ? '0' : parsed);
                   }}
                   className="pl-8 h-12 text-lg font-medium bg-background border-2 border-border focus:border-primary transition-colors"
                   placeholder="0"
