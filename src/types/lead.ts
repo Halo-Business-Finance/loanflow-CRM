@@ -189,6 +189,18 @@ export const LOAN_TYPES = [
   "Factoring"
 ] as const
 
+export const LEAD_SOURCES = [
+  "Cold Calling",
+  "Website",
+  "Referral",
+  "Broker",
+  "Social Media",
+  "Email Campaign",
+  "Event/Conference",
+  "Other"
+] as const
+
 export type Stage = typeof STAGES[number]
 export type Priority = typeof PRIORITIES[number]
 export type LoanType = typeof LOAN_TYPES[number]
+export type LeadSource = typeof LEAD_SOURCES[number]

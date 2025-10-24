@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { DialogFooter } from "@/components/ui/dialog"
 import { Loader2, Shield } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Lead, ContactEntity, LOAN_TYPES } from "@/types/lead"
+import { Lead, ContactEntity, LOAN_TYPES, LEAD_SOURCES } from "@/types/lead"
 import { useSecureFormContext } from "@/components/security/SecureFormValidator"
 import { useSecureAuthentication } from "@/hooks/useSecureAuthentication"
 
@@ -36,6 +36,7 @@ export function SecureLeadForm({ lead, onSubmit, onCancel, isSubmitting = false 
     loan_type: lead?.loan_type || "SBA 7(a) Loan",
     credit_score: lead?.credit_score || undefined,
     net_operating_income: lead?.net_operating_income || undefined,
+    source: lead?.source || "",
     priority: lead?.priority || "medium",
     stage: lead?.stage || "New Lead",
     notes: "",
@@ -300,6 +301,25 @@ export function SecureLeadForm({ lead, onSubmit, onCancel, isSubmitting = false 
       <div className="space-y-4 border-t border-border pt-6">
         <h3 className="text-lg font-medium text-foreground">Lead Classification</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="source" className="text-sm font-medium">Lead Source</Label>
+            <Select
+              value={formData.source || ""}
+              onValueChange={(value) => handleInputChange("source", value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select lead source" />
+              </SelectTrigger>
+              <SelectContent>
+                {LEAD_SOURCES.map((source) => (
+                  <SelectItem key={source} value={source}>
+                    {source}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="priority" className="text-sm font-medium">Priority</Label>
             <Select

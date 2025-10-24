@@ -1,6 +1,7 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
 
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -31,7 +32,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { formatPhoneNumber } from "@/lib/utils"
-import { Lead } from "@/types/lead"
+import { Lead, STAGES, LEAD_SOURCES } from "@/types/lead"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { supabase } from "@/integrations/supabase/client"
+import { toast } from "sonner"
 
 interface LeadCardProps {
   lead: Lead
@@ -81,6 +85,40 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+  }
+
+  const handleSourceChange = async (newSource: string) => {
+    try {
+      if (!lead.contact_entity_id) return
+      
+      const { error } = await supabase
+        .from('contact_entities')
+        .update({ source: newSource } as any)
+        .eq('id', lead.contact_entity_id)
+
+      if (error) throw error
+      toast.success('Lead source updated')
+    } catch (error) {
+      console.error('Error updating lead source:', error)
+      toast.error('Failed to update lead source')
+    }
+  }
+
+  const handleStageChange = async (newStage: string) => {
+    try {
+      if (!lead.contact_entity_id) return
+      
+      const { error } = await supabase
+        .from('contact_entities')
+        .update({ stage: newStage } as any)
+        .eq('id', lead.contact_entity_id)
+
+      if (error) throw error
+      toast.success('Loan stage updated')
+    } catch (error) {
+      console.error('Error updating loan stage:', error)
+      toast.error('Failed to update loan stage')
+    }
   }
 
   const daysSinceContact = lead.last_contact 
@@ -217,18 +255,47 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
           </div>
         )}
 
-        {/* Status and Priority */}
-        <div className="flex items-center justify-between pt-2">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium px-3 py-1">
-              {lead.stage}
+        {/* Lead Source, Stage, and Priority */}
+        <div className="space-y-3 pt-2">
+          <div className="space-y-2">
+            <Label className="text-xs text-muted-foreground">Lead Source</Label>
+            <Select value={lead.source || ""} onValueChange={handleSourceChange}>
+              <SelectTrigger className="h-9 text-xs">
+                <SelectValue placeholder="Select source" />
+              </SelectTrigger>
+              <SelectContent>
+                {LEAD_SOURCES.map((source) => (
+                  <SelectItem key={source} value={source}>
+                    {source}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-xs text-muted-foreground">Loan Stage</Label>
+            <Select value={lead.stage || ""} onValueChange={handleStageChange}>
+              <SelectTrigger className="h-9 text-xs">
+                <SelectValue placeholder="Select stage" />
+              </SelectTrigger>
+              <SelectContent>
+                {STAGES.filter(s => s !== "All").map((stage) => (
+                  <SelectItem key={stage} value={stage}>
+                    {stage}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <Label className="text-xs text-muted-foreground">Priority</Label>
+            <span className="flex items-center gap-1.5 text-xs font-medium px-3 py-1">
+              {getPriorityIcon(lead.priority)}
+              <span className="capitalize">{lead.priority}</span>
             </span>
           </div>
-          
-          <span className="flex items-center gap-1.5 text-xs font-medium px-3 py-1">
-            {getPriorityIcon(lead.priority)}
-            <span className="capitalize">{lead.priority}</span>
-          </span>
         </div>
 
         {/* Quick Actions */}

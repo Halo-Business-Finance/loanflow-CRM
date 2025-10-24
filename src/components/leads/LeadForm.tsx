@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { DialogFooter } from "@/components/ui/dialog"
 import { Loader2 } from "lucide-react"
-import { Lead, ContactEntity, LOAN_TYPES } from "@/types/lead"
+import { Lead, ContactEntity, LOAN_TYPES, LEAD_SOURCES } from "@/types/lead"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { useSecureForm } from "@/hooks/useSecureForm"
 import { toast } from "sonner"
@@ -35,6 +35,7 @@ export function LeadForm({ lead, onSubmit, onCancel, isSubmitting = false }: Lea
     loan_type: lead?.loan_type || "SBA 7(a) Loan",
     credit_score: lead?.credit_score || undefined,
     net_operating_income: lead?.net_operating_income || undefined,
+    source: lead?.source || "",
     priority: lead?.priority || "medium",
     stage: lead?.stage || "New Lead",
     notes: "",
@@ -209,22 +210,24 @@ export function LeadForm({ lead, onSubmit, onCancel, isSubmitting = false }: Lea
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="priority">Priority</Label>
+          <Label htmlFor="source">Lead Source</Label>
           <Select
-            value={formData.priority || ""}
-            onValueChange={(value) => handleInputChange("priority", value)}
+            value={formData.source || ""}
+            onValueChange={(value) => handleInputChange("source", value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select priority" />
+              <SelectValue placeholder="Select lead source" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="high">High</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="low">Low</SelectItem>
+              {LEAD_SOURCES.map((source) => (
+                <SelectItem key={source} value={source}>
+                  {source}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="stage">Loan Stage</Label>
           <Select
@@ -244,6 +247,23 @@ export function LeadForm({ lead, onSubmit, onCancel, isSubmitting = false }: Lea
               <SelectItem value="Loan Approved">Loan Approved</SelectItem>
               <SelectItem value="Closing">Closing</SelectItem>
               <SelectItem value="Loan Funded">Loan Funded</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="priority">Priority</Label>
+          <Select
+            value={formData.priority || ""}
+            onValueChange={(value) => handleInputChange("priority", value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
             </SelectContent>
           </Select>
         </div>
