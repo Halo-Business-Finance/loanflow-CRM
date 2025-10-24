@@ -38,12 +38,12 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Register service worker for offline capability
-      if ('serviceWorker' in navigator) {
+      // Register service worker for offline capability only when top-level (avoid iframe preview caching)
+      if ('serviceWorker' in navigator && window.self === window.top) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
             .catch(() => {
-              // Silently fail in development
+              // Silently fail in development/preview
             });
         });
       }
