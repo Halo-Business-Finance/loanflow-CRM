@@ -985,7 +985,7 @@ export default function LeadDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground">Lead Source</Label>
                     {isEditing ? (
