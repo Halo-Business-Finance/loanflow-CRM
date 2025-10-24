@@ -68,6 +68,19 @@ serve(async (req) => {
       throw new Error('Admin access required');
     }
 
+    // CRITICAL: Rate limiting for user creation (prevent abuse)
+    const rateLimitKey = `admin_create:${user.id}`;
+    const rateLimitResult = await supabaseClient.rpc('check_rate_limit', {
+      action: 'admin_create_user',
+      identifier: rateLimitKey,
+      max_attempts: 10,
+      window_minutes: 60
+    });
+
+    if (rateLimitResult.data && !rateLimitResult.data.allowed) {
+      throw new Error('Rate limit exceeded. Maximum 10 user creations per hour for security.');
+    }
+
     console.log('Admin access verified, proceeding with user creation...');
 
     // Get the user data from request body

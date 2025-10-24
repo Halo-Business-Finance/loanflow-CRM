@@ -65,10 +65,41 @@ serve(async (req) => {
       })
     }
 
-    // Validate password length
-    if (new_password.length < 6) {
-      return new Response(JSON.stringify({ error: 'Password must be at least 6 characters long' }), {
+    // ENHANCED: Validate password strength (military-grade requirements)
+    if (new_password.length < 12) {
+      return new Response(JSON.stringify({ error: 'Password must be at least 12 characters long for security' }), {
         status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+    
+    // Check password complexity
+    const hasUpperCase = /[A-Z]/.test(new_password);
+    const hasLowerCase = /[a-z]/.test(new_password);
+    const hasNumbers = /\d/.test(new_password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(new_password);
+    
+    if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChar) {
+      return new Response(JSON.stringify({ 
+        error: 'Password must contain uppercase, lowercase, numbers, and special characters' 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    // Rate limiting for password resets
+    const rateLimitKey = `admin_reset_password:${user.id}`;
+    const rateLimitResult = await supabaseAdmin.rpc('check_rate_limit', {
+      action: 'admin_reset_password',
+      identifier: rateLimitKey,
+      max_attempts: 10,
+      window_minutes: 60
+    });
+
+    if (rateLimitResult.data && !rateLimitResult.data.allowed) {
+      return new Response(JSON.stringify({ error: 'Rate limit exceeded. Maximum 10 password resets per hour.' }), {
+        status: 429,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }

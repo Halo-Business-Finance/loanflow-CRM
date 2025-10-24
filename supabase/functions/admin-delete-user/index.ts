@@ -68,7 +68,18 @@ serve(async (req) => {
       throw new Error('Admin access required');
     }
 
-    console.log('Admin access verified, proceeding with deletion...');
+    // CRITICAL: Rate limiting for user deletion (extremely sensitive operation)
+    const rateLimitKey = `admin_delete:${user.id}`;
+    const rateLimitResult = await supabaseClient.rpc('check_rate_limit', {
+      action: 'admin_delete_user',
+      identifier: rateLimitKey,
+      max_attempts: 5,
+      window_minutes: 60
+    });
+
+    if (rateLimitResult.data && !rateLimitResult.data.allowed) {
+      throw new Error('Rate limit exceeded. Maximum 5 deletions per hour for security.');
+    }
 
     // Get the target user ID from request body
     const { userId } = await req.json();

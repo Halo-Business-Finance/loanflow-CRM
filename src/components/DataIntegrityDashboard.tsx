@@ -26,18 +26,14 @@ export function DataIntegrityDashboard() {
   const [autoFixResults, setAutoFixResults] = useState<any>(null);
 
   const runDataAudit = async () => {
-    console.log('🔍 RUN DATA AUDIT BUTTON CLICKED!');
     setLoading(true);
     // Clear previous results first
     setFieldIssues([]);
     setAuditResults(null);
     
     try {
-      console.log('📊 Creating DataFieldValidator...');
       const validator = new DataFieldValidator();
-      console.log('📊 Calling performDataAudit...');
       const results = await validator.performDataAudit();
-      console.log('📊 Audit results received:', results);
       
       // Safety check for results
       if (!results) {

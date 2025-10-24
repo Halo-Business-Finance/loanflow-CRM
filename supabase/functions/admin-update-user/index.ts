@@ -76,6 +76,22 @@ serve(async (req) => {
       );
     }
 
+    // Rate limiting for admin operations
+    const rateLimitKey = `admin_update:${user.id}`;
+    const rateLimitResult = await supabaseClient.rpc('check_rate_limit', {
+      action: 'admin_update_user',
+      identifier: rateLimitKey,
+      max_attempts: 20,
+      window_minutes: 60
+    });
+
+    if (rateLimitResult.data && !rateLimitResult.data.allowed) {
+      return new Response(
+        JSON.stringify({ error: 'Rate limit exceeded. Maximum 20 updates per hour.' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { userId, firstName, lastName, phone, city, state, isActive } = await req.json();
 
     if (!userId) {

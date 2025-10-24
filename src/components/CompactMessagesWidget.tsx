@@ -24,22 +24,16 @@ interface Message {
 }
 
 export function CompactMessagesWidget() {
-  console.log('[CompactMessages] Component rendering')
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(true)
   const { user } = useAuth()
   const navigate = useNavigate()
-  
-  console.log('[CompactMessages] User:', user?.id)
 
   const fetchRecentMessages = async () => {
     if (!user) {
-      console.log('[CompactMessages] No user found')
       setLoading(false)
       return
     }
-
-    console.log('[CompactMessages] Fetching messages for user:', user.id)
 
     try {
       const { data, error } = await supabase
@@ -53,11 +47,8 @@ export function CompactMessagesWidget() {
         .limit(5)
 
       if (error) {
-        console.error('[CompactMessages] Query error:', error)
         throw error
       }
-
-      console.log('[CompactMessages] Fetched messages:', data?.length || 0)
 
       const messagesWithProfiles = (data || []).map(msg => ({
         ...msg,
@@ -68,7 +59,6 @@ export function CompactMessagesWidget() {
 
       setMessages(messagesWithProfiles)
     } catch (error) {
-      console.error('[CompactMessages] Error fetching messages:', error)
       setMessages([])
     } finally {
       setLoading(false)
