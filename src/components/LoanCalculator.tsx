@@ -24,12 +24,12 @@ import { Switch } from '@/components/ui/switch';
 
 export function LoanCalculator() {
   const [open, setOpen] = useState(false);
-  const [loanAmount, setLoanAmount] = useState('250000');
-  const [interestRate, setInterestRate] = useState('6.5');
-  const [loanTerm, setLoanTerm] = useState('30');
+  const [loanAmount, setLoanAmount] = useState('0');
+  const [interestRate, setInterestRate] = useState('0');
+  const [loanTerm, setLoanTerm] = useState('0');
   const [termUnit, setTermUnit] = useState<'years' | 'months'>('years');
   const [isInterestOnly, setIsInterestOnly] = useState(false);
-  const [interestOnlyPeriod, setInterestOnlyPeriod] = useState('5');
+  const [interestOnlyPeriod, setInterestOnlyPeriod] = useState('0');
   const [interestOnlyUnit, setInterestOnlyUnit] = useState<'years' | 'months'>('years');
 
   const calculatePayment = () => {
@@ -191,10 +191,14 @@ export function LoanCalculator() {
                 <Input
                   id="amount"
                   type="number"
+                  min="0"
                   value={loanAmount}
-                  onChange={(e) => setLoanAmount(e.target.value)}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value);
+                    setLoanAmount(value < 0 ? '0' : e.target.value);
+                  }}
                   className="pl-8 h-12 text-lg font-medium bg-background border-2 border-border focus:border-primary transition-colors"
-                  placeholder="250000"
+                  placeholder="0"
                 />
               </div>
             </div>
@@ -209,11 +213,15 @@ export function LoanCalculator() {
                 <Input
                   id="rate"
                   type="number"
+                  min="0"
                   step="0.1"
                   value={interestRate}
-                  onChange={(e) => setInterestRate(e.target.value)}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value);
+                    setInterestRate(value < 0 ? '0' : e.target.value);
+                  }}
                   className="pr-8 h-12 text-lg font-medium bg-background border-2 border-border focus:border-primary transition-colors"
-                  placeholder="6.5"
+                  placeholder="0"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">%</span>
               </div>
@@ -229,10 +237,14 @@ export function LoanCalculator() {
                 <Input
                   id="term"
                   type="number"
+                  min="0"
                   value={loanTerm}
-                  onChange={(e) => setLoanTerm(e.target.value)}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value);
+                    setLoanTerm(value < 0 ? '0' : e.target.value);
+                  }}
                   className="flex-1 h-12 text-lg font-medium bg-background border-2 border-border focus:border-primary transition-colors"
-                  placeholder="30"
+                  placeholder="0"
                 />
                 <Select value={termUnit} onValueChange={(value: 'years' | 'months') => setTermUnit(value)}>
                   <SelectTrigger className="w-[140px] h-12 text-base font-medium bg-background border-2 border-border">
@@ -272,10 +284,14 @@ export function LoanCalculator() {
                       <Input
                         id="io-period"
                         type="number"
+                        min="0"
                         value={interestOnlyPeriod}
-                        onChange={(e) => setInterestOnlyPeriod(e.target.value)}
+                        onChange={(e) => {
+                          const value = parseFloat(e.target.value);
+                          setInterestOnlyPeriod(value < 0 ? '0' : e.target.value);
+                        }}
                         className="flex-1 h-10 text-base bg-background border-2 border-border focus:border-primary transition-colors"
-                        placeholder="5"
+                        placeholder="0"
                       />
                       <Select value={interestOnlyUnit} onValueChange={(value: 'years' | 'months') => setInterestOnlyUnit(value)}>
                         <SelectTrigger className="w-[140px] h-10 text-sm bg-background border-2 border-border">
