@@ -49,14 +49,18 @@ export default function SecurityAccess() {
     try {
       setLoading(true)
 
-      // Fetch active sessions (currently logged in users)
+      // Fetch active sessions (currently logged in users, unexpired only)
       const { data: sessions, error: sessionsError } = await supabase
         .from('active_sessions')
-        .select('id')
+        .select('user_id')
         .eq('is_active', true)
+        .gt('expires_at', new Date().toISOString())
 
       if (sessionsError) throw sessionsError
-      setActiveUsers(sessions?.length || 0)
+      
+      // Count unique users (not total sessions)
+      const uniqueUsers = new Set(sessions?.map(s => s.user_id) || [])
+      setActiveUsers(uniqueUsers.size)
 
       // Fetch admin users from user_roles
       const { data: adminRoles, error: adminError } = await supabase
