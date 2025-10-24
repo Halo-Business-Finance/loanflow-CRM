@@ -175,16 +175,55 @@ export function NotificationBell() {
             .on(
               'postgres_changes',
               {
-                event: 'INSERT',
+                event: '*',
                 schema: 'public',
                 table: 'notifications',
                 filter: `user_id=eq.${user.id}`
               },
-              (payload) => {
-                const newNotification = payload.new as Notification
-                setNotifications(prev => [newNotification, ...prev.slice(0, 19)])
-                if (!newNotification.is_read) {
-                  setUnreadCount(prev => prev + 1)
+              async (payload) => {
+                console.log('Notification event:', payload.eventType, payload.new)
+                
+                if (payload.eventType === 'INSERT') {
+                  const newNotification = payload.new as Notification
+                  
+                  // Fetch related contact entity data if exists
+                  let enrichedNotification = { ...newNotification }
+                  if (newNotification.related_id && newNotification.related_type === 'lead') {
+                    const { data: leadData } = await supabase
+                      .from('leads')
+                      .select(`
+                        id,
+                        contact_entities!inner(
+                          name,
+                          business_name,
+                          first_name,
+                          last_name
+                        )
+                      `)
+                      .eq('id', newNotification.related_id)
+                      .single()
+                    
+                    if (leadData) {
+                      const contact = (leadData as any).contact_entities
+                      enrichedNotification.borrower_name = contact.name || 
+                        `${contact.first_name || ''} ${contact.last_name || ''}`.trim()
+                      enrichedNotification.company_name = contact.business_name
+                    }
+                  }
+                  
+                  setNotifications(prev => [enrichedNotification as any, ...prev.slice(0, 19)])
+                  if (!enrichedNotification.is_read) {
+                    setUnreadCount(prev => prev + 1)
+                  }
+                } else if (payload.eventType === 'UPDATE') {
+                  const updatedNotification = payload.new as Notification
+                  setNotifications(prev => {
+                    const updated = prev.map(n => n.id === updatedNotification.id ? updatedNotification as any : n)
+                    // Recalculate unread count
+                    const newUnreadCount = updated.filter(n => !n.is_read).length
+                    setUnreadCount(newUnreadCount)
+                    return updated
+                  })
                 }
               }
             )
