@@ -32,7 +32,7 @@ export default function LoanDocumentsFolder() {
           .from('leads')
           .select(`
             id,
-            contact_entity:contact_entities(
+            contact_entity:contact_entities!contact_entity_id(
               name,
               business_name,
               loan_type,

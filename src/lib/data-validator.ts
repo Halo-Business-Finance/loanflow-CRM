@@ -194,7 +194,7 @@ export class DataFieldValidator {
           updated_at,
           is_converted_to_client,
           converted_at,
-          contact_entities (
+          contact_entities:contact_entities!contact_entity_id (
             name,
             email,
             phone,

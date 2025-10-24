@@ -171,7 +171,7 @@ export default function LeadDetail() {
     try {
       const { data, error } = await supabase
         .from('additional_borrowers')
-        .select('*, contact_entity:contact_entities(*)')
+        .select('*, contact_entity:contact_entities!contact_entity_id(*)')
         .eq('lead_id', id)
         .order('borrower_order')
 

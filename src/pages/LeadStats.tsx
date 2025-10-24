@@ -47,7 +47,7 @@ export default function LeadStats() {
           id,
           created_at,
           is_converted_to_client,
-          contact_entities!inner (
+          contact_entities:contact_entities!contact_entity_id!inner (
             stage,
             priority
           )

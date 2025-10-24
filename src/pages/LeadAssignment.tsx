@@ -49,7 +49,7 @@ export default function LeadAssignmentPage() {
           contact_entity_id,
           user_id,
           created_at,
-          contact_entities!inner (
+          contact_entities:contact_entities!contact_entity_id!inner (
             id,
             name,
             email,

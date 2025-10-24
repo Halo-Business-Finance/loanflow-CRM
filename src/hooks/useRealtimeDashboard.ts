@@ -42,7 +42,7 @@ export function useRealtimeDashboard() {
         .select(`
           id,
           created_at,
-          contact_entity:contact_entities(
+          contact_entity:contact_entities!contact_entity_id(
             stage,
             priority,
             loan_amount

@@ -93,7 +93,7 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
       
       const { error } = await supabase
         .from('contact_entities')
-        .update({ source: newSource } as any)
+        .update({ source: newSource })
         .eq('id', lead.contact_entity_id)
 
       if (error) throw error
@@ -110,7 +110,7 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
       
       const { error } = await supabase
         .from('contact_entities')
-        .update({ stage: newStage } as any)
+        .update({ stage: newStage })
         .eq('id', lead.contact_entity_id)
 
       if (error) throw error

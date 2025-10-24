@@ -1003,6 +1003,7 @@ export type Database = {
           priority: string | null
           processor_name: string | null
           property_payment_amount: number | null
+          source: string | null
           stage: string | null
           updated_at: string
           user_id: string
@@ -1054,6 +1055,7 @@ export type Database = {
           priority?: string | null
           processor_name?: string | null
           property_payment_amount?: number | null
+          source?: string | null
           stage?: string | null
           updated_at?: string
           user_id: string
@@ -1105,6 +1107,7 @@ export type Database = {
           priority?: string | null
           processor_name?: string | null
           property_payment_amount?: number | null
+          source?: string | null
           stage?: string | null
           updated_at?: string
           user_id?: string
@@ -2457,6 +2460,13 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "fk_leads_contact_entity"
+            columns: ["contact_entity_id"]
+            isOneToOne: false
+            referencedRelation: "contact_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_contact_entity_id_fkey"
             columns: ["contact_entity_id"]
             isOneToOne: false
             referencedRelation: "contact_entities"

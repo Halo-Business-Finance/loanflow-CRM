@@ -65,7 +65,7 @@ export default function LeadDocuments() {
           id,
           contact_entity_id,
           user_id,
-          contact_entity:contact_entities(
+          contact_entity:contact_entities!contact_entity_id(
             name,
             email,
             phone,

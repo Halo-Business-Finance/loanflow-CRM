@@ -46,7 +46,7 @@ export function useDocuments() {
         .from('lead_documents')
         .select(`
           *,
-          contact_entity:contact_entities(name, business_name, loan_amount, loan_type, location, business_city, business_state, business_address)
+          contact_entity:contact_entities!contact_entity_id(name, business_name, loan_amount, loan_type, location, business_city, business_state, business_address)
         `)
         .order('created_at', { ascending: false });
 

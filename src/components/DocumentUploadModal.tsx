@@ -70,7 +70,7 @@ export function DocumentUploadModal({ isOpen, onClose, onUpload, preSelectedLead
         .select(`
           id,
           contact_entity_id,
-          contact_entity:contact_entities(name, business_name)
+          contact_entity:contact_entities!contact_entity_id(name, business_name)
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
