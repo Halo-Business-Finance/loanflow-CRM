@@ -42,11 +42,19 @@ export default function Documents() {
           existing.lastUpdated = doc.updated_at
         }
       } else {
+        // Construct location from available fields
+        const locationParts = [];
+        if (doc.contact_entity?.business_city) locationParts.push(doc.contact_entity.business_city);
+        if (doc.contact_entity?.business_state) locationParts.push(doc.contact_entity.business_state);
+        const constructedLocation = locationParts.length > 0 
+          ? locationParts.join(', ') 
+          : (doc.contact_entity?.location || 'Location not specified');
+        
         folderMap.set(leadId, {
           leadId,
           leadName: doc.contact_entity?.business_name || doc.contact_entity?.name || 'Unknown Business',
           loanType: doc.contact_entity?.loan_type || 'General',
-          location: doc.contact_entity?.location || 'Location not specified',
+          location: constructedLocation,
           documentCount: 1,
           lastUpdated: doc.updated_at,
           updatedBy: 'Loan Processing'

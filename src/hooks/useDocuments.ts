@@ -27,6 +27,9 @@ export interface LeadDocument {
     loan_amount?: number;
     loan_type?: string;
     location?: string;
+    business_city?: string;
+    business_state?: string;
+    business_address?: string;
   };
 }
 
@@ -43,7 +46,7 @@ export function useDocuments() {
         .from('lead_documents')
         .select(`
           *,
-          contact_entity:contact_entities(name, business_name, loan_amount, loan_type, location)
+          contact_entity:contact_entities(name, business_name, loan_amount, loan_type, location, business_city, business_state, business_address)
         `)
         .order('created_at', { ascending: false });
 
