@@ -48,15 +48,37 @@ export function ScheduleMeetingModal({
 
   const fetchUsers = async () => {
     try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, first_name, last_name, email')
+        .select('id, first_name, last_name, email, is_active')
+        .eq('is_active', true)
+        .neq('id', currentUser?.id || '') // Exclude current user
         .order('first_name', { ascending: true });
 
       if (error) throw error;
-      setUsers(data || []);
+      
+      // Filter out users without names
+      const activeUsers = (data || []).filter(u => u.first_name || u.last_name);
+      setUsers(activeUsers);
     } catch (error) {
       console.error('Error fetching users:', error);
+      // Fallback: try without is_active filter if column doesn't exist
+      try {
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        const { data, error: fallbackError } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name, email')
+          .neq('id', currentUser?.id || '')
+          .order('first_name', { ascending: true });
+        
+        if (fallbackError) throw fallbackError;
+        const activeUsers = (data || []).filter(u => u.first_name || u.last_name);
+        setUsers(activeUsers);
+      } catch (fallbackError) {
+        console.error('Error in fallback fetch:', fallbackError);
+      }
     }
   };
 
@@ -161,22 +183,33 @@ export function ScheduleMeetingModal({
 
           {(formData.type === 'meeting' || formData.type === 'call') && (
             <div className="space-y-2">
-              <Label htmlFor="assignedUser">Assign to Team Member (Optional)</Label>
+              <Label htmlFor="assignedUser">Assign to Team Member</Label>
               <Select
                 value={formData.assignedUserId}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, assignedUserId: value }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a team member" />
+                  <SelectValue placeholder={users.length > 0 ? "Select a team member" : "No team members available"} />
                 </SelectTrigger>
                 <SelectContent className="bg-background z-50 max-h-[200px]">
-                  {users.map((user) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      {user.first_name} {user.last_name} ({user.email})
-                    </SelectItem>
-                  ))}
+                  {users.length === 0 ? (
+                    <div className="px-2 py-6 text-center text-sm text-muted-foreground">
+                      No active team members found
+                    </div>
+                  ) : (
+                    users.map((user) => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.first_name && user.last_name 
+                          ? `${user.first_name} ${user.last_name}` 
+                          : user.email}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
+              <p className="text-xs text-muted-foreground">
+                The selected team member will also receive this event
+              </p>
             </div>
           )}
 
