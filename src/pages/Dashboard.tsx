@@ -830,9 +830,24 @@ export default function Dashboard() {
   return (
     <div data-testid="page-dashboard" className="min-h-screen bg-background">
       <div className="p-8 space-y-8 animate-fade-in">
-        {/* Customize Dashboard Button and Header */}
+        {/* Header */}
         <div className="flex items-center justify-between gap-4">
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              {userName ? `Welcome, ${userName}` : 'Welcome'}
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Your SBA & Commercial Loan Command Center
+            </p>
+          </div>
           <div className="flex items-center gap-3">
+            <Button 
+              onClick={() => navigate('/leads/new')}
+              className="gap-2"
+            >
+              <UserPlus className="h-4 w-4" />
+              Create New Lead
+            </Button>
             <Button
               variant={customizeMode ? "default" : "outline"}
               size="sm"
@@ -853,21 +868,6 @@ export default function Dashboard() {
               </Button>
             )}
           </div>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              {userName ? `Welcome, ${userName}` : 'Welcome'}
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Your SBA & Commercial Loan Command Center
-            </p>
-          </div>
-          <Button 
-            onClick={() => navigate('/leads/new')}
-            className="gap-2"
-          >
-            <UserPlus className="h-4 w-4" />
-            Create New Lead
-          </Button>
         </div>
 
         {customizeMode && (
