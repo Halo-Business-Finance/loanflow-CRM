@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+
+interface User {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
 
 interface ScheduleMeetingModalProps {
   open: boolean;
@@ -23,13 +30,35 @@ export function ScheduleMeetingModal({
   onSuccess 
 }: ScheduleMeetingModalProps) {
   const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     message: '',
     type: 'meeting',
     scheduledDate: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
     scheduledTime: '09:00',
+    assignedUserId: '',
   });
+
+  useEffect(() => {
+    if (open) {
+      fetchUsers();
+    }
+  }, [open]);
+
+  const fetchUsers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, email')
+        .order('first_name', { ascending: true });
+
+      if (error) throw error;
+      setUsers(data || []);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +70,7 @@ export function ScheduleMeetingModal({
 
       const scheduledFor = new Date(`${formData.scheduledDate}T${formData.scheduledTime}`);
 
+      // Create notification for the current user
       const { error } = await supabase
         .from('notifications')
         .insert({
@@ -53,6 +83,23 @@ export function ScheduleMeetingModal({
 
       if (error) throw error;
 
+      // If a user is assigned and it's a team meeting, create a notification for them too
+      if (formData.assignedUserId && formData.assignedUserId !== user.id) {
+        const { error: assignedError } = await supabase
+          .from('notifications')
+          .insert({
+            user_id: formData.assignedUserId,
+            title: formData.title,
+            message: formData.message,
+            type: formData.type,
+            scheduled_for: scheduledFor.toISOString(),
+          });
+
+        if (assignedError) {
+          console.error('Error creating notification for assigned user:', assignedError);
+        }
+      }
+
       toast.success('Event scheduled successfully');
       onOpenChange(false);
       onSuccess?.();
@@ -64,6 +111,7 @@ export function ScheduleMeetingModal({
         type: 'meeting',
         scheduledDate: '',
         scheduledTime: '09:00',
+        assignedUserId: '',
       });
     } catch (error) {
       console.error('Error scheduling event:', error);
@@ -101,7 +149,7 @@ export function ScheduleMeetingModal({
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background z-50">
                 <SelectItem value="meeting">Meeting</SelectItem>
                 <SelectItem value="call">Phone Call</SelectItem>
                 <SelectItem value="task">Task</SelectItem>
@@ -110,6 +158,27 @@ export function ScheduleMeetingModal({
               </SelectContent>
             </Select>
           </div>
+
+          {(formData.type === 'meeting' || formData.type === 'call') && (
+            <div className="space-y-2">
+              <Label htmlFor="assignedUser">Assign to Team Member (Optional)</Label>
+              <Select
+                value={formData.assignedUserId}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, assignedUserId: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a team member" />
+                </SelectTrigger>
+                <SelectContent className="bg-background z-50 max-h-[200px]">
+                  {users.map((user) => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.first_name} {user.last_name} ({user.email})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
