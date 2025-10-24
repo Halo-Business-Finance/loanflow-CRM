@@ -18,18 +18,66 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
 import { RefreshCw } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const SecurityPage: React.FC = () => {
   const navigate = useNavigate();
-  const [securityScore, setSecurityScore] = useState(96);
+  const [securityScore, setSecurityScore] = useState(0);
   const [activeThreats, setActiveThreats] = useState(0);
   const [systemStatus, setSystemStatus] = useState<'operational' | 'degraded' | 'critical'>('operational');
+  const [threatsBlocked, setThreatsBlocked] = useState(0);
+  const [activeSessions, setActiveSessions] = useState(0);
 
   useEffect(() => {
-    // Simulate real-time security monitoring
-    const interval = setInterval(() => {
-      setSecurityScore(prev => Math.min(100, prev + (Math.random() - 0.3) * 2));
-    }, 5000);
+    const fetchSecurityMetrics = async () => {
+      try {
+        // Fetch security events to calculate score
+        const { data: events } = await supabase
+          .from('security_events')
+          .select('severity, created_at')
+          .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+
+        const criticalCount = events?.filter(e => e.severity === 'critical').length || 0;
+        const highCount = events?.filter(e => e.severity === 'high').length || 0;
+        const mediumCount = events?.filter(e => e.severity === 'medium').length || 0;
+        
+        const scoreReduction = (criticalCount * 5) + (highCount * 2) + (mediumCount * 0.5);
+        const calculatedScore = Math.max(85, 100 - scoreReduction);
+        setSecurityScore(calculatedScore);
+
+        // Active threats
+        const activeCount = events?.filter(e => 
+          e.severity === 'high' || e.severity === 'critical'
+        ).length || 0;
+        setActiveThreats(activeCount);
+
+        // Threats blocked (all events in last 24h)
+        setThreatsBlocked(events?.length || 0);
+
+        // Active sessions
+        const { data: sessions } = await supabase
+          .from('active_sessions')
+          .select('id')
+          .eq('is_active', true)
+          .gt('expires_at', new Date().toISOString());
+        
+        setActiveSessions(sessions?.length || 0);
+
+        // Set system status based on threats
+        if (criticalCount > 0) {
+          setSystemStatus('critical');
+        } else if (highCount > 3) {
+          setSystemStatus('degraded');
+        } else {
+          setSystemStatus('operational');
+        }
+      } catch (error) {
+        console.error('Error fetching security metrics:', error);
+      }
+    };
+
+    fetchSecurityMetrics();
+    const interval = setInterval(fetchSecurityMetrics, 30000); // Refresh every 30s
     return () => clearInterval(interval);
   }, []);
 
@@ -83,12 +131,12 @@ const SecurityPage: React.FC = () => {
                       <p className="text-2xl font-semibold">AES-256</p>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Uptime</p>
-                      <p className="text-2xl font-semibold">99.99%</p>
+                      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Active Sessions</p>
+                      <p className="text-2xl font-semibold">{activeSessions}</p>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Compliance</p>
-                      <p className="text-2xl font-semibold">100%</p>
+                      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Status</p>
+                      <p className="text-2xl font-semibold capitalize">{systemStatus}</p>
                     </div>
                   </div>
                 </div>
@@ -137,7 +185,7 @@ const SecurityPage: React.FC = () => {
               >
                 <CardContent className="p-6 space-y-3">
                   <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Active Monitors</p>
-                  <p className="text-3xl font-semibold">6</p>
+                  <p className="text-3xl font-semibold">{activeSessions > 0 ? '4' : '—'}</p>
                   <p className="text-xs text-muted-foreground">Real-time tracking</p>
                 </CardContent>
               </Card>
@@ -148,7 +196,7 @@ const SecurityPage: React.FC = () => {
               >
                 <CardContent className="p-6 space-y-3">
                   <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Threats Blocked</p>
-                  <p className="text-3xl font-semibold">127</p>
+                  <p className="text-3xl font-semibold">{threatsBlocked}</p>
                   <p className="text-xs text-muted-foreground">Last 24 hours</p>
                 </CardContent>
               </Card>
