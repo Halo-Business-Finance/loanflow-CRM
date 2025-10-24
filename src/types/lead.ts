@@ -194,10 +194,11 @@ export const LEAD_SOURCES = [
   "Website",
   "Referral",
   "Broker",
+  "Existing Borrower",
   "Social Media",
   "Email Campaign",
   "Event/Conference",
-  "Other"
+  "Internal"
 ] as const
 
 export type Stage = typeof STAGES[number]
