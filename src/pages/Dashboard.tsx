@@ -477,49 +477,6 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        {/* Quick Access Tiles - Clean Style */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card 
-            className="bg-card border cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all"
-            onClick={() => navigate('/leads')}
-          >
-            <CardContent className="p-6 text-center">
-              <p className="text-3xl font-bold text-foreground">{stats.totalLeads}</p>
-              <p className="text-sm text-muted-foreground mt-1">Leads</p>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className="bg-card border cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all"
-            onClick={() => navigate('/pipeline')}
-          >
-            <CardContent className="p-6 text-center">
-              <p className="text-3xl font-bold text-foreground">{stats.activeDeals}</p>
-              <p className="text-sm text-muted-foreground mt-1">Opportunities</p>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className="bg-card border cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all"
-            onClick={() => navigate('/documents')}
-          >
-            <CardContent className="p-6 text-center">
-              <p className="text-3xl font-bold text-foreground">—</p>
-              <p className="text-sm text-muted-foreground mt-1">Documents</p>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className="bg-card border cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all"
-            onClick={() => navigate('/activities/tasks')}
-          >
-            <CardContent className="p-6 text-center">
-              <p className="text-3xl font-bold text-foreground">{stats.pendingTasks}</p>
-              <p className="text-sm text-muted-foreground mt-1">Tasks</p>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Key Performance Indicators - Clean Style with Trends */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card 
