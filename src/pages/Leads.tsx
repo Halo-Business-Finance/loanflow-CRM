@@ -20,7 +20,9 @@ import {
   TrendingUp,
   AlertTriangle,
   CheckCircle,
-  Trash2
+  Trash2,
+  Grid,
+  List
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -73,6 +75,7 @@ export default function Leads() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedStage, setSelectedStage] = useState('All');
   const [selectedPriority, setSelectedPriority] = useState('All');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const { hasRole } = useRoleBasedAccess();
   const hasAdminRole = hasRole('admin') || hasRole('super_admin');
 
@@ -418,6 +421,24 @@ export default function Leads() {
                   </div>
                   
                   <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 border border-border rounded-lg p-1">
+                      <Button
+                        variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                        size="sm"
+                        onClick={() => setViewMode('grid')}
+                        className="h-7 w-7 p-0"
+                      >
+                        <Grid className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant={viewMode === 'list' ? 'default' : 'ghost'}
+                        size="sm"
+                        onClick={() => setViewMode('list')}
+                        className="h-7 w-7 p-0"
+                      >
+                        <List className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                     <Button 
                       variant="outline" 
                       size="sm" 
@@ -578,18 +599,128 @@ export default function Leads() {
               </Button>
             </div>
             
-            <LeadsList 
-              leads={filteredLeads}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onConvert={handleConvert}
-              onRefresh={realtimeRefetch}
-              hasAdminRole={hasAdminRole}
-              currentUserId={user?.id}
-              selectedLeads={selectedLeads}
-              onSelectAll={handleSelectAll}
-              onSelectLead={handleSelectLead}
-            />
+            {viewMode === 'list' ? (
+              <LeadsList 
+                leads={filteredLeads}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onConvert={handleConvert}
+                onRefresh={realtimeRefetch}
+                hasAdminRole={hasAdminRole}
+                currentUserId={user?.id}
+                selectedLeads={selectedLeads}
+                onSelectAll={handleSelectAll}
+                onSelectLead={handleSelectLead}
+              />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredLeads.length === 0 ? (
+                  <div className="col-span-full text-center py-12">
+                    <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-medium mb-2">No leads found</h3>
+                    <p className="text-muted-foreground mb-4">
+                      {searchTerm 
+                        ? "Try adjusting your search or filters" 
+                        : "Start by creating your first lead"}
+                    </p>
+                    <Button onClick={() => setShowNewLeadForm(true)} className="gap-2">
+                      <UserPlus className="h-4 w-4" />
+                      Create Lead
+                    </Button>
+                  </div>
+                ) : (
+                  filteredLeads.map((lead) => (
+                    <Card 
+                      key={lead.id}
+                      className="hover:shadow-lg transition-all cursor-pointer group relative"
+                      onClick={() => navigate(`/leads/${lead.id}`)}
+                    >
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <CardTitle className="text-base font-semibold truncate">
+                              {lead.name}
+                            </CardTitle>
+                            {lead.business_name && (
+                              <CardDescription className="text-xs mt-1 truncate">
+                                {lead.business_name}
+                              </CardDescription>
+                            )}
+                          </div>
+                          <Badge 
+                            variant={
+                              lead.priority === 'High' ? 'destructive' : 
+                              lead.priority === 'Medium' ? 'default' : 
+                              'secondary'
+                            }
+                            className="text-xs shrink-0"
+                          >
+                            {lead.priority}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="space-y-2 text-sm">
+                          {lead.email && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <Mail className="h-3.5 w-3.5 shrink-0" />
+                              <span className="truncate">{lead.email}</span>
+                            </div>
+                          )}
+                          {lead.phone && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <Phone className="h-3.5 w-3.5 shrink-0" />
+                              <span className="truncate">{lead.phone}</span>
+                            </div>
+                          )}
+                          {lead.loan_amount && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <DollarSign className="h-3.5 w-3.5 shrink-0" />
+                              <span className="font-medium text-foreground">
+                                {formatCurrency(lead.loan_amount)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="pt-3 border-t">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">Stage</span>
+                            <Badge variant="outline" className="text-xs">
+                              {lead.stage || 'New Lead'}
+                            </Badge>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 pt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 h-8 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEdit(lead);
+                            }}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="flex-1 h-8 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/leads/${lead.id}`);
+                            }}
+                          >
+                            View Details
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="qualified" className="space-y-6">
