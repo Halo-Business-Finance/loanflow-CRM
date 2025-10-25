@@ -26,46 +26,70 @@ export function useRealtimeLeads() {
       }
       console.log('Fetching leads for user:', user.id)
       
-      const { data, error } = await supabase
+      const { data: leadRows, error: leadError } = await supabase
         .from('leads')
-        .select(LEAD_WITH_CONTACT_QUERY)
+        .select('*')
         .order('created_at', { ascending: false })
 
-      if (error) {
-        console.error('Supabase query error:', error)
-        throw error
+      if (leadError) {
+        console.error('Supabase leads query error:', leadError)
+        throw leadError
+      }
+
+      // Fetch related contact entities in a second query (embedding may fail without FK)
+      const contactEntityIds = (leadRows || [])
+        .map((l: any) => l.contact_entity_id)
+        .filter((id: string | null) => !!id)
+      
+      let contactMap: Record<string, any> = {}
+      if (contactEntityIds.length > 0) {
+        const { data: contactRows, error: contactError } = await supabase
+          .from('contact_entities')
+          .select('*')
+          .in('id', Array.from(new Set(contactEntityIds)))
+        
+        if (contactError) {
+          console.error('Supabase contact_entities query error:', contactError)
+          // Do not throw; continue with bare leads to avoid empty UI
+        } else {
+          contactMap = (contactRows || []).reduce((acc: Record<string, any>, c: any) => {
+            acc[c.id] = c
+            return acc
+          }, {})
+        }
       }
       
       // Transform the data to match Lead interface
-      const transformedLeads: Lead[] = (data || []).map(lead => {
+      const transformedLeads: Lead[] = (leadRows || []).map((lead: any) => {
+        const ce = contactMap[lead.contact_entity_id]
         // Compute name from first_name and last_name, fallback to name field
-        const computedName = lead.contact_entity?.first_name || lead.contact_entity?.last_name
-          ? `${lead.contact_entity?.first_name || ''} ${lead.contact_entity?.last_name || ''}`.trim()
-          : (lead.contact_entity?.name || '')
+        const computedName = ce?.first_name || ce?.last_name
+          ? `${ce?.first_name || ''} ${ce?.last_name || ''}`.trim()
+          : (ce?.name || '')
         
         return {
           id: lead.id,
           lead_number: lead.lead_number,
           name: computedName,
-          email: lead.contact_entity?.email === '[SECURED]' ? '***@***.com' : (lead.contact_entity?.email || ''),
-          phone: lead.contact_entity?.phone === '[SECURED]' ? '***-***-****' : (lead.contact_entity?.phone || ''),
-          business_name: lead.contact_entity?.business_name || '',
-          location: lead.contact_entity?.location || '',
-          loan_amount: lead.contact_entity?.loan_amount || 0,
-          loan_type: lead.contact_entity?.loan_type || '',
-          credit_score: lead.contact_entity?.credit_score || 0,
-          stage: lead.contact_entity?.stage || 'Initial Contact',
-          priority: lead.contact_entity?.priority || 'Medium',
-          net_operating_income: lead.contact_entity?.net_operating_income || 0,
-          naics_code: lead.contact_entity?.naics_code || '',
-          ownership_structure: lead.contact_entity?.ownership_structure || '',
+          email: ce?.email === '[SECURED]' ? '***@***.com' : (ce?.email || ''),
+          phone: ce?.phone === '[SECURED]' ? '***-***-****' : (ce?.phone || ''),
+          business_name: ce?.business_name || '',
+          location: ce?.location || '',
+          loan_amount: ce?.loan_amount || 0,
+          loan_type: ce?.loan_type || '',
+          credit_score: ce?.credit_score || 0,
+          stage: ce?.stage || 'Initial Contact',
+          priority: ce?.priority || 'Medium',
+          net_operating_income: ce?.net_operating_income || 0,
+          naics_code: ce?.naics_code || '',
+          ownership_structure: ce?.ownership_structure || '',
           created_at: lead.created_at,
           updated_at: lead.updated_at,
           user_id: lead.user_id,
           contact_entity_id: lead.contact_entity_id,
           last_contact: lead.updated_at,
           is_converted_to_client: false,
-          contact_entity: lead.contact_entity
+          contact_entity: ce
         }
       })
       
