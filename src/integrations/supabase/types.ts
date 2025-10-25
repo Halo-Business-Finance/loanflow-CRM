@@ -4609,6 +4609,29 @@ export type Database = {
         Returns: string
       }
       generate_role_change_mfa_verification: { Args: never; Returns: Json }
+      get_accessible_leads: {
+        Args: never
+        Returns: {
+          contact_entity_id: string
+          converted_at: string | null
+          created_at: string
+          id: string
+          is_converted_to_client: boolean | null
+          last_contact: string | null
+          lead_number: number
+          loan_originator_id: string | null
+          processor_id: string | null
+          underwriter_id: string | null
+          updated_at: string
+          user_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "leads"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_active_encryption_key: { Args: never; Returns: string }
       get_email_tokens_secure: {
         Args: { p_email_address: string }

@@ -50,9 +50,14 @@ interface LeadsOverview {
 }
 
 export default function Leads() {
-  const { user } = useAuth();
+  const { user, userRoles } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Debug: Log user and roles on mount
+  useEffect(() => {
+    console.info('[Leads] User:', user?.id, 'Roles:', userRoles);
+  }, [user, userRoles]);
   
   // Use real-time leads hook
   const { leads: realtimeLeads, loading: realtimeLoading, refetch: realtimeRefetch } = useRealtimeLeads();

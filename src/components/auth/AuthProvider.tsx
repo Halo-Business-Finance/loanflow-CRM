@@ -35,24 +35,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let mounted = true
     
     // Set up auth state listener FIRST to avoid missing events
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (mounted) {
         setSession(session)
         setUser(session?.user ?? null)
         if (session?.user) {
-          // Ensure default viewer role then fetch details (deferred)
-          setTimeout(() => {
-            if (mounted) {
-              void supabase.rpc('ensure_default_viewer_role')
-              fetchUserRole(session.user.id)
-              checkEmailVerification(session.user.id)
-            }
-          }, 0)
+          // Ensure default viewer role then fetch details synchronously
+          try {
+            await supabase.rpc('ensure_default_viewer_role')
+            await fetchUserRole(session.user.id)
+            await checkEmailVerification(session.user.id)
+          } catch (e) {
+            logSecureError(e, 'Auth state change role setup', supabase)
+          } finally {
+            setLoading(false)
+          }
         } else {
           setUserRole(null)
+          setUserRoles([])
           setIsEmailVerified(false)
+          setLoading(false)
         }
-        setLoading(false)
       }
     })
 
@@ -169,15 +172,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error
       }
 
-      // Ensure default role then check MFA
-      try { await supabase.rpc('ensure_default_viewer_role') } catch (e) { logSecureError(e, 'Ensure default role', supabase) }
+      // Ensure default role then fetch user role before proceeding
       if (data?.user?.id) {
         try {
+          await supabase.rpc('ensure_default_viewer_role')
+          await fetchUserRole(data.user.id)
           await supabase.rpc('check_mfa_requirement', {
             p_user_id: data.user.id
           })
-        } catch (mfaError) {
-          logSecureError(mfaError, 'MFA check', supabase)
+        } catch (e) {
+          logSecureError(e, 'Sign in role setup', supabase)
         }
       }
 
