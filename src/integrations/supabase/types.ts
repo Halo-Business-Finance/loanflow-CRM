@@ -4834,6 +4834,13 @@ export type Database = {
         }
         Returns: string
       }
+      has_any_role: {
+        Args: {
+          _roles: Database["public"]["Enums"]["user_role"][]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_role:
         | {
             Args: {
