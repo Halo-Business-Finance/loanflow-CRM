@@ -40,9 +40,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session)
         setUser(session?.user ?? null)
         if (session?.user) {
-          // Defer role and verification fetching to avoid deadlock
+          // Ensure default viewer role then fetch details (deferred)
           setTimeout(() => {
             if (mounted) {
+              void supabase.rpc('ensure_default_viewer_role')
               fetchUserRole(session.user.id)
               checkEmailVerification(session.user.id)
             }
@@ -64,6 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setSession(session)
           setUser(session?.user ?? null)
           if (session?.user) {
+            try { await supabase.rpc('ensure_default_viewer_role') } catch (e) { logSecureError(e, 'Ensure default role', supabase) }
             await fetchUserRole(session.user.id)
             await checkEmailVerification(session.user.id)
           } else {
@@ -167,7 +169,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error
       }
 
-      // Check MFA requirement after successful login
+      // Ensure default role then check MFA
+      try { await supabase.rpc('ensure_default_viewer_role') } catch (e) { logSecureError(e, 'Ensure default role', supabase) }
       if (data?.user?.id) {
         try {
           await supabase.rpc('check_mfa_requirement', {
