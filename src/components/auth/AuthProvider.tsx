@@ -35,21 +35,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let mounted = true
     
     // Set up auth state listener FIRST to avoid missing events
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (mounted) {
+        console.log('[AuthProvider] Auth state changed:', event, !!session?.user)
         setSession(session)
         setUser(session?.user ?? null)
         if (session?.user) {
-          // Ensure default viewer role then fetch details synchronously
-          try {
-            await supabase.rpc('ensure_default_viewer_role')
-            await fetchUserRole(session.user.id)
-            await checkEmailVerification(session.user.id)
-          } catch (e) {
-            logSecureError(e, 'Auth state change role setup', supabase)
-          } finally {
-            setLoading(false)
+          // Ensure default viewer role then fetch details (non-blocking)
+          const setupUserRole = async () => {
+            try {
+              console.log('[AuthProvider] Setting up user role for:', session.user.id)
+              await supabase.rpc('ensure_default_viewer_role')
+              await fetchUserRole(session.user.id)
+              await checkEmailVerification(session.user.id)
+              console.log('[AuthProvider] Role setup complete')
+            } catch (e) {
+              console.error('[AuthProvider] Role setup failed:', e)
+              logSecureError(e, 'Auth state change role setup', supabase)
+              // Set fallback role to prevent infinite loading
+              setUserRole('viewer')
+              setUserRoles(['viewer'])
+            } finally {
+              setLoading(false)
+            }
           }
+          setupUserRole()
         } else {
           setUserRole(null)
           setUserRoles([])
@@ -115,6 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserRole = async (userId: string) => {
     try {
+      console.log('[AuthProvider] Fetching roles for user:', userId)
       // Fetch all active roles AND the server-determined primary role in parallel
       const [rolesRes, primaryRes] = await Promise.all([
         supabase
@@ -125,17 +136,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         supabase.rpc('get_user_role', { p_user_id: userId })
       ])
 
+      console.log('[AuthProvider] Roles response:', rolesRes.data, 'Primary response:', primaryRes.data)
+
       // If both calls failed, fall back
       if (rolesRes.error && (!primaryRes || primaryRes.error)) {
+        console.warn('[AuthProvider] Both role queries failed, using fallback')
         logSecureError(rolesRes.error, 'Role fetch failed', supabase)
-        setUserRole('loan_originator')
-        setUserRoles(['loan_originator'])
+        setUserRole('viewer')
+        setUserRoles(['viewer'])
         return
       }
 
       // Extract all roles (may be empty)
       const roles: string[] = rolesRes.data?.map((r: { role: any }) => String(r.role)) || []
       const serverPrimary: string | null = (primaryRes && !primaryRes.error && primaryRes.data) ? String(primaryRes.data) : null
+
+      console.log('[AuthProvider] Extracted roles:', roles, 'Server primary:', serverPrimary)
 
       // Determine primary role (prefer secure server value)
       const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'manager', 'admin', 'super_admin']
@@ -145,19 +161,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const currentIndex = roleHierarchy.indexOf(current)
             return currentIndex > highestIndex ? current : highest
           }, roles[0])
-        : 'loan_originator'
+        : 'viewer'
 
       const primaryRole = serverPrimary || derivedPrimary
 
       // Ensure roles includes the primary role and is de-duplicated
       const normalizedRoles = Array.from(new Set([...(roles || []), primaryRole].filter(Boolean))) as string[]
 
+      console.log('[AuthProvider] Final roles:', normalizedRoles, 'Primary role:', primaryRole)
+
       setUserRole(primaryRole)
-      setUserRoles(normalizedRoles.length > 0 ? normalizedRoles : ['loan_originator'])
+      setUserRoles(normalizedRoles.length > 0 ? normalizedRoles : ['viewer'])
     } catch (error) {
+      console.error('[AuthProvider] Role fetch exception:', error)
       logSecureError(error, 'Role fetch exception', supabase)
-      setUserRole('loan_originator')
-      setUserRoles(['loan_originator'])
+      setUserRole('viewer')
+      setUserRoles(['viewer'])
     }
   }
 
