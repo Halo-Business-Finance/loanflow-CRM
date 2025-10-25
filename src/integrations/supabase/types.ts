@@ -4602,6 +4602,7 @@ export type Database = {
         Returns: Json
       }
       ensure_ai_bots_active: { Args: never; Returns: undefined }
+      ensure_default_viewer_role: { Args: never; Returns: undefined }
       fix_null_numeric_fields: { Args: never; Returns: string }
       generate_phone_verification_code: {
         Args: { p_phone_number: string; p_user_id: string }
