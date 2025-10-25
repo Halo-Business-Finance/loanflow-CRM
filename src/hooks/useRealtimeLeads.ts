@@ -29,7 +29,6 @@ export function useRealtimeLeads() {
       const { data, error } = await supabase
         .from('leads')
         .select(LEAD_WITH_CONTACT_QUERY)
-        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
 
       if (error) {
