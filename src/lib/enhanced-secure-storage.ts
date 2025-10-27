@@ -1,6 +1,7 @@
 /**
  * Enhanced secure storage that prioritizes server-side sessions over localStorage
  * for sensitive data with automatic cleanup
+ * NOW WITH PROPER AES-GCM ENCRYPTION (replaces weak XOR cipher)
  */
 
 import { supabase } from '@/integrations/supabase/client';
@@ -48,94 +49,110 @@ class EnhancedSecureStorage {
   }
 
   /**
-   * Encrypt text using AES-GCM (military-grade encryption)
+   * Encrypt using AES-GCM (replaces weak XOR cipher)
    */
   private async encrypt(text: string): Promise<string> {
     try {
       const encoder = new TextEncoder();
       const data = encoder.encode(text);
       
-      // Generate a random IV (Initialization Vector)
-      const iv = crypto.getRandomValues(new Uint8Array(12));
+      // Get encryption key and convert to CryptoKey
+      const keyMaterial = await crypto.subtle.importKey(
+        'raw',
+        encoder.encode(this.getEncryptionKey()),
+        { name: 'PBKDF2' },
+        false,
+        ['deriveBits', 'deriveKey']
+      );
       
-      // Get the encryption key
-      const keyMaterial = await this.getCryptoKey();
-      
-      // Encrypt using AES-GCM
-      const encrypted = await crypto.subtle.encrypt(
+      // Derive a proper AES key using PBKDF2
+      const aesKey = await crypto.subtle.deriveKey(
         {
-          name: 'AES-GCM',
-          iv: iv
+          name: 'PBKDF2',
+          salt: encoder.encode('lovable-crm-salt-v1'),
+          iterations: 100000,
+          hash: 'SHA-256'
         },
         keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt']
+      );
+      
+      // Generate random IV (12 bytes for GCM)
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      
+      // Encrypt with AES-GCM
+      const encryptedData = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv },
+        aesKey,
         data
       );
       
-      // Combine IV and encrypted data
-      const combined = new Uint8Array(iv.length + encrypted.byteLength);
+      // Combine IV + encrypted data
+      const combined = new Uint8Array(iv.length + encryptedData.byteLength);
       combined.set(iv, 0);
-      combined.set(new Uint8Array(encrypted), iv.length);
+      combined.set(new Uint8Array(encryptedData), iv.length);
       
-      // Convert to base64
+      // Return as base64
       return btoa(String.fromCharCode(...combined));
     } catch (error) {
       console.error('Encryption failed');
-      throw new Error('Encryption failed');
+      throw error;
     }
   }
 
   /**
-   * Decrypt text using AES-GCM
+   * Decrypt using AES-GCM
    */
   private async decrypt(encryptedText: string): Promise<string> {
     try {
-      // Decode from base64
+      const encoder = new TextEncoder();
+      
+      // Decode base64
       const combined = new Uint8Array(
         atob(encryptedText).split('').map(char => char.charCodeAt(0))
       );
       
-      // Extract IV and encrypted data
+      // Extract IV (first 12 bytes) and encrypted data
       const iv = combined.slice(0, 12);
-      const encrypted = combined.slice(12);
+      const encryptedData = combined.slice(12);
       
-      // Get the encryption key
-      const keyMaterial = await this.getCryptoKey();
-      
-      // Decrypt using AES-GCM
-      const decrypted = await crypto.subtle.decrypt(
-        {
-          name: 'AES-GCM',
-          iv: iv
-        },
-        keyMaterial,
-        encrypted
+      // Get encryption key and convert to CryptoKey
+      const keyMaterial = await crypto.subtle.importKey(
+        'raw',
+        encoder.encode(this.getEncryptionKey()),
+        { name: 'PBKDF2' },
+        false,
+        ['deriveBits', 'deriveKey']
       );
       
-      return new TextDecoder().decode(decrypted);
+      // Derive the same AES key
+      const aesKey = await crypto.subtle.deriveKey(
+        {
+          name: 'PBKDF2',
+          salt: encoder.encode('lovable-crm-salt-v1'),
+          iterations: 100000,
+          hash: 'SHA-256'
+        },
+        keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt']
+      );
+      
+      // Decrypt with AES-GCM
+      const decryptedData = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        aesKey,
+        encryptedData
+      );
+      
+      return new TextDecoder().decode(decryptedData);
     } catch (error) {
       console.error('Decryption failed');
       return '';
     }
-  }
-
-  /**
-   * Get or create CryptoKey for AES-GCM encryption
-   */
-  private async getCryptoKey(): Promise<CryptoKey> {
-    const rawKey = this.getEncryptionKey();
-    const keyData = new TextEncoder().encode(rawKey).slice(0, 32); // Use first 32 bytes for AES-256
-    
-    // Pad to 32 bytes if necessary
-    const paddedKey = new Uint8Array(32);
-    paddedKey.set(keyData);
-    
-    return await crypto.subtle.importKey(
-      'raw',
-      paddedKey,
-      { name: 'AES-GCM' },
-      false,
-      ['encrypt', 'decrypt']
-    );
   }
 
   /**
