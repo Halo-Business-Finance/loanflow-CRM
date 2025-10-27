@@ -47,38 +47,95 @@ class EnhancedSecureStorage {
     return this.sessionKey;
   }
 
+  /**
+   * Encrypt text using AES-GCM (military-grade encryption)
+   */
   private async encrypt(text: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(text);
-    const key = this.getEncryptionKey();
-    const keyBytes = encoder.encode(key);
-    const encrypted = new Uint8Array(data.length);
-    
-    for (let i = 0; i < data.length; i++) {
-      encrypted[i] = data[i] ^ keyBytes[i % keyBytes.length];
+    try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(text);
+      
+      // Generate a random IV (Initialization Vector)
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      
+      // Get the encryption key
+      const keyMaterial = await this.getCryptoKey();
+      
+      // Encrypt using AES-GCM
+      const encrypted = await crypto.subtle.encrypt(
+        {
+          name: 'AES-GCM',
+          iv: iv
+        },
+        keyMaterial,
+        data
+      );
+      
+      // Combine IV and encrypted data
+      const combined = new Uint8Array(iv.length + encrypted.byteLength);
+      combined.set(iv, 0);
+      combined.set(new Uint8Array(encrypted), iv.length);
+      
+      // Convert to base64
+      return btoa(String.fromCharCode(...combined));
+    } catch (error) {
+      console.error('Encryption failed');
+      throw new Error('Encryption failed');
     }
-    
-    return btoa(String.fromCharCode(...encrypted));
   }
 
+  /**
+   * Decrypt text using AES-GCM
+   */
   private async decrypt(encryptedText: string): Promise<string> {
     try {
-      const encrypted = new Uint8Array(
+      // Decode from base64
+      const combined = new Uint8Array(
         atob(encryptedText).split('').map(char => char.charCodeAt(0))
       );
-      const key = this.getEncryptionKey();
-      const keyBytes = new TextEncoder().encode(key);
-      const decrypted = new Uint8Array(encrypted.length);
       
-      for (let i = 0; i < encrypted.length; i++) {
-        decrypted[i] = encrypted[i] ^ keyBytes[i % keyBytes.length];
-      }
+      // Extract IV and encrypted data
+      const iv = combined.slice(0, 12);
+      const encrypted = combined.slice(12);
+      
+      // Get the encryption key
+      const keyMaterial = await this.getCryptoKey();
+      
+      // Decrypt using AES-GCM
+      const decrypted = await crypto.subtle.decrypt(
+        {
+          name: 'AES-GCM',
+          iv: iv
+        },
+        keyMaterial,
+        encrypted
+      );
       
       return new TextDecoder().decode(decrypted);
     } catch (error) {
       console.error('Decryption failed');
       return '';
     }
+  }
+
+  /**
+   * Get or create CryptoKey for AES-GCM encryption
+   */
+  private async getCryptoKey(): Promise<CryptoKey> {
+    const rawKey = this.getEncryptionKey();
+    const keyData = new TextEncoder().encode(rawKey).slice(0, 32); // Use first 32 bytes for AES-256
+    
+    // Pad to 32 bytes if necessary
+    const paddedKey = new Uint8Array(32);
+    paddedKey.set(keyData);
+    
+    return await crypto.subtle.importKey(
+      'raw',
+      paddedKey,
+      { name: 'AES-GCM' },
+      false,
+      ['encrypt', 'decrypt']
+    );
   }
 
   /**
