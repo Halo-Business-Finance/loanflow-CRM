@@ -2537,8 +2537,29 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "leads_loan_originator_id_fkey"
+            columns: ["loan_originator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "leads_processor_id_fkey"
             columns: ["processor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_processor_id_fkey"
+            columns: ["processor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_underwriter_id_fkey"
+            columns: ["underwriter_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -2547,7 +2568,7 @@ export type Database = {
             foreignKeyName: "leads_underwriter_id_fkey"
             columns: ["underwriter_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
         ]
@@ -3647,6 +3668,54 @@ export type Database = {
         }
         Relationships: []
       }
+      security_pattern_alerts: {
+        Row: {
+          acknowledged: boolean | null
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          affected_user_ids: string[]
+          description: string
+          detected_at: string
+          detection_count: number
+          id: string
+          pattern_type: string
+          resolution_notes: string | null
+          resolved: boolean | null
+          resolved_at: string | null
+          severity: string
+        }
+        Insert: {
+          acknowledged?: boolean | null
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          affected_user_ids: string[]
+          description: string
+          detected_at?: string
+          detection_count: number
+          id?: string
+          pattern_type: string
+          resolution_notes?: string | null
+          resolved?: boolean | null
+          resolved_at?: string | null
+          severity: string
+        }
+        Update: {
+          acknowledged?: boolean | null
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          affected_user_ids?: string[]
+          description?: string
+          detected_at?: string
+          detection_count?: number
+          id?: string
+          pattern_type?: string
+          resolution_notes?: string | null
+          resolved?: boolean | null
+          resolved_at?: string | null
+          severity?: string
+        }
+        Relationships: []
+      }
       sensitive_data_access_logs: {
         Row: {
           access_reason: string | null
@@ -4433,7 +4502,48 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      profiles_public: {
+        Row: {
+          city: string | null
+          created_at: string | null
+          first_name: string | null
+          id: string | null
+          is_active: boolean | null
+          job_title: string | null
+          language: string | null
+          last_name: string | null
+          state: string | null
+          timezone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string | null
+          first_name?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          job_title?: string | null
+          language?: string | null
+          last_name?: string | null
+          state?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string | null
+          first_name?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          job_title?: string | null
+          language?: string | null
+          last_name?: string | null
+          state?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       admin_update_profile:
@@ -4561,6 +4671,16 @@ export type Database = {
         Returns: Json
       }
       detect_security_threats: { Args: never; Returns: Json }
+      detect_suspicious_patterns: {
+        Args: never
+        Returns: {
+          affected_users: string[]
+          count: number
+          description: string
+          pattern_type: string
+          severity: string
+        }[]
+      }
       emergency_shutdown_ai_bots: { Args: { p_reason?: string }; Returns: Json }
       encrypt_contact_field: {
         Args: {
@@ -4661,6 +4781,15 @@ export type Database = {
       get_masked_ringcentral_credentials: {
         Args: { p_account_id: string; p_requesting_user_id?: string }
         Returns: Json
+      }
+      get_profile_sensitive_fields: {
+        Args: { profile_id: string }
+        Returns: {
+          email: string
+          email_verified_at: string
+          phone_number: string
+          phone_verified_at: string
+        }[]
       }
       get_recent_failed_attempts: {
         Args: { user_email: string }
