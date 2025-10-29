@@ -64,7 +64,7 @@ import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
 const COLORS = ['#0f62fe', '#0353e9', '#8a3ffc', '#33b1ff', '#d12771'];
 
 export default function Dashboard() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { hasRole } = useRoleBasedAccess();
@@ -382,7 +382,7 @@ export default function Dashboard() {
         console.error('Failed to load widget order:', e);
       }
     }
-  }, [user]);
+  }, [user, hasRole]);
 
   // Save widget order to localStorage when it changes
   useEffect(() => {
