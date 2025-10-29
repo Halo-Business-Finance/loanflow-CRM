@@ -64,7 +64,7 @@ import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
 const COLORS = ['#0f62fe', '#0353e9', '#8a3ffc', '#33b1ff', '#d12771'];
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { hasRole } = useRoleBasedAccess();
