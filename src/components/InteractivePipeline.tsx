@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom"
 import { Lead } from "@/types/lead"
 import { formatPhoneNumber } from "@/lib/utils"
+import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 
 // Use Lead type from centralized types but alias as LeadData for backwards compatibility
 type LeadData = Lead
@@ -125,6 +126,7 @@ export function InteractivePipeline() {
   const [selectedLead, setSelectedLead] = useState<LeadData | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { hasRole } = useRoleBasedAccess();
 
   useEffect(() => {
     if (user) {
@@ -135,13 +137,23 @@ export function InteractivePipeline() {
   const fetchLeads = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // Managers and admins can see all leads, others see only their own
+      const isManagerOrAdmin = hasRole('manager') || hasRole('admin') || hasRole('super_admin');
+      
+      let query = supabase
         .from('leads')
         .select(`
           *,
           contact_entity:contact_entities!contact_entity_id (*)
-        `)
-        .eq('user_id', user?.id);
+        `);
+      
+      // Only filter by user_id if not a manager/admin
+      if (!isManagerOrAdmin) {
+        query = query.eq('user_id', user?.id);
+      }
+      
+      const { data, error } = await query;
 
       if (error) throw error;
 
