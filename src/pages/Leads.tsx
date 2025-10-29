@@ -502,7 +502,7 @@ export default function Leads() {
                 >
                   <CardContent className="p-6">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium text-muted-foreground">Hot Prospects</p>
+                      <p className="text-sm font-medium text-muted-foreground">High Priority Leads</p>
                       <p className="text-2xl font-bold text-primary">{overview.hotLeads}</p>
                     </div>
                   </CardContent>
