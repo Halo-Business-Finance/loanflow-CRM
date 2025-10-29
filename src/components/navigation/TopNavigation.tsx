@@ -23,10 +23,10 @@ import { cn } from "@/lib/utils"
 const mainModules = [
   { name: "Home", path: "/", exact: true },
   { name: "Leads", path: "/leads" },
+  { name: "Activities", path: "/activities" },
   { name: "Borrowers", path: "/existing-borrowers" },
   { name: "Pipeline", path: "/pipeline" },
   { name: "Underwriter", path: "/underwriter" },
-  { name: "Activities", path: "/activities" },
   { name: "Reports", path: "/reports" },
   { name: "Security", path: "/security" },
   { name: "Enterprise", path: "/enterprise" }
