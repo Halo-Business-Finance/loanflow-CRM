@@ -56,6 +56,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useCalendarData } from '@/hooks/useCalendarData';
+import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
@@ -66,6 +67,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { hasRole } = useRoleBasedAccess();
   
   const [customizeMode, setCustomizeMode] = useState(false);
   const [widgetOrder, setWidgetOrder] = useState<string[]>([
@@ -125,14 +127,23 @@ export default function Dashboard() {
       }
       setUserName(firstName);
       
+      // Managers and admins can see all leads, others see only their own
+      const isManagerOrAdmin = hasRole('manager') || hasRole('admin') || hasRole('super_admin');
+      
       // Fetch leads with contact entity data including loan amounts
-      const { data: leads } = await supabase
+      let query = supabase
         .from('leads')
         .select(`
           *,
           contact_entities(stage, loan_amount)
-        `)
-        .eq('user_id', user.id);
+        `);
+      
+      // Only filter by user_id if not a manager/admin
+      if (!isManagerOrAdmin) {
+        query = query.eq('user_id', user.id);
+      }
+      
+      const { data: leads } = await query;
 
       const activeDeals = leads?.filter(l => {
         const stage = (l.contact_entities as any)?.stage;
