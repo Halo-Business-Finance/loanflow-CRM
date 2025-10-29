@@ -6,6 +6,7 @@ import { ThreatDetectionMonitor } from '@/components/security/ThreatDetectionMon
 import { SensitiveDataPermissionManager } from '@/components/security/SensitiveDataPermissionManager';
 import { MicrosoftAuthenticatorSetup } from '@/components/auth/MicrosoftAuthenticatorSetup';
 import { EnhancedSecurityMonitor } from '@/components/security/EnhancedSecurityMonitor';
+import { SecurityPatternDashboard } from '@/components/security/SecurityPatternDashboard';
 import { SecurityWrapper } from '@/components/SecurityWrapper';
 import { StandardPageLayout } from '@/components/StandardPageLayout';
 import { StandardPageHeader } from '@/components/StandardPageHeader';
@@ -215,9 +216,12 @@ const SecurityPage: React.FC = () => {
 
             {/* Security Modules Tabs */}
             <Tabs defaultValue="monitoring" className="space-y-8">
-              <TabsList className="inline-flex h-11 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground w-full max-w-2xl">
+              <TabsList className="inline-flex h-11 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground w-full max-w-3xl">
                 <TabsTrigger value="monitoring">
                   Live Monitoring
+                </TabsTrigger>
+                <TabsTrigger value="patterns">
+                  Pattern Detection
                 </TabsTrigger>
                 <TabsTrigger value="access-control">
                   Access Control
@@ -311,6 +315,22 @@ const SecurityPage: React.FC = () => {
                     </CardContent>
                   </Card>
                 </div>
+              </TabsContent>
+
+              <TabsContent value="patterns" className="space-y-6 mt-6">
+                <Card className="border shadow-sm">
+                  <CardHeader className="space-y-1 pb-4">
+                    <CardTitle className="text-2xl font-semibold">
+                      Security Pattern Detection
+                    </CardTitle>
+                    <CardDescription className="text-base">
+                      Real-time analysis of security events and audit logs for suspicious behavior patterns
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <SecurityPatternDashboard />
+                  </CardContent>
+                </Card>
               </TabsContent>
 
               <TabsContent value="access-control" className="space-y-6 mt-6">
