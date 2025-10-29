@@ -4478,6 +4478,10 @@ export type Database = {
         Returns: boolean
       }
       can_access_approval_step: { Args: { step_id: string }; Returns: boolean }
+      can_view_public_profile: {
+        Args: { profile_user_id: string }
+        Returns: boolean
+      }
       check_mfa_requirement: { Args: { p_user_id: string }; Returns: Json }
       check_rate_limit: {
         Args: {
