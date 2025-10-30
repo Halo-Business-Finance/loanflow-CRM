@@ -131,11 +131,15 @@ export default function Dashboard() {
       const isManagerOrAdmin = hasRole('manager') || hasRole('admin') || hasRole('super_admin');
       
       // Fetch leads with contact entity data including loan amounts
+      // Use contact_entity_id to properly join
       let query = supabase
-        .from('leads')
+        .from('contact_entities')
         .select(`
-          *,
-          contact_entities(stage, loan_amount)
+          id,
+          stage,
+          loan_amount,
+          user_id,
+          created_at
         `);
       
       // Only filter by user_id if not a manager/admin
@@ -143,17 +147,29 @@ export default function Dashboard() {
         query = query.eq('user_id', user.id);
       }
       
-      const { data: leads } = await query;
+      const { data: contactEntities, error: fetchError } = await query;
+
+      if (fetchError) {
+        console.error('Error fetching contact entities:', fetchError);
+        toast({
+          title: "Error",
+          description: "Failed to load dashboard data",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const leads = contactEntities || [];
 
       const activeDeals = leads?.filter(l => {
-        const stage = (l.contact_entities as any)?.stage;
+        const stage = l.stage;
         return stage === 'negotiation' || stage === 'proposal';
       }).length || 0;
 
       // Compute pipeline distribution dynamically from lead stages
       const stageCountMap = new Map<string, number>();
       (leads || []).forEach((l: any) => {
-        const stageName = l?.contact_entities?.stage || 'New Lead';
+        const stageName = l?.stage || 'New Lead';
         stageCountMap.set(stageName, (stageCountMap.get(stageName) || 0) + 1);
       });
       const computedStages = Array.from(stageCountMap.entries()).map(([name, value], idx) => ({
@@ -211,13 +227,13 @@ export default function Dashboard() {
           return createdAt >= monthStart && createdAt <= monthEnd;
         }) || [];
 
-        const closedWonLeads = monthLeads.filter(l => (l.contact_entities as any)?.stage === 'Closed Won');
+        const closedWonLeads = monthLeads.filter(l => l.stage === 'Closed Won');
         const revenue = closedWonLeads.reduce((sum, l) => {
-          const loanAmount = (l.contact_entities as any)?.loan_amount || 0;
+          const loanAmount = l.loan_amount || 0;
           return sum + loanAmount;
         }, 0);
         const pipeline = monthLeads.reduce((sum, l) => {
-          const loanAmount = (l.contact_entities as any)?.loan_amount || 0;
+          const loanAmount = l.loan_amount || 0;
           return sum + loanAmount;
         }, 0);
         
@@ -227,18 +243,18 @@ export default function Dashboard() {
 
       // Calculate pending tasks (leads that need follow-up - initial contact or waiting for documentation)
       const pendingTasks = leads?.filter(l => {
-        const stage = (l.contact_entities as any)?.stage;
+        const stage = l.stage;
         return stage === 'Initial Contact' || stage === 'Waiting for Documentation';
       }).length || 0;
 
       // Get recent activities from lead updates
       const recentLeads = [...(leads || [])].sort((a, b) => 
-        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       ).slice(0, 3);
 
       const activities = recentLeads.map(lead => {
-        const stage = (lead.contact_entities as any)?.stage;
-        const updatedAt = new Date(lead.updated_at);
+        const stage = lead.stage;
+        const updatedAt = new Date(lead.created_at);
         const now = new Date();
         const diffMs = now.getTime() - updatedAt.getTime();
         const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
@@ -283,45 +299,41 @@ export default function Dashboard() {
       // Calculate Total Revenue (sum of loan_amount for 'Loan Funded' or 'Closed Won' stages)
       const closedWonStages = ['Loan Funded', 'Closed Won'];
       const totalRevenue = (leads || []).reduce((sum, lead) => {
-        const contactEntity = lead.contact_entities as any;
-        const stage = contactEntity?.stage;
-        const loanAmount = contactEntity?.loan_amount || 0;
+        const stage = lead.stage;
+        const loanAmount = lead.loan_amount || 0;
         return closedWonStages.includes(stage) ? sum + loanAmount : sum;
       }, 0);
 
       // Calculate Pipeline Value (sum of loan_amount for active/open stages)
       const excludedStages = ['Loan Funded', 'Closed Won', 'Closed Lost', 'Archive', 'Lost'];
       const pipelineValue = (leads || []).reduce((sum, lead) => {
-        const contactEntity = lead.contact_entities as any;
-        const stage = contactEntity?.stage;
-        const loanAmount = contactEntity?.loan_amount || 0;
+        const stage = lead.stage;
+        const loanAmount = lead.loan_amount || 0;
         return stage && !excludedStages.includes(stage) ? sum + loanAmount : sum;
       }, 0);
 
       // Calculate Conversion Rate (closed won / total leads * 100)
       const closedWonCount = (leads || []).filter(l => {
-        const stage = (l.contact_entities as any)?.stage;
+        const stage = l.stage;
         return closedWonStages.includes(stage);
       }).length;
       const conversionRate = leads && leads.length > 0 ? (closedWonCount / leads.length) * 100 : 0;
 
       // Calculate trends (current month vs last month)
       const lastMonthRevenue = lastMonthLeads.reduce((sum, lead) => {
-        const contactEntity = lead.contact_entities as any;
-        const stage = contactEntity?.stage;
-        const loanAmount = contactEntity?.loan_amount || 0;
+        const stage = lead.stage;
+        const loanAmount = lead.loan_amount || 0;
         return closedWonStages.includes(stage) ? sum + loanAmount : sum;
       }, 0);
 
       const lastMonthPipeline = lastMonthLeads.reduce((sum, lead) => {
-        const contactEntity = lead.contact_entities as any;
-        const stage = contactEntity?.stage;
-        const loanAmount = contactEntity?.loan_amount || 0;
+        const stage = lead.stage;
+        const loanAmount = lead.loan_amount || 0;
         return stage && !excludedStages.includes(stage) ? sum + loanAmount : sum;
       }, 0);
 
       const lastMonthClosedWon = lastMonthLeads.filter(l => {
-        const stage = (l.contact_entities as any)?.stage;
+        const stage = l.stage;
         return closedWonStages.includes(stage);
       }).length;
 
