@@ -52,6 +52,7 @@ import Integrations from "./pages/Integrations";
 import AITools from "./pages/AITools";
 import APIDocs from "./pages/APIDocs";
 import Screenshots from "./pages/Screenshots";
+import ProcessLogo from "./pages/ProcessLogo";
 import Security from "./pages/Security";
 import EmergencyMaintenance from "./pages/EmergencyMaintenance";
 import NotFound from "./pages/NotFound";
@@ -182,6 +183,7 @@ function AuthenticatedApp() {
             <Route path="/integrations" element={<IBMCloudLayout><Integrations /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/ai-tools" element={<IBMCloudLayout><AITools /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/screenshots" element={<IBMCloudLayout><Screenshots /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/process-logo" element={<IBMCloudLayout><ProcessLogo /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/api-docs" element={<IBMCloudLayout><APIDocs /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/resources" element={<IBMCloudLayout><Resources /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/emergency-maintenance" element={<IBMCloudLayout><EmergencyMaintenance /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
