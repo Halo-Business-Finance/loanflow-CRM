@@ -23,7 +23,7 @@ export function BrandLogo({
         alt="LoanFlow CRM logo"
         title="LoanFlow CRM"
         loading="lazy"
-        className="rounded-sm"
+        className="bg-transparent object-contain select-none pointer-events-none"
         style={{ height: size, width: 'auto' }}
       />
       {showText && (
