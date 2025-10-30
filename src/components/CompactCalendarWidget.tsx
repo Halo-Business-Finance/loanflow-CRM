@@ -97,8 +97,8 @@ export function CompactCalendarWidget() {
                 head_row: "flex w-full",
                 head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] text-center",
                 row: "flex w-full mt-2",
-                cell: "p-0 relative flex-1 text-center text-sm focus-within:relative focus-within:z-20",
-                day: "w-full h-9 p-0 font-normal aria-selected:opacity-100",
+                cell: "p-0 relative flex-1 text-center text-sm focus-within:relative focus-within:z-20 h-14",
+                day: "w-full h-14 p-0 font-normal aria-selected:opacity-100",
               }}
               components={{
                 Day: ({ date: dayDate, ...props }) => {
@@ -110,18 +110,18 @@ export function CompactCalendarWidget() {
                       <button
                         {...props}
                         className={cn(
-                          "relative w-9 h-9 p-0 font-normal hover:bg-accent hover:text-accent-foreground rounded-md",
+                          "relative w-full h-14 p-0 font-normal hover:bg-accent hover:text-accent-foreground rounded-md flex flex-col items-center justify-center gap-1",
                           isSelected && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
                         )}
                       >
                         <span className="text-sm">{dayDate.getDate()}</span>
                         {dayEvents.length > 0 && (
-                          <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 flex gap-0.5 justify-center">
+                          <div className="flex gap-0.5 justify-center">
                             {dayEvents.slice(0, 3).map((event, idx) => (
                               <span
                                 key={idx}
                                 className={cn(
-                                  "w-1 h-1 rounded-full",
+                                  "w-1.5 h-1.5 rounded-full",
                                   getEventTypeColor(event.type)
                                 )}
                               />

@@ -117,8 +117,8 @@ export default function ActivitiesCalendar() {
                         head_row: "flex w-full",
                         head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] text-center",
                         row: "flex w-full mt-2",
-                        cell: "p-0 relative flex-1 text-center text-sm focus-within:relative focus-within:z-20",
-                        day: "w-full h-9 p-0 font-normal aria-selected:opacity-100",
+                        cell: "p-0 relative flex-1 text-center text-sm focus-within:relative focus-within:z-20 h-16",
+                        day: "w-full h-16 p-0 font-normal aria-selected:opacity-100",
                       }}
                     />
                     
