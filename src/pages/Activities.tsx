@@ -63,6 +63,7 @@ interface Notification {
   message: string
   timestamp: Date
   type: 'warning' | 'success' | 'info'
+  notificationType?: string  // The actual type from database (call_reminder, email_reminder, etc.)
   scheduled_for?: Date
   related_id?: string
   related_type?: string
@@ -177,6 +178,7 @@ export default function Activities() {
             message: n.message || n.title,
             timestamp: new Date(n.scheduled_for || n.created_at),
             type: n.is_read ? 'success' : (n.scheduled_for ? 'warning' : 'info'),
+            notificationType: n.type,  // Preserve the actual notification type from database
             scheduled_for: n.scheduled_for ? new Date(n.scheduled_for) : undefined,
             related_id: n.related_id,
             related_type: n.related_type,
@@ -466,7 +468,7 @@ export default function Activities() {
           >
             <div className="space-y-4">
               {notifications
-                .filter(n => n.type === 'warning' || (n as any).type?.includes('call'))
+                .filter(n => n.notificationType?.includes('call'))
                 .slice(0, 5)
                 .map((notification) => (
                 <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
@@ -519,7 +521,7 @@ export default function Activities() {
                   </div>
                 </div>
               ))}
-              {notifications.filter(n => n.type === 'warning' || (n as any).type?.includes('call')).length === 0 && (
+              {notifications.filter(n => n.notificationType?.includes('call')).length === 0 && (
                 <p className="text-sm text-muted-foreground text-center py-8">No call reminders</p>
               )}
             </div>
@@ -532,7 +534,7 @@ export default function Activities() {
           >
             <div className="space-y-4">
               {notifications
-                .filter(n => (n as any).type?.includes('email'))
+                .filter(n => n.notificationType?.includes('email'))
                 .slice(0, 5)
                 .map((notification) => (
                 <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
@@ -585,7 +587,7 @@ export default function Activities() {
                   </div>
                 </div>
               ))}
-              {notifications.filter(n => (n as any).type?.includes('email')).length === 0 && (
+              {notifications.filter(n => n.notificationType?.includes('email')).length === 0 && (
                 <p className="text-sm text-muted-foreground text-center py-8">No email reminders</p>
               )}
             </div>
@@ -598,7 +600,7 @@ export default function Activities() {
           >
             <div className="space-y-4">
               {notifications
-                .filter(n => n.type === 'info' || n.type === 'success' || (n as any).type?.includes('follow_up'))
+                .filter(n => n.notificationType?.includes('follow_up'))
                 .slice(0, 5)
                 .map((notification) => (
                 <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
@@ -651,7 +653,7 @@ export default function Activities() {
                   </div>
                 </div>
               ))}
-              {notifications.filter(n => n.type === 'info' || n.type === 'success' || (n as any).type?.includes('follow_up')).length === 0 && (
+              {notifications.filter(n => n.notificationType?.includes('follow_up')).length === 0 && (
                 <p className="text-sm text-muted-foreground text-center py-8">No follow-up reminders</p>
               )}
             </div>
