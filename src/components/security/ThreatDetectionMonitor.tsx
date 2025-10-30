@@ -8,7 +8,7 @@ import { Shield, AlertTriangle, Bug, Target, Zap, Activity } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
-import { secureStorage } from "@/lib/secure-storage";
+import { serverSecureStorage } from "@/lib/server-encryption";
 
 interface SecurityThreatAttempt {
   id: string;
@@ -47,7 +47,7 @@ export function ThreatDetectionMonitor() {
       try {
         // Always activate monitoring for continuous hacker protection
         setIsMonitoring(true);
-        await secureStorage.setItem('hacker-detection-monitoring', 'true');
+        await serverSecureStorage.setItem('hacker-detection-monitoring', 'true');
         console.log('🛡️ Hacker Detection Bot: HIGH ALERT MODE ACTIVATED');
       } catch (error) {
         console.error("Error initializing high alert mode:", error);
@@ -236,7 +236,7 @@ export function ThreatDetectionMonitor() {
 
   const handleStartMonitoring = async () => {
     setIsMonitoring(true);
-    await secureStorage.setItem('hacker-detection-monitoring', 'true');
+    await serverSecureStorage.setItem('hacker-detection-monitoring', 'true');
     toast({
       title: "Hacker Detection Bot Activated",
       description: "AI bot is now actively monitoring and will persist across sessions."
@@ -245,7 +245,7 @@ export function ThreatDetectionMonitor() {
 
   const handleStopMonitoring = async () => {
     setIsMonitoring(false);
-    await secureStorage.setItem('hacker-detection-monitoring', 'false');
+    await serverSecureStorage.setItem('hacker-detection-monitoring', 'false');
     toast({
       title: "Hacker Detection Bot Deactivated",
       description: "Monitoring has been stopped."

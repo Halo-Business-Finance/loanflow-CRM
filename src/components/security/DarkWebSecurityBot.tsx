@@ -8,7 +8,7 @@ import { Shield, AlertTriangle, Eye, Globe, Users, Activity } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
-import { secureStorage } from "@/lib/secure-storage";
+import { serverSecureStorage } from "@/lib/server-encryption";
 
 interface DarkWebThreat {
   id: string;
@@ -46,7 +46,7 @@ export function DarkWebSecurityBot() {
       try {
         // Always start in high alert mode for persistent monitoring
         setIsMonitoring(true);
-        await secureStorage.setItem('dark-web-monitoring', 'true');
+        await serverSecureStorage.setItem('dark-web-monitoring', 'true');
         console.log('🌐 Dark Web Security Bot: HIGH ALERT MODE ACTIVATED');
       } catch (error) {
         console.error("Error initializing high alert mode:", error);
@@ -193,7 +193,7 @@ export function DarkWebSecurityBot() {
 
   const handleStartMonitoring = async () => {
     setIsMonitoring(true);
-    await secureStorage.setItem('dark-web-monitoring', 'true');
+    await serverSecureStorage.setItem('dark-web-monitoring', 'true');
     toast({
       title: "Dark Web Security Bot Activated",
       description: "AI bot is now monitoring for dark web threats and will persist across sessions."
@@ -202,7 +202,7 @@ export function DarkWebSecurityBot() {
 
   const handleStopMonitoring = async () => {
     setIsMonitoring(false);
-    await secureStorage.setItem('dark-web-monitoring', 'false');
+    await serverSecureStorage.setItem('dark-web-monitoring', 'false');
     toast({
       title: "Dark Web Security Bot Deactivated",
       description: "Monitoring has been stopped."
