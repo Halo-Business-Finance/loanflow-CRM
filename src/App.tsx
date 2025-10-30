@@ -15,7 +15,7 @@ import { AsyncErrorBoundary } from "@/components/AsyncErrorBoundary";
 import { CSPHeaders } from "@/components/security/CSPHeaders";
 import { EnterpriseSecurityDashboard } from "@/components/security/EnterpriseSecurityDashboard";
 import { ThreatMonitoringDashboard } from "@/components/security/ThreatMonitoringDashboard";
-import { CloserDashboard } from "@/components/dashboards/CloserDashboard";
+import { LoanCloserDashboard } from "@/components/dashboards/LoanCloserDashboard";
 import { FunderDashboard } from "@/components/dashboards/FunderDashboard";
 import { LoanProcessorDashboard } from "@/components/dashboards/LoanProcessorDashboard";
 import { UnderwriterDashboard } from "@/components/dashboards/UnderwriterDashboard";
@@ -175,7 +175,7 @@ function AuthenticatedApp() {
             <Route path="/security/enterprise" element={<IBMCloudLayout><EnterpriseSecurityDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
             {/* Role-based Dashboard Routes */}
-            {canCloseLoans && <Route path="/dashboards/closer" element={<IBMCloudLayout><CloserDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
+            {canCloseLoans && <Route path="/dashboards/closer" element={<IBMCloudLayout><LoanCloserDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             {canFundLoans && <Route path="/dashboards/funder" element={<IBMCloudLayout><FunderDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             {canProcessLoans && <Route path="/dashboards/processor" element={<IBMCloudLayout><LoanProcessorDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             

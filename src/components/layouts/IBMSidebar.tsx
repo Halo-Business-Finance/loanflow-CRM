@@ -29,6 +29,7 @@ import {
   Headset,
   Mail,
   FileSpreadsheet,
+  HandCoins,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -107,6 +108,14 @@ const navItems: NavItemData[] = [
     to: '/dashboards/processor',
     subItems: [
       { icon: LayoutDashboard, label: 'Processor Dashboard', to: '/dashboards/processor' },
+    ]
+  },
+  { 
+    icon: HandCoins, 
+    label: 'Loan Closer', 
+    to: '/dashboards/closer',
+    subItems: [
+      { icon: LayoutDashboard, label: 'Closer Dashboard', to: '/dashboards/closer' },
     ]
   },
   { 
