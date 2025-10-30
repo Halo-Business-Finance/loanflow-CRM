@@ -100,24 +100,31 @@ export const LoanCloserDashboard = () => {
       if (fundedResult.error) throw fundedResult.error;
       if (pendingResult.error) throw pendingResult.error;
 
-      const closingLoans = closingResult.data;
-      const fundedLoans = fundedResult.data;
-      const pendingLoans = pendingResult.data;
+      const closingLoans = closingResult.data || [];
+      const fundedLoans = fundedResult.data || [];
+      const pendingLoans = pendingResult.data || [];
 
       // Calculate metrics
-      const totalFunded = fundedLoans?.reduce((sum, loan) => sum + (loan.loan_amount || 0), 0) || 0;
-      const scheduledCount = closingLoans?.length || 0;
+      const totalFunded = fundedLoans.reduce((sum, loan) => sum + (loan.loan_amount || 0), 0);
+      const scheduledCount = closingLoans.length;
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
       
-      const completedToday = fundedLoans?.filter(loan => {
+      const completedToday = fundedLoans.filter(loan => {
+        if (!loan.updated_at) return false;
         const loanDate = new Date(loan.updated_at);
         return loanDate >= todayStart;
-      }).length || 0;
+      }).length;
 
-      const documentsReady = closingLoans?.filter(loan => loan.loan_type).length || 0;
-      const activeFundings = pendingLoans?.length || 0;
-      const fundingVolume = closingLoans?.reduce((sum, loan) => sum + (loan.loan_amount || 0), 0) || 0;
+      const documentsReady = closingLoans.filter(loan => loan.loan_type).length;
+      const activeFundings = pendingLoans.length;
+      const fundingVolume = closingLoans.reduce((sum, loan) => sum + (loan.loan_amount || 0), 0);
+
+      // Calculate success rate safely
+      const totalLoans = fundedLoans.length + closingLoans.length;
+      const successRate = totalLoans > 0 
+        ? Math.round((fundedLoans.length / totalLoans) * 100) 
+        : 0;
 
       setMetrics({
         totalFunded,
@@ -125,16 +132,15 @@ export const LoanCloserDashboard = () => {
         fundingVolume,
         completedToday,
         avgClosingTime: 14, // days - could be calculated from actual data
-        successRate: fundedLoans && closingLoans ? 
-          Math.round((fundedLoans.length / (fundedLoans.length + closingLoans.length)) * 100) : 0,
+        successRate,
         documentsReady,
         activeFundings,
       });
 
-      setScheduledLoans((closingLoans || []) as LoanItem[]);
-      setPendingApprovals((pendingLoans || []) as LoanItem[]);
-      setRecentFundings((fundedLoans?.slice(0, 10) || []) as LoanItem[]);
-      setCompletedLoans((fundedLoans || []) as LoanItem[]);
+      setScheduledLoans(closingLoans as LoanItem[]);
+      setPendingApprovals(pendingLoans as LoanItem[]);
+      setRecentFundings(fundedLoans.slice(0, 10) as LoanItem[]);
+      setCompletedLoans(fundedLoans as LoanItem[]);
     } catch (error) {
       console.error('Error fetching closer data:', error);
       toast({
