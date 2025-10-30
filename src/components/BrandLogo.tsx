@@ -14,7 +14,7 @@ export function BrandLogo({
   showText = true,
   text = "LoanFlow CRM",
   className,
-  imageSrc = "/logo.svg",
+  imageSrc = "/logo.png",
 }: BrandLogoProps) {
   const [imgOk, setImgOk] = useState(true)
 
