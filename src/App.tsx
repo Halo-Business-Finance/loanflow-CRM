@@ -14,7 +14,6 @@ import { GeoSecurityCheck } from "@/components/GeoSecurityCheck";
 import { AsyncErrorBoundary } from "@/components/AsyncErrorBoundary";
 import { CSPHeaders } from "@/components/security/CSPHeaders";
 import { EnterpriseSecurityDashboard } from "@/components/security/EnterpriseSecurityDashboard";
-import { ThreatMonitoringDashboard } from "@/components/security/ThreatMonitoringDashboard";
 import { LoanCloserDashboard } from "@/components/dashboards/LoanCloserDashboard";
 import { LoanProcessorDashboard } from "@/components/dashboards/LoanProcessorDashboard";
 import { UnderwriterDashboard } from "@/components/dashboards/UnderwriterDashboard";
@@ -176,9 +175,6 @@ function AuthenticatedApp() {
             {/* Role-based Dashboard Routes */}
             {canCloseLoans && <Route path="/dashboards/closer" element={<IBMCloudLayout><LoanCloserDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             {canProcessLoans && <Route path="/dashboards/processor" element={<IBMCloudLayout><LoanProcessorDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
-            
-            {/* Security Dashboard Routes */}
-            {canAccessAdminFeatures && <Route path="/dashboards/threat-monitoring" element={<IBMCloudLayout><ThreatMonitoringDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             
             {/* Enterprise Dashboard Routes */}
             {hasMinimumRole('manager') && <Route path="/dashboards/forecasting" element={<IBMCloudLayout><ForecastingDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
