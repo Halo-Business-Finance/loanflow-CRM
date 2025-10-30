@@ -2537,29 +2537,8 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "leads_loan_originator_id_fkey"
-            columns: ["loan_originator_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "leads_processor_id_fkey"
             columns: ["processor_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "leads_processor_id_fkey"
-            columns: ["processor_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "leads_underwriter_id_fkey"
-            columns: ["underwriter_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -2568,7 +2547,7 @@ export type Database = {
             foreignKeyName: "leads_underwriter_id_fkey"
             columns: ["underwriter_id"]
             isOneToOne: false
-            referencedRelation: "profiles_public"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -4502,48 +4481,7 @@ export type Database = {
       }
     }
     Views: {
-      profiles_public: {
-        Row: {
-          city: string | null
-          created_at: string | null
-          first_name: string | null
-          id: string | null
-          is_active: boolean | null
-          job_title: string | null
-          language: string | null
-          last_name: string | null
-          state: string | null
-          timezone: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          city?: string | null
-          created_at?: string | null
-          first_name?: string | null
-          id?: string | null
-          is_active?: boolean | null
-          job_title?: string | null
-          language?: string | null
-          last_name?: string | null
-          state?: string | null
-          timezone?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          city?: string | null
-          created_at?: string | null
-          first_name?: string | null
-          id?: string | null
-          is_active?: boolean | null
-          job_title?: string | null
-          language?: string | null
-          last_name?: string | null
-          state?: string | null
-          timezone?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       admin_update_profile:
