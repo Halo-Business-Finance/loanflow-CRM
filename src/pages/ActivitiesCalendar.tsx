@@ -109,7 +109,17 @@ export default function ActivitiesCalendar() {
                       modifiersClassNames={{
                         hasEvents: "relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-primary after:rounded-full",
                       }}
-                       className="rounded-md [&_.rdp-caption]:hidden"
+                      className="rounded-md w-full [&_.rdp-caption]:hidden"
+                      classNames={{
+                        months: "w-full",
+                        month: "w-full",
+                        table: "w-full border-collapse",
+                        head_row: "flex w-full",
+                        head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] text-center",
+                        row: "flex w-full mt-2",
+                        cell: "p-0 relative flex-1 text-center text-sm focus-within:relative focus-within:z-20",
+                        day: "w-full h-9 p-0 font-normal aria-selected:opacity-100",
+                      }}
                     />
                     
                     {/* Event count indicators */}
