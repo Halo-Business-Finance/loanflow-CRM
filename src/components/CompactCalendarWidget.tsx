@@ -91,6 +91,7 @@ export function CompactCalendarWidget() {
                 hasEvents: "relative",
               }}
               components={{
+                Caption: () => null,
                 Day: ({ date: dayDate, ...props }) => {
                   const dayEvents = getEventsForDate(dayDate)
                   const isSelected = date && format(date, 'yyyy-MM-dd') === format(dayDate, 'yyyy-MM-dd')
