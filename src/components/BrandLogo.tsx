@@ -28,7 +28,7 @@ export function BrandLogo({
           loading="lazy"
           onError={() => setImgOk(false)}
           className="rounded-sm"
-          style={{ width: size, height: size }}
+          style={{ height: size, width: 'auto' }}
         />
       ) : (
         <div
