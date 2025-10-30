@@ -12,13 +12,15 @@ export function useRealtimeLeads() {
   const { toast } = useToast()
   const { user, loading: authLoading } = useAuth()
   const fetchingRef = useRef(false)
+  const initializedRef = useRef(false)
 
   // Fetch initial leads data (safe two-step query to avoid ambiguous joins)
-  const fetchLeads = async () => {
+  const fetchLeads = async (opts?: { silent?: boolean }) => {
     try {
       if (fetchingRef.current) return
       fetchingRef.current = true
-      setLoading(true)
+      const silent = !!opts?.silent
+      if (!silent && !initializedRef.current) setLoading(true)
       setError(null)
       
       if (!user) {
@@ -91,6 +93,7 @@ export function useRealtimeLeads() {
       })
 
       setLeads(transformedLeads)
+      initializedRef.current = true
     } catch (err: any) {
       const errorMsg = err?.message || 'Failed to load leads'
       console.error('❌ Leads fetch failed:', err)
@@ -108,12 +111,12 @@ export function useRealtimeLeads() {
     onInsert: (payload) => {
       console.log('Real-time: New lead added:', payload.new)
       // Refetch to get properly transformed data
-      fetchLeads()
+      fetchLeads({ silent: true })
     },
     onUpdate: (payload) => {
       console.log('Real-time: Lead updated:', payload.new)
       // Refetch to get properly transformed data
-      fetchLeads()
+      fetchLeads({ silent: true })
     },
     onDelete: (payload) => {
       console.log('Real-time: Lead deleted:', payload.old)
@@ -171,11 +174,15 @@ export function useRealtimeLeads() {
   const refetch = () => {
     fetchLeads()
   }
+  const refetchSilent = () => {
+    fetchLeads({ silent: true })
+  }
 
   return {
     leads,
     loading,
     error,
-    refetch
+    refetch,
+    refetchSilent
   }
 }
