@@ -59,10 +59,7 @@ export default function ActivitiesCalendar() {
           <div className="lg:col-span-2">
             <StandardContentCard>
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">
-                    {format(currentMonth, 'MMMM yyyy')}
-                  </h3>
+                <div className="flex items-center justify-end">
                   <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
@@ -112,7 +109,7 @@ export default function ActivitiesCalendar() {
                       modifiersClassNames={{
                         hasEvents: "relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-primary after:rounded-full",
                       }}
-                      className="rounded-md"
+                       className="rounded-md [&_.rdp-caption]:hidden"
                     />
                     
                     {/* Event count indicators */}
