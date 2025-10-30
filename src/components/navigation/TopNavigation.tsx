@@ -79,7 +79,7 @@ export function TopNavigation() {
       <div className="flex h-20 items-center px-8 gap-6 relative">
         <div className="flex items-center gap-6 shrink-0">
           <Link to="/dashboard" className="flex items-center">
-            <BrandLogo size={56} showText={false} imageSrc={logoAsset} />
+            <BrandLogo size={72} showText={false} imageSrc={logoAsset} className="brightness-0 invert" />
           </Link>
           {/* Cloud Applications Button */}
           <div className="flex items-center">
