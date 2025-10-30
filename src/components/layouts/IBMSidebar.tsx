@@ -155,6 +155,7 @@ const navItems: NavItemData[] = [
       { icon: AlertTriangle, label: 'Threat Detection', to: '/security/threats' },
       { icon: CheckSquare, label: 'Compliance', to: '/security/compliance' },
       { icon: Database, label: 'System Configuration', to: '/settings/system' },
+      { icon: FileCheck, label: 'Data Integrity', to: '/dashboards/data-integrity' },
       { icon: Server, label: 'Enterprise Command', to: '/security/enterprise' },
     ]
   },
