@@ -8,6 +8,7 @@ import { useAuth } from '@/components/auth/AuthProvider'
 export function useRealtimeLeads() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const { toast } = useToast()
   const { user, loading: authLoading } = useAuth()
 
@@ -15,6 +16,7 @@ export function useRealtimeLeads() {
   const fetchLeads = async () => {
     try {
       setLoading(true)
+      setError(null)
       
       // Use auth context; avoid brittle session check race conditions
       if (!user) {
@@ -92,12 +94,14 @@ export function useRealtimeLeads() {
       
       console.log(`✅ Fetched ${transformedLeads.length} leads successfully`)
       setLeads(transformedLeads)
-    } catch (error) {
-      console.error('❌ Leads fetch failed:', error)
+    } catch (err: any) {
+      const errorMsg = err?.message || 'Failed to load leads'
+      console.error('❌ Leads fetch failed:', err)
+      setError(errorMsg)
       // Show error to user for better visibility
       toast({
         title: "Error Loading Leads",
-        description: "Failed to load leads. Please refresh the page.",
+        description: errorMsg,
         variant: "destructive"
       })
       setLeads([])
@@ -179,6 +183,7 @@ export function useRealtimeLeads() {
   return {
     leads,
     loading,
+    error,
     refetch
   }
 }
