@@ -1,4 +1,4 @@
-import { Inbox, Send, FileText, Trash2, Archive, Folder } from "lucide-react";
+import { Inbox, Send, FileText, Trash2, Archive } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -18,12 +18,6 @@ export function MessagesSidebar({ activeFolder, onFolderChange, unreadCount }: M
     { id: 'drafts', label: 'Drafts', icon: FileText, count: 0 },
     { id: 'archive', label: 'Archive', icon: Archive, count: 0 },
     { id: 'trash', label: 'Deleted Items', icon: Trash2, count: 0 },
-  ];
-
-  const customFolders = [
-    { id: 'banks-lenders', label: 'Banks - Lenders', icon: Folder },
-    { id: 'ag-lenders', label: 'AG Lenders', icon: Folder },
-    { id: 'ar-funding', label: 'AR Funding', icon: Folder },
   ];
 
   return (
@@ -61,33 +55,6 @@ export function MessagesSidebar({ activeFolder, onFolderChange, unreadCount }: M
               </Button>
             );
           })}
-        </div>
-
-        <Separator className="my-2" />
-
-        <div className="px-2 py-1">
-          <p className="px-3 py-2 text-xs font-semibold text-muted-foreground">CUSTOM FOLDERS</p>
-          <div className="space-y-1">
-            {customFolders.map((folder) => {
-              const Icon = folder.icon;
-              const isActive = activeFolder === folder.id;
-              
-              return (
-                <Button
-                  key={folder.id}
-                  variant={isActive ? "secondary" : "ghost"}
-                  className={cn(
-                    "w-full justify-start gap-2 h-9",
-                    isActive && "bg-accent text-accent-foreground font-medium"
-                  )}
-                  onClick={() => onFolderChange(folder.id)}
-                >
-                  <Icon className="h-4 w-4 flex-shrink-0" />
-                  <span className="flex-1 text-left truncate text-sm">{folder.label}</span>
-                </Button>
-              );
-            })}
-          </div>
         </div>
       </ScrollArea>
     </div>
