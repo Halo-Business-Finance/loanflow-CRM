@@ -83,7 +83,7 @@ export function CompactCalendarWidget() {
               onSelect={setDate}
               month={currentMonth}
               onMonthChange={setCurrentMonth}
-              className="rounded-md w-full"
+              className="rounded-md w-full [&_.rdp-caption]:hidden [&_.rdp-nav]:hidden"
               modifiers={{
                 hasEvents: datesWithEvents,
               }}
@@ -91,7 +91,6 @@ export function CompactCalendarWidget() {
                 hasEvents: "relative",
               }}
               components={{
-                Caption: () => null,
                 Day: ({ date: dayDate, ...props }) => {
                   const dayEvents = getEventsForDate(dayDate)
                   const isSelected = date && format(date, 'yyyy-MM-dd') === format(dayDate, 'yyyy-MM-dd')
