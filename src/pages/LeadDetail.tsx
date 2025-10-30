@@ -380,17 +380,18 @@ export default function LeadDetail() {
         return
       }
       
-      const { data, error } = await supabase
+      // Avoid PostgREST FK embedding issues by fetching in two steps
+      const { data: leadRow, error: leadErr } = await supabase
         .from('leads')
-        .select(LEAD_WITH_CONTACT_QUERY)
+        .select('*')
         .eq('id', id)
         .maybeSingle()
 
-      console.log('Lead fetch result:', { data, error })
+      console.log('Lead fetch result (base row):', { leadRow, leadErr })
 
-      if (error) throw error
+      if (leadErr) throw leadErr
       
-      if (!data) {
+      if (!leadRow) {
         toast({
           title: "Error",
           description: "Lead not found or you don't have permission to view it",
@@ -400,19 +401,35 @@ export default function LeadDetail() {
         return
       }
       
+      // Fetch related contact entity separately (embedding can fail without FK)
+      let contactEntity: any | null = null
+      if (leadRow.contact_entity_id) {
+        const { data: ce, error: ceErr } = await supabase
+          .from('contact_entities')
+          .select('*')
+          .eq('id', leadRow.contact_entity_id)
+          .maybeSingle()
+        if (ceErr) {
+          console.warn('Contact entity fetch warning:', ceErr)
+        } else {
+          contactEntity = ce
+        }
+      }
+      
       const mergedLead = {
-        ...data,
-        ...data.contact_entity,
-        id: data.id, // Preserve the actual lead ID
-        contact_entity_id: data.contact_entity?.id // Store contact entity ID separately
+        ...leadRow,
+        contact_entity: contactEntity,
+        ...(contactEntity || {}),
+        id: leadRow.id, // Preserve the actual lead ID
+        contact_entity_id: leadRow.contact_entity_id // Store contact entity ID separately
       }
       setLead(mergedLead)
       setCallNotes(mergedLead.call_notes || "")
       setGeneralNotes(mergedLead.notes || "")
       setAssignments({
-        loan_originator_id: (data as any).loan_originator_id || "",
-        processor_id: (data as any).processor_id || "",
-        underwriter_id: (data as any).underwriter_id || ""
+        loan_originator_id: (leadRow as any).loan_originator_id || "",
+        processor_id: (leadRow as any).processor_id || "",
+        underwriter_id: (leadRow as any).underwriter_id || ""
       })
       
       setEditableFields({
@@ -461,8 +478,8 @@ export default function LeadDetail() {
         current_processing_rate: mergedLead.current_processing_rate?.toString() || ""
       })
       
-      if (data.is_converted_to_client) {
-        await fetchClientData(data.id)
+      if (leadRow.is_converted_to_client) {
+        await fetchClientData(leadRow.id)
       }
     } catch (error) {
       console.error('Error fetching lead:', error)
