@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { Lead } from '@/types/lead'
 import { useToast } from '@/hooks/use-toast'
@@ -11,10 +11,13 @@ export function useRealtimeLeads() {
   const [error, setError] = useState<string | null>(null)
   const { toast } = useToast()
   const { user, loading: authLoading } = useAuth()
+  const fetchingRef = useRef(false)
 
   // Fetch initial leads data (safe two-step query to avoid ambiguous joins)
   const fetchLeads = async () => {
     try {
+      if (fetchingRef.current) return
+      fetchingRef.current = true
       setLoading(true)
       setError(null)
       
@@ -95,6 +98,7 @@ export function useRealtimeLeads() {
       setLeads([])
     } finally {
       setLoading(false)
+      fetchingRef.current = false
     }
   }
 
