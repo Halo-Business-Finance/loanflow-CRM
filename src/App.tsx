@@ -26,8 +26,7 @@ import { IBMCloudLayout } from "@/components/layouts/IBMCloudLayout";
 import { SecurityEnhancementProvider } from "@/components/security/SecurityEnhancementProvider";
 import { SecurityProvider as EnhancedSecurityProvider } from "@/components/security/SecurityProvider";
 import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
-const DashboardPage = lazy(() => import("./pages/Dashboard"));
-
+import Dashboard from "./pages/Dashboard";
 
 import Leads from "./pages/Leads";
 import NewLead from "./pages/NewLead";
@@ -127,7 +126,7 @@ function AuthenticatedApp() {
         {user ? (
           <>
             <Route path="/" element={<Navigate to="/dashboard" replace />} errorElement={<RouteErrorBoundary />} />
-            <Route path="/dashboard" element={<MfaEnforcementWrapper><IBMCloudLayout key="dashboard-layout"><Suspense fallback={<div className="p-6">Loading...</div>}><DashboardPage /></Suspense></IBMCloudLayout></MfaEnforcementWrapper>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/dashboard" element={<MfaEnforcementWrapper><IBMCloudLayout key="dashboard-layout"><Dashboard /></IBMCloudLayout></MfaEnforcementWrapper>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/leads" element={<IBMCloudLayout><Leads /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/leads/new" element={<IBMCloudLayout><NewLead /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
@@ -200,8 +199,8 @@ function AuthenticatedApp() {
           <>
             {isPreview ? (
               <>
-                <Route path="/" element={<IBMCloudLayout key="dashboard-layout"><Suspense fallback={<div className="p-6">Loading...</div>}><DashboardPage /></Suspense></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
-                <Route path="/dashboard" element={<IBMCloudLayout key="dashboard-layout"><Suspense fallback={<div className="p-6">Loading...</div>}><DashboardPage /></Suspense></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+                <Route path="/" element={<IBMCloudLayout key="dashboard-layout"><Dashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+                <Route path="/dashboard" element={<IBMCloudLayout key="dashboard-layout"><Dashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} errorElement={<RouteErrorBoundary />} />
               </>
             ) : (
