@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { cn } from "@/lib/utils"
 
 interface BrandLogoProps {
@@ -16,29 +16,16 @@ export function BrandLogo({
   className,
   imageSrc = "/logo.png",
 }: BrandLogoProps) {
-  const [imgOk, setImgOk] = useState(true)
-
   return (
     <div className={cn("flex items-center", className)}>
-      {imgOk ? (
-        <img
-          src={imageSrc}
-          alt="LoanFlow CRM logo"
-          title="LoanFlow CRM"
-          loading="lazy"
-          onError={() => setImgOk(false)}
-          className="rounded-sm"
-          style={{ height: size, width: 'auto' }}
-        />
-      ) : (
-        <div
-          className="rounded-sm bg-primary text-primary-foreground flex items-center justify-center"
-          style={{ width: size, height: size }}
-          aria-label="LoanFlow CRM logo placeholder"
-        >
-          <span className="text-sm font-bold">LF</span>
-        </div>
-      )}
+      <img
+        src={imageSrc}
+        alt="LoanFlow CRM logo"
+        title="LoanFlow CRM"
+        loading="lazy"
+        className="rounded-sm"
+        style={{ height: size, width: 'auto' }}
+      />
       {showText && (
         <span className="ml-2 font-semibold text-foreground text-lg" aria-label="LoanFlow CRM brand name">
           {text}

@@ -15,7 +15,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { NotificationBell } from '@/components/NotificationBell';
 import { LoanCalculator } from '@/components/LoanCalculator';
 import { BrandLogo } from '@/components/BrandLogo';
-import logoAsset from '@/assets/loanflow-logo.png';
+import logoAsset from '@/assets/logo.png';
 
 interface IBMTopBarProps {
   onMenuClick: () => void;
