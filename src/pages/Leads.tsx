@@ -169,9 +169,19 @@ export default function Leads() {
     const qualifiedLeads = leads.filter(lead => 
       lead.stage === 'Pre-Approved' || lead.stage === 'Term Sheet Signed'
     ).length;
-    const hotLeads = leads.filter(lead => 
-      lead.priority === 'High'
-    ).length;
+    
+    // Debug priority values
+    console.log('All lead priorities:', leads.map(l => ({ name: l.name, priority: l.priority, ce_priority: l.contact_entity?.priority })));
+    
+    const hotLeads = leads.filter(lead => {
+      // Check both the lead priority and contact_entity priority
+      const priority = lead.priority || lead.contact_entity?.priority;
+      console.log(`Lead ${lead.name}: priority=${lead.priority}, ce_priority=${lead.contact_entity?.priority}, final=${priority}`);
+      return priority === 'High';
+    }).length;
+    
+    console.log('High priority leads count:', hotLeads);
+    
     const totalValue = leads.reduce((sum, lead) => 
       sum + (lead.loan_amount || 0), 0
     );
