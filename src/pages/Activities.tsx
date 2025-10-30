@@ -448,7 +448,7 @@ export default function Activities() {
           />
           
           <StandardKPICard
-            title="Today's Actions"
+            title="Today's Activities"
             value={actualTodaysActions}
           />
           
