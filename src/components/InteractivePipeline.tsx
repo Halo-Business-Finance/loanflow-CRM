@@ -153,7 +153,33 @@ export function InteractivePipeline() {
         query = query.eq('user_id', user?.id);
       }
       
-      const { data, error } = await query;
+      // Try embedded join first; fallback to two-step fetch on error
+      const respAny = await (query as any);
+      let data = (respAny?.data as any[]) || null;
+      let error = respAny?.error as any;
+      if (error) {
+        console.warn('[Pipeline] Embedded join failed, falling back:', error);
+        const baseQuery = supabase.from('leads').select('*');
+        const baseResp = !isManagerOrAdmin
+          ? await baseQuery.eq('user_id', user?.id)
+          : await baseQuery;
+        const baseLeads = (baseResp.data as any[]) || [];
+        const baseError = baseResp.error as any;
+        if (baseError) throw baseError;
+        const ids = (baseLeads || []).map(l => l.contact_entity_id).filter(Boolean);
+        const contactsResp = ids.length
+          ? await supabase.from('contact_entities').select('*').in('id', ids as string[])
+          : ({ data: [], error: null } as any);
+        const contacts = (contactsResp.data as any[]) || [];
+        const contactsError = contactsResp.error as any;
+        if (contactsError) throw contactsError;
+        const map = new Map((contacts || []).map((c: any) => [c.id, c]));
+        data = (baseLeads || []).map((lead: any) => ({
+          ...lead,
+          contact_entity: map.get(lead.contact_entity_id) || null,
+        }));
+        error = null as any;
+      }
 
       if (error) throw error;
 
