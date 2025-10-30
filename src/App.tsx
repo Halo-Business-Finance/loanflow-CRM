@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "next-themes";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -47,7 +47,7 @@ import LoanDocumentsFolder from "./pages/LoanDocumentsFolder";
 import Activities from "./pages/Activities";
 import Reports from "./pages/Reports";
 import Support from "./pages/Support";
-const SettingsPage = lazy(() => import("./pages/Settings"));
+import Settings from "./pages/Settings";
 import UserDirectory from "./pages/UserDirectory";
 import Resources from "./pages/Resources";
 import Enterprise from "./pages/Enterprise";
@@ -69,7 +69,7 @@ import SecurityThreats from "./pages/SecurityThreats";
 import SecurityCompliance from "./pages/SecurityCompliance";
 import SettingsUsers from "./pages/SettingsUsers";
 import SettingsSystem from "./pages/SettingsSystem";
-const Messages = lazy(() => import("./pages/Messages"));
+import Messages from "./pages/Messages";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useEnhancedSecurity } from "@/hooks/useEnhancedSecurity";
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess";
@@ -157,13 +157,13 @@ function AuthenticatedApp() {
             <Route path="/activities/calendar" element={<IBMCloudLayout><ActivitiesCalendar /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/activities/tasks" element={<IBMCloudLayout><ActivitiesTasks /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/messages" element={<IBMCloudLayout><Suspense fallback={<div className="p-6">Loading messages…</div>}><Messages /></Suspense></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/messages" element={<IBMCloudLayout><Messages /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
             <Route path="/reports" element={<IBMCloudLayout><Reports /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/support" element={<IBMCloudLayout><Support /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/user-directory" element={<IBMCloudLayout><UserDirectory /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
-            <Route path="/settings" element={<IBMCloudLayout key="settings-layout"><Suspense fallback={<div className="p-6">Loading...</div>}><SettingsPage /></Suspense></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+            <Route path="/settings" element={<IBMCloudLayout key="settings-layout"><Settings /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/settings/users" element={<IBMCloudLayout><SettingsUsers /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             <Route path="/settings/system" element={<IBMCloudLayout><SettingsSystem /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
             
