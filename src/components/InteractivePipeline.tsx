@@ -145,7 +145,7 @@ export function InteractivePipeline() {
         .from('leads')
         .select(`
           *,
-          contact_entity:contact_entities!contact_entity_id (*)
+          contact_entity:contact_entities(*)
         `);
       
       // Only filter by user_id if not a manager/admin
@@ -158,11 +158,14 @@ export function InteractivePipeline() {
       if (error) throw error;
 
       // Transform leads data to merge contact entity fields
-      const transformedLeads = data?.map(lead => ({
-        ...lead,
-        ...lead.contact_entity,
-        contact_entity_id: lead.contact_entity_id // Preserve the contact_entity_id
-      })) || []
+      const transformedLeads = data?.map(lead => {
+        const contactEntity = lead.contact_entity as any;
+        return {
+          ...lead,
+          ...(contactEntity || {}),
+          contact_entity_id: lead.contact_entity_id // Preserve the contact_entity_id
+        };
+      }) || []
 
       console.log('Transformed leads for pipeline:', transformedLeads);
       setLeads(transformedLeads);
