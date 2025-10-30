@@ -396,30 +396,25 @@ export class SecurityManager {
     }
   }
 
-  // Generate or retrieve master encryption key without persisting to localStorage
+  // DEPRECATED: Client-side key storage is insecure
+  // TODO: Migrate to server-side encryption via Edge Functions
+  // @see: src/lib/server-encryption.ts for secure alternative
   private static async generateMasterKey(): Promise<string> {
-    // In-memory ephemeral cache for this runtime
+    console.warn('[SECURITY] security.ts uses deprecated client-side keys. Migrate to server-encryption.ts');
+    
+    // In-memory ephemeral cache ONLY (no sessionStorage persistence)
     // @ts-ignore
     if ((SecurityManager as any)._ephemeralMasterKey) {
       // @ts-ignore
       return (SecurityManager as any)._ephemeralMasterKey as string;
     }
 
-    const sessionKey = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('_master_security_key_session') : null;
-    if (sessionKey) {
-      // @ts-ignore
-      (SecurityManager as any)._ephemeralMasterKey = sessionKey;
-      return sessionKey;
-    }
-
+    // Generate new ephemeral key (memory only, no persistence)
     const key = Array.from(crypto.getRandomValues(new Uint8Array(64)))
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
 
-    if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem('_master_security_key_session', key);
-    }
-    // @ts-ignore
+    // @ts-ignore - Store in memory only
     (SecurityManager as any)._ephemeralMasterKey = key;
     return key;
   }

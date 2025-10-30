@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { validateName, validatePhone, validateText, validateUUID } from "../_shared/validation.ts";
+import { createErrorResponse, createSuccessResponse } from "../_shared/error-handler.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -101,38 +104,52 @@ serve(async (req) => {
     }
 
     // Rate limiting for admin operations
-    const rateLimitKey = `admin_update:${user.id}`;
-    const rateLimitResult = await supabaseClient.rpc('check_rate_limit', {
-      action: 'admin_update_user',
-      identifier: rateLimitKey,
-      max_attempts: 20,
-      window_minutes: 60
-    });
-
-    if (rateLimitResult.data && !rateLimitResult.data.allowed) {
-      return new Response(
-        JSON.stringify({ error: 'Rate limit exceeded. Maximum 20 updates per hour.' }),
-        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    const rateLimit = await checkRateLimit(supabaseClient, user.id, RATE_LIMITS.ADMIN_UPDATE_USER);
+    if (!rateLimit.allowed) {
+      throw new Error(rateLimit.error);
     }
 
-    if (!userId) {
-      return new Response(
-        JSON.stringify({ error: 'User ID is required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    // CRITICAL: Validate and sanitize all user input
+    const userIdValidation = validateUUID(userId, 'User ID');
+    if (!userIdValidation.valid) {
+      throw new Error(userIdValidation.error);
+    }
+    
+    const firstNameValidation = validateName(firstName, 'First name');
+    if (!firstNameValidation.valid) {
+      throw new Error(firstNameValidation.error);
+    }
+    
+    const lastNameValidation = validateName(lastName, 'Last name');
+    if (!lastNameValidation.valid) {
+      throw new Error(lastNameValidation.error);
+    }
+    
+    const phoneValidation = validatePhone(phone);
+    if (!phoneValidation.valid) {
+      throw new Error(phoneValidation.error);
+    }
+    
+    const cityValidation = validateText(city, 'City', 100);
+    if (!cityValidation.valid) {
+      throw new Error(cityValidation.error);
+    }
+    
+    const stateValidation = validateText(state, 'State', 50);
+    if (!stateValidation.valid) {
+      throw new Error(stateValidation.error);
     }
 
-    console.log('Updating user profile:', { userId, firstName, lastName, phone, city, state, isActive });
+    console.log('Updating user profile with validated input:', userIdValidation.sanitized);
 
-    // Call the admin_update_profile database function
+    // Call the admin_update_profile database function with sanitized data
     const { data, error } = await supabaseClient.rpc('admin_update_profile', {
-      p_user_id: userId,
-      p_first_name: firstName || null,
-      p_last_name: lastName || null,
-      p_phone: phone || null,
-      p_city: city || null,
-      p_state: state || null,
+      p_user_id: userIdValidation.sanitized,
+      p_first_name: firstNameValidation.sanitized || null,
+      p_last_name: lastNameValidation.sanitized || null,
+      p_phone: phoneValidation.sanitized || null,
+      p_city: cityValidation.sanitized || null,
+      p_state: stateValidation.sanitized || null,
       p_is_active: isActive !== undefined ? isActive : null,
     });
 
@@ -151,10 +168,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Unexpected error:', error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    // Use secure error handler to prevent information leakage
+    return createErrorResponse(error, corsHeaders, 400);
   }
 });

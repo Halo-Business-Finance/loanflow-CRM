@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { validateUserCreation } from "../_shared/validation.ts";
+import { createErrorResponse, createSuccessResponse } from "../_shared/error-handler.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -69,16 +72,9 @@ serve(async (req) => {
     }
 
     // CRITICAL: Rate limiting for user creation (prevent abuse)
-    const rateLimitKey = `admin_create:${user.id}`;
-    const rateLimitResult = await supabaseClient.rpc('check_rate_limit', {
-      action: 'admin_create_user',
-      identifier: rateLimitKey,
-      max_attempts: 10,
-      window_minutes: 60
-    });
-
-    if (rateLimitResult.data && !rateLimitResult.data.allowed) {
-      throw new Error('Rate limit exceeded. Maximum 10 user creations per hour for security.');
+    const rateLimit = await checkRateLimit(supabaseClient, user.id, RATE_LIMITS.ADMIN_CREATE_USER);
+    if (!rateLimit.allowed) {
+      throw new Error(rateLimit.error);
     }
 
     // CRITICAL: Require MFA verification for admin user creation
@@ -104,13 +100,19 @@ serve(async (req) => {
     console.log('MFA verification passed, proceeding with user creation...');
 
     // Get the user data from request body
-    const { email, password, firstName, lastName, phone, city, state, role, isActive } = await req.json();
-
-    if (!email || !password) {
-      throw new Error('Email and password are required');
+    const requestBody = await req.json();
+    
+    // CRITICAL: Validate and sanitize all user input
+    const validation = validateUserCreation(requestBody);
+    if (!validation.valid) {
+      console.warn('Validation failed:', validation.errors);
+      throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
     }
+    
+    const { email, password, firstName, lastName, phone, city, state } = validation.sanitized!;
+    const { role, isActive } = requestBody; // These are not user-provided text
 
-    console.log('Creating user:', email);
+    console.log('Creating user with validated input:', email);
 
     // Create the user using admin client
     const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
@@ -191,16 +193,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('Error in admin-create-user:', error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: error.message,
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
-      }
-    );
+    // Use secure error handler to prevent information leakage
+    return createErrorResponse(error, corsHeaders, 400);
   }
 });
