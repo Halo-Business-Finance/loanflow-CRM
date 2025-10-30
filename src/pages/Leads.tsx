@@ -618,6 +618,7 @@ export default function Leads() {
             )}
             
             {viewMode === 'list' ? (
+              <LeadsList 
                 leads={filteredLeads}
                 onEdit={handleEdit}
                 onDelete={handleDelete}

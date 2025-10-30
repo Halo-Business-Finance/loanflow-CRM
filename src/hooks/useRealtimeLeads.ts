@@ -12,13 +12,12 @@ export function useRealtimeLeads() {
   const { toast } = useToast()
   const { user, loading: authLoading } = useAuth()
 
-  // Fetch initial leads data with optimized single query
+  // Fetch initial leads data (safe two-step query to avoid ambiguous joins)
   const fetchLeads = async () => {
     try {
       setLoading(true)
       setError(null)
       
-      // Use auth context; avoid brittle session check race conditions
       if (!user) {
         console.warn('No authenticated user in context, skipping leads fetch')
         setLeads([])
@@ -26,46 +25,42 @@ export function useRealtimeLeads() {
         return
       }
       console.log('Fetching leads for user:', user.id)
-      
-      // Optimized: Use Supabase's built-in join to fetch leads with contact_entities in ONE query
-      const { data: leadRows, error: leadError } = await supabase
+
+      // 1) Fetch leads
+      const { data: leadRows, error: leadsError } = await supabase
         .from('leads')
-        .select(`
-          *,
-          contact_entity:contact_entities (
-            id,
-            name,
-            first_name,
-            last_name,
-            email,
-            phone,
-            business_name,
-            location,
-            loan_amount,
-            loan_type,
-            credit_score,
-            stage,
-            priority,
-            net_operating_income,
-            naics_code,
-            ownership_structure
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
 
-      if (leadError) {
-        console.error('Supabase leads query error:', leadError)
-        throw leadError
+      if (leadsError) throw leadsError
+
+      // 2) Fetch related contact entities (explicit second query avoids ambiguous FK embed errors)
+      const contactEntityIds = (leadRows || [])
+        .map((l: any) => l.contact_entity_id)
+        .filter((id: string | null) => !!id)
+
+      let contactMap: Record<string, any> = {}
+      if (contactEntityIds.length > 0) {
+        const { data: contactRows, error: contactError } = await supabase
+          .from('contact_entities')
+          .select('*')
+          .in('id', Array.from(new Set(contactEntityIds)))
+
+        if (!contactError && contactRows) {
+          contactMap = contactRows.reduce((acc: Record<string, any>, c: any) => {
+            acc[c.id] = c
+            return acc
+          }, {})
+        }
       }
-      
-      // Transform the data to match Lead interface
+
+      // Normalize into Lead interface
       const transformedLeads: Lead[] = (leadRows || []).map((lead: any) => {
-        const ce = lead.contact_entity
-        // Compute name from first_name and last_name, fallback to name field
+        const ce = contactMap[lead.contact_entity_id]
         const computedName = ce?.first_name || ce?.last_name
           ? `${ce?.first_name || ''} ${ce?.last_name || ''}`.trim()
           : (ce?.name || '')
-        
+
         return {
           id: lead.id,
           lead_number: lead.lead_number,
@@ -91,14 +86,12 @@ export function useRealtimeLeads() {
           contact_entity: ce
         }
       })
-      
-      console.log(`✅ Fetched ${transformedLeads.length} leads successfully`)
+
       setLeads(transformedLeads)
     } catch (err: any) {
       const errorMsg = err?.message || 'Failed to load leads'
       console.error('❌ Leads fetch failed:', err)
       setError(errorMsg)
-      // Do not spam toasts; surface inline error via state
       setLeads([])
     } finally {
       setLoading(false)
