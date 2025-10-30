@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { useLocation, useNavigate, Link } from "react-router-dom"
 import { Search, Bell, Settings, LogOut, User, HelpCircle, ChevronLeft, ChevronRight } from "lucide-react"
 import { BrandLogo } from "@/components/BrandLogo"
+import logoAsset from "@/assets/brand-logo.png"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { ConnectionHalo } from "@/components/ConnectionHalo"
 import { SidebarTrigger } from "@/components/ui/sidebar"
@@ -78,7 +79,7 @@ export function TopNavigation() {
       <div className="flex h-20 items-center px-8 gap-6 relative">
         <div className="flex items-center gap-6 shrink-0">
           <Link to="/dashboard" className="flex items-center">
-            <BrandLogo size={56} showText={false} />
+            <BrandLogo size={56} showText={false} imageSrc={logoAsset} />
           </Link>
           {/* Cloud Applications Button */}
           <div className="flex items-center">
