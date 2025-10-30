@@ -60,7 +60,7 @@ export default function Leads() {
   }, [user, userRoles]);
   
   // Use real-time leads hook
-  const { leads: realtimeLeads, loading: realtimeLoading, error: realtimeError, refetch: realtimeRefetch } = useRealtimeLeads();
+  const { leads: realtimeLeads, loading: realtimeLoading, error: realtimeError, refetch: realtimeRefetch, refetchSilent: realtimeRefetchSilent } = useRealtimeLeads();
   
   const [overview, setOverview] = useState<LeadsOverview>({
     totalLeads: 0,
@@ -88,13 +88,13 @@ export default function Leads() {
   useEffect(() => {
     const handleFocus = () => {
       console.log('Window focused, refreshing leads...');
-      realtimeRefetch();
+      realtimeRefetchSilent();
     };
 
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         console.log('Tab became visible, refreshing leads...');
-        realtimeRefetch();
+        realtimeRefetchSilent();
       }
     };
 
@@ -105,15 +105,15 @@ export default function Leads() {
       window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [realtimeRefetch]);
+  }, [realtimeRefetchSilent]);
 
   // Refresh leads when component mounts or user changes
   useEffect(() => {
     if (user) {
       console.log('User changed, refreshing leads...');
-      realtimeRefetch();
+      realtimeRefetchSilent();
     }
-  }, [user, realtimeRefetch]);
+  }, [user, realtimeRefetchSilent]);
 
   // Selection handlers
   const handleSelectAll = (selected: boolean) => {
@@ -149,7 +149,7 @@ export default function Leads() {
       });
 
       setSelectedLeads([]);
-      realtimeRefetch();
+      realtimeRefetchSilent();
     } catch (error) {
       console.error('Error deleting leads:', error);
       toast({
@@ -177,7 +177,8 @@ export default function Leads() {
       // Check both the lead priority and contact_entity priority
       const priority = lead.priority || lead.contact_entity?.priority;
       console.log(`Lead ${lead.name}: priority=${lead.priority}, ce_priority=${lead.contact_entity?.priority}, final=${priority}`);
-      return priority === 'High';
+      const p = (priority || '').toString().toLowerCase();
+      return p === 'high';
     }).length;
     
     console.log('High priority leads count:', hotLeads);
@@ -226,7 +227,7 @@ export default function Leads() {
         description: `Lead ${leadName} has been deleted`,
       });
 
-      realtimeRefetch();
+      realtimeRefetchSilent();
     } catch (error) {
       console.error('Error deleting lead:', error);
       toast({

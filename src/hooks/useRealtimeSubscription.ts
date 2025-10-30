@@ -23,10 +23,30 @@ export function useRealtimeSubscription({
 }: UseRealtimeSubscriptionOptions) {
   const channelRef = useRef<RealtimeChannel | null>(null)
 
+  // Keep the latest handlers in refs to avoid resubscribing on every render
+  const insertRef = useRef<typeof onInsert>(onInsert)
+  const updateRef = useRef<typeof onUpdate>(onUpdate)
+  const deleteRef = useRef<typeof onDelete>(onDelete)
+  const changeRef = useRef<typeof onChange>(onChange)
+
+  // Update refs when handlers change (no resubscribe)
   useEffect(() => {
-    // Create a unique channel name
-    const channelName = `realtime-${table}-${Date.now()}`
-    
+    insertRef.current = onInsert
+    updateRef.current = onUpdate
+    deleteRef.current = onDelete
+    changeRef.current = onChange
+  }, [onInsert, onUpdate, onDelete, onChange])
+
+  useEffect(() => {
+    // Use a stable channel name per table to avoid churn
+    const channelName = `realtime-${schema}-${table}`
+
+    if (channelRef.current) {
+      // Clean existing before creating a new one (in case table/event/schema changed)
+      supabase.removeChannel(channelRef.current)
+      channelRef.current = null
+    }
+
     const channel = supabase
       .channel(channelName)
       .on(
@@ -38,22 +58,20 @@ export function useRealtimeSubscription({
         },
         (payload: any) => {
           console.log(`Real-time ${payload.eventType} on ${table}:`, payload)
-          
-          // Call specific event handlers
+
           switch (payload.eventType) {
             case 'INSERT':
-              onInsert?.(payload)
+              insertRef.current?.(payload)
               break
             case 'UPDATE':
-              onUpdate?.(payload)
+              updateRef.current?.(payload)
               break
             case 'DELETE':
-              onDelete?.(payload)
+              deleteRef.current?.(payload)
               break
           }
-          
-          // Call general change handler
-          onChange?.(payload)
+
+          changeRef.current?.(payload)
         }
       )
       .subscribe((status) => {
@@ -69,7 +87,7 @@ export function useRealtimeSubscription({
         channelRef.current = null
       }
     }
-  }, [table, event, schema, onInsert, onUpdate, onDelete, onChange])
+  }, [table, event, schema])
 
   return {
     isConnected: channelRef.current?.state === 'joined'
