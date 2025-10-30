@@ -226,10 +226,7 @@ export default function Messages() {
         />
 
         {/* Middle Pane - Message List */}
-        <div className="w-96 border-r bg-background flex flex-col">
-          <div className="border-b px-4 py-3 bg-muted/20">
-            <h2 className="font-semibold text-sm capitalize">{activeFolder}</h2>
-          </div>
+        <div className="w-96 border-r bg-background">
           <MessageList
             messages={messages}
             selectedMessageId={selectedMessage?.id || null}
