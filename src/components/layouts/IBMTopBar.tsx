@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { NotificationBell } from '@/components/NotificationBell';
 import { LoanCalculator } from '@/components/LoanCalculator';
+import { BrandLogo } from '@/components/BrandLogo';
 
 interface IBMTopBarProps {
   onMenuClick: () => void;
@@ -152,7 +153,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           </button>
         </div>
         
-        <div className="text-white font-medium text-xl px-12 whitespace-nowrap">LoanFlow CRM</div>
+        <BrandLogo size={32} showText={false} />
       </div>
 
       {/* Center search bar */}
