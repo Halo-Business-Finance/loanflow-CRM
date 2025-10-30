@@ -37,7 +37,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Lead, ContactEntity } from '@/types/lead';
 import { useRealtimeLeads } from '@/hooks/useRealtimeLeads';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
-
+import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 interface LeadsOverview {
   totalLeads: number;
   newLeads: number;
@@ -60,7 +60,7 @@ export default function Leads() {
   }, [user, userRoles]);
   
   // Use real-time leads hook
-  const { leads: realtimeLeads, loading: realtimeLoading, refetch: realtimeRefetch } = useRealtimeLeads();
+  const { leads: realtimeLeads, loading: realtimeLoading, error: realtimeError, refetch: realtimeRefetch } = useRealtimeLeads();
   
   const [overview, setOverview] = useState<LeadsOverview>({
     totalLeads: 0,
@@ -604,8 +604,20 @@ export default function Leads() {
               </Button>
             </div>
             
+            {realtimeLoading && (<LoadingSkeleton type="table" count={6} />)}
+            {!realtimeLoading && realtimeError && (
+              <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  {realtimeError}
+                  <div className="mt-3">
+                    <Button size="sm" variant="outline" onClick={realtimeRefetch}>Retry</Button>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            )}
+            
             {viewMode === 'list' ? (
-              <LeadsList 
                 leads={filteredLeads}
                 onEdit={handleEdit}
                 onDelete={handleDelete}

@@ -98,12 +98,7 @@ export function useRealtimeLeads() {
       const errorMsg = err?.message || 'Failed to load leads'
       console.error('❌ Leads fetch failed:', err)
       setError(errorMsg)
-      // Show error to user for better visibility
-      toast({
-        title: "Error Loading Leads",
-        description: errorMsg,
-        variant: "destructive"
-      })
+      // Do not spam toasts; surface inline error via state
       setLeads([])
     } finally {
       setLoading(false)
