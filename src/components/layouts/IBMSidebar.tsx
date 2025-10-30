@@ -28,6 +28,7 @@ import {
   AlertTriangle,
   Headset,
   Mail,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -98,6 +99,14 @@ const navItems: NavItemData[] = [
       { icon: LayoutDashboard, label: 'Underwriter Dashboard', to: '/underwriter' },
       { icon: FileCheck, label: 'Loan Document Review', to: '/underwriter/documents' },
       { icon: AlertTriangle, label: 'Loan Risk Assessment', to: '/underwriter/risk' },
+    ]
+  },
+  { 
+    icon: FileSpreadsheet, 
+    label: 'Loan Processor', 
+    to: '/dashboards/processor',
+    subItems: [
+      { icon: LayoutDashboard, label: 'Processor Dashboard', to: '/dashboards/processor' },
     ]
   },
   { 
