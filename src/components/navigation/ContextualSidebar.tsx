@@ -74,6 +74,7 @@ const moduleNavigation = {
     { title: "Audit Logs", url: "/security/audit", icon: FileText },
     { title: "Threat Detection", url: "/security/threats", icon: AlertTriangle },
     { title: "Compliance", url: "/security/compliance", icon: UserCheck },
+    { title: "System Configuration", url: "/settings/system", icon: Database },
   ],
   "/enterprise": [
     { title: "Overview", url: "/enterprise", icon: Building },
