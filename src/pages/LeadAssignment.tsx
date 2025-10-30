@@ -42,42 +42,51 @@ export default function LeadAssignmentPage() {
   // Fetch unassigned leads (leads without user assignment)
   const fetchUnassignedLeads = async () => {
     try {
-      const { data, error } = await supabase
+      // Step 1: get unassigned leads ids only (avoid cross-table RLS join issues)
+      const { data: leads, error: leadsError } = await supabase
         .from('leads')
-        .select(`
-          id,
-          contact_entity_id,
-          user_id,
-          created_at,
-          contact_entities:contact_entities!contact_entity_id!inner (
-            id,
-            name,
-            email,
-            stage,
-            priority
-          )
-        `)
+        .select(`id, contact_entity_id, created_at`)
         .is('user_id', null)
         .order('created_at', { ascending: false })
         .limit(50)
 
-      if (error) throw error
+      if (leadsError) throw leadsError
 
-      const formattedLeads = data?.map(lead => ({
-        id: lead.contact_entities.id,
-        lead_id: lead.id,
-        name: lead.contact_entities.name,
-        email: lead.contact_entities.email,
-        stage: lead.contact_entities.stage || 'New',
-        priority: lead.contact_entities.priority || 'Medium'
-      })) || []
+      if (!leads || leads.length === 0) {
+        setUnassignedLeads([])
+        return
+      }
+
+      const contactIds = leads.map(l => l.contact_entity_id).filter(Boolean)
+
+      // Step 2: fetch related contact details
+      const { data: contacts, error: contactsError } = await supabase
+        .from('contact_entities')
+        .select('id, name, email, stage, priority')
+        .in('id', contactIds as string[])
+
+      if (contactsError) throw contactsError
+
+      const contactsById = new Map((contacts || []).map(c => [c.id, c]))
+
+      const formattedLeads = (leads || []).map(lead => {
+        const ce: any = contactsById.get(lead.contact_entity_id)
+        return ce ? {
+          id: ce.id,
+          lead_id: lead.id,
+          name: ce.name,
+          email: ce.email,
+          stage: ce.stage || 'New',
+          priority: ce.priority || 'Medium'
+        } : null
+      }).filter(Boolean) as UnassignedLead[]
 
       setUnassignedLeads(formattedLeads)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching unassigned leads:', error)
       toast({
         title: "Error",
-        description: "Failed to load unassigned leads",
+        description: `Failed to load unassigned leads${error?.message ? `: ${error.message}` : ''}`,
         variant: "destructive"
       })
     }
