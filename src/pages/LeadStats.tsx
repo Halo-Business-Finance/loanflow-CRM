@@ -41,30 +41,38 @@ export default function LeadStats() {
   const fetchLeadStats = async () => {
     try {
       setLoading(true)
-      const { data: leads, error } = await supabase
-        .from('leads')
+      
+      // Fetch contact entities directly with user_id filter
+      const { data: contactEntities, error } = await supabase
+        .from('contact_entities')
         .select(`
           id,
-          created_at,
-          is_converted_to_client,
-          contact_entities:contact_entities!contact_entity_id!inner (
-            stage,
-            priority
-          )
+          stage,
+          priority,
+          user_id,
+          created_at
         `)
         .eq('user_id', user?.id)
 
       if (error) throw error
 
-      const totalLeads = leads?.length || 0
-      const convertedLeads = leads?.filter(l => l.is_converted_to_client).length || 0
-      const qualifiedLeads = leads?.filter(l => 
-        l.contact_entities?.stage === 'Pre-Approved' || 
-        l.contact_entities?.stage === 'Term Sheet Signed'
+      const totalLeads = contactEntities?.length || 0
+      
+      // Count converted leads (Loan Funded or Closed Won)
+      const convertedLeads = contactEntities?.filter(ce => 
+        ce.stage === 'Loan Funded' || ce.stage === 'Closed Won'
       ).length || 0
-      const newLeads = leads?.filter(l => 
-        l.contact_entities?.stage === 'Initial Contact'
+      
+      // Count qualified leads (Pre-approval or Term Sheet Signed)
+      const qualifiedLeads = contactEntities?.filter(ce => 
+        ce.stage === 'Pre-approval' || ce.stage === 'Term Sheet Signed'
       ).length || 0
+      
+      // Count new leads (Initial Contact or New Lead)
+      const newLeads = contactEntities?.filter(ce => 
+        ce.stage === 'Initial Contact' || ce.stage === 'New Lead'
+      ).length || 0
+      
       const conversionRate = totalLeads > 0 ? (convertedLeads / totalLeads) * 100 : 0
 
       setStats({
