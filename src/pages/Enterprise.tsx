@@ -12,14 +12,12 @@ import { CustomObjectsManager } from "@/components/enterprise/CustomObjectsManag
 import { WorkflowBuilder } from "@/components/enterprise/WorkflowBuilder";
 import { ApprovalProcessManager } from "@/components/enterprise/ApprovalProcessManager";
 import { TerritoryManager } from "@/components/enterprise/TerritoryManager";
-import { ForecastingDashboard } from "@/components/enterprise/ForecastingDashboard";
 import { OpportunityManager } from "@/components/enterprise/OpportunityManager";
 import { 
   Database, 
   Workflow, 
   CheckCircle, 
   Map, 
-  TrendingUp, 
   Target,
   Shield
 } from "lucide-react";
@@ -125,12 +123,6 @@ export default function Enterprise() {
       description: "Geographic and hierarchical territory assignment"
     },
     {
-      id: "forecasting",
-      label: "Sales Forecasting",
-      icon: TrendingUp,
-      description: "Advanced forecasting with multiple methodologies"
-    },
-    {
       id: "opportunities",
       label: "Opportunity Splits",
       icon: Target,
@@ -194,7 +186,7 @@ export default function Enterprise() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid grid-cols-6 w-full">
+          <TabsList className="grid grid-cols-5 w-full">
             {features.map((feature) => {
               const Icon = feature.icon;
               return (
@@ -257,10 +249,6 @@ export default function Enterprise() {
 
           <TabsContent value="territories" className="space-y-6">
             <TerritoryManager />
-          </TabsContent>
-
-          <TabsContent value="forecasting" className="space-y-6">
-            <ForecastingDashboard />
           </TabsContent>
 
           <TabsContent value="opportunities" className="space-y-6">
