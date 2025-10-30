@@ -32,15 +32,12 @@ interface CloserMetrics {
 
 interface LoanItem {
   id: string;
-  client_name?: string | null;
+  name?: string | null;
   business_name?: string | null;
   loan_amount?: number | null;
   loan_type?: string | null;
   stage?: string | null;
-  closing_date?: string | null;
-  urgency?: string | null;
-  status?: string | null;
-  funded_date?: string | null;
+  priority?: string | null;
   updated_at?: string | null;
   created_at?: string | null;
 }
@@ -71,33 +68,41 @@ export const LoanCloserDashboard = () => {
     try {
       setLoading(true);
 
-      // Fetch scheduled closings
-      const { data: closingLoans, error: closingError } = await supabase
-        .from('contact_entities')
-        .select('*')
-        .eq('stage', 'Closing')
-        .order('created_at', { ascending: false });
+      // Run all queries in parallel for better performance
+      const [closingResult, fundedResult, pendingResult] = await Promise.all([
+        // Fetch scheduled closings
+        supabase
+          .from('contact_entities')
+          .select('id, name, business_name, loan_amount, loan_type, stage, priority, updated_at, created_at')
+          .eq('stage', 'Closing')
+          .order('created_at', { ascending: false })
+          .limit(50),
+        
+        // Fetch funded loans
+        supabase
+          .from('contact_entities')
+          .select('id, name, business_name, loan_amount, loan_type, stage, updated_at, created_at')
+          .eq('stage', 'Loan Funded')
+          .order('updated_at', { ascending: false })
+          .limit(50),
+        
+        // Fetch pending approvals
+        supabase
+          .from('contact_entities')
+          .select('id, name, business_name, loan_amount, loan_type, stage, priority, created_at')
+          .in('stage', ['Underwriting', 'Approved'])
+          .order('created_at', { ascending: false })
+          .limit(20)
+      ]);
 
-      if (closingError) throw closingError;
+      // Check for errors
+      if (closingResult.error) throw closingResult.error;
+      if (fundedResult.error) throw fundedResult.error;
+      if (pendingResult.error) throw pendingResult.error;
 
-      // Fetch funded loans
-      const { data: fundedLoans, error: fundedError } = await supabase
-        .from('contact_entities')
-        .select('*')
-        .eq('stage', 'Loan Funded')
-        .order('created_at', { ascending: false });
-
-      if (fundedError) throw fundedError;
-
-      // Fetch pending approvals (loans in underwriting/approval stage)
-      const { data: pendingLoans, error: pendingError } = await supabase
-        .from('contact_entities')
-        .select('*')
-        .in('stage', ['Underwriting', 'Approved'])
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      if (pendingError) throw pendingError;
+      const closingLoans = closingResult.data;
+      const fundedLoans = fundedResult.data;
+      const pendingLoans = pendingResult.data;
 
       // Calculate metrics
       const totalFunded = fundedLoans?.reduce((sum, loan) => sum + (loan.loan_amount || 0), 0) || 0;
@@ -199,8 +204,8 @@ export const LoanCloserDashboard = () => {
     }
   };
 
-  const getUrgencyColor = (urgency?: string) => {
-    switch (urgency?.toLowerCase()) {
+  const getPriorityColor = (priority?: string) => {
+    switch (priority?.toLowerCase()) {
       case 'high':
         return 'destructive';
       case 'medium':
@@ -358,10 +363,10 @@ export const LoanCloserDashboard = () => {
                       <div key={loan.id} className="flex items-center justify-between p-4 border rounded-lg">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <p className="font-medium">{loan.client_name}</p>
-                            {loan.urgency && (
-                              <Badge variant={getUrgencyColor(loan.urgency)}>
-                                {loan.urgency}
+                            <p className="font-medium">{loan.name}</p>
+                            {loan.priority && (
+                              <Badge variant={getPriorityColor(loan.priority)}>
+                                {loan.priority}
                               </Badge>
                             )}
                           </div>
@@ -400,7 +405,7 @@ export const LoanCloserDashboard = () => {
                     {scheduledLoans.map((loan) => (
                       <div key={loan.id} className="flex items-center justify-between p-4 border rounded-lg">
                         <div className="space-y-1">
-                          <p className="font-medium">{loan.client_name}</p>
+                          <p className="font-medium">{loan.name}</p>
                           <p className="text-sm text-muted-foreground">{loan.business_name}</p>
                           <div className="flex gap-4 text-sm">
                             <span className="text-muted-foreground">Amount: {formatCurrency(loan.loan_amount || 0)}</span>
@@ -442,7 +447,7 @@ export const LoanCloserDashboard = () => {
                     {scheduledLoans.map((loan) => (
                       <div key={loan.id} className="p-4 border rounded-lg">
                         <div className="flex items-center justify-between mb-2">
-                          <p className="font-medium">{loan.client_name}</p>
+                          <p className="font-medium">{loan.name}</p>
                           <Badge variant={loan.loan_type ? 'default' : 'secondary'}>
                             {loan.loan_type ? 'Ready' : 'Pending'}
                           </Badge>
@@ -477,7 +482,7 @@ export const LoanCloserDashboard = () => {
                       <div key={loan.id} className="flex items-center justify-between p-4 border rounded-lg">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <p className="font-medium">{loan.client_name}</p>
+                            <p className="font-medium">{loan.name}</p>
                             <Badge variant="default">
                               <CheckCircle className="h-3 w-3 mr-1" />
                               Funded
