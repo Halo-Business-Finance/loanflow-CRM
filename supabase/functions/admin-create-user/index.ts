@@ -16,7 +16,6 @@ serve(async (req) => {
 
   try {
     const authHeader = req.headers.get('Authorization');
-    console.log('Authorization header received:', authHeader ? 'Present' : 'Missing');
 
     if (!authHeader) {
       throw new Error('No authorization header');
@@ -47,11 +46,8 @@ serve(async (req) => {
     );
 
     if (authError || !user) {
-      console.error('User authentication failed:', authError);
       throw new Error('Unauthorized');
     }
-
-    console.log('User authenticated:', user.id, user.email);
 
     // Verify admin role (handle multiple roles)
     const { data: rolesData, error: roleError } = await supabaseClient
@@ -60,12 +56,10 @@ serve(async (req) => {
       .eq('user_id', user.id);
 
     if (roleError || !rolesData || rolesData.length === 0) {
-      console.error('Failed to fetch user roles:', roleError);
       throw new Error('Failed to verify admin access');
     }
 
     const roleList = rolesData.map((r: { role: string }) => r.role);
-    console.log('User roles:', roleList);
 
     if (!roleList.includes('admin') && !roleList.includes('super_admin')) {
       throw new Error('Admin access required');
@@ -77,42 +71,39 @@ serve(async (req) => {
       throw new Error(rateLimit.error);
     }
 
-    // CRITICAL: Require MFA verification for admin user creation
-    const { mfa_token } = await req.json();
-    
-    if (mfa_token) {
-      const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
-        p_user_id: user.id,
-        p_mfa_token: mfa_token,
-        p_operation_type: 'user_creation'
-      });
-
-      if (mfaError || !mfaVerified) {
-        await supabaseClient.rpc('log_security_event', {
-          p_event_type: 'mfa_verification_failed',
-          p_severity: 'high',
-          p_details: { operation: 'user_creation', user_id: user.id }
-        });
-        throw new Error('MFA verification failed. Please try again.');
-      }
-    }
-
-    console.log('MFA verification passed, proceeding with user creation...');
-
     // Get the user data from request body
     const requestBody = await req.json();
+    
+    // CRITICAL: MANDATORY MFA verification for admin user creation
+    const { mfa_token } = requestBody;
+    
+    if (!mfa_token) {
+      throw new Error('MFA token is required for user creation operations');
+    }
+
+    const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
+      p_user_id: user.id,
+      p_mfa_token: mfa_token,
+      p_operation_type: 'user_creation'
+    });
+
+    if (mfaError || !mfaVerified) {
+      await supabaseClient.rpc('log_security_event', {
+        p_event_type: 'mfa_verification_failed',
+        p_severity: 'high',
+        p_details: { operation: 'user_creation', user_id: user.id }
+      });
+      throw new Error('MFA verification failed. Please try again.');
+    }
     
     // CRITICAL: Validate and sanitize all user input
     const validation = validateUserCreation(requestBody);
     if (!validation.valid) {
-      console.warn('Validation failed:', validation.errors);
       throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
     }
     
     const { email, password, firstName, lastName, phone, city, state } = validation.sanitized!;
     const { role, isActive } = requestBody; // These are not user-provided text
-
-    console.log('Creating user with validated input:', email);
 
     // Create the user using admin client
     const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
@@ -126,11 +117,8 @@ serve(async (req) => {
     });
 
     if (createError) {
-      console.error('Failed to create user:', createError);
       throw new Error(`Failed to create user: ${createError.message}`);
     }
-
-    console.log('User created successfully:', newUser.user.id);
 
     // Update profile with additional information and mark email as verified
     if (newUser.user) {
@@ -147,19 +135,11 @@ serve(async (req) => {
         })
         .eq('id', newUser.user.id);
 
-      if (profileError) {
-        console.error('Failed to update profile:', profileError);
-      }
-
       // Assign user role
       const { error: roleAssignError } = await supabaseAdmin
         .from('user_roles')
         .update({ role: role || 'agent' })
         .eq('user_id', newUser.user.id);
-
-      if (roleAssignError) {
-        console.error('Failed to assign role:', roleAssignError);
-      }
     }
 
     // Log the creation as a security event
@@ -178,8 +158,6 @@ serve(async (req) => {
         timestamp: new Date().toISOString()
       }
     });
-
-    console.log('User created and configured successfully:', newUser.user.id);
 
     return new Response(
       JSON.stringify({

@@ -46,7 +46,6 @@ serve(async (req) => {
     } = await supabaseClient.auth.getUser(token);
 
     if (authError || !user) {
-      console.error('Authentication error:', authError);
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -82,25 +81,30 @@ serve(async (req) => {
     // Parse request body
     const { userId, firstName, lastName, phone, city, state, isActive, mfa_token } = await req.json();
 
-    // CRITICAL: Require MFA verification for user updates
-    if (mfa_token) {
-      const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
-        p_user_id: user.id,
-        p_mfa_token: mfa_token,
-        p_operation_type: 'user_update'
-      });
+    // CRITICAL: MANDATORY MFA verification for user updates
+    if (!mfa_token) {
+      return new Response(
+        JSON.stringify({ error: 'MFA token is required for user update operations' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
-      if (mfaError || !mfaVerified) {
-        await supabaseClient.rpc('log_security_event', {
-          p_event_type: 'mfa_verification_failed',
-          p_severity: 'high',
-          p_details: { operation: 'user_update', admin_id: user.id, target_user: userId }
-        });
-        return new Response(
-          JSON.stringify({ error: 'MFA verification failed. Please try again.' }),
-          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
+    const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
+      p_user_id: user.id,
+      p_mfa_token: mfa_token,
+      p_operation_type: 'user_update'
+    });
+
+    if (mfaError || !mfaVerified) {
+      await supabaseClient.rpc('log_security_event', {
+        p_event_type: 'mfa_verification_failed',
+        p_severity: 'high',
+        p_details: { operation: 'user_update', admin_id: user.id, target_user: userId }
+      });
+      return new Response(
+        JSON.stringify({ error: 'MFA verification failed. Please try again.' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Rate limiting for admin operations
@@ -140,8 +144,6 @@ serve(async (req) => {
       throw new Error(stateValidation.error);
     }
 
-    console.log('Updating user profile with validated input:', userIdValidation.sanitized);
-
     // Call the admin_update_profile database function with sanitized data
     const { data, error } = await supabaseClient.rpc('admin_update_profile', {
       p_user_id: userIdValidation.sanitized,
@@ -154,14 +156,11 @@ serve(async (req) => {
     });
 
     if (error) {
-      console.error('Error updating user profile:', error);
       return new Response(
         JSON.stringify({ error: error.message }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    console.log('User profile updated successfully:', data);
 
     return new Response(
       JSON.stringify({ success: true, data }),

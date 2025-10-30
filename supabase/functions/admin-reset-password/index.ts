@@ -71,32 +71,34 @@ serve(async (req) => {
       throw new Error(rateLimit.error);
     }
 
-    // CRITICAL: Require MFA verification for password resets
-    if (mfa_token) {
-      const supabaseClient = createClient(
-        Deno.env.get('SUPABASE_URL') ?? '',
-        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-        {
-          global: {
-            headers: { Authorization: authHeader },
-          }
+    // CRITICAL: MANDATORY MFA verification for password resets
+    if (!mfa_token) {
+      throw new Error('MFA token is required for password reset operations');
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: authHeader },
         }
-      );
-
-      const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
-        p_user_id: user.id,
-        p_mfa_token: mfa_token,
-        p_operation_type: 'password_reset'
-      });
-
-      if (mfaError || !mfaVerified) {
-        await supabaseClient.rpc('log_security_event', {
-          p_event_type: 'mfa_verification_failed',
-          p_severity: 'high',
-          p_details: { operation: 'password_reset', admin_id: user.id, target_user: sanitizedUserId }
-        });
-        throw new Error('MFA verification failed. Please try again.');
       }
+    );
+
+    const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
+      p_user_id: user.id,
+      p_mfa_token: mfa_token,
+      p_operation_type: 'password_reset'
+    });
+
+    if (mfaError || !mfaVerified) {
+      await supabaseClient.rpc('log_security_event', {
+        p_event_type: 'mfa_verification_failed',
+        p_severity: 'high',
+        p_details: { operation: 'password_reset', admin_id: user.id, target_user: sanitizedUserId }
+      });
+      throw new Error('MFA verification failed. Please try again.');
     }
 
     // Update user password using admin privileges

@@ -44,7 +44,6 @@ serve(async (req) => {
     );
 
     if (authError || !user) {
-      console.error('User authentication failed:', authError);
       throw new Error('Unauthorized');
     }
 
@@ -55,7 +54,6 @@ serve(async (req) => {
       .eq('user_id', user.id);
 
     if (roleError || !rolesData || rolesData.length === 0) {
-      console.error('Failed to fetch user roles:', roleError);
       throw new Error('Failed to verify admin access');
     }
 
@@ -88,22 +86,24 @@ serve(async (req) => {
       throw new Error(rateLimit.error);
     }
 
-    // CRITICAL: Require MFA verification for user deletion
-    if (mfa_token) {
-      const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
-        p_user_id: user.id,
-        p_mfa_token: mfa_token,
-        p_operation_type: 'user_deletion'
-      });
+    // CRITICAL: MANDATORY MFA verification for user deletion
+    if (!mfa_token) {
+      throw new Error('MFA token is required for user deletion operations');
+    }
 
-      if (mfaError || !mfaVerified) {
-        await supabaseClient.rpc('log_security_event', {
-          p_event_type: 'mfa_verification_failed',
-          p_severity: 'high',
-          p_details: { operation: 'user_deletion', admin_id: user.id, target_user: sanitizedUserId }
-        });
-        throw new Error('MFA verification failed. Please try again.');
-      }
+    const { data: mfaVerified, error: mfaError } = await supabaseClient.rpc('verify_mfa_for_operation', {
+      p_user_id: user.id,
+      p_mfa_token: mfa_token,
+      p_operation_type: 'user_deletion'
+    });
+
+    if (mfaError || !mfaVerified) {
+      await supabaseClient.rpc('log_security_event', {
+        p_event_type: 'mfa_verification_failed',
+        p_severity: 'high',
+        p_details: { operation: 'user_deletion', admin_id: user.id, target_user: sanitizedUserId }
+      });
+      throw new Error('MFA verification failed. Please try again.');
     }
 
     // Prevent self-deletion
@@ -115,7 +115,6 @@ serve(async (req) => {
     const { data: targetUser, error: getUserError } = await supabaseAdmin.auth.admin.getUserById(sanitizedUserId);
     
     if (getUserError) {
-      console.error('Failed to get target user:', getUserError);
       throw new Error('User not found');
     }
 
@@ -123,7 +122,6 @@ serve(async (req) => {
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(sanitizedUserId);
 
     if (deleteError) {
-      console.error('Failed to delete user:', deleteError);
       throw new Error('Failed to delete user');
     }
 
@@ -139,8 +137,6 @@ serve(async (req) => {
         timestamp: new Date().toISOString()
       }
     });
-
-    console.log('User deleted successfully:', sanitizedUserId);
 
     return new Response(
       JSON.stringify({
