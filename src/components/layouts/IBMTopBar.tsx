@@ -15,7 +15,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { NotificationBell } from '@/components/NotificationBell';
 import { LoanCalculator } from '@/components/LoanCalculator';
 import { BrandLogo } from '@/components/BrandLogo';
-import logoAsset from '@/assets/brand-logo.png';
+import logoAsset from '@/assets/loanflow-logo.png';
 
 interface IBMTopBarProps {
   onMenuClick: () => void;
@@ -154,7 +154,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           </button>
         </div>
         
-        <BrandLogo size={120} showText={false} imageSrc={logoAsset} className="brightness-0 invert" />
+        <BrandLogo size={120} showText={false} imageSrc={logoAsset} />
       </div>
 
       {/* Center search bar */}
