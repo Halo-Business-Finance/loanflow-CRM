@@ -3,7 +3,7 @@ import { StandardPageHeader } from "@/components/StandardPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { StandardKPICard } from "@/components/StandardKPICard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
-import { Shield, Users, Key, Lock, Settings, UserPlus, MoreVertical } from "lucide-react"
+import { Shield, Users, Key, Lock, Settings, UserPlus, MoreVertical, Database } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ import { useState, useEffect } from "react"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { formatDistanceToNow } from "date-fns"
+import { useNavigate } from "react-router-dom"
 
 interface RoleCount {
   role: string
@@ -34,6 +35,7 @@ interface AuditLogEvent {
 
 export default function SecurityAccess() {
   const { toast } = useToast()
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [activeUsers, setActiveUsers] = useState(0)
   const [adminUsers, setAdminUsers] = useState(0)
@@ -201,9 +203,13 @@ export default function SecurityAccess() {
                   <MoreVertical className="ml-2 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="w-56 bg-card border shadow-large z-50">
                 <DropdownMenuLabel>Security Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/settings/system')}>
+                  <Database className="mr-2 h-4 w-4" />
+                  System Configuration
+                </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Shield className="mr-2 h-4 w-4" />
                   Configure Policies
