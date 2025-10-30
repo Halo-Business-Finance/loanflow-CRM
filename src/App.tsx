@@ -16,7 +16,6 @@ import { CSPHeaders } from "@/components/security/CSPHeaders";
 import { EnterpriseSecurityDashboard } from "@/components/security/EnterpriseSecurityDashboard";
 import { ThreatMonitoringDashboard } from "@/components/security/ThreatMonitoringDashboard";
 import { LoanCloserDashboard } from "@/components/dashboards/LoanCloserDashboard";
-import { FunderDashboard } from "@/components/dashboards/FunderDashboard";
 import { LoanProcessorDashboard } from "@/components/dashboards/LoanProcessorDashboard";
 import { UnderwriterDashboard } from "@/components/dashboards/UnderwriterDashboard";
 import { ForecastingDashboard } from "@/components/enterprise/ForecastingDashboard";
@@ -176,7 +175,6 @@ function AuthenticatedApp() {
             
             {/* Role-based Dashboard Routes */}
             {canCloseLoans && <Route path="/dashboards/closer" element={<IBMCloudLayout><LoanCloserDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
-            {canFundLoans && <Route path="/dashboards/funder" element={<IBMCloudLayout><FunderDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             {canProcessLoans && <Route path="/dashboards/processor" element={<IBMCloudLayout><LoanProcessorDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
             
             {/* Security Dashboard Routes */}
