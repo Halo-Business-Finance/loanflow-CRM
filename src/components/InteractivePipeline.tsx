@@ -145,7 +145,7 @@ export function InteractivePipeline() {
         .from('leads')
         .select(`
           *,
-          contact_entity:contact_entities(*)
+          contact_entity:contact_entities!leads_contact_entity_id_fkey(*)
         `);
       
       // Only filter by user_id if not a manager/admin
