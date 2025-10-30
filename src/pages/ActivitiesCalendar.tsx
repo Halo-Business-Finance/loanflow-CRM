@@ -11,6 +11,7 @@ import { EventListSidebar } from "@/components/calendar/EventListSidebar";
 import { ScheduleMeetingModal } from "@/components/calendar/ScheduleMeetingModal";
 import { addMonths, subMonths, format, isToday, isSameDay } from "date-fns";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 export default function ActivitiesCalendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -22,6 +23,25 @@ export default function ActivitiesCalendar() {
   const datesWithEvents = getDatesWithEvents();
   const selectedDateEvents = getEventsForDate(selectedDate);
   const todayEvents = getEventsForDate(new Date());
+
+  const getEventTypeColor = (type: string) => {
+    switch (type) {
+      case 'call':
+        return 'bg-blue-500'
+      case 'meeting':
+      case 'team_meeting':
+        return 'bg-purple-500'
+      case 'followup':
+      case 'follow_up':
+        return 'bg-green-500'
+      case 'deadline':
+        return 'bg-red-500'
+      case 'task':
+        return 'bg-orange-500'
+      default:
+        return 'bg-muted-foreground'
+    }
+  }
 
   const handlePreviousMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
@@ -107,7 +127,7 @@ export default function ActivitiesCalendar() {
                         hasEvents: datesWithEvents,
                       }}
                       modifiersClassNames={{
-                        hasEvents: "relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-primary after:rounded-full",
+                        hasEvents: "relative",
                       }}
                       className="rounded-md w-full [&_.rdp-caption]:hidden"
                       classNames={{
@@ -119,6 +139,42 @@ export default function ActivitiesCalendar() {
                         row: "flex w-full mt-2",
                         cell: "p-0 relative flex-1 text-center text-sm focus-within:relative focus-within:z-20 h-16",
                         day: "w-full h-16 p-0 font-normal aria-selected:opacity-100",
+                      }}
+                      components={{
+                        Day: ({ date: dayDate, ...props }) => {
+                          const dayEvents = getEventsForDate(dayDate)
+                          const isSelected = selectedDate && format(selectedDate, 'yyyy-MM-dd') === format(dayDate, 'yyyy-MM-dd')
+                          
+                          return (
+                            <div className="relative w-full h-full">
+                              <button
+                                {...props}
+                                className={cn(
+                                  "relative w-full h-16 p-0 font-normal hover:bg-accent hover:text-accent-foreground rounded-md flex flex-col items-center justify-center gap-1",
+                                  isSelected && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+                                )}
+                              >
+                                <span className="text-sm">{dayDate.getDate()}</span>
+                                {dayEvents.length > 0 && (
+                                  <div className="flex gap-1 justify-center">
+                                    {dayEvents.slice(0, 3).map((event, idx) => (
+                                      <span
+                                        key={idx}
+                                        className={cn(
+                                          "w-1.5 h-1.5 rounded-full",
+                                          getEventTypeColor(event.type)
+                                        )}
+                                      />
+                                    ))}
+                                    {dayEvents.length > 3 && (
+                                      <span className="text-[9px] leading-none ml-0.5 font-semibold">+{dayEvents.length - 3}</span>
+                                    )}
+                                  </div>
+                                )}
+                              </button>
+                            </div>
+                          )
+                        },
                       }}
                     />
                     
@@ -146,14 +202,30 @@ export default function ActivitiesCalendar() {
                   </div>
                 )}
 
-                <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground border-t">
+                <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground border-t flex-wrap">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-primary" />
-                    <span>Has Events</span>
+                    <div className="w-2 h-2 rounded-full bg-blue-500" />
+                    <span>Call</span>
                   </div>
                   <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-purple-500" />
+                    <span>Meeting</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500" />
+                    <span>Follow-up</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-red-500" />
+                    <span>Deadline</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-orange-500" />
+                    <span>Task</span>
+                  </div>
+                  <div className="flex items-center gap-2 ml-auto">
                     <Badge variant="secondary">{events.length}</Badge>
-                    <span>Total Events This Month</span>
+                    <span>Total Events</span>
                   </div>
                 </div>
               </div>
