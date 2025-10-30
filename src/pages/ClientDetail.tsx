@@ -303,10 +303,8 @@ export default function ClientDetail() {
 
     try {
       const trimmed = newCallNote.trim()
-      if (!trimmed) {
-        toast({ title: 'Error', description: 'Note cannot be empty', variant: 'destructive' })
-        return
-      }
+      // If empty, just return silently - user doesn't want to add a note
+      if (!trimmed) return
       
       if (!client.contact_entity_id) {
         throw new Error('No contact entity ID found for client')
@@ -353,10 +351,8 @@ export default function ClientDetail() {
 
     try {
       const trimmed = generalNotes.trim()
-      if (!trimmed) {
-        toast({ title: 'Error', description: 'Note cannot be empty', variant: 'destructive' })
-        return
-      }
+      // If empty, just return silently - user doesn't want to add a note
+      if (!trimmed) return
       
       // Insert into history
       const { error: historyError } = await supabase

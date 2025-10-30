@@ -698,10 +698,8 @@ export default function LeadDetail() {
   const saveGeneralNotesImmediate = async () => {
     if (!lead?.contact_entity_id || !user) return
     const trimmed = generalNotes.trim()
-    if (!trimmed) {
-      toast({ title: 'Error', description: 'Note cannot be empty', variant: 'destructive' })
-      return
-    }
+    // If empty, just return silently - user doesn't want to add a note
+    if (!trimmed) return
     
     // Insert into history
     const { error: historyError } = await supabase
@@ -728,10 +726,8 @@ export default function LeadDetail() {
   const saveCallNotesImmediate = async () => {
     if (!lead?.contact_entity_id || !user) return
     const trimmed = callNotes.trim()
-    if (!trimmed) {
-      toast({ title: 'Error', description: 'Note cannot be empty', variant: 'destructive' })
-      return
-    }
+    // If empty, just return silently - user doesn't want to add a note
+    if (!trimmed) return
     
     // Insert into history
     const { error: historyError } = await supabase
