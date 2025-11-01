@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { ActionReminder } from "@/components/ActionReminder"
+import { ScheduledReminders } from "@/components/ScheduledReminders"
 import { PhoneDialer } from "@/components/PhoneDialer"
 import { EmailComposer } from "@/components/EmailComposer"
 import { ClickablePhone } from "@/components/ui/clickable-phone"
@@ -73,6 +74,7 @@ export default function LeadDetail() {
   const [callNotes, setCallNotes] = useState("")
   const [generalNotes, setGeneralNotes] = useState("")
   const [showReminderDialog, setShowReminderDialog] = useState(false)
+  const [remindersRefreshKey, setRemindersRefreshKey] = useState(0)
   const [notesHistory, setNotesHistory] = useState<Array<{
     id: string
     note_type: 'general' | 'call'
@@ -1961,6 +1963,15 @@ export default function LeadDetail() {
               </CardContent>
             </Card>
 
+            {/* Scheduled Reminders */}
+            {lead && (
+              <ScheduledReminders
+                key={remindersRefreshKey}
+                entityId={lead.id}
+                entityType="lead"
+              />
+            )}
+
           </div>
         </div>
 
@@ -1971,7 +1982,10 @@ export default function LeadDetail() {
             entityName={lead.name || lead.business_name || 'Lead'}
             entityType="lead"
             isOpen={showReminderDialog}
-            onClose={() => setShowReminderDialog(false)}
+            onClose={() => {
+              setShowReminderDialog(false)
+              setRemindersRefreshKey(prev => prev + 1)
+            }}
           />
         )}
 
