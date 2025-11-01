@@ -4966,6 +4966,7 @@ export type Database = {
       }
       is_account_locked: { Args: { user_email: string }; Returns: boolean }
       is_email_verified: { Args: { p_user_id: string }; Returns: boolean }
+      is_global_admin: { Args: never; Returns: boolean }
       is_ip_allowed: { Args: { client_ip: unknown }; Returns: boolean }
       is_system_shutdown: { Args: never; Returns: Json }
       lock_account: {
