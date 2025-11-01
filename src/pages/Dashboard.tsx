@@ -60,6 +60,7 @@ import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
+import { cn } from '@/lib/utils';
 
 const COLORS = ['#0f62fe', '#0353e9', '#8a3ffc', '#33b1ff', '#d12771'];
 
@@ -866,7 +867,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <Button 
               onClick={() => navigate('/leads/new')}
-              className="gap-2"
+              className="h-10 px-4 gap-2 bg-blue-600 hover:bg-blue-700 text-white"
             >
               <UserPlus className="h-4 w-4" />
               Create New Lead
@@ -875,17 +876,20 @@ export default function Dashboard() {
               variant={customizeMode ? "default" : "outline"}
               size="sm"
               onClick={() => setCustomizeMode(!customizeMode)}
-              className="gap-2"
+              className={cn(
+                "h-10 px-4 gap-2",
+                customizeMode && "bg-blue-600 hover:bg-blue-700 text-white"
+              )}
             >
               <Settings className="h-4 w-4" />
               {customizeMode ? 'Done Customizing' : 'Customize Dashboard'}
             </Button>
             {customizeMode && (
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={resetWidgetOrder}
-                className="gap-2"
+                className="h-10 px-4 gap-2"
               >
                 Reset Layout
               </Button>
