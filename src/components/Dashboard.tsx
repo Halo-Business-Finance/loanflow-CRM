@@ -40,6 +40,8 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
 import { CompactCalendarWidget } from '@/components/CompactCalendarWidget';
 import { TodaysTasks } from '@/components/TodaysTasks';
+import { BrandLogo } from '@/components/BrandLogo';
+import logoAsset from '@/assets/logo.png';
 
 // Real-time dashboard data interfaces
 interface DashboardMetrics {
@@ -276,16 +278,25 @@ function Dashboard() {
       {/* Microsoft-style Dashboard Header */}
       <div className="bg-white border-b border-border pl-0 pr-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex-1 pl-6 flex items-center gap-4">
-            <p className="text-base text-black mt-1 text-left">Welcome {user?.user_metadata?.first_name || getUserDisplayName()}</p>
+          <div className="flex-1 pl-6 flex flex-col gap-2">
+            <div className="self-start">
+              <BrandLogo 
+                size={130} 
+                showText={false} 
+                imageSrc={logoAsset}
+                className="[&>img]:brightness-110 [&>img]:hue-rotate-[-15deg] [&>img]:saturate-150"
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <p className="text-base text-black mt-1 text-left">Welcome {user?.user_metadata?.first_name || getUserDisplayName()}</p>
             
-            {/* Navigation Controls */}
-            <div className="flex items-center gap-2 pl-4">
-              {/* Sidebar Toggle */}
-              <SidebarTrigger className="h-8 w-8 [&>svg]:h-4 [&>svg]:w-4 text-gray-600 hover:bg-gray-100" />
-              
               {/* Navigation Controls */}
-              <Button 
+              <div className="flex items-center gap-2 pl-4">
+                {/* Sidebar Toggle */}
+                <SidebarTrigger className="h-8 w-8 [&>svg]:h-4 [&>svg]:w-4 text-gray-600 hover:bg-gray-100" />
+                
+                {/* Navigation Controls */}
+                <Button
                 variant="ghost" 
                 size="icon" 
                 className="h-8 w-8 text-gray-600 hover:bg-gray-100" 
@@ -303,6 +314,7 @@ function Dashboard() {
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
