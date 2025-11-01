@@ -93,9 +93,9 @@ export function AdditionalBorrowerCard({
               <>
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="default"
                   onClick={onStartEdit}
-                  className="text-xs"
+                  className="text-xs bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   <Edit className="w-3 h-3 mr-1" />
                   Edit

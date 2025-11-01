@@ -1216,9 +1216,9 @@ export default function LeadDetail() {
                       </>
                     )}
                     <Button
-                      variant="outline"
+                      variant="default"
                       size="sm"
-                      className="h-8 text-xs"
+                      className="h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white"
                       onClick={handleAddBorrower}
                     >
                       <UserPlus className="h-3 w-3 mr-2" />

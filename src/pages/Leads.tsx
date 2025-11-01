@@ -724,8 +724,8 @@ export default function Leads() {
                         <div className="flex items-center gap-2 pt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Button
                             size="sm"
-                            variant="outline"
-                            className="flex-1 h-8 text-xs"
+                            variant="default"
+                            className="flex-1 h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleEdit(lead);
@@ -735,7 +735,7 @@ export default function Leads() {
                           </Button>
                           <Button
                             size="sm"
-                            className="flex-1 h-8 text-xs"
+                            className="flex-1 h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate(`/leads/${lead.id}`);
@@ -797,7 +797,7 @@ export default function Leads() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">Make calls and track communication</p>
-                  <Button className="w-full">Launch Dialer</Button>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Launch Dialer</Button>
                 </CardContent>
               </Card>
 
@@ -810,7 +810,7 @@ export default function Leads() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">Send targeted email sequences</p>
-                  <Button className="w-full" variant="outline">Create Campaign</Button>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" variant="default">Create Campaign</Button>
                 </CardContent>
               </Card>
 
@@ -823,7 +823,7 @@ export default function Leads() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">Automatic lead qualification</p>
-                  <Button className="w-full" variant="outline">Configure Rules</Button>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" variant="default">Configure Rules</Button>
                 </CardContent>
               </Card>
             </div>

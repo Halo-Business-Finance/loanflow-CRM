@@ -292,7 +292,7 @@ export default function SecurityAccess() {
                           {roleCount.count} user{roleCount.count !== 1 ? 's' : ''} assigned
                         </p>
                       </div>
-                      <Button size="sm" variant="outline">Manage</Button>
+                      <Button size="sm" variant="default" className="bg-blue-600 hover:bg-blue-700 text-white">Manage</Button>
                     </div>
                   ))
                 )}

@@ -148,6 +148,7 @@ export function BulkActions({ selectedItems, onClearSelection, onBulkUpdate, typ
               size="sm"
               onClick={() => handleAction('email')}
               disabled={loading}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               <Mail className="h-4 w-4 mr-1" />
               Email
@@ -158,6 +159,7 @@ export function BulkActions({ selectedItems, onClearSelection, onBulkUpdate, typ
               size="sm"
               onClick={() => handleAction('call')}
               disabled={loading}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               <Phone className="h-4 w-4 mr-1" />
               Call

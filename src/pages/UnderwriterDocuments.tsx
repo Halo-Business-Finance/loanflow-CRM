@@ -113,7 +113,7 @@ export default function UnderwriterDocuments() {
                   <span className="text-xs px-1.5 py-0 text-green-600">
                     Approved
                   </span>
-                  <Button size="sm" variant="outline">View Details</Button>
+                  <Button size="sm" variant="default" className="bg-blue-600 hover:bg-blue-700 text-white">View Details</Button>
                 </div>
               </div>
               
@@ -129,7 +129,7 @@ export default function UnderwriterDocuments() {
                   <span className="text-xs px-1.5 py-0 text-yellow-600">
                     Under Review
                   </span>
-                  <Button size="sm" variant="outline">Review Now</Button>
+                  <Button size="sm" variant="default" className="bg-blue-600 hover:bg-blue-700 text-white">Review Now</Button>
                 </div>
               </div>
             </div>
