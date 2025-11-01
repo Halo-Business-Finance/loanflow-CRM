@@ -207,21 +207,25 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:text-white hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300 rounded"
+          className="h-9 w-9 text-white hover:bg-transparent rounded group"
           onClick={() => window.open('https://outlook.office.com', '_blank')}
           title="Open Microsoft 365 Email"
         >
-          <Mail className="h-6 w-6" />
+          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
+            <Mail className="h-6 w-6" />
+          </span>
         </Button>
 
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:text-white hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300 rounded"
+          className="h-9 w-9 text-white hover:bg-transparent rounded group"
           onClick={() => window.open('https://app.ringcentral.com', '_blank')}
           title="Open RingCentral Dial Pad"
         >
-          <Phone className="h-6 w-6" />
+          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
+            <Phone className="h-6 w-6" />
+          </span>
         </Button>
 
         <NotificationBell />
@@ -229,11 +233,13 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:text-white hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300 rounded"
+          className="h-9 w-9 text-white hover:bg-transparent rounded group"
           onClick={() => navigate('/support')}
           title="Support Center"
         >
-          <HelpCircle className="h-6 w-6" />
+          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
+            <HelpCircle className="h-6 w-6" />
+          </span>
         </Button>
 
         <ThemeToggle />
@@ -243,9 +249,11 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-white hover:text-white hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300 rounded"
+              className="h-9 w-9 text-white hover:bg-transparent rounded group"
             >
-              <User className="h-6 w-6" />
+              <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
+                <User className="h-6 w-6" />
+              </span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
