@@ -22,7 +22,7 @@ import { ClickablePhone } from "@/components/ui/clickable-phone"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { BorrowerDocumentsWidget } from "@/components/BorrowerDocumentsWidget"
 
-import { formatNumber, formatCurrency, formatPhoneNumber } from "@/lib/utils"
+import { formatNumber, formatCurrency, formatPhoneNumber, cn } from "@/lib/utils"
 import { useNotifications } from "@/hooks/useNotifications"
 import { format } from "date-fns"
 import { 
@@ -93,6 +93,7 @@ export default function LeadDetail() {
   const [currentBorrowerIndex, setCurrentBorrowerIndex] = useState(0)
   const [isFlipping, setIsFlipping] = useState(false)
   const [showAddBorrowerDialog, setShowAddBorrowerDialog] = useState(false)
+  const [companyLoans, setCompanyLoans] = useState<any[]>([])
   const [newBorrower, setNewBorrower] = useState({
     first_name: "",
     last_name: "",
@@ -166,6 +167,7 @@ export default function LeadDetail() {
     fetchLead()
     fetchTeamMembers()
     fetchAdditionalBorrowers()
+    fetchCompanyLoans()
   }, [id, user])
 
   const fetchAdditionalBorrowers = async () => {
@@ -182,6 +184,44 @@ export default function LeadDetail() {
       setAdditionalBorrowers(data || [])
     } catch (error) {
       console.error('Error fetching additional borrowers:', error)
+    }
+  }
+
+  const fetchCompanyLoans = async () => {
+    if (!id) return
+
+    try {
+      // First get the lead to find its contact_entity_id
+      const { data: leadData, error: leadError } = await supabase
+        .from('leads')
+        .select('contact_entity_id')
+        .eq('id', id)
+        .single()
+
+      if (leadError || !leadData) return
+
+      // Find all leads associated with this contact entity (company)
+      const { data: companyLeadsData, error: leadsError } = await supabase
+        .from('leads')
+        .select(`
+          id,
+          loan_amount,
+          stage,
+          created_at,
+          is_converted_to_client,
+          converted_at
+        `)
+        .eq('contact_entity_id', leadData.contact_entity_id)
+        .order('created_at', { ascending: false })
+
+      if (leadsError) {
+        console.error('Error fetching company loans:', leadsError)
+        return
+      }
+
+      setCompanyLoans(companyLeadsData || [])
+    } catch (error) {
+      console.error('Error in fetchCompanyLoans:', error)
     }
   }
 
@@ -1276,6 +1316,47 @@ export default function LeadDetail() {
                       : `Current stage: ${editableFields.stage || 'Not set'}`}
                   </p>
                 </div>
+
+                {/* Company Loan History */}
+                {companyLoans.length > 1 && (
+                  <div className="border-t pt-4 mt-4">
+                    <Label className="text-xs font-medium text-muted-foreground mb-3 block">
+                      Company Loan History ({companyLoans.length - 1} other loan{companyLoans.length > 2 ? 's' : ''})
+                    </Label>
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                      {companyLoans
+                        .filter(loan => loan.id !== id)
+                        .map((loan) => (
+                          <div 
+                            key={loan.id}
+                            className="p-3 rounded-md border border-[#0f62fe]/20 bg-white hover:bg-blue-50 cursor-pointer transition-colors"
+                            onClick={() => navigate(`/leads/${loan.id}`)}
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-sm font-medium text-foreground">
+                                {loan.loan_amount 
+                                  ? `$${Number(loan.loan_amount).toLocaleString()}` 
+                                  : 'Amount TBD'}
+                              </span>
+                              <span className={cn(
+                                "text-xs px-2 py-0.5 rounded",
+                                loan.stage === 'Loan Funded' 
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-blue-100 text-blue-800"
+                              )}>
+                                {loan.stage || 'In Progress'}
+                              </span>
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {loan.is_converted_to_client 
+                                ? `Funded ${new Date(loan.converted_at).toLocaleDateString()}` 
+                                : `Started ${new Date(loan.created_at).toLocaleDateString()}`}
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
