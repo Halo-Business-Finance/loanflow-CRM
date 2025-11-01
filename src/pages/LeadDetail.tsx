@@ -1013,7 +1013,7 @@ export default function LeadDetail() {
                         value={editableFields.source}
                         onValueChange={(value) => setEditableFields({...editableFields, source: value})}
                       >
-                        <SelectTrigger className="mt-1 h-9 text-sm">
+                        <SelectTrigger className="mt-1 h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-0">
                           <SelectValue placeholder="Select lead source" />
                         </SelectTrigger>
                         <SelectContent>
@@ -1037,7 +1037,7 @@ export default function LeadDetail() {
                         value={editableFields.stage}
                         onValueChange={(value) => setEditableFields({...editableFields, stage: value})}
                       >
-                        <SelectTrigger className="mt-1 h-9 text-sm">
+                        <SelectTrigger className="mt-1 h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-0">
                           <SelectValue placeholder="Select loan stage" />
                         </SelectTrigger>
                         <SelectContent>
@@ -1065,7 +1065,7 @@ export default function LeadDetail() {
                         value={editableFields.priority}
                         onValueChange={(value) => setEditableFields({...editableFields, priority: value})}
                       >
-                        <SelectTrigger className="mt-1 h-9 text-sm">
+                        <SelectTrigger className="mt-1 h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-0">
                           <SelectValue placeholder="Select priority" />
                         </SelectTrigger>
                         <SelectContent>
@@ -1094,7 +1094,7 @@ export default function LeadDetail() {
                             value={assignments.loan_originator_id || "unassigned"}
                             onValueChange={(value) => setAssignments({...assignments, loan_originator_id: value === "unassigned" ? "" : value})}
                           >
-                            <SelectTrigger className="mt-1 h-9 text-sm">
+                            <SelectTrigger className="mt-1 h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-0">
                               <SelectValue placeholder="Select originator" />
                             </SelectTrigger>
                             <SelectContent>
@@ -1119,7 +1119,7 @@ export default function LeadDetail() {
                             value={assignments.processor_id || "unassigned"}
                             onValueChange={(value) => setAssignments({...assignments, processor_id: value === "unassigned" ? "" : value})}
                           >
-                            <SelectTrigger className="mt-1 h-9 text-sm">
+                            <SelectTrigger className="mt-1 h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-0">
                               <SelectValue placeholder="Select processor" />
                             </SelectTrigger>
                             <SelectContent>
@@ -1144,7 +1144,7 @@ export default function LeadDetail() {
                             value={assignments.underwriter_id || "unassigned"}
                             onValueChange={(value) => setAssignments({...assignments, underwriter_id: value === "unassigned" ? "" : value})}
                           >
-                            <SelectTrigger className="mt-1 h-9 text-sm">
+                            <SelectTrigger className="mt-1 h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-0">
                               <SelectValue placeholder="Select underwriter" />
                             </SelectTrigger>
                             <SelectContent>
