@@ -806,8 +806,8 @@ export default function Dashboard() {
 
         {/* Quick actions */}
         <Card className="bg-white border border-[#e0e0e0]">
-          <CardHeader>
-            <CardTitle className="text-base font-normal text-[#161616]">Quick actions</CardTitle>
+          <CardHeader className="bg-blue-600">
+            <CardTitle className="text-base font-normal text-white">Quick actions</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
