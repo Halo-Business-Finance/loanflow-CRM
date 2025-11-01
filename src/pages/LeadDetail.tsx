@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Progress } from "@/components/ui/progress"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 // Badge component removed - using plain text instead
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -834,6 +835,100 @@ export default function LeadDetail() {
     }
   }
 
+  const getLoanProgress = (stage?: string): number => {
+    if (!stage) return 0
+    switch (stage) {
+      case 'New Lead': return 0
+      case 'Initial Contact': return 11
+      case 'Loan Application Signed': return 22
+      case 'Waiting for Documentation': return 33
+      case 'Pre-Approved': return 44
+      case 'Term Sheet Signed': return 56
+      case 'Loan Approved': return 67
+      case 'Closing': return 89
+      case 'Loan Funded': return 100
+      default: return 0
+    }
+  }
+
+  const convertToClient = async () => {
+    if (!lead || !user) return
+
+    try {
+      // Check if already converted
+      if (lead.is_converted_to_client) {
+        toast({
+          title: "Already Converted",
+          description: "This lead has already been converted to a client.",
+        })
+        return
+      }
+
+      // Create client record
+      const { data: clientData, error: clientError } = await supabase
+        .from('clients')
+        .insert({
+          user_id: lead.user_id,
+          lead_id: lead.id,
+          contact_entity_id: lead.contact_entity_id,
+          status: 'Active',
+          total_loans: 1,
+          total_loan_value: lead.loan_amount || 0
+        })
+        .select()
+        .single()
+
+      if (clientError) throw clientError
+
+      // Mark lead as converted
+      const { error: leadError } = await supabase
+        .from('leads')
+        .update({ 
+          is_converted_to_client: true, 
+          converted_at: new Date().toISOString() 
+        })
+        .eq('id', lead.id)
+
+      if (leadError) throw leadError
+
+      // Create audit log
+      await supabase
+        .from('audit_logs')
+        .insert({
+          user_id: user.id,
+          action: 'lead_converted',
+          table_name: 'leads',
+          record_id: lead.id,
+          new_values: {
+            client_id: clientData.id,
+            stage: 'Loan Funded'
+          }
+        })
+
+      toast({
+        title: "Success!",
+        description: `${lead.name || 'Lead'} has been converted to an existing borrower.`,
+      })
+
+      // Refresh lead data
+      await fetchLead()
+    } catch (error: any) {
+      console.error('Error converting lead:', error)
+      toast({
+        title: "Error",
+        description: `Failed to convert lead: ${error.message || 'Unknown error'}`,
+        variant: "destructive",
+      })
+    }
+  }
+
+  // Watch for stage changes and auto-convert when funded
+  useEffect(() => {
+    if (lead && editableFields.stage === 'Loan Funded' && !lead.is_converted_to_client) {
+      convertToClient()
+    }
+  }, [editableFields.stage])
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -1165,6 +1260,22 @@ export default function LeadDetail() {
                     </div>
                   </div>
                 )}
+                
+                {/* Loan Progress Bar */}
+                <div className="border-t pt-4 mt-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-xs font-medium text-muted-foreground">Loan Progress</Label>
+                    <span className="text-xs font-semibold text-[#0f62fe]">
+                      {getLoanProgress(editableFields.stage)}%
+                    </span>
+                  </div>
+                  <Progress value={getLoanProgress(editableFields.stage)} className="h-2" />
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {editableFields.stage === 'Loan Funded' 
+                      ? '✓ Loan funded - Moving to existing borrowers' 
+                      : `Current stage: ${editableFields.stage || 'Not set'}`}
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
