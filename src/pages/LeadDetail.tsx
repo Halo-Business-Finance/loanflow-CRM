@@ -988,6 +988,15 @@ export default function LeadDetail() {
         <div className="p-6 space-y-6">
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Scheduled Reminders */}
+            {lead && (
+              <ScheduledReminders
+                key={remindersRefreshKey}
+                entityId={lead.id}
+                entityType="lead"
+              />
+            )}
+
             {/* Lead Status Card */}
             <Card className="border border-border shadow-sm bg-white lg:col-span-2">
               <CardHeader className="pb-4">
@@ -1962,15 +1971,6 @@ export default function LeadDetail() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Scheduled Reminders */}
-            {lead && (
-              <ScheduledReminders
-                key={remindersRefreshKey}
-                entityId={lead.id}
-                entityType="lead"
-              />
-            )}
 
           </div>
         </div>
