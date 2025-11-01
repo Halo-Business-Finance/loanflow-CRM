@@ -894,9 +894,9 @@ export default function LeadDetail() {
                   phoneNumber={lead.phone}
                   trigger={
                     <Button
-                      variant="outline"
+                      variant="default"
                       size="sm"
-                      className="h-8 text-xs font-medium"
+                      className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       <PhoneIcon className="h-3 w-3 mr-2" />
                       Call
@@ -908,9 +908,9 @@ export default function LeadDetail() {
                   recipientName={lead.name}
                   trigger={
                     <Button
-                      variant="outline"
+                      variant="default"
                       size="sm"
-                      className="h-8 text-xs font-medium"
+                      className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       <Mail className="h-3 w-3 mr-2" />
                       Email
@@ -918,22 +918,19 @@ export default function LeadDetail() {
                   }
                 />
                 <Button
-                  variant="outline"
+                  variant="default"
                   size="sm"
                   onClick={() => setShowReminderDialog(true)}
-                  className="h-8 text-xs font-medium"
+                  className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   <Bell className="h-3 w-3 mr-2" />
                   Set Reminder
                 </Button>
                 <Button
-                  variant={isEditing ? "default" : "outline"}
+                  variant="default"
                   size="sm"
                   onClick={isEditing ? saveLeadChanges : () => setIsEditing(true)}
-                  className={isEditing ? 
-                    "h-8 text-xs font-medium bg-primary hover:bg-primary/90" : 
-                    "h-8 text-xs font-medium"
-                  }
+                  className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   <Edit className="h-3 w-3 mr-2" />
                   {isEditing ? 'Save Changes' : 'Edit'}
