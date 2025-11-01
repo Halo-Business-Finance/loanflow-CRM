@@ -805,11 +805,11 @@ export default function Dashboard() {
         </Card>
 
         {/* Quick actions */}
-        <Card className="bg-white border border-[#e0e0e0]">
-          <CardHeader className="bg-blue-600">
+        <Card className="bg-white border border-[#e0e0e0] overflow-hidden">
+          <CardHeader className="bg-blue-600 pb-4">
             <CardTitle className="text-base font-normal text-white">Quick actions</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-4">
             <div className="space-y-2">
               <Button 
                 className="w-full justify-start h-auto py-3 bg-blue-600 hover:bg-blue-700 text-white border-0"
