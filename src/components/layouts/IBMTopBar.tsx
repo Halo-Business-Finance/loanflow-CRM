@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { NotificationBell } from '@/components/NotificationBell';
 import { LoanCalculator } from '@/components/LoanCalculator';
+import { BrandLogo } from '@/components/BrandLogo';
+import logoAsset from '@/assets/logo.png';
 
 interface IBMTopBarProps {
   onMenuClick: () => void;
@@ -151,6 +153,13 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             </span>
           </button>
         </div>
+        
+        <BrandLogo 
+          size={130} 
+          showText={false} 
+          imageSrc={logoAsset}
+          className="[&>img]:brightness-110 [&>img]:hue-rotate-[-15deg] [&>img]:saturate-150"
+        />
       </div>
 
       {/* Center search bar */}
