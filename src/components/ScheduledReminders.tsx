@@ -110,9 +110,9 @@ export function ScheduledReminders({ entityId, entityType }: ScheduledRemindersP
   }
 
   const getReminderIcon = (type: string) => {
-    if (type.includes('call')) return <Phone className="w-4 h-4 text-blue-500" />
-    if (type.includes('email')) return <Mail className="w-4 h-4 text-green-500" />
-    return <Bell className="w-4 h-4 text-purple-500" />
+    if (type.includes('call')) return <Phone className="w-4 h-4 text-[#0f62fe]" />
+    if (type.includes('email')) return <Mail className="w-4 h-4 text-[#0f62fe]" />
+    return <Bell className="w-4 h-4 text-[#0f62fe]" />
   }
 
   const getReminderTypeLabel = (type: string) => {
@@ -157,16 +157,16 @@ export function ScheduledReminders({ entityId, entityType }: ScheduledRemindersP
                 key={reminder.id}
                 className="flex items-start gap-3 p-3 bg-background rounded-lg border hover:shadow-sm transition-shadow"
               >
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <div className="flex-shrink-0">
                   {getReminderIcon(reminder.type)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-foreground">
+                      <p className="text-sm font-semibold text-[#0f62fe]">
                         {getReminderTypeLabel(reminder.type)}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="text-xs text-[#0f62fe] mt-0.5">
                         {reminder.message}
                       </p>
                     </div>
@@ -174,14 +174,14 @@ export function ScheduledReminders({ entityId, entityType }: ScheduledRemindersP
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                        className="h-8 w-8 p-0 text-[#0f62fe] hover:bg-[#0f62fe]/10 hover:text-[#0f62fe]"
                         onClick={() => deleteReminder(reminder.id)}
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2">
+                  <div className="flex items-center gap-3 text-xs text-[#0f62fe] mt-2">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       <span className="font-medium">
