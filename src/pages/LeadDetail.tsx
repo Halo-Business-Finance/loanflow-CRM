@@ -1003,9 +1003,9 @@ export default function LeadDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
         {/* Modern Header */}
-        <div className="bg-white border-b border-border sticky top-0 z-10">
+        <div className="border-b border-border sticky top-0 z-10">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -1013,7 +1013,7 @@ export default function LeadDetail() {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate('/leads')}
-                  className="h-8 w-8 p-0 hover:bg-muted rounded-md"
+                  className="h-8 w-8 p-0 hover:opacity-70 rounded-md"
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
@@ -1145,7 +1145,7 @@ export default function LeadDetail() {
             )}
 
             {/* Lead Status Card */}
-            <Card className="border border-border shadow-sm bg-white lg:col-span-2">
+            <Card className="border border-border shadow-sm lg:col-span-2">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base font-semibold text-foreground">
                   Lead Status
@@ -1341,7 +1341,7 @@ export default function LeadDetail() {
                         .map((loan) => (
                           <div 
                             key={loan.id}
-                            className="p-3 rounded-md border border-[#0f62fe]/20 bg-white hover:bg-blue-50 cursor-pointer transition-colors"
+                            className="p-3 rounded-md border border-[#0f62fe]/20 hover:border-[#0f62fe] cursor-pointer transition-colors"
                             onClick={() => navigate(`/leads/${loan.id}`)}
                           >
                             <div className="flex items-center justify-between mb-1">
@@ -1377,7 +1377,7 @@ export default function LeadDetail() {
             </Card>
 
             {/* Borrower Information Card */}
-            <Card className="border border-border shadow-sm bg-white relative">
+            <Card className="border border-border shadow-sm relative">
               <style>
                 {`
                   @keyframes flipOut {
@@ -1659,7 +1659,7 @@ export default function LeadDetail() {
             </Card>
 
             {/* Company Information Card */}
-            <Card className="border border-border shadow-sm bg-white">
+            <Card className="border border-border shadow-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base font-semibold text-foreground">
                   Company Information
@@ -1892,7 +1892,7 @@ export default function LeadDetail() {
 
 
             {/* General Notes Card */}
-            <Card className="border-0 shadow-sm bg-card lg:col-span-2">
+            <Card className="border-0 shadow-sm lg:col-span-2">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base font-semibold text-foreground">
                   General Notes
@@ -1913,7 +1913,7 @@ export default function LeadDetail() {
             </Card>
 
             {/* Financial Information Card */}
-            <Card className="border-0 shadow-sm bg-card lg:col-span-2">
+            <Card className="border-0 shadow-sm lg:col-span-2">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base font-semibold text-foreground">
                   Loan Request Information
@@ -2120,7 +2120,7 @@ export default function LeadDetail() {
             )}
 
             {/* Call Notes Card */}
-            <Card className="border-0 shadow-sm bg-card lg:col-span-2">
+            <Card className="border-0 shadow-sm lg:col-span-2">
               <CardHeader className="pb-4">
                 <CardTitle className="text-base font-semibold text-foreground">
                   Call Notes
@@ -2141,14 +2141,14 @@ export default function LeadDetail() {
                 {/* Call Notes History */}
                 <div className="space-y-2">
                   <Label className="text-xs font-medium text-muted-foreground">Call Notes History</Label>
-                  <div className="max-h-[400px] overflow-y-auto p-4 bg-muted/20 rounded-lg border space-y-3">
+                  <div className="max-h-[400px] overflow-y-auto p-4 rounded-lg border space-y-3">
                     {notesHistory.filter(n => n.note_type === 'call').length === 0 ? (
                       <p className="text-sm text-muted-foreground italic text-center py-4">No call notes yet...</p>
                     ) : (
                       notesHistory
                         .filter(n => n.note_type === 'call')
                         .map(note => (
-                          <div key={note.id} className="flex gap-3 p-3 bg-background rounded-lg border animate-in fade-in slide-in-from-bottom-2 duration-300">
+                          <div key={note.id} className="flex gap-3 p-3 rounded-lg border animate-in fade-in slide-in-from-bottom-2 duration-300">
                             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
                               <Phone className="w-4 h-4 text-blue-500" />
                             </div>
