@@ -265,7 +265,7 @@ All colors MUST be HSL.
 
   /* Field display styling - makes view mode fields look like outlined inputs */
   .field-display {
-    @apply border border-input-border bg-input text-foreground;
+    @apply border border-[#0f62fe] bg-white text-foreground;
     @apply px-3 py-2 rounded-md min-h-[32px] flex items-center;
     @apply text-sm transition-colors duration-200;
   }
