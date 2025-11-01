@@ -161,10 +161,10 @@ export function ScheduledReminders({ entityId, entityType }: ScheduledRemindersP
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-[#0f62fe]">
+                      <p className="text-sm font-semibold text-foreground">
                         {getReminderTypeLabel(reminder.type)}
                       </p>
-                      <p className="text-xs text-[#0f62fe] mt-0.5">
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         {reminder.message}
                       </p>
                     </div>
@@ -179,7 +179,7 @@ export function ScheduledReminders({ entityId, entityType }: ScheduledRemindersP
                       </Button>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-[#0f62fe] mt-2">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       <span className="font-medium">
