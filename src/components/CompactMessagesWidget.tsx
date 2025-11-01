@@ -101,7 +101,7 @@ export function CompactMessagesWidget() {
 
   if (loading) {
     return (
-      <Card className="shadow-soft">
+      <Card className="shadow-soft border-blue-600">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
@@ -120,7 +120,7 @@ export function CompactMessagesWidget() {
   }
 
   return (
-    <Card className="shadow-soft">
+    <Card className="shadow-soft border-blue-600">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">

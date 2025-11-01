@@ -443,7 +443,7 @@ export default function Dashboard() {
         <CompactMessagesWidget />
 
         {/* Full Calendar Widget */}
-        <Card className="bg-card border">
+        <Card className="bg-card border border-blue-600">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -477,7 +477,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Today's Schedule */}
-        <Card className="bg-card border">
+        <Card className="bg-card border border-blue-600">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -548,7 +548,7 @@ export default function Dashboard() {
     'kpi-cards': (
       <div key="kpi-cards" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card 
-          className="bg-card border cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
+          className="bg-card border border-blue-600 cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
           onClick={() => navigate('/reports')}
         >
           <CardContent className="p-6">
@@ -568,7 +568,7 @@ export default function Dashboard() {
         </Card>
 
         <Card 
-          className="bg-card border cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
+          className="bg-card border border-blue-600 cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
           onClick={() => navigate('/pipeline')}
         >
           <CardContent className="p-6">
@@ -588,7 +588,7 @@ export default function Dashboard() {
         </Card>
 
         <Card 
-          className="bg-card border cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
+          className="bg-card border border-blue-600 cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
           onClick={() => navigate('/leads')}
         >
           <CardContent className="p-6">
@@ -606,7 +606,7 @@ export default function Dashboard() {
         </Card>
 
         <Card 
-          className="bg-card border cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
+          className="bg-card border border-blue-600 cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
           onClick={() => navigate('/pipeline/analytics')}
         >
           <CardContent className="p-6">
@@ -627,7 +627,7 @@ export default function Dashboard() {
     'performance-charts': (
       <div key="performance-charts" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Revenue Performance */}
-        <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/reports')}>
+        <Card className="bg-white border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/reports')}>
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-normal text-[#161616]">Revenue Performance</CardTitle>
@@ -659,7 +659,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Pipeline Distribution */}
-        <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/pipeline')}>
+        <Card className="bg-white border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/pipeline')}>
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-normal text-[#161616]">Pipeline Distribution</CardTitle>
@@ -707,7 +707,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Activity Trends - Lead Creation */}
-        <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/leads')}>
+        <Card className="bg-white border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/leads')}>
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-normal text-[#161616]">Lead Activity</CardTitle>
@@ -741,7 +741,7 @@ export default function Dashboard() {
     'bottom-section': (
       <div key="bottom-section" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Active tasks */}
-        <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/activities/tasks')}>
+        <Card className="bg-white border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/activities/tasks')}>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-normal text-[#161616]">Active tasks</CardTitle>
@@ -772,7 +772,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Recent activity */}
-        <Card className="bg-white border border-[#e0e0e0] cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/activities')}>
+        <Card className="bg-white border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/activities')}>
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-normal text-[#161616]">Recent activity</CardTitle>
@@ -805,7 +805,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Quick actions */}
-        <Card className="bg-white border border-[#e0e0e0]">
+        <Card className="bg-white border border-blue-600">
           <CardHeader>
             <CardTitle className="text-base font-normal text-[#161616]">Quick actions</CardTitle>
           </CardHeader>
