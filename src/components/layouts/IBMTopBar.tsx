@@ -158,7 +158,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           size={130} 
           showText={false} 
           imageSrc={logoAsset}
-          className="ml-12"
+          className="ml-24"
         />
       </div>
 
