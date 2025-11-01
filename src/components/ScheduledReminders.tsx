@@ -125,8 +125,7 @@ export function ScheduledReminders({ entityId, entityType }: ScheduledRemindersP
     return (
       <Card className="border-0 shadow-sm bg-card">
         <CardHeader className="pb-4">
-          <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
+          <CardTitle className="text-base font-semibold text-foreground">
             Scheduled Reminders
           </CardTitle>
         </CardHeader>
@@ -140,8 +139,7 @@ export function ScheduledReminders({ entityId, entityType }: ScheduledRemindersP
   return (
     <Card className="border-0 shadow-sm bg-card">
       <CardHeader className="pb-4">
-        <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-          <Calendar className="w-4 h-4" />
+        <CardTitle className="text-base font-semibold text-foreground">
           Scheduled Reminders
         </CardTitle>
       </CardHeader>
