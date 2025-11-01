@@ -698,28 +698,27 @@ export default function LeadDetail() {
   const saveGeneralNotesImmediate = async () => {
     if (!lead?.contact_entity_id || !user) return
     const trimmed = generalNotes.trim()
-    // If empty, just return silently - user doesn't want to add a note
-    if (!trimmed) return
     
-    // Insert into history
-    const { error: historyError } = await supabase
-      .from('notes_history')
-      .insert({
-        contact_id: lead.contact_entity_id,
-        note_type: 'general',
-        content: trimmed,
-        user_id: user.id
-      })
-    
-    if (historyError) {
-      console.error('Error saving note history:', historyError)
-      toast({ title: 'Error', description: 'Failed to save note', variant: 'destructive' })
-      return
+    try {
+      // Update the contact_entities notes field
+      const { error } = await supabase
+        .from('contact_entities')
+        .update({ notes: trimmed })
+        .eq('id', lead.contact_entity_id)
+      
+      if (error) {
+        console.error('Error saving notes:', error)
+        toast({ title: 'Error', description: 'Failed to save notes', variant: 'destructive' })
+        return
+      }
+      
+      // Update local state
+      setLead({ ...lead, notes: trimmed })
+      toast({ title: 'Saved', description: 'Notes saved successfully' })
+    } catch (error) {
+      console.error('Error saving general notes:', error)
+      toast({ title: 'Error', description: 'Failed to save notes', variant: 'destructive' })
     }
-    
-    setGeneralNotes('')
-    fetchNotesHistory()
-    toast({ title: 'Saved', description: 'Note added to history' })
   }
 
   // Save Call Notes on blur with timestamp

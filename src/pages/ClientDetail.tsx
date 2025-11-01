@@ -351,28 +351,20 @@ export default function ClientDetail() {
 
     try {
       const trimmed = generalNotes.trim()
-      // If empty, just return silently - user doesn't want to add a note
-      if (!trimmed) return
       
-      // Insert into history
-      const { error: historyError } = await supabase
-        .from('notes_history')
-        .insert({
-          contact_id: client.contact_entity_id,
-          note_type: 'general',
-          content: trimmed,
-          user_id: user.id
-        })
+      // Update the contact_entities notes field
+      const { error } = await supabase
+        .from('contact_entities')
+        .update({ notes: trimmed })
+        .eq('id', client.contact_entity_id)
       
-      if (historyError) {
-        console.error('Error saving note history:', historyError)
-        toast({ title: 'Error', description: 'Failed to save note', variant: 'destructive' })
+      if (error) {
+        console.error('Error saving notes:', error)
+        toast({ title: 'Error', description: 'Failed to save notes', variant: 'destructive' })
         return
       }
       
-      setGeneralNotes('')
-      fetchNotesHistory()
-      toast({ title: 'Saved', description: 'Note added to history' })
+      toast({ title: 'Saved', description: 'Notes saved successfully' })
       fetchClient()
     } catch (error) {
       console.error('Error saving general notes:', error)
