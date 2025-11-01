@@ -196,9 +196,20 @@ export default function LeadDetail() {
         .from('leads')
         .select('contact_entity_id')
         .eq('id', id)
-        .single()
+        .maybeSingle()
 
-      if (leadError || !leadData) return
+      if (leadError) {
+        console.error('Error fetching lead for company loans:', leadError)
+        return
+      }
+
+      if (!leadData?.contact_entity_id) {
+        console.log('No contact_entity_id found for this lead')
+        setCompanyLoans([])
+        return
+      }
+
+      console.log('Fetching company loans for contact_entity_id:', leadData.contact_entity_id)
 
       // Find all leads associated with this contact entity (company)
       const { data: companyLeadsData, error: leadsError } = await supabase
@@ -219,6 +230,7 @@ export default function LeadDetail() {
         return
       }
 
+      console.log('Company loans found:', companyLeadsData?.length || 0)
       setCompanyLoans(companyLeadsData || [])
     } catch (error) {
       console.error('Error in fetchCompanyLoans:', error)
@@ -1318,11 +1330,11 @@ export default function LeadDetail() {
                 </div>
 
                 {/* Company Loan History */}
-                {companyLoans.length > 1 && (
-                  <div className="border-t pt-4 mt-4">
-                    <Label className="text-xs font-medium text-muted-foreground mb-3 block">
-                      Company Loan History ({companyLoans.length - 1} other loan{companyLoans.length > 2 ? 's' : ''})
-                    </Label>
+                <div className="border-t pt-4 mt-4">
+                  <Label className="text-xs font-medium text-muted-foreground mb-3 block">
+                    Company Loan History
+                  </Label>
+                  {companyLoans.length > 1 ? (
                     <div className="space-y-2 max-h-48 overflow-y-auto">
                       {companyLoans
                         .filter(loan => loan.id !== id)
@@ -1355,8 +1367,12 @@ export default function LeadDetail() {
                           </div>
                         ))}
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <p className="text-xs text-muted-foreground py-2">
+                      No previous loans found for this company.
+                    </p>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
