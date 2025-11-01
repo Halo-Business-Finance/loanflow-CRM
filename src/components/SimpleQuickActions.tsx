@@ -67,66 +67,78 @@ export function SimpleQuickActions() {
               <DialogTitle>Quick Actions</DialogTitle>
             </DialogHeader>
             
-            <div className="grid grid-cols-2 gap-4 p-4">
+            <div className="space-y-3 p-4">
               {/* New Lead */}
-              <Card 
-                className="cursor-pointer hover:bg-accent transition-colors"
+              <Button 
+                className="w-full h-auto py-4 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-start gap-3"
                 onClick={() => handleNavigation('/leads')}
               >
-                <CardContent className="p-4 text-center">
-                  <User className="h-8 w-8 mx-auto mb-2 text-blue-500" />
-                  <div className="font-medium">New Lead</div>
-                  <div className="text-xs text-muted-foreground">Add new lead</div>
-                </CardContent>
-              </Card>
+                <User className="h-5 w-5" />
+                <div className="text-left">
+                  <div className="font-medium">Create Lead</div>
+                  <div className="text-xs text-white/80">Add new prospect</div>
+                </div>
+              </Button>
 
-              {/* New Client */}
-              <Card 
-                className="cursor-pointer hover:bg-accent transition-colors"
-                onClick={() => handleNavigation('/clients')}
-              >
-                <CardContent className="p-4 text-center">
-                  <Users className="h-8 w-8 mx-auto mb-2 text-green-500" />
-                  <div className="font-medium">New Client</div>
-                  <div className="text-xs text-muted-foreground">Add client</div>
-                </CardContent>
-              </Card>
-
-              {/* Pipeline */}
-              <Card 
-                className="cursor-pointer hover:bg-accent transition-colors"
+              {/* Schedule Meeting */}
+              <Button 
+                className="w-full h-auto py-4 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-start gap-3"
                 onClick={() => handleNavigation('/pipeline')}
               >
-                <CardContent className="p-4 text-center">
-                  <Calendar className="h-8 w-8 mx-auto mb-2 text-purple-500" />
-                  <div className="font-medium">Pipeline</div>
-                  <div className="text-xs text-muted-foreground">View pipeline</div>
-                </CardContent>
-              </Card>
+                <Calendar className="h-5 w-5" />
+                <div className="text-left">
+                  <div className="font-medium">Schedule Meeting</div>
+                  <div className="text-xs text-white/80">Book calendar event</div>
+                </div>
+              </Button>
+
+              {/* Upload Document */}
+              <Button 
+                className="w-full h-auto py-4 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-start gap-3"
+                onClick={() => handleNavigation('/documents')}
+              >
+                <Plus className="h-5 w-5" />
+                <div className="text-left">
+                  <div className="font-medium">Upload Document</div>
+                  <div className="text-xs text-white/80">Manage files</div>
+                </div>
+              </Button>
+
+              {/* New Client */}
+              <Button 
+                className="w-full h-auto py-4 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-start gap-3"
+                onClick={() => handleNavigation('/clients')}
+              >
+                <Users className="h-5 w-5" />
+                <div className="text-left">
+                  <div className="font-medium">New Client</div>
+                  <div className="text-xs text-white/80">Add existing borrower</div>
+                </div>
+              </Button>
 
               {/* Settings */}
-              <Card 
-                className="cursor-pointer hover:bg-accent transition-colors"
+              <Button 
+                className="w-full h-auto py-4 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-start gap-3"
                 onClick={() => handleNavigation('/settings')}
               >
-                <CardContent className="p-4 text-center">
-                  <Settings className="h-8 w-8 mx-auto mb-2 text-gray-500" />
+                <Settings className="h-5 w-5" />
+                <div className="text-left">
                   <div className="font-medium">Settings</div>
-                  <div className="text-xs text-muted-foreground">Configure app</div>
-                </CardContent>
-              </Card>
+                  <div className="text-xs text-white/80">Configure app</div>
+                </div>
+              </Button>
 
-              {/* Emergency Lockdown - Full Width */}
-              <Card 
-                className="col-span-2 cursor-pointer hover:bg-red-50 transition-colors border-red-200"
+              {/* Emergency Lockdown */}
+              <Button 
+                className="w-full h-auto py-4 bg-red-600 hover:bg-red-700 text-white flex items-center justify-start gap-3"
                 onClick={handleEmergencyLockdown}
               >
-                <CardContent className="p-4 text-center">
-                  <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-red-500" />
-                  <div className="font-medium text-red-600">Emergency Lockdown</div>
-                  <div className="text-xs text-red-500">Immediate security lockdown</div>
-                </CardContent>
-              </Card>
+                <AlertTriangle className="h-5 w-5" />
+                <div className="text-left">
+                  <div className="font-medium">Emergency Lockdown</div>
+                  <div className="text-xs text-white/80">Immediate security lockdown</div>
+                </div>
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
