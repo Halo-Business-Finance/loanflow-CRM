@@ -1025,7 +1025,7 @@ export default function LeadDetail() {
                         </SelectContent>
                       </Select>
                     ) : (
-                      <div className="field-display mt-1">
+                      <div className="mt-1 h-8 px-3 flex items-center text-xs font-medium bg-blue-600 text-white rounded-md">
                         {editableFields.source || 'N/A'}
                       </div>
                     )}
@@ -1053,7 +1053,7 @@ export default function LeadDetail() {
                         </SelectContent>
                       </Select>
                     ) : (
-                      <div className="field-display mt-1">
+                      <div className="mt-1 h-8 px-3 flex items-center text-xs font-medium bg-blue-600 text-white rounded-md">
                         {editableFields.stage || 'N/A'}
                       </div>
                     )}
@@ -1075,7 +1075,7 @@ export default function LeadDetail() {
                         </SelectContent>
                       </Select>
                     ) : (
-                      <div className="field-display mt-1">
+                      <div className="mt-1 h-8 px-3 flex items-center text-xs font-medium bg-blue-600 text-white rounded-md">
                         {editableFields.priority || 'N/A'}
                       </div>
                     )}
@@ -1107,7 +1107,7 @@ export default function LeadDetail() {
                             </SelectContent>
                           </Select>
                         ) : (
-                          <div className="field-display mt-1">
+                          <div className="mt-1 h-8 px-3 flex items-center text-xs font-medium bg-blue-600 text-white rounded-md">
                             {teamMembers.find(m => m.id === assignments.loan_originator_id)?.name || 'Unassigned'}
                           </div>
                         )}
@@ -1132,7 +1132,7 @@ export default function LeadDetail() {
                             </SelectContent>
                           </Select>
                         ) : (
-                          <div className="field-display mt-1">
+                          <div className="mt-1 h-8 px-3 flex items-center text-xs font-medium bg-blue-600 text-white rounded-md">
                             {teamMembers.find(m => m.id === assignments.processor_id)?.name || 'Unassigned'}
                           </div>
                         )}
@@ -1157,7 +1157,7 @@ export default function LeadDetail() {
                             </SelectContent>
                           </Select>
                         ) : (
-                          <div className="field-display mt-1">
+                          <div className="mt-1 h-8 px-3 flex items-center text-xs font-medium bg-blue-600 text-white rounded-md">
                             {teamMembers.find(m => m.id === assignments.underwriter_id)?.name || 'Unassigned'}
                           </div>
                         )}
