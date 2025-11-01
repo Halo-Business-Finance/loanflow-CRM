@@ -123,12 +123,12 @@ export function ScheduledReminders({ entityId, entityType }: ScheduledRemindersP
 
   if (loading) {
     return (
-      <Card className="border-0 shadow-sm bg-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-semibold text-foreground">
-            Scheduled Reminders
-          </CardTitle>
-        </CardHeader>
+    <Card className="border-0 shadow-none bg-transparent">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-base font-semibold text-foreground">
+          Scheduled Reminders
+        </CardTitle>
+      </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">Loading reminders...</p>
         </CardContent>
@@ -137,7 +137,7 @@ export function ScheduledReminders({ entityId, entityType }: ScheduledRemindersP
   }
 
   return (
-    <Card className="border-0 shadow-sm bg-card">
+    <Card className="border-0 shadow-none bg-transparent">
       <CardHeader className="pb-4">
         <CardTitle className="text-base font-semibold text-foreground">
           Scheduled Reminders
