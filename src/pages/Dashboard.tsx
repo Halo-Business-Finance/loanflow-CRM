@@ -812,36 +812,33 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-2">
               <Button 
-                variant="outline" 
-                className="w-full justify-start h-auto py-3"
+                className="w-full justify-start h-auto py-3 bg-blue-600 hover:bg-blue-700 text-white border-0"
                 onClick={() => navigate('/leads/new')}
               >
-                <Users className="h-4 w-4 mr-3 text-[#0f62fe]" />
+                <Users className="h-4 w-4 mr-3" />
                 <div className="text-left">
-                  <p className="text-sm font-medium text-[#161616]">Create Lead</p>
-                  <p className="text-xs text-[#525252]">Add new prospect</p>
+                  <p className="text-sm font-medium">Create Lead</p>
+                  <p className="text-xs text-white/80">Add new prospect</p>
                 </div>
               </Button>
               <Button 
-                variant="outline" 
-                className="w-full justify-start h-auto py-3"
+                className="w-full justify-start h-auto py-3 bg-blue-600 hover:bg-blue-700 text-white border-0"
                 onClick={() => navigate('/activities/calendar')}
               >
-                <CalendarIcon className="h-4 w-4 mr-3 text-[#0f62fe]" />
+                <CalendarIcon className="h-4 w-4 mr-3" />
                 <div className="text-left">
-                  <p className="text-sm font-medium text-[#161616]">Schedule Meeting</p>
-                  <p className="text-xs text-[#525252]">Book calendar event</p>
+                  <p className="text-sm font-medium">Schedule Meeting</p>
+                  <p className="text-xs text-white/80">Book calendar event</p>
                 </div>
               </Button>
               <Button 
-                variant="outline" 
-                className="w-full justify-start h-auto py-3"
+                className="w-full justify-start h-auto py-3 bg-blue-600 hover:bg-blue-700 text-white border-0"
                 onClick={() => navigate('/documents')}
               >
-                <FileText className="h-4 w-4 mr-3 text-[#0f62fe]" />
+                <FileText className="h-4 w-4 mr-3" />
                 <div className="text-left">
-                  <p className="text-sm font-medium text-[#161616]">Upload Document</p>
-                  <p className="text-xs text-[#525252]">Manage files</p>
+                  <p className="text-sm font-medium">Upload Document</p>
+                  <p className="text-xs text-white/80">Manage files</p>
                 </div>
               </Button>
             </div>
