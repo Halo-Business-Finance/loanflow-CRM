@@ -154,7 +154,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           </button>
         </div>
         
-        <BrandLogo size={80} showText={false} imageSrc={logoAsset} />
+        <BrandLogo size={82} showText={false} imageSrc={logoAsset} />
       </div>
 
       {/* Center search bar */}
