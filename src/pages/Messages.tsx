@@ -226,7 +226,7 @@ export default function Messages() {
         />
 
         {/* Middle Pane - Message List */}
-        <div className="w-96 border-r bg-background">
+        <div className="w-72 border-r bg-background">
           <MessageList
             messages={messages}
             selectedMessageId={selectedMessage?.id || null}
