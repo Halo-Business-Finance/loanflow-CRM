@@ -6,7 +6,8 @@ import { MessageComposer } from '@/components/MessageComposer';
 import { MessagesSidebar } from '@/components/messages/MessagesSidebar';
 import { MessageList } from '@/components/messages/MessageList';
 import { MessageContent } from '@/components/messages/MessageContent';
-import { Send } from 'lucide-react';
+import { MessageToolbar } from '@/components/messages/MessageToolbar';
+import { Send, ChevronDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Message {
@@ -36,6 +37,7 @@ export default function Messages() {
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -195,73 +197,153 @@ export default function Messages() {
     });
   };
 
+  const handleSelectMessage = (messageId: string, checked: boolean) => {
+    setSelectedMessageIds(prev => 
+      checked ? [...prev, messageId] : prev.filter(id => id !== messageId)
+    );
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const visibleMessages = messages.filter(msg => 
+        activeFolder === 'inbox' ? msg.recipient_id === currentUserId : msg.sender_id === currentUserId
+      );
+      setSelectedMessageIds(visibleMessages.map(m => m.id));
+    } else {
+      setSelectedMessageIds([]);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    try {
+      const { error } = await supabase
+        .from('user_messages')
+        .delete()
+        .in('id', selectedMessageIds);
+
+      if (error) throw error;
+      
+      toast({
+        title: 'Success',
+        description: `Deleted ${selectedMessageIds.length} message(s)`,
+      });
+      
+      setSelectedMessageIds([]);
+      setSelectedMessage(null);
+      fetchMessages();
+    } catch (error) {
+      console.error('Error deleting messages:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to delete messages',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleBulkMarkAsRead = async () => {
+    if (!currentUserId) return;
+    
+    try {
+      const { error } = await supabase
+        .from('user_messages')
+        .update({ is_read: true, read_at: new Date().toISOString() })
+        .in('id', selectedMessageIds)
+        .eq('recipient_id', currentUserId);
+
+      if (error) throw error;
+      
+      toast({
+        title: 'Success',
+        description: `Marked ${selectedMessageIds.length} message(s) as read`,
+      });
+      
+      setSelectedMessageIds([]);
+      fetchMessages();
+    } catch (error) {
+      console.error('Error marking messages as read:', error);
+    }
+  };
+
   const unreadCount = messages.filter(msg => !msg.is_read && msg.recipient_id === currentUserId).length;
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      {/* Top Bar */}
-      <div className="border-b px-6 py-3 bg-muted/30">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight text-foreground">Messages</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">Internal communication system</p>
+    <div className="flex h-screen bg-background overflow-hidden">
+      {/* Left Sidebar - Folders */}
+      <MessagesSidebar
+        activeFolder={activeFolder}
+        onFolderChange={(folder) => {
+          setActiveFolder(folder);
+          setSelectedMessage(null);
+          setSelectedMessageIds([]);
+        }}
+        unreadCount={unreadCount}
+        onCompose={handleCompose}
+      />
+
+      {/* Middle Pane - Message List */}
+      <div className={`${selectedMessage || isComposing ? 'w-80' : 'flex-1'} flex flex-col border-r bg-background transition-all duration-200`}>
+        {/* Message List Header */}
+        <div className="border-b bg-background">
+          <div className="flex items-center justify-between px-4 py-2.5">
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-semibold capitalize">{activeFolder === 'inbox' ? 'Inbox' : activeFolder === 'sent' ? 'Sent Items' : activeFolder}</h2>
+              <Button variant="ghost" size="icon" className="h-5 w-5">
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </div>
+            <Button onClick={handleCompose} size="sm" className="gap-1.5 h-8">
+              <Send className="h-3.5 w-3.5" />
+              New
+            </Button>
           </div>
-          <Button onClick={handleCompose} size="sm" className="gap-2">
-            <Send className="h-4 w-4" />
-            New Message
-          </Button>
-        </div>
-      </div>
-
-      {/* Three-Pane Layout */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar - Folders */}
-        <MessagesSidebar
-          activeFolder={activeFolder}
-          onFolderChange={(folder) => {
-            setActiveFolder(folder);
-            setSelectedMessage(null);
-          }}
-          unreadCount={unreadCount}
-        />
-
-        {/* Middle Pane - Message List */}
-        <div className={`${selectedMessage || isComposing ? 'w-72' : 'flex-1'} border-r bg-background transition-all duration-200`}>
-          <MessageList
-            messages={messages}
-            selectedMessageId={selectedMessage?.id || null}
-            onMessageClick={handleMessageClick}
-            currentUserId={currentUserId}
-            folder={activeFolder}
-            loading={loading}
+          
+          {/* Toolbar */}
+          <MessageToolbar
+            selectedCount={selectedMessageIds.length}
+            onDelete={handleBulkDelete}
+            onMarkAsRead={handleBulkMarkAsRead}
+            hasSelection={selectedMessageIds.length > 0}
           />
         </div>
 
-        {/* Right Pane - Message Content or Composer (Only shown when message selected or composing) */}
-        {(selectedMessage || isComposing) && (
-          <div className="flex-1 bg-background">
-            {isComposing ? (
-              <div className="p-6 h-full overflow-auto">
-                <MessageComposer
-                  replyTo={replyTo}
-                  onClose={() => {
-                    setIsComposing(false);
-                    setReplyTo(null);
-                  }}
-                  onSent={handleMessageSent}
-                />
-              </div>
-            ) : (
-              <MessageContent
-                message={selectedMessage}
-                folder={activeFolder}
-                onReply={handleReply}
-                onDelete={deleteMessage}
-              />
-            )}
-          </div>
-        )}
+        <MessageList
+          messages={messages}
+          selectedMessageId={selectedMessage?.id || null}
+          onMessageClick={handleMessageClick}
+          currentUserId={currentUserId}
+          folder={activeFolder}
+          loading={loading}
+          selectedMessageIds={selectedMessageIds}
+          onSelectMessage={handleSelectMessage}
+          onSelectAll={handleSelectAll}
+        />
       </div>
+
+      {/* Right Pane - Message Content or Composer */}
+      {(selectedMessage || isComposing) && (
+        <div className="flex-1 bg-background">
+          {isComposing ? (
+            <div className="p-6 h-full overflow-auto">
+              <MessageComposer
+                replyTo={replyTo}
+                onClose={() => {
+                  setIsComposing(false);
+                  setReplyTo(null);
+                }}
+                onSent={handleMessageSent}
+              />
+            </div>
+          ) : (
+            <MessageContent
+              message={selectedMessage}
+              folder={activeFolder}
+              onReply={handleReply}
+              onDelete={deleteMessage}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }

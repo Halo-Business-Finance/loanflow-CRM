@@ -1,7 +1,8 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Mail } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -30,6 +31,9 @@ interface MessageListProps {
   currentUserId: string | null;
   folder: string;
   loading: boolean;
+  selectedMessageIds: string[];
+  onSelectMessage: (messageId: string, checked: boolean) => void;
+  onSelectAll: (checked: boolean) => void;
 }
 
 export function MessageList({ 
@@ -38,7 +42,10 @@ export function MessageList({
   onMessageClick, 
   currentUserId,
   folder,
-  loading 
+  loading,
+  selectedMessageIds,
+  onSelectMessage,
+  onSelectAll
 }: MessageListProps) {
   const getInitials = (name: string | null, email: string) => {
     if (name) {
@@ -64,6 +71,9 @@ export function MessageList({
     );
   }
 
+  const allSelected = filteredMessages.length > 0 && 
+    filteredMessages.every(m => selectedMessageIds.includes(m.id));
+
   if (filteredMessages.length === 0) {
     return (
       <div className="flex items-center justify-center h-full p-8">
@@ -83,72 +93,85 @@ export function MessageList({
   }
 
   return (
-    <ScrollArea className="h-full">
-      <div className="divide-y">
-        {filteredMessages.map((message) => {
-          const isSelected = selectedMessageId === message.id;
-          const isInbox = folder === 'inbox';
-          const displayProfile = isInbox ? message.sender_profile : message.recipient_profile;
-          
-          return (
-            <div
-              key={message.id}
-              onClick={() => onMessageClick(message)}
-              className={cn(
-                "p-4 cursor-pointer transition-colors hover:bg-accent/50",
-                isSelected && "bg-accent border-l-4 border-l-primary",
-                !isSelected && "border-l-4 border-l-transparent",
-                !message.is_read && isInbox && "bg-primary/5 font-medium"
-              )}
-            >
-              <div className="flex items-start gap-3">
-                <div className="relative flex-shrink-0">
-                  <Avatar className={cn(
-                    "h-10 w-10 border-2",
-                    !message.is_read && isInbox ? "border-primary/40" : "border-border"
-                  )}>
-                    <AvatarFallback className={cn(
-                      "text-sm",
-                      !message.is_read && isInbox && "bg-primary/10 text-primary font-semibold"
-                    )}>
+    <>
+      {/* Select All Row */}
+      <div className="flex items-center gap-2 px-4 py-2 border-b bg-background">
+        <Checkbox
+          checked={allSelected}
+          onCheckedChange={onSelectAll}
+          aria-label="Select all messages"
+        />
+        <span className="text-xs text-muted-foreground">
+          Select all
+        </span>
+      </div>
+
+      <ScrollArea className="flex-1">
+        <div>
+          {filteredMessages.map((message) => {
+            const isSelected = selectedMessageId === message.id;
+            const isChecked = selectedMessageIds.includes(message.id);
+            const isInbox = folder === 'inbox';
+            const displayProfile = isInbox ? message.sender_profile : message.recipient_profile;
+            
+            return (
+              <div
+                key={message.id}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-2.5 border-b cursor-pointer transition-colors hover:bg-muted/50",
+                  isSelected && "bg-muted border-l-2 border-l-primary",
+                  !message.is_read && isInbox && "bg-blue-50/30"
+                )}
+              >
+                <Checkbox
+                  checked={isChecked}
+                  onCheckedChange={(checked) => onSelectMessage(message.id, checked as boolean)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                
+                <div 
+                  className="flex items-center gap-3 flex-1 min-w-0"
+                  onClick={() => onMessageClick(message)}
+                >
+                  <Avatar className="h-8 w-8 flex-shrink-0">
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
                       {getInitials(
                         displayProfile?.full_name || null,
                         displayProfile?.email || ''
                       )}
                     </AvatarFallback>
                   </Avatar>
-                  {!message.is_read && isInbox && (
-                    <div className="absolute -top-0.5 -right-0.5 h-3 w-3 bg-primary rounded-full border-2 border-background" />
-                  )}
-                </div>
-                
-                <div className="flex-1 min-w-0 space-y-1">
-                  <div className="flex items-center justify-between gap-2">
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className={cn(
+                        "text-sm truncate",
+                        !message.is_read && isInbox ? "font-semibold" : "font-normal"
+                      )}>
+                        {displayProfile?.full_name || displayProfile?.email}
+                      </span>
+                      <span className="text-xs text-muted-foreground flex-shrink-0">
+                        {format(new Date(message.created_at), 'h:mm a')}
+                      </span>
+                    </div>
+                    
                     <p className={cn(
                       "text-sm truncate",
-                      !message.is_read && isInbox ? "font-semibold text-foreground" : "font-medium text-foreground/90"
+                      !message.is_read && isInbox ? "font-medium" : "font-normal"
                     )}>
-                      {displayProfile?.full_name || displayProfile?.email}
+                      {message.subject}
                     </p>
-                    <p className="text-xs text-muted-foreground whitespace-nowrap flex-shrink-0">
-                      {formatDistanceToNow(new Date(message.created_at), { addSuffix: true }).replace('about ', '')}
+                    
+                    <p className="text-xs text-muted-foreground truncate">
+                      {message.message}
                     </p>
                   </div>
-                  <p className={cn(
-                    "text-sm truncate",
-                    !message.is_read && isInbox ? "font-semibold" : "font-normal text-foreground/80"
-                  )}>
-                    {message.subject}
-                  </p>
-                  <p className="text-sm text-muted-foreground truncate line-clamp-2">
-                    {message.message}
-                  </p>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-    </ScrollArea>
+            );
+          })}
+        </div>
+      </ScrollArea>
+    </>
   );
 }
