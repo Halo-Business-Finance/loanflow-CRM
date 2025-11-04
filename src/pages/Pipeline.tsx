@@ -31,6 +31,7 @@ import { AdvancedAnalytics } from '@/components/analytics/AdvancedAnalytics';
 import { TeamCollaboration } from '@/components/collaboration/TeamCollaboration';
 import { WorkflowAutomation } from '@/components/operations/WorkflowAutomation';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
+import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 
 interface PipelineOverview {
   totalOpportunities: number;
@@ -47,6 +48,7 @@ export default function Pipeline() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { hasRole } = useRoleBasedAccess();
   const [overview, setOverview] = useState<PipelineOverview>({
     totalOpportunities: 0,
     activeDeals: 0,
@@ -87,15 +89,79 @@ export default function Pipeline() {
     try {
       setLoading(true);
       
-      const { data: pipelineEntries, error: pipelineError } = await supabase
+      // Check if user is manager/admin to see all data
+      const isManagerOrAdmin = hasRole('manager') || hasRole('admin') || hasRole('super_admin');
+      
+      // First try to get data from pipeline_entries
+      let pipelineQuery = supabase
         .from('pipeline_entries')
-        .select(`
-          *,
-          leads(contact_entities(stage))
-        `)
-        .eq('user_id', user?.id);
+        .select('*');
+      
+      // Only filter by user_id if not a manager/admin
+      if (!isManagerOrAdmin) {
+        pipelineQuery = pipelineQuery.eq('user_id', user?.id);
+      }
+      
+      const { data: pipelineEntries, error: pipelineError } = await pipelineQuery;
+      
+      // If no pipeline_entries found, try leads data instead
+      if ((!pipelineEntries || pipelineEntries.length === 0) && !pipelineError) {
+        let leadsQuery = supabase
+          .from('leads')
+          .select(`
+            *,
+            contact_entity:contact_entities!leads_contact_entity_id_fkey(*)
+          `);
+        
+        // Only filter by user_id if not a manager/admin
+        if (!isManagerOrAdmin) {
+          leadsQuery = leadsQuery.eq('user_id', user?.id);
+        }
+        
+        const { data: leadsData, error: leadsError } = await leadsQuery;
+        
+        if (!leadsError && leadsData) {
+          // Transform leads data to look like pipeline entries
+          const leadsAny = (leadsData as any[]) || [];
+          const transformedLeads = leadsAny.map((lead: any) => ({
+            ...lead,
+            amount: lead.loan_amount ?? lead.contact_entity?.loan_amount ?? 0,
+            stage: lead.contact_entity?.stage ?? lead.stage ?? 'New Lead'
+          }));
+          
+          const totalOpportunities = transformedLeads.length;
+          const activeDeals = transformedLeads.filter((lead: any) => 
+            lead.stage !== 'Closed Won' && lead.stage !== 'Closed Lost'
+          ).length;
+          const closedDeals = transformedLeads.filter((lead: any) => 
+            lead.stage === 'Closed Won' || lead.stage === 'Loan Funded'
+          ).length;
+          const totalValue = transformedLeads.reduce((sum: number, lead: any) => 
+            sum + (lead.amount || 0), 0
+          );
+          const avgDealSize = totalOpportunities > 0 ? totalValue / totalOpportunities : 0;
+          const conversionRate = totalOpportunities > 0 ? (closedDeals / totalOpportunities) * 100 : 0;
 
-      if (!pipelineError && pipelineEntries) {
+          // Count by stages
+          const stagesCount: Record<string, number> = {};
+          transformedLeads.forEach((lead: any) => {
+            const stage = lead.stage || 'Unknown';
+            stagesCount[stage] = (stagesCount[stage] || 0) + 1;
+          });
+
+          setOverview({
+            totalOpportunities,
+            activeDeals,
+            closedDeals,
+            totalValue,
+            avgDealSize,
+            avgCycleTime: 42, // Sample data
+            conversionRate,
+            stagesCount
+          });
+        }
+      } else if (pipelineEntries && pipelineEntries.length > 0) {
+        // Use pipeline_entries data
         const totalOpportunities = pipelineEntries.length;
         const activeDeals = pipelineEntries.filter(entry => 
           entry.stage !== 'Closed Won' && entry.stage !== 'Closed Lost'
