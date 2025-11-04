@@ -12,6 +12,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 
 interface LoanRecord {
   id: string;
@@ -44,6 +45,25 @@ export default function LoanHistory() {
     }
   }, [user]);
 
+  // Real-time subscriptions for live updates
+  useRealtimeSubscription({
+    table: 'clients',
+    event: '*',
+    onChange: () => {
+      console.log('Clients changed, refreshing loan history...');
+      fetchLoanHistory();
+    }
+  });
+
+  useRealtimeSubscription({
+    table: 'contact_entities',
+    event: '*',
+    onChange: () => {
+      console.log('Contact entities changed, refreshing loan history...');
+      fetchLoanHistory();
+    }
+  });
+
   const fetchLoanHistory = async () => {
     try {
       setLoading(true);
@@ -51,12 +71,13 @@ export default function LoanHistory() {
       // Managers and admins can see all clients, others see only their own
       const isManagerOrAdmin = hasRole('manager') || hasRole('admin') || hasRole('super_admin');
       
-      // Fetch clients with their contact entity information
+      // Try embedded join first
       let query = supabase
         .from('clients')
         .select(`
           id,
           user_id,
+          contact_entity_id,
           contact_entity:contact_entities!clients_contact_entity_id_fkey(
             name,
             business_name,
@@ -75,7 +96,57 @@ export default function LoanHistory() {
         query = query.eq('user_id', user?.id);
       }
       
-      const { data, error } = await query;
+      const respAny = await (query as any);
+      let data = (respAny?.data as any[]) || null;
+      let error = respAny?.error as any;
+      
+      // Fallback: If join fails, fetch separately
+      if (error) {
+        console.warn('[LoanHistory] Embedded join failed, using fallback:', error);
+        
+        let clientsQuery = supabase
+          .from('clients')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (!isManagerOrAdmin) {
+          clientsQuery = clientsQuery.eq('user_id', user?.id);
+        }
+        
+        const { data: clients, error: clientsError } = await clientsQuery;
+        
+        if (clientsError) throw clientsError;
+        
+        // Fetch contact entities
+        const contactIds = (clients || [])
+          .map((c: any) => c.contact_entity_id)
+          .filter(Boolean);
+        
+        let contactsData: any[] = [];
+        if (contactIds.length > 0) {
+          const { data: contacts, error: contactsError } = await supabase
+            .from('contact_entities')
+            .select('*')
+            .in('id', contactIds as string[]);
+          
+          if (contactsError) {
+            console.warn('[LoanHistory] Contact entities fetch failed:', contactsError);
+          } else {
+            contactsData = contacts || [];
+          }
+        }
+        
+        // Map contacts by id
+        const contactsMap = new Map(contactsData.map((c: any) => [c.id, c]));
+        
+        // Combine data
+        data = (clients || []).map((client: any) => ({
+          ...client,
+          contact_entity: contactsMap.get(client.contact_entity_id) || null
+        }));
+        
+        error = null;
+      }
       
       if (error) {
         console.error('Error fetching loan history:', error);
@@ -105,9 +176,10 @@ export default function LoanHistory() {
       console.error('Error fetching loan history:', error);
       toast({
         title: "Error",
-        description: "Failed to load loan history",
+        description: "Failed to load loan history. Please try refreshing the page.",
         variant: "destructive"
       });
+      setLoans([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
