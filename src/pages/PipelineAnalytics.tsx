@@ -2,33 +2,55 @@ import { StandardPageLayout } from "@/components/StandardPageLayout"
 import { StandardPageHeader } from "@/components/StandardPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
-import { BarChart3, TrendingUp, TrendingDown, DollarSign, Clock } from "lucide-react"
 import { useEffect, useState } from "react"
 import { supabase } from "@/integrations/supabase/client"
+import { useAuth } from "@/components/auth/AuthProvider"
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription"
+import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 
 export default function PipelineAnalytics() {
   const [pipelineStages, setPipelineStages] = useState<{ name: string; value: number }[]>([])
+  const { user } = useAuth()
+  const { hasRole } = useRoleBasedAccess()
 
-  useEffect(() => {
-    const fetchStages = async () => {
-      const { data: leads } = await supabase
-        .from('leads')
-        .select(`
-          *,
-          contact_entities(stage)
-        `)
+  const fetchStages = async () => {
+    // Role-aware visibility: managers/admins see all, others see own
+    const isManagerOrAdmin = hasRole('manager') || hasRole('admin') || hasRole('super_admin')
 
-      const map = new Map<string, number>()
-      ;(leads || []).forEach((l: any) => {
-        const stage = l?.contact_entities?.stage || 'New Lead'
-        map.set(stage, (map.get(stage) || 0) + 1)
-      })
+    let query = supabase
+      .from('leads')
+      .select(`
+        *,
+        contact_entity:contact_entities!leads_contact_entity_id_fkey(stage)
+      `)
 
-      setPipelineStages(Array.from(map.entries()).map(([name, value]) => ({ name, value })))
+    if (!isManagerOrAdmin) {
+      query = query.eq('user_id', user?.id)
     }
 
+    const { data, error } = await query
+    if (error) {
+      console.warn('[PipelineAnalytics] fetchStages error:', error)
+      setPipelineStages([])
+      return
+    }
+
+    const map = new Map<string, number>()
+    ;(data as any[] | null | undefined)?.forEach((l: any) => {
+      const stage = l?.contact_entity?.stage ?? l?.stage ?? 'New Lead'
+      map.set(stage, (map.get(stage) || 0) + 1)
+    })
+
+    setPipelineStages(Array.from(map.entries()).map(([name, value]) => ({ name, value })))
+  }
+
+  useEffect(() => {
     fetchStages()
-  }, [])
+  }, [user])
+
+  // Live updates
+  useRealtimeSubscription({ table: 'leads', event: '*', onChange: fetchStages })
+  useRealtimeSubscription({ table: 'contact_entities', event: '*', onChange: fetchStages })
 
   return (
     <StandardPageLayout>
