@@ -189,14 +189,9 @@ export const LoanProcessorDashboard = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-card/60 to-card/30 backdrop-blur-sm rounded-xl p-6 border border-border/20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
-            <FileText className="w-5 h-5 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Loan Processor Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Manage and process loan applications</p>
-          </div>
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Loan Processor Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Manage and process loan applications</p>
         </div>
       </div>
 
