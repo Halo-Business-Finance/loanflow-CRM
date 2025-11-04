@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom"
 import { Lead } from "@/types/lead"
 import { formatPhoneNumber } from "@/lib/utils"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription"
 
 // Use Lead type from centralized types but alias as LeadData for backwards compatibility
 type LeadData = Lead
@@ -133,6 +134,26 @@ export function InteractivePipeline() {
       fetchLeads();
     }
   }, [user]);
+
+  // Real-time subscription for leads
+  useRealtimeSubscription({
+    table: 'leads',
+    event: '*',
+    onChange: () => {
+      console.log('Leads changed, refreshing pipeline...');
+      fetchLeads();
+    }
+  });
+
+  // Real-time subscription for contact_entities to catch stage changes
+  useRealtimeSubscription({
+    table: 'contact_entities',
+    event: '*',
+    onChange: () => {
+      console.log('Contact entities changed, refreshing pipeline...');
+      fetchLeads();
+    }
+  });
 
   const fetchLeads = async () => {
     try {

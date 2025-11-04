@@ -30,6 +30,7 @@ import { InteractivePipeline } from '@/components/InteractivePipeline';
 import { AdvancedAnalytics } from '@/components/analytics/AdvancedAnalytics';
 import { TeamCollaboration } from '@/components/collaboration/TeamCollaboration';
 import { WorkflowAutomation } from '@/components/operations/WorkflowAutomation';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 
 interface PipelineOverview {
   totalOpportunities: number;
@@ -61,6 +62,26 @@ export default function Pipeline() {
   useEffect(() => {
     fetchPipelineOverview();
   }, [user]);
+
+  // Real-time subscription for pipeline_entries
+  useRealtimeSubscription({
+    table: 'pipeline_entries',
+    event: '*',
+    onChange: () => {
+      console.log('Pipeline data changed, refreshing...');
+      fetchPipelineOverview();
+    }
+  });
+
+  // Real-time subscription for leads table to catch stage changes
+  useRealtimeSubscription({
+    table: 'leads',
+    event: '*',
+    onChange: () => {
+      console.log('Leads data changed, refreshing pipeline...');
+      fetchPipelineOverview();
+    }
+  });
 
   const fetchPipelineOverview = async () => {
     try {
