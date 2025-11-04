@@ -40,7 +40,7 @@ export default function LoanDocumentsFolder() {
             )
           `)
           .eq('id', leadId)
-          .single()
+          .maybeSingle()
 
         if (error) throw error
         setLeadInfo(data)
