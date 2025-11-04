@@ -14,7 +14,7 @@ export function useRealtimeLeads() {
   const fetchingRef = useRef(false)
   const initializedRef = useRef(false)
 
-  // Fetch initial leads data with optimized single query
+  // Fetch initial leads data (optimized two-step query with minimal fields)
   const fetchLeads = async (opts?: { silent?: boolean }) => {
     try {
       if (fetchingRef.current) return
@@ -30,42 +30,45 @@ export function useRealtimeLeads() {
         return
       }
 
-      // Single optimized query with join - fetch only essential fields
+      // 1) Fetch leads with only essential fields
       const { data: leadRows, error: leadsError } = await supabase
         .from('leads')
-        .select(`
-          id,
-          lead_number,
-          created_at,
-          updated_at,
-          user_id,
-          contact_entity_id,
-          contact_entity:contact_entities!contact_entity_id(
-            id,
-            name,
-            first_name,
-            last_name,
-            email,
-            phone,
-            business_name,
-            location,
-            loan_amount,
-            loan_type,
-            credit_score,
-            stage,
-            priority,
-            net_operating_income,
-            naics_code,
-            ownership_structure
-          )
-        `)
+        .select('id, lead_number, created_at, updated_at, user_id, contact_entity_id')
         .order('created_at', { ascending: false })
 
-      if (leadsError) throw leadsError
+      if (leadsError) {
+        console.error('Error fetching leads:', leadsError)
+        throw leadsError
+      }
+
+      // 2) Fetch related contact entities in one batch (only needed fields)
+      const contactEntityIds = (leadRows || [])
+        .map((l: any) => l.contact_entity_id)
+        .filter((id: string | null) => !!id)
+
+      let contactMap: Record<string, any> = {}
+      if (contactEntityIds.length > 0) {
+        const uniqueIds = Array.from(new Set(contactEntityIds))
+        const { data: contactRows, error: contactError } = await supabase
+          .from('contact_entities')
+          .select('id, name, first_name, last_name, email, phone, business_name, location, loan_amount, loan_type, credit_score, stage, priority, net_operating_income, naics_code, ownership_structure')
+          .in('id', uniqueIds)
+
+        if (contactError) {
+          console.error('Error fetching contact entities:', contactError)
+        }
+        
+        if (contactRows) {
+          contactMap = contactRows.reduce((acc: Record<string, any>, c: any) => {
+            acc[c.id] = c
+            return acc
+          }, {})
+        }
+      }
 
       // Normalize into Lead interface
       const transformedLeads: Lead[] = (leadRows || []).map((lead: any) => {
-        const ce = lead.contact_entity
+        const ce = contactMap[lead.contact_entity_id]
         const computedName = ce?.first_name || ce?.last_name
           ? `${ce?.first_name || ''} ${ce?.last_name || ''}`.trim()
           : (ce?.name || '')
@@ -96,6 +99,7 @@ export function useRealtimeLeads() {
         }
       })
 
+      console.log(`✅ Loaded ${transformedLeads.length} leads`)
       setLeads(transformedLeads)
       initializedRef.current = true
     } catch (err: any) {
@@ -103,6 +107,13 @@ export function useRealtimeLeads() {
       console.error('❌ Leads fetch failed:', err)
       setError(errorMsg)
       setLeads([])
+      if (!opts?.silent) {
+        toast({
+          title: "Error loading leads",
+          description: errorMsg,
+          variant: "destructive"
+        })
+      }
     } finally {
       setLoading(false)
       fetchingRef.current = false
