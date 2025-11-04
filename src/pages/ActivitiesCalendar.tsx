@@ -27,17 +27,17 @@ export default function ActivitiesCalendar() {
   const getEventTypeColor = (type: string) => {
     switch (type) {
       case 'call':
-        return 'bg-primary'
+        return 'bg-blue-500'
       case 'meeting':
       case 'team_meeting':
-        return 'bg-secondary'
+        return 'bg-purple-500'
       case 'followup':
       case 'follow_up':
-        return 'bg-accent'
+        return 'bg-green-500'
       case 'deadline':
-        return 'bg-destructive'
+        return 'bg-red-500'
       case 'task':
-        return 'bg-primary/70'
+        return 'bg-orange-500'
       default:
         return 'bg-muted-foreground'
     }
@@ -204,23 +204,23 @@ export default function ActivitiesCalendar() {
 
                 <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground border-t flex-wrap">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-primary" />
+                    <div className="w-2 h-2 rounded-full bg-blue-500" />
                     <span>Call</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-secondary" />
+                    <div className="w-2 h-2 rounded-full bg-purple-500" />
                     <span>Meeting</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-accent" />
+                    <div className="w-2 h-2 rounded-full bg-green-500" />
                     <span>Follow-up</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-destructive" />
+                    <div className="w-2 h-2 rounded-full bg-red-500" />
                     <span>Deadline</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-primary/70" />
+                    <div className="w-2 h-2 rounded-full bg-orange-500" />
                     <span>Task</span>
                   </div>
                   <div className="flex items-center gap-2 ml-auto">
