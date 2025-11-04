@@ -478,7 +478,7 @@ export default function Leads() {
               {/* Key Metrics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card 
-                  className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                  className="bg-card border border-blue-600 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
                   onClick={() => navigate('/leads')}
                 >
                   <CardContent className="p-6">
@@ -490,7 +490,7 @@ export default function Leads() {
                 </Card>
 
                 <Card 
-                  className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                  className="bg-card border border-blue-600 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
                   onClick={() => {
                     setSelectedStage('Initial Contact');
                     setShowFilters(true);
@@ -505,7 +505,7 @@ export default function Leads() {
                 </Card>
 
                 <Card 
-                  className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                  className="bg-card border border-blue-600 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
                   onClick={() => {
                     setSelectedPriority('High');
                     setShowFilters(true);
@@ -520,7 +520,7 @@ export default function Leads() {
                 </Card>
 
                 <Card 
-                  className="bg-card shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                  className="bg-card border border-blue-600 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
                   onClick={() => navigate('/pipeline')}
                 >
                   <CardContent className="p-6">
@@ -544,7 +544,7 @@ export default function Leads() {
 
               {/* Filters Section */}
               {showFilters && (
-                <Card>
+                <Card className="border border-blue-600">
                   <CardContent className="p-6">
                     <LeadFilters
                       searchTerm={searchTerm}
@@ -661,7 +661,7 @@ export default function Leads() {
                   filteredLeads.map((lead) => (
                     <Card 
                       key={lead.id}
-                      className="hover:shadow-lg transition-all cursor-pointer group relative"
+                      className="border border-blue-600 hover:shadow-lg transition-all cursor-pointer group relative"
                       onClick={() => navigate(`/leads/${lead.id}`)}
                     >
                       <CardHeader className="pb-3">
@@ -753,7 +753,7 @@ export default function Leads() {
           </TabsContent>
 
           <TabsContent value="qualified" className="space-y-6">
-            <Card>
+            <Card className="border border-blue-600">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-green-500" />
@@ -788,7 +788,7 @@ export default function Leads() {
 
           <TabsContent value="management" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-3">
-              <Card>
+              <Card className="border border-blue-600">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Phone className="h-5 w-5 text-green-500" />
@@ -801,7 +801,7 @@ export default function Leads() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border border-blue-600">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Mail className="h-5 w-5 text-blue-500" />
@@ -814,7 +814,7 @@ export default function Leads() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border border-blue-600">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Target className="h-5 w-5 text-orange-500" />
