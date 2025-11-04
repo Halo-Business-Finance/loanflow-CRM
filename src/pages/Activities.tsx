@@ -401,12 +401,12 @@ export default function Activities() {
 
   if (loading) {
     return (
-      <StandardPageLayout>
-        <StandardPageHeader 
-          title="Activity Command Center"
-          description="Monitor system notifications, user activities, and important updates in real-time"
-        />
-        <div className="p-6 space-y-6">
+      <div className="flex flex-col h-full bg-background">
+        <div className="p-8 space-y-8 animate-fade-in">
+          <div className="space-y-4">
+            <h1 className="text-xl font-semibold text-foreground no-underline">Activity Command Center</h1>
+            <p className="text-sm text-muted-foreground">Monitor system notifications, user activities, and important updates in real-time</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="animate-pulse bg-card rounded-lg p-6">
@@ -417,44 +417,49 @@ export default function Activities() {
             ))}
           </div>
         </div>
-      </StandardPageLayout>
+      </div>
     )
   }
 
   return (
-    <StandardPageLayout>
-      <StandardPageHeader 
-        title="Activity Command Center"
-        description="Monitor system notifications, user activities, and important updates in real-time"
-        actions={
-          <Button onClick={fetchData} className="flex items-center gap-2" variant="outline">
-            <RefreshCw className="h-4 w-4" />
-            Refresh Data
-          </Button>
-        }
-      />
-      
-      <div className="p-6 space-y-6">
+    <div className="flex flex-col h-full bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-semibold text-foreground no-underline">Activity Command Center</h1>
+              <p className="text-sm text-muted-foreground">Monitor system notifications, user activities, and important updates in real-time</p>
+            </div>
+            <Button onClick={fetchData} className="flex items-center gap-2" variant="outline">
+              <RefreshCw className="h-4 w-4" />
+              Refresh Data
+            </Button>
+          </div>
+        </div>
         {/* Metrics Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <StandardKPICard
             title="Total Activities"
             value={activities.length}
+            className="border border-blue-600"
           />
           
           <StandardKPICard
             title="Notifications"
             value={notifications.length}
+            className="border border-blue-600"
           />
           
           <StandardKPICard
             title="Today's Activities"
             value={actualTodaysActions}
+            className="border border-blue-600"
           />
           
           <StandardKPICard
             title="Scheduled Reminders"
             value={scheduledReminders}
+            className="border border-blue-600"
           />
         </div>
 
@@ -465,6 +470,7 @@ export default function Activities() {
           <StandardContentCard 
             title="Call Reminders"
             headerActions={<Phone className="h-5 w-5 text-navy" />}
+            className="border border-blue-600"
           >
             <div className="space-y-4">
               {notifications
@@ -883,7 +889,8 @@ export default function Activities() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
-    </StandardPageLayout>
+       </AlertDialog>
+    </div>
+  </div>
   )
 }

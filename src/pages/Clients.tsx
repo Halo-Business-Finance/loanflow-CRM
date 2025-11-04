@@ -455,46 +455,43 @@ export default function ExistingBorrowers() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex flex-col h-full bg-background">
       {/* Modern Header */}
-      <div className="bg-card sticky top-0 z-10">
-        <div className="px-6 py-4">
+      <div className="p-8 space-y-8 animate-fade-in">
+        <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div>
-                <div className="flex items-center gap-3">
-                  <h1 className="text-xl font-semibold text-foreground">
-                    Existing Borrowers
-                  </h1>
-                  <span className="text-xs font-medium px-2 py-1">
-                    {clients.length} Borrowers
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Manage and track your existing borrower relationships and portfolios
-                </p>
+            <div>
+              <div className="flex items-center gap-3">
+                <h1 className="text-xl font-semibold text-foreground no-underline">
+                  Existing Borrowers
+                </h1>
+                <span className="text-xs font-medium px-2 py-1">
+                  {clients.length} Borrowers
+                </span>
               </div>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
-                <Filter className="h-3 w-3 mr-2" />
-                Filter
-              </Button>
-              <Button onClick={() => setShowAddDialog(true)} size="sm" className="h-8 text-xs font-medium">
-                <Plus className="h-3 w-3 mr-2" />
-                Add Borrower
-              </Button>
+              <p className="text-sm text-muted-foreground mt-1">
+                Manage and track your existing borrower relationships and portfolios
+              </p>
             </div>
           </div>
+          
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
+              <Filter className="h-3 w-3 mr-2" />
+              Filter
+            </Button>
+            <Button onClick={() => setShowAddDialog(true)} size="sm" className="h-8 text-xs font-medium">
+              <Plus className="h-3 w-3 mr-2" />
+              Add Borrower
+            </Button>
+          </div>
         </div>
-      </div>
 
       {/* Content Area */}
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         {/* Client Metrics Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border border-border shadow-sm">
+          <Card className="border border-blue-600 border border-border shadow-sm animate-fade-in">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -883,6 +880,7 @@ export default function ExistingBorrowers() {
           onClose={() => setSelectedClientForReminder(null)}
         />
       )}
+      </div>
     </div>
   )
 }

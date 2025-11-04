@@ -8,16 +8,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 export default function BorrowerDetails() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Borrower Details</h1>
-        <p className="text-muted-foreground">
-          Manage borrower information and loan details
-        </p>
-      </div>
+    <div className="flex flex-col h-full bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        <div className="space-y-4">
+          <h1 className="text-xl font-semibold text-foreground no-underline">Borrower Details</h1>
+          <p className="text-sm text-muted-foreground">
+            Manage borrower information and loan details
+          </p>
+        </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+        <Card className="border border-blue-600">
           <CardHeader>
             <CardTitle>Personal Information</CardTitle>
             <CardDescription>
@@ -59,7 +60,7 @@ export default function BorrowerDetails() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-blue-600">
           <CardHeader>
             <CardTitle>Financial Information</CardTitle>
             <CardDescription>
@@ -112,7 +113,7 @@ export default function BorrowerDetails() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="border border-blue-600">
         <CardHeader>
           <CardTitle>Loan History</CardTitle>
           <CardDescription>
@@ -142,6 +143,7 @@ export default function BorrowerDetails() {
       <div className="flex gap-2">
         <Button>Save Changes</Button>
         <Button variant="outline">Cancel</Button>
+      </div>
       </div>
     </div>
   )
