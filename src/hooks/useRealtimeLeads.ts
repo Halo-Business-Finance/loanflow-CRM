@@ -14,7 +14,7 @@ export function useRealtimeLeads() {
   const fetchingRef = useRef(false)
   const initializedRef = useRef(false)
 
-  // Fetch initial leads data (safe two-step query to avoid ambiguous joins)
+  // Fetch initial leads data with optimized single query
   const fetchLeads = async (opts?: { silent?: boolean }) => {
     try {
       if (fetchingRef.current) return
@@ -29,39 +29,43 @@ export function useRealtimeLeads() {
         setLoading(false)
         return
       }
-      console.log('Fetching leads for user:', user.id)
 
-      // 1) Fetch leads
+      // Single optimized query with join - fetch only essential fields
       const { data: leadRows, error: leadsError } = await supabase
         .from('leads')
-        .select('*')
+        .select(`
+          id,
+          lead_number,
+          created_at,
+          updated_at,
+          user_id,
+          contact_entity_id,
+          contact_entity:contact_entities!contact_entity_id(
+            id,
+            name,
+            first_name,
+            last_name,
+            email,
+            phone,
+            business_name,
+            location,
+            loan_amount,
+            loan_type,
+            credit_score,
+            stage,
+            priority,
+            net_operating_income,
+            naics_code,
+            ownership_structure
+          )
+        `)
         .order('created_at', { ascending: false })
 
       if (leadsError) throw leadsError
 
-      // 2) Fetch related contact entities (explicit second query avoids ambiguous FK embed errors)
-      const contactEntityIds = (leadRows || [])
-        .map((l: any) => l.contact_entity_id)
-        .filter((id: string | null) => !!id)
-
-      let contactMap: Record<string, any> = {}
-      if (contactEntityIds.length > 0) {
-        const { data: contactRows, error: contactError } = await supabase
-          .from('contact_entities')
-          .select('*')
-          .in('id', Array.from(new Set(contactEntityIds)))
-
-        if (!contactError && contactRows) {
-          contactMap = contactRows.reduce((acc: Record<string, any>, c: any) => {
-            acc[c.id] = c
-            return acc
-          }, {})
-        }
-      }
-
       // Normalize into Lead interface
       const transformedLeads: Lead[] = (leadRows || []).map((lead: any) => {
-        const ce = contactMap[lead.contact_entity_id]
+        const ce = lead.contact_entity
         const computedName = ce?.first_name || ce?.last_name
           ? `${ce?.first_name || ''} ${ce?.last_name || ''}`.trim()
           : (ce?.name || '')
