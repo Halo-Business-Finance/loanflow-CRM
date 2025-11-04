@@ -286,20 +286,20 @@ export default function NewLead() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader 
-        title="Create New Lead"
-        description="Add a new lead to your SBA & Commercial Loan pipeline"
-        actions={
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <h1 className="text-xl font-semibold text-foreground no-underline">Create New Lead</h1>
+            <p className="text-sm text-muted-foreground">Add a new lead to your SBA & Commercial Loan pipeline</p>
+          </div>
           <Button 
-            variant="outline"
             onClick={() => navigate('/leads')}
           >
             Back to Leads
           </Button>
-        }
-      />
-      
-      <div className="p-8 space-y-8 animate-fade-in">
+        </div>
+        
         {/* Row 1: Personal, Financial, and Business Information */}
         <div className="grid gap-6 md:grid-cols-3">
           <StandardContentCard title="Personal Information" className="border border-blue-600">
