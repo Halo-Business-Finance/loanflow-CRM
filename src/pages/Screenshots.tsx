@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Camera, Download, ExternalLink } from "lucide-react";
+import { Camera, Download, ExternalLink, Navigation } from "lucide-react";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
 import { StandardPageHeader } from "@/components/StandardPageHeader";
 import { StandardContentCard } from "@/components/StandardContentCard";
 import { ResponsiveContainer } from "@/components/ResponsiveContainer";
 import { toast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const Screenshots = () => {
   const pages = [
