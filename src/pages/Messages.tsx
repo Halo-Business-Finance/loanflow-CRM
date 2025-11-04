@@ -226,7 +226,7 @@ export default function Messages() {
         />
 
         {/* Middle Pane - Message List */}
-        <div className="w-72 border-r bg-background">
+        <div className={`${selectedMessage || isComposing ? 'w-72' : 'flex-1'} border-r bg-background transition-all duration-200`}>
           <MessageList
             messages={messages}
             selectedMessageId={selectedMessage?.id || null}
@@ -237,28 +237,30 @@ export default function Messages() {
           />
         </div>
 
-        {/* Right Pane - Message Content or Composer */}
-        <div className="flex-1 bg-background">
-          {isComposing ? (
-            <div className="p-6 h-full overflow-auto">
-              <MessageComposer
-                replyTo={replyTo}
-                onClose={() => {
-                  setIsComposing(false);
-                  setReplyTo(null);
-                }}
-                onSent={handleMessageSent}
+        {/* Right Pane - Message Content or Composer (Only shown when message selected or composing) */}
+        {(selectedMessage || isComposing) && (
+          <div className="flex-1 bg-background">
+            {isComposing ? (
+              <div className="p-6 h-full overflow-auto">
+                <MessageComposer
+                  replyTo={replyTo}
+                  onClose={() => {
+                    setIsComposing(false);
+                    setReplyTo(null);
+                  }}
+                  onSent={handleMessageSent}
+                />
+              </div>
+            ) : (
+              <MessageContent
+                message={selectedMessage}
+                folder={activeFolder}
+                onReply={handleReply}
+                onDelete={deleteMessage}
               />
-            </div>
-          ) : (
-            <MessageContent
-              message={selectedMessage}
-              folder={activeFolder}
-              onReply={handleReply}
-              onDelete={deleteMessage}
-            />
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
