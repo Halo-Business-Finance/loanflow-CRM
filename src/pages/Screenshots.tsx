@@ -4,6 +4,7 @@ import { StandardPageLayout } from "@/components/StandardPageLayout";
 import { StandardPageHeader } from "@/components/StandardPageHeader";
 import { StandardContentCard } from "@/components/StandardContentCard";
 import { ResponsiveContainer } from "@/components/ResponsiveContainer";
+import { toast } from "sonner";
 
 const Screenshots = () => {
   const pages = [
@@ -35,26 +36,43 @@ const Screenshots = () => {
 
   const takeScreenshot = async (url: string, title: string) => {
     try {
-      const newWindow = window.open(url, '_blank', 'width=1200,height=800');
+      const fileName = `loanflow-${title.toLowerCase().replace(/\s+/g, '-')}.png`;
+      const newWindow = window.open(url, '_blank', 'width=1920,height=1080');
       
       if (newWindow) {
-        alert(`Page opened in new window. To take a screenshot:
-
-1. Wait for page to fully load
-2. Use browser screenshot:
-   • Chrome: F12 → Device Toolbar → Screenshot icon
-   • Firefox: F12 → Screenshot icon
-   • Or use your OS screenshot tool
-
-3. Save as "${title.toLowerCase().replace(/\s+/g, '-')}-screenshot.png"`);
+        toast.success("Page Opened for Screenshot", {
+          description: `Opening ${title}. Use browser screenshot tools or OS shortcuts to capture. Recommended filename: ${fileName}`,
+          duration: 6000
+        });
+      } else {
+        toast.error("Popup Blocked", {
+          description: "Please allow popups for this site to use the screenshot feature."
+        });
       }
     } catch (error) {
       console.error('Failed to open page:', error);
+      toast.error("Failed to Open Page", {
+        description: "Unable to open the page. Please check your browser settings."
+      });
     }
   };
 
   const openPageInNewTab = (url: string) => {
-    window.open(url, '_blank');
+    try {
+      const newWindow = window.open(url, '_blank');
+      if (newWindow) {
+        toast.success("Page Opened", {
+          description: "Page opened in new tab"
+        });
+      } else {
+        toast.error("Popup Blocked", {
+          description: "Please allow popups for this site."
+        });
+      }
+    } catch (error) {
+      console.error('Failed to open page:', error);
+      toast.error("Failed to Open Page");
+    }
   };
 
   return (
