@@ -664,7 +664,6 @@ export default function Activities() {
               )}
             </div>
           </StandardContentCard>
-        </div>
 
         {/* Recent Activities */}
         <StandardContentCard 
@@ -889,7 +888,7 @@ export default function Activities() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-       </AlertDialog>
+      </AlertDialog>
     </div>
   </div>
   )
