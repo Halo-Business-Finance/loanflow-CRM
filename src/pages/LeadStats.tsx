@@ -92,32 +92,31 @@ export default function LeadStats() {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <StandardPageHeader
-        title="Lead Management"
-        description="Assign leads to team members and view performance statistics"
-      />
-      
-      <div className="px-6 pt-4">
-        <Tabs value={location.pathname} onValueChange={(value) => navigate(value)}>
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="/leads/assignment" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Lead Assignment
-            </TabsTrigger>
-            <TabsTrigger value="/leads/stats" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Lead Stats
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
-      
-      <div className="flex-1 overflow-auto">
-        <div className="px-6 py-6 space-y-6">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="space-y-4">
+          <div>
+            <h1 className="text-xl font-semibold text-foreground no-underline">Lead Management</h1>
+            <p className="text-sm text-muted-foreground">Assign leads to team members and view performance statistics</p>
+          </div>
+          
+          <Tabs value={location.pathname} onValueChange={(value) => navigate(value)}>
+            <TabsList className="grid w-full max-w-md grid-cols-2">
+              <TabsTrigger value="/leads/assignment" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Lead Assignment
+              </TabsTrigger>
+              <TabsTrigger value="/leads/stats" className="flex items-center gap-2">
+                <BarChart3 className="h-4 w-4" />
+                Lead Stats
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
 
-          {/* Key Metrics */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="widget-glass widget-glow border-0 animate-fade-in">
+        {/* Key Metrics */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card className="border border-blue-600 animate-fade-in">
               <CardContent className="p-6 widget-content">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-muted-foreground">Total Leads</span>
@@ -131,7 +130,7 @@ export default function LeadStats() {
               </CardContent>
             </Card>
 
-            <Card className="widget-glass widget-glow border-0 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <Card className="border border-blue-600 animate-fade-in" style={{ animationDelay: '0.1s' }}>
               <CardContent className="p-6 widget-content">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-muted-foreground">Conversion Rate</span>
@@ -146,7 +145,7 @@ export default function LeadStats() {
               </CardContent>
             </Card>
 
-            <Card className="widget-glass widget-glow border-0 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <Card className="border border-blue-600 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <CardContent className="p-6 widget-content">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-muted-foreground">Qualified Leads</span>
@@ -159,7 +158,7 @@ export default function LeadStats() {
               </CardContent>
             </Card>
 
-            <Card className="widget-glass widget-glow border-0 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <Card className="border border-blue-600 animate-fade-in" style={{ animationDelay: '0.3s' }}>
               <CardContent className="p-6 widget-content">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-muted-foreground">Avg. Response Time</span>
@@ -171,13 +170,14 @@ export default function LeadStats() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+        </div>
 
-          {/* Detailed Statistics */}
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              <StandardContentCard
-                title="Lead Sources"
+        {/* Detailed Statistics */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <StandardContentCard
+              title="Lead Sources"
+              className="border border-blue-600"
                 headerActions={
                   <span className="text-xs text-muted-foreground">Distribution breakdown</span>
                 }
@@ -185,12 +185,13 @@ export default function LeadStats() {
               <div className="text-sm text-muted-foreground text-center py-8">
                 Lead source tracking not yet implemented.
               </div>
-              </StandardContentCard>
-            </div>
+            </StandardContentCard>
+          </div>
 
-            <div className="animate-fade-in" style={{ animationDelay: '0.5s' }}>
-              <StandardContentCard
-                title="Lead Status Distribution"
+          <div className="animate-fade-in" style={{ animationDelay: '0.5s' }}>
+            <StandardContentCard
+              title="Lead Status Distribution"
+              className="border border-blue-600"
                 headerActions={
                   <span className="text-xs text-muted-foreground">Current pipeline status</span>
                 }
@@ -223,8 +224,7 @@ export default function LeadStats() {
                   </div>
                 </div>
               </div>
-              </StandardContentCard>
-            </div>
+            </StandardContentCard>
           </div>
         </div>
       </div>
