@@ -28,24 +28,63 @@ export default function LoanDocumentsFolder() {
       if (!leadId) return
 
       try {
-        const { data, error } = await supabase
-          .from('leads')
+        // First try to get info from lead_documents since we know documents exist for this lead_id
+        const { data: docData, error: docError } = await supabase
+          .from('lead_documents')
           .select(`
-            id,
             contact_entity:contact_entities!contact_entity_id(
               name,
               business_name,
               loan_type,
-              location
+              location,
+              business_city,
+              business_state
             )
           `)
-          .eq('id', leadId)
+          .eq('lead_id', leadId)
+          .limit(1)
           .maybeSingle()
 
-        if (error) throw error
-        setLeadInfo(data)
+        if (docError) throw docError
+
+        if (docData?.contact_entity) {
+          // Construct location from available fields
+          const locationParts = []
+          if (docData.contact_entity.business_city) locationParts.push(docData.contact_entity.business_city)
+          if (docData.contact_entity.business_state) locationParts.push(docData.contact_entity.business_state)
+          const constructedLocation = locationParts.length > 0 
+            ? locationParts.join(', ') 
+            : (docData.contact_entity.location || '')
+
+          setLeadInfo({
+            id: leadId,
+            contact_entity: {
+              ...docData.contact_entity,
+              location: constructedLocation
+            }
+          })
+        } else {
+          // Fallback: try querying leads table
+          const { data: leadData, error: leadError } = await supabase
+            .from('leads')
+            .select(`
+              id,
+              contact_entity:contact_entities!contact_entity_id(
+                name,
+                business_name,
+                loan_type,
+                location
+              )
+            `)
+            .eq('id', leadId)
+            .maybeSingle()
+
+          if (leadError) throw leadError
+          setLeadInfo(leadData)
+        }
       } catch (error) {
         console.error('Error fetching lead info:', error)
+        setLeadInfo(null)
       } finally {
         setLoading(false)
       }
