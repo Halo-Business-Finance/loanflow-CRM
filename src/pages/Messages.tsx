@@ -47,12 +47,13 @@ export default function Messages() {
   }, []);
 
   const fetchMessages = async () => {
-    let isMounted = true;
-    
     try {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user || !isMounted) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
       const { data, error } = await supabase
         .from('user_messages')
@@ -61,53 +62,45 @@ export default function Messages() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      if (!isMounted) return;
       
       // Batch profile lookups
       const uniqueIds = Array.from(new Set((data || []).flatMap(d => [d.sender_id, d.recipient_id])));
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, email')
-        .in('id', uniqueIds);
       
-      if (!isMounted) return;
-      
-      const emailById = new Map((profiles || []).map(p => [p.id, p.email]));
-      
-      const messagesWithProfiles = (data || []).map(msg => ({
-        ...msg,
-        sender_profile: { 
-          full_name: null, 
-          email: emailById.get(msg.sender_id) || msg.sender_id 
-        },
-        recipient_profile: { 
-          full_name: null, 
-          email: emailById.get(msg.recipient_id) || msg.recipient_id 
-        }
-      }));
-      
-      if (isMounted) {
+      if (uniqueIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, email')
+          .in('id', uniqueIds);
+        
+        const emailById = new Map((profiles || []).map(p => [p.id, p.email]));
+        
+        const messagesWithProfiles = (data || []).map(msg => ({
+          ...msg,
+          sender_profile: { 
+            full_name: null, 
+            email: emailById.get(msg.sender_id) || msg.sender_id 
+          },
+          recipient_profile: { 
+            full_name: null, 
+            email: emailById.get(msg.recipient_id) || msg.recipient_id 
+          }
+        }));
+        
         setMessages(messagesWithProfiles);
+      } else {
+        setMessages([]);
       }
     } catch (error) {
       console.error('Error fetching messages:', error);
-      if (isMounted) {
-        setMessages([]);
-        toast({
-          title: 'Error',
-          description: 'Failed to load messages',
-          variant: 'destructive',
-        });
-      }
+      setMessages([]);
+      toast({
+        title: 'Error',
+        description: 'Failed to load messages',
+        variant: 'destructive',
+      });
     } finally {
-      if (isMounted) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
-    
-    return () => {
-      isMounted = false;
-    };
   };
 
   useEffect(() => {
