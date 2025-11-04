@@ -416,65 +416,62 @@ export default function Leads() {
     <SecurityWrapper>
       <SecureFormProvider>
         <div className="min-h-screen bg-background">
-            {/* Modern Header */}
-            <div className="bg-card sticky top-0 z-10">
-              <div className="px-6 py-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <h1 className="text-xl font-semibold text-foreground">
-                          Lead Management
-                        </h1>
-                        <Badge variant="default" className="text-xs font-medium px-2 py-1">
-                          {overview.totalLeads} Leads
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Manage and track your sales leads and prospects
-                      </p>
-                    </div>
+          <div className="p-8 space-y-8 animate-fade-in">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                      Lead Management
+                    </h1>
+                    <Badge variant="default" className="text-xs font-medium px-2 py-1">
+                      {overview.totalLeads} Leads
+                    </Badge>
                   </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 border border-border rounded-lg p-1">
-                      <Button
-                        variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-                        size="sm"
-                        onClick={() => setViewMode('grid')}
-                        className="h-7 w-7 p-0"
-                      >
-                        <Grid className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant={viewMode === 'list' ? 'default' : 'ghost'}
-                        size="sm"
-                        onClick={() => setViewMode('list')}
-                        className="h-7 w-7 p-0"
-                      >
-                        <List className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="h-8 text-xs font-medium"
-                      onClick={() => setShowFilters(!showFilters)}
-                    >
-                      <Filter className="h-3 w-3 mr-2" />
-                      {showFilters ? 'Hide Filters' : 'Filter'}
-                    </Button>
-                    <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium">
-                      <UserPlus className="h-3 w-3 mr-2" />
-                      Add Lead
-                    </Button>
-                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Manage and track your sales leads and prospects
+                  </p>
                 </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 border border-border rounded-lg p-1">
+                  <Button
+                    variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                    className="h-7 w-7 p-0"
+                  >
+                    <Grid className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    variant={viewMode === 'list' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('list')}
+                    className="h-7 w-7 p-0"
+                  >
+                    <List className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-8 text-xs font-medium"
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  <Filter className="h-3 w-3 mr-2" />
+                  {showFilters ? 'Hide Filters' : 'Filter'}
+                </Button>
+                <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white">
+                  <UserPlus className="h-3 w-3 mr-2" />
+                  Add Lead
+                </Button>
               </div>
             </div>
 
             {/* Content Area */}
-            <div className="p-6 space-y-6">
+            <div className="space-y-6">
               {/* Key Metrics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card 
@@ -870,6 +867,7 @@ export default function Leads() {
         </Dialog>
             </div>
           </div>
+        </div>
       </SecureFormProvider>
     </SecurityWrapper>
   );
