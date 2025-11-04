@@ -299,11 +299,10 @@ export default function NewLead() {
         }
       />
       
-      <ResponsiveContainer padding="md" maxWidth="full">
-        <div className="space-y-6">
-          {/* Row 1: Personal, Financial, and Business Information */}
-          <div className="grid gap-6 md:grid-cols-3">
-            <StandardContentCard title="Personal Information">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Row 1: Personal, Financial, and Business Information */}
+        <div className="grid gap-6 md:grid-cols-3">
+          <StandardContentCard title="Personal Information" className="border border-blue-600">
               <p className="text-sm text-muted-foreground mb-4">
                 Basic borrower details and contact information
               </p>
@@ -414,7 +413,7 @@ export default function NewLead() {
               </div>
             </StandardContentCard>
 
-            <StandardContentCard title="Financial Information">
+            <StandardContentCard title="Financial Information" className="border border-blue-600">
               <p className="text-sm text-muted-foreground mb-4">
                 Income, employment, and financial details
               </p>
@@ -523,7 +522,7 @@ export default function NewLead() {
               </div>
             </StandardContentCard>
 
-            <StandardContentCard title="Business Information">
+            <StandardContentCard title="Business Information" className="border border-blue-600">
               <p className="text-sm text-muted-foreground mb-4">
                 Details about the borrower's business
               </p>
@@ -635,7 +634,7 @@ export default function NewLead() {
 
           {/* Row 2: Loan, Merchant Processing, and Banking/BDO Information */}
           <div className="grid gap-6 md:grid-cols-3">
-            <StandardContentCard title="Loan Information">
+            <StandardContentCard title="Loan Information" className="border border-blue-600">
               <p className="text-sm text-muted-foreground mb-4">
                 Loan requirements and financial details
               </p>
@@ -709,7 +708,7 @@ export default function NewLead() {
               </div>
             </StandardContentCard>
 
-            <StandardContentCard title="Merchant Processing">
+            <StandardContentCard title="Merchant Processing" className="border border-blue-600">
               <p className="text-sm text-muted-foreground mb-4">
                 Point of sale and processing information
               </p>
@@ -771,7 +770,7 @@ export default function NewLead() {
               </div>
             </StandardContentCard>
 
-            <StandardContentCard title="Banking & BDO Information">
+            <StandardContentCard title="Banking & BDO Information" className="border border-blue-600">
               <p className="text-sm text-muted-foreground mb-4">
                 Banking relationship and business development officer details
               </p>
@@ -822,7 +821,7 @@ export default function NewLead() {
           </div>
 
           {/* Row 4: Notes Section - Full Width */}
-          <StandardContentCard title="Additional Notes">
+          <StandardContentCard title="Additional Notes" className="border border-blue-600">
             <p className="text-sm text-muted-foreground mb-4">
               Any additional information or comments
             </p>
@@ -867,7 +866,6 @@ export default function NewLead() {
             </Button>
           </div>
         </div>
-      </ResponsiveContainer>
     </StandardPageLayout>
   )
 }
