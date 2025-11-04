@@ -4,7 +4,7 @@ import { StandardPageLayout } from "@/components/StandardPageLayout";
 import { StandardPageHeader } from "@/components/StandardPageHeader";
 import { StandardContentCard } from "@/components/StandardContentCard";
 import { ResponsiveContainer } from "@/components/ResponsiveContainer";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 
 const Screenshots = () => {
   const pages = [
@@ -40,19 +40,23 @@ const Screenshots = () => {
       const newWindow = window.open(url, '_blank', 'width=1920,height=1080');
       
       if (newWindow) {
-        toast.success("Page Opened for Screenshot", {
+        toast({
+          title: "Page Opened for Screenshot",
           description: `Opening ${title}. Use browser screenshot tools or OS shortcuts to capture. Recommended filename: ${fileName}`,
-          duration: 6000
         });
       } else {
-        toast.error("Popup Blocked", {
-          description: "Please allow popups for this site to use the screenshot feature."
+        toast({
+          title: "Popup Blocked",
+          description: "Please allow popups for this site to use the screenshot feature.",
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error('Failed to open page:', error);
-      toast.error("Failed to Open Page", {
-        description: "Unable to open the page. Please check your browser settings."
+      toast({
+        title: "Failed to Open Page",
+        description: "Unable to open the page. Please check your browser settings.",
+        variant: "destructive",
       });
     }
   };
@@ -61,17 +65,20 @@ const Screenshots = () => {
     try {
       const newWindow = window.open(url, '_blank');
       if (newWindow) {
-        toast.success("Page Opened", {
-          description: "Page opened in new tab"
+        toast({
+          title: "Page Opened",
+          description: "Page opened in new tab",
         });
       } else {
-        toast.error("Popup Blocked", {
-          description: "Please allow popups for this site."
+        toast({
+          title: "Popup Blocked",
+          description: "Please allow popups for this site.",
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error('Failed to open page:', error);
-      toast.error("Failed to Open Page");
+      toast({ title: "Failed to Open Page", variant: "destructive" });
     }
   };
 
