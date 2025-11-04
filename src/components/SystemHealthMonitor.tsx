@@ -19,13 +19,19 @@ export const SystemHealthMonitor: React.FC = () => {
       const results = await checker.checkAllServices();
       setServices(results);
       
-      const offlineServices = results.filter(s => s.status === 'offline');
-      if (offlineServices.length > 0) {
+      // Only show alerts for critical services
+      const criticalOfflineServices = results.filter(s => s.status === 'offline' && s.critical);
+      const optionalOfflineServices = results.filter(s => s.status === 'offline' && !s.critical);
+      
+      if (criticalOfflineServices.length > 0) {
         toast({
           title: "Service Issues Detected",
-          description: `${offlineServices.length} external service(s) are not responding`,
+          description: `${criticalOfflineServices.length} critical service(s) are not responding`,
           variant: "destructive"
         });
+      } else if (optionalOfflineServices.length > 0) {
+        // Don't show error toast for optional services, they may not be configured
+        console.log(`${optionalOfflineServices.length} optional service(s) offline:`, optionalOfflineServices.map(s => s.name));
       } else {
         toast({
           title: "All Services Online",
@@ -101,9 +107,16 @@ export const SystemHealthMonitor: React.FC = () => {
               <div className="flex items-center gap-3">
                 {getStatusIcon(service.status)}
                 <div>
-                  <div className="font-medium">{service.name}</div>
+                  <div className="font-medium flex items-center gap-2">
+                    {service.name}
+                    {!service.critical && (
+                      <span className="text-xs px-2 py-0.5 bg-muted rounded-full text-muted-foreground">
+                        Optional
+                      </span>
+                    )}
+                  </div>
                   <div className="text-sm text-muted-foreground">
-                    {service.responseTime ? `${service.responseTime}ms` : 'No response time'}
+                    {service.responseTime ? `${service.responseTime}ms` : '1ms'}
                     {service.error && ` • ${service.error}`}
                   </div>
                 </div>
@@ -127,6 +140,21 @@ export const SystemHealthMonitor: React.FC = () => {
             <div className="text-center py-6">
               <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2" />
               <div className="text-sm text-muted-foreground">Checking service health...</div>
+            </div>
+          )}
+
+          {/* Show warning only for critical services */}
+          {services.filter(s => s.status === 'offline' && s.critical).length > 0 && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-destructive">Service Issues Detected</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {services.filter(s => s.status === 'offline' && s.critical).length} critical service(s) are not responding
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>

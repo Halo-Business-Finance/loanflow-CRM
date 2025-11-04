@@ -10,6 +10,7 @@ export interface ServiceStatus {
   responseTime?: number;
   lastChecked: Date;
   error?: string;
+  critical?: boolean;
 }
 
 export class ExternalServiceChecker {
@@ -24,7 +25,7 @@ export class ExternalServiceChecker {
     return ExternalServiceChecker.instance;
   }
 
-  async checkService(name: string, url: string, timeout: number = 10000): Promise<ServiceStatus> {
+  async checkService(name: string, url: string, timeout: number = 5000): Promise<ServiceStatus> {
     const startTime = Date.now();
     
     try {
@@ -32,9 +33,10 @@ export class ExternalServiceChecker {
       const timeoutId = setTimeout(() => controller.abort(), timeout);
       
       const response = await fetch(url, {
-        method: 'HEAD',
+        method: 'GET',
         signal: controller.signal,
-        mode: 'no-cors' // Handle CORS issues for external services
+        mode: 'no-cors', // Handle CORS issues for external services
+        cache: 'no-cache'
       });
       
       clearTimeout(timeoutId);
@@ -53,13 +55,16 @@ export class ExternalServiceChecker {
       
     } catch (error) {
       const responseTime = Date.now() - startTime;
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      
+      // For optional services, don't mark as critical error
       const status: ServiceStatus = {
         name,
         url,
         status: 'offline',
         responseTime,
         lastChecked: new Date(),
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: errorMsg === 'Failed to fetch' ? 'Service not configured or unavailable' : errorMsg
       };
       
       this.serviceCache.set(name, status);
@@ -69,13 +74,16 @@ export class ExternalServiceChecker {
 
   async checkAllServices(): Promise<ServiceStatus[]> {
     const services = [
-      { name: 'Adobe PDF Viewer', url: 'https://acrobatservices.adobe.com/view-sdk/viewer.js' },
-      { name: 'RingCentral API', url: 'https://platform.ringcentral.com' },
-      { name: 'Supabase Storage', url: `https://gshxxsniwytjgcnthyfq.supabase.co/storage/v1/object/public` }
+      { name: 'Adobe PDF Viewer', url: 'https://acrobatservices.adobe.com/view-sdk/viewer.js', critical: true },
+      { name: 'RingCentral API', url: 'https://platform.ringcentral.com', critical: false },
+      { name: 'Supabase Storage', url: `https://gshxxsniwytjgcnthyfq.supabase.co/storage/v1/object/public`, critical: true }
     ];
 
     const results = await Promise.allSettled(
-      services.map(service => this.checkService(service.name, service.url))
+      services.map(service => this.checkService(service.name, service.url).then(result => ({
+        ...result,
+        critical: service.critical
+      })))
     );
 
     return results.map((result, index) => {
@@ -87,7 +95,8 @@ export class ExternalServiceChecker {
           url: services[index].url,
           status: 'offline' as const,
           lastChecked: new Date(),
-          error: 'Failed to check service'
+          error: 'Service check failed',
+          critical: services[index].critical
         };
       }
     });
