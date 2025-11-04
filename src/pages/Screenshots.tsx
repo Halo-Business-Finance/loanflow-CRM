@@ -3,6 +3,7 @@ import { Camera, Download, ExternalLink, Navigation } from "lucide-react";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
 import { StandardPageHeader } from "@/components/StandardPageHeader";
 import { StandardContentCard } from "@/components/StandardContentCard";
+import { StandardKPICard } from "@/components/StandardKPICard";
 import { ResponsiveContainer } from "@/components/ResponsiveContainer";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -93,87 +94,55 @@ const Screenshots = () => {
       <ResponsiveContainer>
         <div className="space-y-6">
           {/* Screenshot Metrics Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StandardContentCard className="border-l-4 border-l-primary">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Available Pages</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Camera className="w-5 h-5" />
-                    <p className="text-lg font-bold">{pages.length}</p>
-                  </div>
-                </div>
-                <span className="text-sm font-medium">READY</span>
-              </div>
-            </StandardContentCard>
-
-            <StandardContentCard>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Screenshot Tools</p>
-                  <p className="text-2xl font-bold text-primary">3</p>
-                </div>
-                <ExternalLink className="w-8 h-8 text-primary" />
-              </div>
-            </StandardContentCard>
-
-            <StandardContentCard>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Browser Support</p>
-                  <p className="text-2xl font-bold text-primary">All</p>
-                </div>
-                <Download className="w-8 h-8 text-primary" />
-              </div>
-            </StandardContentCard>
-
-            <StandardContentCard>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Export Formats</p>
-                  <p className="text-2xl font-bold text-primary">PNG</p>
-                </div>
-                <Camera className="w-8 h-8 text-primary" />
-              </div>
-            </StandardContentCard>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StandardKPICard 
+              title="Available Pages"
+              value={pages.length}
+            />
+            <StandardKPICard 
+              title="Screenshot Tools"
+              value="3"
+            />
+            <StandardKPICard 
+              title="Browser Support"
+              value="All"
+            />
+            <StandardKPICard 
+              title="Export Formats"
+              value="PNG"
+            />
           </div>
 
-          <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-            <h2 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">How to Take Screenshots</h2>
-            <div className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+          <StandardContentCard title="How to Take Screenshots" className="bg-primary/5 border-primary/20">
+            <div className="space-y-2 text-sm">
               <p><strong>Method 1:</strong> Click "Take Screenshot" → Use browser's built-in screenshot tool</p>
               <p><strong>Method 2:</strong> Click "Open Page" → Use your OS screenshot tool (Windows: Win+Shift+S, Mac: Cmd+Shift+4)</p>
               <p><strong>Method 3:</strong> Use browser extensions like "Full Page Screen Capture"</p>
             </div>
-          </div>
+          </StandardContentCard>
           
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {pages.map((page, index) => (
               <StandardContentCard key={index} title={page.title}>
-                <div className="flex items-center gap-2 mb-3">
-                  <Camera className="w-5 h-5" />
-                </div>
                 <p className="text-sm text-muted-foreground mb-4">{page.description}</p>
                 <div className="space-y-3">
-                  <div className="grid gap-2">
-                    <Button 
-                      onClick={() => takeScreenshot(page.url, page.title)}
-                      className="w-full gap-2"
-                    >
-                      <Camera className="w-4 h-4" />
-                      Take Screenshot
-                    </Button>
-                    <Button 
-                      onClick={() => openPageInNewTab(page.url)}
-                      variant="outline"
-                      className="w-full gap-2"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      Open Page
-                    </Button>
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    URL: <code className="bg-muted px-1 rounded">{page.url}</code>
+                  <Button 
+                    onClick={() => takeScreenshot(page.url, page.title)}
+                    className="w-full gap-2"
+                  >
+                    <Camera className="w-4 h-4" />
+                    Take Screenshot
+                  </Button>
+                  <Button 
+                    onClick={() => openPageInNewTab(page.url)}
+                    variant="outline"
+                    className="w-full gap-2"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Open Page
+                  </Button>
+                  <div className="text-xs text-muted-foreground pt-2 border-t">
+                    URL: <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{page.url}</code>
                   </div>
                 </div>
               </StandardContentCard>
@@ -181,34 +150,46 @@ const Screenshots = () => {
           </div>
           
           <StandardContentCard title="Browser Screenshot Instructions">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <h3 className="font-medium mb-2">Chrome/Edge</h3>
-                <ol className="text-sm text-muted-foreground space-y-1">
-                  <li>1. Press F12 to open Developer Tools</li>
-                  <li>2. Click the Device Toolbar icon (mobile/tablet icon)</li>
-                  <li>3. Click the Screenshot icon (camera)</li>
-                  <li>4. Choose "Capture full size screenshot"</li>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-2">
+                <h3 className="font-semibold text-sm">Chrome/Edge</h3>
+                <ol className="text-sm text-muted-foreground space-y-1.5 list-decimal list-inside">
+                  <li>Press F12 to open Developer Tools</li>
+                  <li>Click the Device Toolbar icon (mobile/tablet icon)</li>
+                  <li>Click the Screenshot icon (camera)</li>
+                  <li>Choose "Capture full size screenshot"</li>
                 </ol>
               </div>
-              <div>
-                <h3 className="font-medium mb-2">Firefox</h3>
-                <ol className="text-sm text-muted-foreground space-y-1">
-                  <li>1. Press F12 to open Developer Tools</li>
-                  <li>2. Click the Settings gear icon</li>
-                  <li>3. Enable "Take a screenshot of the entire page"</li>
-                  <li>4. Click the camera icon in toolbar</li>
+              <div className="space-y-2">
+                <h3 className="font-semibold text-sm">Firefox</h3>
+                <ol className="text-sm text-muted-foreground space-y-1.5 list-decimal list-inside">
+                  <li>Press F12 to open Developer Tools</li>
+                  <li>Click the Settings gear icon</li>
+                  <li>Enable "Take a screenshot of the entire page"</li>
+                  <li>Click the camera icon in toolbar</li>
                 </ol>
               </div>
             </div>
           </StandardContentCard>
 
-          <StandardContentCard title="Recommended File Names" className="bg-muted">
-            <div className="grid gap-2 text-sm">
-              <div><code>loanflow-dashboard.png</code> - Dashboard overview</div>
-              <div><code>loanflow-pipeline.png</code> - Pipeline management</div>
-              <div><code>loanflow-leads.png</code> - Lead management</div>
-              <div><code>loanflow-enterprise.png</code> - Enterprise tools</div>
+          <StandardContentCard title="Recommended File Names">
+            <div className="grid gap-2 text-sm font-mono">
+              <div className="flex items-center gap-2">
+                <code className="bg-muted px-2 py-1 rounded">loanflow-dashboard.png</code>
+                <span className="text-muted-foreground">- Dashboard overview</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <code className="bg-muted px-2 py-1 rounded">loanflow-pipeline.png</code>
+                <span className="text-muted-foreground">- Pipeline management</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <code className="bg-muted px-2 py-1 rounded">loanflow-leads.png</code>
+                <span className="text-muted-foreground">- Lead management</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <code className="bg-muted px-2 py-1 rounded">loanflow-enterprise.png</code>
+                <span className="text-muted-foreground">- Enterprise tools</span>
+              </div>
             </div>
           </StandardContentCard>
         </div>
