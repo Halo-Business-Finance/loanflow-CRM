@@ -46,7 +46,7 @@ export function LeadsList({
   const someSelected = selectedLeads.length > 0 && selectedLeads.length < leads.length
 
   return (
-    <div className="border rounded-lg overflow-hidden bg-card">
+    <div className="border border-blue-600 rounded-lg overflow-hidden bg-card">
       <Table>
         <TableHeader>
           <TableRow className="border-b border-border hover:bg-transparent bg-muted/30">
