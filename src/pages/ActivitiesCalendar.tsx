@@ -64,7 +64,14 @@ export default function ActivitiesCalendar() {
   return (
     <StandardPageLayout>
       <StandardPageHeader
-        title="Calendar"
+        title={
+          <div className="flex items-center gap-3">
+            <span>Calendar</span>
+            <Badge variant="default" className="bg-primary text-primary-foreground">
+              {events.length} Events
+            </Badge>
+          </div>
+        }
         description="Manage your appointments, meetings, and important deadlines"
         actions={
           <Button onClick={() => setShowScheduleModal(true)}>

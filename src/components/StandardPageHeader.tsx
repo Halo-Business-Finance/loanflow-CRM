@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface StandardPageHeaderProps {
-  title: string;
+  title: React.ReactNode;
   description?: string;
   actions?: React.ReactNode;
   className?: string;
@@ -19,7 +19,9 @@ export function StandardPageHeader({
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <h1 className="text-xl font-semibold text-foreground no-underline">{title}</h1>
+            <h1 className="text-xl font-semibold text-foreground no-underline flex items-center">
+              {title}
+            </h1>
             {description && (
               <p className="text-sm text-muted-foreground">{description}</p>
             )}

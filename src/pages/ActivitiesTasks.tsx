@@ -6,12 +6,20 @@ import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 import { CheckSquare, Clock, AlertTriangle, Plus, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Badge } from "@/components/ui/badge"
 
 export default function ActivitiesTasks() {
   return (
     <StandardPageLayout>
       <StandardPageHeader
-        title="Tasks"
+        title={
+          <div className="flex items-center gap-3">
+            <span>Tasks</span>
+            <Badge variant="default" className="bg-primary text-primary-foreground">
+              15 Tasks
+            </Badge>
+          </div>
+        }
         description="Manage your daily tasks and action items"
         actions={
           <div className="flex gap-2">
