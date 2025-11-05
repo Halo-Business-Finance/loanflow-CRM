@@ -706,6 +706,7 @@ export default function Activities() {
         <StandardContentCard 
           title="Activity Timeline"
           headerActions={<Clock className="h-5 w-5 text-green-600" />}
+          className="border border-blue-600"
         >
           <div className="space-y-6">
             {[...activities, ...notifications.map(n => ({
