@@ -125,9 +125,9 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         >
           <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
             {sidebarCollapsed ? (
-              <ToggleLeft className="h-5 w-5" />
+              <ToggleLeft className="h-6 w-6" />
             ) : (
-              <ToggleRight className="h-5 w-5" />
+              <ToggleRight className="h-6 w-6" />
             )}
           </span>
         </button>
