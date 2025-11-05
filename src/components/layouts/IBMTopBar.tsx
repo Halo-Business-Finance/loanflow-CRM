@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, HelpCircle, Grid3x3, User, ChevronDown, Mail, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, HelpCircle, PanelLeftClose, PanelLeftOpen, User, ChevronDown, Mail, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -120,11 +120,15 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <button
           type="button"
           onClick={onMenuClick}
-          aria-label="Open menu"
+          aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           className="group h-24 w-12 rounded-none text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent outline-none hover:outline-none focus:outline-none focus:ring-0"
         >
           <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-            <Grid3x3 className="h-5 w-5" />
+            {sidebarCollapsed ? (
+              <PanelLeftOpen className="h-5 w-5" />
+            ) : (
+              <PanelLeftClose className="h-5 w-5" />
+            )}
           </span>
         </button>
         
