@@ -1,8 +1,9 @@
 import { StandardPageLayout } from "@/components/StandardPageLayout"
 import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { StandardKPICard } from "@/components/StandardKPICard"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
-import { CheckSquare, Clock, AlertTriangle, Plus } from "lucide-react"
+import { CheckSquare, Clock, AlertTriangle, Plus, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 
@@ -13,57 +14,51 @@ export default function ActivitiesTasks() {
         title="Tasks"
         description="Manage your daily tasks and action items"
         actions={
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            New Task
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="icon">
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              New Task
+            </Button>
+          </div>
         }
       />
 
       <ResponsiveContainer>
         <div className="space-y-6">
           <div className="grid gap-4 md:grid-cols-3">
-            <StandardContentCard>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Pending Tasks</span>
-                <Clock className="h-4 w-4 text-muted-foreground" />
-              </div>
-              <div className="text-2xl font-bold">12</div>
-              <p className="text-xs text-muted-foreground">Due today</p>
-            </StandardContentCard>
+            <StandardKPICard
+              title="Pending Tasks"
+              value="12"
+            />
 
-            <StandardContentCard>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Completed</span>
-                <CheckSquare className="h-4 w-4 text-green-600" />
-              </div>
-              <div className="text-2xl font-bold">8</div>
-              <p className="text-xs text-muted-foreground">Today</p>
-            </StandardContentCard>
+            <StandardKPICard
+              title="Completed"
+              value="8"
+              trend={{ value: "+15%", direction: "up" as const }}
+            />
 
-            <StandardContentCard>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Overdue</span>
-                <AlertTriangle className="h-4 w-4 text-red-600" />
-              </div>
-              <div className="text-2xl font-bold">3</div>
-              <p className="text-xs text-muted-foreground">Requires attention</p>
-            </StandardContentCard>
+            <StandardKPICard
+              title="Overdue"
+              value="3"
+            />
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <StandardContentCard title="Today's Tasks">
+            <StandardContentCard title="Today's Tasks" className="border border-blue-600">
               <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-card/50 border border-border/50 rounded-lg hover:bg-card/80 transition-colors">
                   <Checkbox />
                   <div className="flex-1">
                     <p className="font-medium">Review loan application #12345</p>
                     <p className="text-sm text-muted-foreground">Due: 2:00 PM</p>
                   </div>
-                  <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
                 </div>
                 
-                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-card/50 border border-border/50 rounded-lg hover:bg-card/80 transition-colors">
                   <Checkbox />
                   <div className="flex-1">
                     <p className="font-medium">Call client for documentation</p>
@@ -71,20 +66,20 @@ export default function ActivitiesTasks() {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-card/50 border border-border/50 rounded-lg hover:bg-card/80 transition-colors">
                   <Checkbox checked />
                   <div className="flex-1">
                     <p className="font-medium line-through text-muted-foreground">Send approval letter</p>
                     <p className="text-sm text-muted-foreground">Completed: 10:15 AM</p>
                   </div>
-                  <CheckSquare className="h-4 w-4 text-green-600" />
+                  <CheckSquare className="h-4 w-4 text-primary" />
                 </div>
               </div>
             </StandardContentCard>
 
-            <StandardContentCard title="Upcoming Tasks">
+            <StandardContentCard title="Upcoming Tasks" className="border border-blue-600">
               <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-card/50 border border-border/50 rounded-lg hover:bg-card/80 transition-colors">
                   <Checkbox />
                   <div className="flex-1">
                     <p className="font-medium">Prepare quarterly report</p>
@@ -92,7 +87,7 @@ export default function ActivitiesTasks() {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-card/50 border border-border/50 rounded-lg hover:bg-card/80 transition-colors">
                   <Checkbox />
                   <div className="flex-1">
                     <p className="font-medium">Team meeting preparation</p>
@@ -100,7 +95,7 @@ export default function ActivitiesTasks() {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-card/50 border border-border/50 rounded-lg hover:bg-card/80 transition-colors">
                   <Checkbox />
                   <div className="flex-1">
                     <p className="font-medium">Update client contact information</p>

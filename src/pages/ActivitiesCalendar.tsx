@@ -27,17 +27,17 @@ export default function ActivitiesCalendar() {
   const getEventTypeColor = (type: string) => {
     switch (type) {
       case 'call':
-        return 'bg-blue-500'
+        return 'bg-primary'
       case 'meeting':
       case 'team_meeting':
-        return 'bg-purple-500'
+        return 'bg-secondary'
       case 'followup':
       case 'follow_up':
-        return 'bg-green-500'
+        return 'bg-accent'
       case 'deadline':
-        return 'bg-red-500'
+        return 'bg-destructive'
       case 'task':
-        return 'bg-orange-500'
+        return 'bg-primary/70'
       default:
         return 'bg-muted-foreground'
     }
@@ -77,7 +77,7 @@ export default function ActivitiesCalendar() {
       <ResponsiveContainer>
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <StandardContentCard>
+            <StandardContentCard className="border border-blue-600">
               <div className="space-y-4">
                 <div className="flex items-center justify-end">
                   <div className="flex items-center gap-2">
@@ -204,23 +204,23 @@ export default function ActivitiesCalendar() {
 
                 <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground border-t flex-wrap">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-blue-500" />
+                    <div className="w-2 h-2 rounded-full bg-primary" />
                     <span>Call</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-purple-500" />
+                    <div className="w-2 h-2 rounded-full bg-secondary" />
                     <span>Meeting</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500" />
+                    <div className="w-2 h-2 rounded-full bg-accent" />
                     <span>Follow-up</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-red-500" />
+                    <div className="w-2 h-2 rounded-full bg-destructive" />
                     <span>Deadline</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-orange-500" />
+                    <div className="w-2 h-2 rounded-full bg-primary/70" />
                     <span>Task</span>
                   </div>
                   <div className="flex items-center gap-2 ml-auto">
@@ -233,14 +233,17 @@ export default function ActivitiesCalendar() {
           </div>
 
           <div className="space-y-6">
-            <StandardContentCard title={isToday(selectedDate) ? "Today's Schedule" : "Selected Day"}>
+            <StandardContentCard 
+              title={isToday(selectedDate) ? "Today's Schedule" : "Selected Day"}
+              className="border border-blue-600"
+            >
               <EventListSidebar 
                 events={selectedDateEvents}
                 selectedDate={selectedDate}
               />
             </StandardContentCard>
 
-            <StandardContentCard title="Quick Actions">
+            <StandardContentCard title="Quick Actions" className="border border-blue-600">
               <div className="space-y-2">
                 <Button 
                   className="w-full" 
