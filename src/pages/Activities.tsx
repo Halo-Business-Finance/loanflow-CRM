@@ -401,15 +401,17 @@ export default function Activities() {
 
   if (loading) {
     return (
-      <div className="flex flex-col h-full bg-background">
-        <div className="p-8 space-y-8 animate-fade-in">
-          <div className="space-y-4">
-            <h1 className="text-xl font-semibold text-foreground no-underline">Activity Command Center</h1>
-            <p className="text-sm text-muted-foreground">Monitor system notifications, user activities, and important updates in real-time</p>
+      <StandardPageLayout>
+        <div className="px-4 md:px-6 pt-6 pb-4 md:pt-8 md:pb-6">
+          <div className="space-y-1 animate-pulse">
+            <div className="h-8 bg-muted rounded w-64 mb-2"></div>
+            <div className="h-5 bg-muted rounded w-96"></div>
           </div>
+        </div>
+        <div className="px-4 md:px-6 space-y-6 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse bg-card rounded-lg p-6">
+              <div key={i} className="animate-pulse bg-card rounded-lg p-6 border border-blue-600">
                 <div className="h-6 bg-muted rounded w-24 mb-4"></div>
                 <div className="h-8 bg-muted rounded w-16 mb-2"></div>
                 <div className="h-8 w-8 bg-muted rounded"></div>
@@ -417,25 +419,30 @@ export default function Activities() {
             ))}
           </div>
         </div>
-      </div>
+      </StandardPageLayout>
     )
   }
 
   return (
-    <div className="flex flex-col h-full bg-background">
-      <div className="p-8 space-y-8 animate-fade-in">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-semibold text-foreground no-underline">Activity Command Center</h1>
-              <p className="text-sm text-muted-foreground">Monitor system notifications, user activities, and important updates in real-time</p>
-            </div>
-            <Button onClick={fetchData} className="flex items-center gap-2" variant="outline">
-              <RefreshCw className="h-4 w-4" />
-              Refresh Data
-            </Button>
-          </div>
-        </div>
+    <StandardPageLayout>
+      <StandardPageHeader
+        title={
+          <>
+            Activity Command Center
+            <Badge variant="secondary" className="ml-3">
+              {notifications.length + activities.length}
+            </Badge>
+          </>
+        }
+        description="Monitor system notifications, user activities, and important updates in real-time"
+        actions={
+          <Button onClick={fetchData} size="sm" variant="outline">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh Data
+          </Button>
+        }
+      />
+      <div className="px-4 md:px-6 space-y-6 pb-8">
         {/* Metrics Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <StandardKPICard
@@ -893,7 +900,7 @@ export default function Activities() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
-  </div>
+      </div>
+    </StandardPageLayout>
   )
 }
