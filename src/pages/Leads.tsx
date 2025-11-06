@@ -611,8 +611,8 @@ export default function Leads() {
                     className="pl-10"
                   />
                 </div>
-                <Button variant="outline" className="gap-2" onClick={() => setShowFilters(!showFilters)}>
-                  <Filter className="h-4 w-4" />
+                <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setShowFilters(!showFilters)}>
+                  <Filter className="h-3 w-3 mr-2" />
                   {showFilters ? 'Hide Filters' : 'Filter'}
                 </Button>
               </div>
