@@ -207,63 +207,46 @@ export function LeadTableRow({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => onEdit(lead)}
-            className="h-8 w-8 p-0 hover:bg-accent hover:text-foreground transition-colors"
+            onClick={() => navigate(`/leads/${lead.id}`)}
+            className="h-8 px-3 hover:bg-accent hover:text-foreground transition-colors"
           >
-            <Edit className="h-3.5 w-3.5" />
+            <Eye className="h-3.5 w-3.5 mr-1" />
+            <span className="text-xs">View</span>
           </Button>
           
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="h-8 w-8 p-0 hover:bg-accent hover:text-foreground transition-colors"
-              >
-                <MoreHorizontal className="h-3.5 w-3.5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              align="end" 
-              className="w-48 bg-card border-border shadow-lg"
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onEdit(lead)}
+            className="h-8 px-3 hover:bg-accent hover:text-foreground transition-colors"
+          >
+            <Edit className="h-3.5 w-3.5 mr-1" />
+            <span className="text-xs">Edit</span>
+          </Button>
+          
+          {!lead.is_converted_to_client && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onConvert(lead)}
+              className="h-8 px-3 hover:bg-accent hover:text-foreground transition-colors"
             >
-              <DropdownMenuItem 
-                onClick={() => navigate(`/leads/${lead.id}`)}
-                className="cursor-pointer text-sm"
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                View Details
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => onEdit(lead)}
-                className="cursor-pointer text-sm"
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Lead
-              </DropdownMenuItem>
-              {!lead.is_converted_to_client && (
-                <DropdownMenuItem 
-                  onClick={() => onConvert(lead)}
-                  className="cursor-pointer text-sm"
-                >
-                  <ArrowRight className="h-4 w-4 mr-2" />
-                  Convert to Client
-                </DropdownMenuItem>
-              )}
-              {canDelete && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    onClick={() => onDelete(lead.id, lead.name)}
-                    className="text-destructive focus:text-destructive cursor-pointer text-sm"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete Lead
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <ArrowRight className="h-3.5 w-3.5 mr-1" />
+              <span className="text-xs">Convert</span>
+            </Button>
+          )}
+          
+          {canDelete && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDelete(lead.id, lead.name)}
+              className="h-8 px-3 hover:bg-destructive/10 hover:text-destructive transition-colors"
+            >
+              <Trash2 className="h-3.5 w-3.5 mr-1" />
+              <span className="text-xs">Delete</span>
+            </Button>
+          )}
         </div>
       </td>
     </tr>
