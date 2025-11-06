@@ -466,7 +466,7 @@ export default function Leads() {
               {/* Key Metrics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card 
-                  className="bg-card border border-blue-600 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                  className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
                   onClick={() => navigate('/leads')}
                 >
                   <CardContent className="p-6">
@@ -478,7 +478,7 @@ export default function Leads() {
                 </Card>
 
                 <Card 
-                  className="bg-card border border-blue-600 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                  className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
                   onClick={() => {
                     setSelectedStage('Initial Contact');
                     setShowFilters(true);
@@ -493,7 +493,7 @@ export default function Leads() {
                 </Card>
 
                 <Card 
-                  className="bg-card border border-blue-600 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                  className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
                   onClick={() => {
                     setSelectedPriority('High');
                     setShowFilters(true);
@@ -508,7 +508,7 @@ export default function Leads() {
                 </Card>
 
                 <Card 
-                  className="bg-card border border-blue-600 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                  className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
                   onClick={() => navigate('/pipeline')}
                 >
                   <CardContent className="p-6">
