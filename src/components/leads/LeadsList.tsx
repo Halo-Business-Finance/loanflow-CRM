@@ -50,7 +50,7 @@ export function LeadsList({
       <Table>
         <TableHeader>
           <TableRow className="border-b border-border hover:bg-transparent bg-muted/30">
-            <TableHead className="w-[300px] px-4">
+            <TableHead className="w-[220px] px-4">
               <div className="flex items-center gap-3">
                 <Checkbox
                   checked={allSelected}
@@ -64,7 +64,7 @@ export function LeadsList({
             <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Contact Information</TableHead>
             <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Loan Details</TableHead>
             <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Lead Status</TableHead>
-            <TableHead className="px-4 text-right font-medium text-xs uppercase tracking-wider text-muted-foreground">Actions</TableHead>
+            <TableHead className="w-[280px] px-4 text-right font-medium text-xs uppercase tracking-wider text-muted-foreground">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
