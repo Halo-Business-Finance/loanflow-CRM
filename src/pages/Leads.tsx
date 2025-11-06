@@ -562,11 +562,11 @@ export default function Leads() {
               )}
 
         <Tabs defaultValue="active" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1">
-            <TabsTrigger value="active" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white/70 hover:text-white">Active Leads</TabsTrigger>
-            <TabsTrigger value="qualified" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white/70 hover:text-white">Pre-Qualified</TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white/70 hover:text-white">Performance</TabsTrigger>
-            <TabsTrigger value="management" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white/70 hover:text-white">Lead Tools</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">
+            <TabsTrigger value="active" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white/70 hover:text-white rounded-md">Active Leads</TabsTrigger>
+            <TabsTrigger value="qualified" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white/70 hover:text-white rounded-md">Pre-Qualified</TabsTrigger>
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white/70 hover:text-white rounded-md">Performance</TabsTrigger>
+            <TabsTrigger value="management" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white/70 hover:text-white rounded-md">Lead Tools</TabsTrigger>
           </TabsList>
 
           <TabsContent value="active" className="space-y-6">
