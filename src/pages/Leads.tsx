@@ -60,7 +60,7 @@ export default function Leads() {
   }, [user, userRoles]);
   
   // Use real-time leads hook
-  const { leads: realtimeLeads, loading: realtimeLoading, error: realtimeError, refetch: realtimeRefetch, refetchSilent: realtimeRefetchSilent } = useRealtimeLeads();
+  const { leads: realtimeLeads, loading: realtimeLoading, error: realtimeError, refetch: realtimeRefetch, refetchSilent: realtimeRefetchSilent, ensureAccessAndRefetch } = useRealtimeLeads();
   
   const [overview, setOverview] = useState<LeadsOverview>({
     totalLeads: 0,
@@ -467,6 +467,28 @@ export default function Leads() {
                   <Filter className="h-3 w-3 mr-2" />
                   {showFilters ? 'Hide Filters' : 'Filter'}
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs font-medium"
+                  onClick={() => {
+                    toast({ title: 'Reloading leads' })
+                    realtimeRefetchSilent()
+                  }}
+                >
+                  Reload
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs font-medium"
+                  onClick={async () => {
+                    toast({ title: 'Ensuring access', description: 'Updating your access and reloading leads...' })
+                    await ensureAccessAndRefetch()
+                  }}
+                >
+                  Ensure Access
+                </Button>
                 <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white">
                   <UserPlus className="h-3 w-3 mr-2" />
                   Add Lead
@@ -559,6 +581,19 @@ export default function Leads() {
                     />
                   </CardContent>
                 </Card>
+              )}
+
+              {!realtimeLoading && !realtimeError && realtimeLeads.length === 0 && (
+                <Alert className="border-l-4 border-l-primary bg-primary/10">
+                  <AlertDescription>
+                    No leads are visible with your current access. Try Ensure Access & Reload.
+                    <div className="mt-2">
+                      <Button variant="secondary" size="sm" onClick={ensureAccessAndRefetch}>
+                        Ensure Access & Reload
+                      </Button>
+                    </div>
+                  </AlertDescription>
+                </Alert>
               )}
 
         <Tabs defaultValue="active" className="space-y-6">

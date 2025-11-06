@@ -38,22 +38,33 @@ export function useRealtimeLeads() {
         console.warn('[useRealtimeLeads] ensure_default_viewer_role failed (non-blocking):', e)
       }
 
-      // 1) Fetch leads with only essential fields
-      console.log('[useRealtimeLeads] Starting leads fetch...')
-      const { data: leadRows, error: leadsError } = await supabase
-        .from('leads')
-        .select('id, lead_number, created_at, updated_at, user_id, contact_entity_id')
-        .order('created_at', { ascending: false })
-
-      console.log('[useRealtimeLeads] Leads query result:', { 
-        rowCount: leadRows?.length || 0, 
-        error: leadsError ? JSON.stringify(leadsError) : null 
-      })
-
-      if (leadsError) {
-        console.error('Error fetching leads:', leadsError)
-        throw leadsError
+      // 1) Fetch leads (RPC first for RLS-safe access), fallback to direct table select
+      console.log('[useRealtimeLeads] Starting leads fetch (RPC first)...')
+      let leadRows: any[] | null = null
+      let usedPath = 'rpc'
+      const { data: rpcRows, error: rpcError } = await supabase.rpc('get_accessible_leads')
+      if (rpcError) {
+        console.warn('[useRealtimeLeads] RPC get_accessible_leads failed, falling back to table select:', rpcError)
+        usedPath = 'table'
+        const { data, error } = await supabase
+          .from('leads')
+          .select('id, lead_number, created_at, updated_at, user_id, contact_entity_id')
+          .order('created_at', { ascending: false })
+        if (error) {
+          console.error('Error fetching leads (table fallback):', error)
+          throw error
+        }
+        leadRows = data || []
+      } else {
+        leadRows = (rpcRows as any[]) || []
+        // Client-side sort to keep consistent ordering
+        leadRows.sort((a: any, b: any) => (new Date(b.created_at).getTime() - new Date(a.created_at).getTime()))
       }
+
+      console.log('[useRealtimeLeads] Leads query result:', {
+        path: usedPath,
+        rowCount: leadRows?.length || 0
+      })
 
       // 2) Fetch related contact entities in one batch (only needed fields)
       const contactEntityIds = (leadRows || [])
@@ -226,12 +237,21 @@ export function useRealtimeLeads() {
   const refetchSilent = () => {
     fetchLeads({ silent: true })
   }
+  const ensureAccessAndRefetch = async () => {
+    try {
+      await supabase.rpc('ensure_default_viewer_role')
+    } catch (e) {
+      console.warn('[useRealtimeLeads] ensure_default_viewer_role in ensureAccessAndRefetch failed:', e)
+    }
+    await fetchLeads()
+  }
 
   return {
     leads,
     loading,
     error,
     refetch,
-    refetchSilent
+    refetchSilent,
+    ensureAccessAndRefetch
   }
 }
