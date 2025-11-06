@@ -36,17 +36,20 @@ export default function ActivitiesTasks() {
             <StandardKPICard
               title="Pending Tasks"
               value="12"
+              className="border border-blue-600"
             />
 
             <StandardKPICard
               title="Completed"
               value="8"
               trend={{ value: "+15%", direction: "up" as const }}
+              className="border border-blue-600"
             />
 
             <StandardKPICard
               title="Overdue"
               value="3"
+              className="border border-blue-600"
             />
           </div>
 
