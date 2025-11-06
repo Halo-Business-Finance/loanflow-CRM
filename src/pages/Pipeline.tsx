@@ -374,7 +374,7 @@ export default function Pipeline() {
         </TabsList>
 
         <TabsContent value="visual" className="space-y-6">
-          <Card className="border border-blue-600">
+          <Card>
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                 <GitBranch className="h-5 w-5 text-primary" />
@@ -392,7 +392,7 @@ export default function Pipeline() {
 
         <TabsContent value="analytics" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
-            <Card className="border border-blue-600">
+            <Card>
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                   <TrendingUp className="h-5 w-5 text-primary" />
@@ -420,7 +420,7 @@ export default function Pipeline() {
               </CardContent>
             </Card>
 
-            <Card className="border border-blue-600">
+            <Card>
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                   <Clock className="h-5 w-5 text-accent-foreground" />

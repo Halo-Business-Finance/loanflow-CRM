@@ -479,7 +479,6 @@ export default function Activities() {
           <StandardContentCard 
             title="Call Reminders"
             headerActions={<Phone className="h-5 w-5 text-navy" />}
-            className="border border-blue-600"
           >
             <div className="space-y-4">
               {notifications
@@ -546,7 +545,6 @@ export default function Activities() {
           <StandardContentCard 
             title="Email Reminders"
             headerActions={<Mail className="h-5 w-5 text-green-600" />}
-            className="border border-blue-600"
           >
             <div className="space-y-4">
               {notifications
@@ -613,7 +611,6 @@ export default function Activities() {
           <StandardContentCard 
             title="General Follow-ups"
             headerActions={<Bell className="h-5 w-5 text-purple-600" />}
-            className="border border-blue-600"
           >
             <div className="space-y-4">
               {notifications
@@ -680,7 +677,6 @@ export default function Activities() {
         <StandardContentCard 
           title="Recent Activities"
           headerActions={<Activity className="h-5 w-5 text-blue-600" />}
-          className="border border-blue-600"
         >
           <div className="space-y-4">
             {activities.length === 0 ? (
@@ -715,7 +711,6 @@ export default function Activities() {
         <StandardContentCard 
           title="Activity Timeline"
           headerActions={<Clock className="h-5 w-5 text-green-600" />}
-          className="border border-blue-600"
         >
           <div className="space-y-6">
             {[...activities, ...notifications.map(n => ({

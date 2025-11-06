@@ -85,7 +85,7 @@ export default function ActivitiesCalendar() {
       <ResponsiveContainer>
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <StandardContentCard className="border border-blue-600">
+            <StandardContentCard>
               <div className="space-y-4">
                 <div className="flex items-center justify-end">
                   <div className="flex items-center gap-2">
@@ -243,7 +243,6 @@ export default function ActivitiesCalendar() {
           <div className="space-y-6">
             <StandardContentCard 
               title={isToday(selectedDate) ? "Today's Schedule" : "Selected Day"}
-              className="border border-blue-600"
             >
               <EventListSidebar 
                 events={selectedDateEvents}
@@ -251,7 +250,7 @@ export default function ActivitiesCalendar() {
               />
             </StandardContentCard>
 
-            <StandardContentCard title="Quick Actions" className="border border-blue-600">
+            <StandardContentCard title="Quick Actions">
               <div className="space-y-2">
                 <Button 
                   className="w-full" 
