@@ -31,10 +31,16 @@ export function useRealtimeLeads() {
       }
 
       // 1) Fetch leads with only essential fields
+      console.log('[useRealtimeLeads] Starting leads fetch...')
       const { data: leadRows, error: leadsError } = await supabase
         .from('leads')
         .select('id, lead_number, created_at, updated_at, user_id, contact_entity_id')
         .order('created_at', { ascending: false })
+
+      console.log('[useRealtimeLeads] Leads query result:', { 
+        rowCount: leadRows?.length || 0, 
+        error: leadsError ? JSON.stringify(leadsError) : null 
+      })
 
       if (leadsError) {
         console.error('Error fetching leads:', leadsError)
@@ -49,10 +55,16 @@ export function useRealtimeLeads() {
       let contactMap: Record<string, any> = {}
       if (contactEntityIds.length > 0) {
         const uniqueIds = Array.from(new Set(contactEntityIds))
+        console.log('[useRealtimeLeads] Fetching contact entities for IDs:', uniqueIds)
         const { data: contactRows, error: contactError } = await supabase
           .from('contact_entities')
           .select('id, name, first_name, last_name, email, phone, business_name, location, loan_amount, loan_type, credit_score, stage, priority, net_operating_income, naics_code, ownership_structure')
           .in('id', uniqueIds)
+
+        console.log('[useRealtimeLeads] Contact entities query result:', { 
+          rowCount: contactRows?.length || 0, 
+          error: contactError ? JSON.stringify(contactError) : null 
+        })
 
         if (contactError) {
           console.error('Error fetching contact entities:', contactError)
@@ -176,13 +188,18 @@ export function useRealtimeLeads() {
   })
 
   useEffect(() => {
+    console.log('[useRealtimeLeads] Effect triggered - authLoading:', authLoading, 'user:', !!user, 'userId:', user?.id)
     // Only fetch leads if user is authenticated and auth is not loading
     if (!authLoading && user) {
+      console.log('[useRealtimeLeads] Fetching leads for authenticated user:', user.id)
       fetchLeads()
     } else if (!authLoading && !user) {
       // User is not authenticated, clear leads and stop loading
+      console.log('[useRealtimeLeads] No authenticated user, clearing leads')
       setLeads([])
       setLoading(false)
+    } else {
+      console.log('[useRealtimeLeads] Auth still loading, waiting...')
     }
   }, [user, authLoading])
 
