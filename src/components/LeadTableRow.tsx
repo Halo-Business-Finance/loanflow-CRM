@@ -1,5 +1,6 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
+import { format } from "date-fns"
 
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -198,7 +199,21 @@ export function LeadTableRow({
         </div>
       </td>
 
-      {/* Column 5: Actions */}
+      {/* Column 5: Created Date */}
+      <td className={isCompact ? 'px-2 py-1.5' : 'px-4 py-4'}>
+        <div className="flex flex-col gap-0.5">
+          <span className={`text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
+            {lead.created_at ? format(new Date(lead.created_at), 'MMM d, yyyy') : '-'}
+          </span>
+          {lead.created_at && (
+            <span className={`text-muted-foreground ${isCompact ? 'text-[9px]' : 'text-[10px]'}`}>
+              {format(new Date(lead.created_at), 'h:mm a')}
+            </span>
+          )}
+        </div>
+      </td>
+
+      {/* Column 6: Actions */}
       <td className={`text-right ${isCompact ? 'px-2 py-1.5' : 'px-4 py-4'}`} onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-1 justify-end">
           <Button

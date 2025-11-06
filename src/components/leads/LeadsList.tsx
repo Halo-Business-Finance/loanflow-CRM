@@ -109,6 +109,17 @@ export function LeadsList({
                 <SortIcon column="stage" />
               </Button>
             </TableHead>
+            <TableHead className={isCompact ? 'px-2 py-1' : 'px-4'}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onSort?.('created_at')}
+                className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
+              >
+                Created
+                <SortIcon column="created_at" />
+              </Button>
+            </TableHead>
             <TableHead className={`w-[280px] text-right font-medium uppercase tracking-wider text-muted-foreground ${isCompact ? 'px-2 py-1 text-[10px]' : 'px-4 text-xs'}`}>Actions</TableHead>
           </TableRow>
         </TableHeader>
