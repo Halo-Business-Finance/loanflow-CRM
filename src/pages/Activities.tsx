@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { StandardPageLayout } from '@/components/StandardPageLayout'
-import { StandardPageHeader } from '@/components/StandardPageHeader'
 import { StandardKPICard } from '@/components/StandardKPICard'
 import { StandardContentCard } from '@/components/StandardContentCard'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -401,14 +399,12 @@ export default function Activities() {
 
   if (loading) {
     return (
-      <StandardPageLayout>
-        <div className="px-4 md:px-6 pt-6 pb-4 md:pt-8 md:pb-6">
+      <div className="min-h-screen bg-background">
+        <div className="p-8 space-y-8 animate-fade-in">
           <div className="space-y-1 animate-pulse">
             <div className="h-8 bg-muted rounded w-64 mb-2"></div>
             <div className="h-5 bg-muted rounded w-96"></div>
           </div>
-        </div>
-        <div className="px-4 md:px-6 space-y-6 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="animate-pulse bg-card rounded-lg p-6 border border-blue-600">
@@ -419,23 +415,36 @@ export default function Activities() {
             ))}
           </div>
         </div>
-      </StandardPageLayout>
+      </div>
     )
   }
 
   return (
-    <StandardPageLayout>
-      <StandardPageHeader
-        title="Activity Command Center"
-        description="Monitor system notifications, user activities, and important updates in real-time"
-        actions={
-          <Button onClick={fetchData} size="sm" variant="outline" className="h-8 text-xs font-medium">
-            <RefreshCw className="h-3 w-3 mr-2" />
-            Refresh Data
-          </Button>
-        }
-      />
-      <div className="px-4 md:px-6 space-y-6 pb-8">
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Activity Command Center
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Monitor system notifications, user activities, and important updates in real-time
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button onClick={fetchData} variant="outline" size="sm" className="h-8 text-xs font-medium">
+              <RefreshCw className="h-3 w-3 mr-2" />
+              Refresh Data
+            </Button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="space-y-6">
         {/* Metrics Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <StandardKPICard
@@ -893,7 +902,8 @@ export default function Activities() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+        </div>
       </div>
-    </StandardPageLayout>
+    </div>
   )
 }
