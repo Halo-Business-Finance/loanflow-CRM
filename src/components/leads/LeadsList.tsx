@@ -49,7 +49,7 @@ export function LeadsList({
     <div className="border rounded-lg overflow-hidden bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="border-b border-border hover:bg-transparent bg-muted/30">
+          <TableRow className="sticky top-0 z-10 border-b border-border hover:bg-transparent bg-muted/30 backdrop-blur supports-[backdrop-filter]:bg-muted/60">
             <TableHead className="w-[220px] px-4">
               <div className="flex items-center gap-3">
                 <Checkbox
