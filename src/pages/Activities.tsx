@@ -426,18 +426,11 @@ export default function Activities() {
   return (
     <StandardPageLayout>
       <StandardPageHeader
-        title={
-          <>
-            Activity Command Center
-            <Badge variant="secondary" className="ml-3">
-              {notifications.length + activities.length}
-            </Badge>
-          </>
-        }
+        title="Activity Command Center"
         description="Monitor system notifications, user activities, and important updates in real-time"
         actions={
-          <Button onClick={fetchData} size="sm" variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
+          <Button onClick={fetchData} size="sm" variant="outline" className="h-8 text-xs font-medium">
+            <RefreshCw className="h-3 w-3 mr-2" />
             Refresh Data
           </Button>
         }
