@@ -97,27 +97,27 @@ export function LeadTableRow({
           <div className="flex flex-col gap-1.5 min-w-0">
             {lead.business_name && (
               <div className="flex items-center gap-1.5">
-                <span className="text-sm text-muted-foreground truncate">{lead.business_name}</span>
+                <span className="text-xs text-muted-foreground truncate">{lead.business_name}</span>
               </div>
             )}
-            <span className="text-sm text-foreground group-hover:text-primary transition-colors truncate">
+            <span className="text-xs text-foreground group-hover:text-primary transition-colors truncate">
               {lead.name}
             </span>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 #{String(lead.lead_number).padStart(3, '0')}
               </span>
               {lead.is_converted_to_client ? (
                 <Badge 
                   variant="secondary" 
-                  className="text-sm px-1.5 py-0 h-5 bg-emerald-500/10 text-emerald-600 border-0 dark:text-emerald-400"
+                  className="text-xs px-1.5 py-0 h-5 bg-emerald-500/10 text-emerald-600 border-0 dark:text-emerald-400"
                 >
                   Converted
                 </Badge>
               ) : (
                 <Badge 
                   variant="secondary" 
-                  className="text-sm px-1.5 py-0 h-5 bg-blue-500/10 text-blue-600 border-0 dark:text-blue-400"
+                  className="text-xs px-1.5 py-0 h-5 bg-blue-500/10 text-blue-600 border-0 dark:text-blue-400"
                 >
                   Active
                 </Badge>
@@ -135,7 +135,7 @@ export function LeadTableRow({
               <Phone className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
               <ClickablePhone 
                 phoneNumber={lead.phone} 
-                className="text-sm text-foreground hover:text-primary transition-colors" 
+                className="text-xs text-foreground hover:text-primary transition-colors" 
               />
             </div>
           )}
@@ -144,7 +144,7 @@ export function LeadTableRow({
               <Mail className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
               <a 
                 href={`mailto:${lead.email}`}
-                className="text-sm text-foreground hover:text-primary transition-colors truncate"
+                className="text-xs text-foreground hover:text-primary transition-colors truncate"
                 onClick={(e) => e.stopPropagation()}
               >
                 {lead.email}
@@ -152,7 +152,7 @@ export function LeadTableRow({
             </div>
           )}
           {!lead.phone && !lead.email && (
-            <span className="text-sm text-muted-foreground italic">No contact</span>
+            <span className="text-xs text-muted-foreground italic">No contact</span>
           )}
         </div>
       </td>
@@ -163,7 +163,7 @@ export function LeadTableRow({
           {lead.loan_type && (
             <div className="flex items-center gap-2">
               <FileText className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-sm text-foreground">
+              <span className="text-xs text-foreground">
                 {lead.loan_type}
               </span>
             </div>
@@ -171,7 +171,7 @@ export function LeadTableRow({
           {lead.loan_amount && (
             <div className="flex items-center gap-2">
               <DollarSign className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-sm text-foreground">
+              <span className="text-xs text-foreground">
                 {formatCurrency(lead.loan_amount)}
               </span>
             </div>
@@ -185,7 +185,7 @@ export function LeadTableRow({
           {lead.stage && (
             <Badge 
               variant="secondary" 
-              className="text-sm px-2 py-0.5 bg-secondary/30 hover:bg-secondary/50 transition-colors border-0"
+              className="text-xs px-2 py-0.5 bg-secondary/30 hover:bg-secondary/50 transition-colors border-0"
             >
               {lead.stage}
             </Badge>
@@ -193,7 +193,7 @@ export function LeadTableRow({
           {lead.priority && (
             <div className="flex items-center gap-1.5">
               <div className={`w-1.5 h-1.5 rounded-full ${getPriorityColor(lead.priority)}`} />
-              <span className="text-sm text-muted-foreground capitalize">
+              <span className="text-xs text-muted-foreground capitalize">
                 {lead.priority}
               </span>
             </div>
