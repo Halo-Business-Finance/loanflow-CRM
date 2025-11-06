@@ -548,13 +548,6 @@ export default function Leads() {
                 </Card>
               )}
 
-              {!realtimeLoading && !realtimeError && realtimeLeads.length === 0 && (
-                <Alert className="border-l-4 border-l-primary bg-primary/10">
-                  <AlertDescription>
-                    No leads found. Create your first lead to get started.
-                  </AlertDescription>
-                </Alert>
-              )}
 
         <Tabs defaultValue="active" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">

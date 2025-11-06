@@ -45,7 +45,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const setupUserRole = async () => {
             try {
               console.log('[AuthProvider] Setting up user role for:', session.user.id)
-              await supabase.rpc('ensure_default_viewer_role')
               await fetchUserRole(session.user.id)
               await checkEmailVerification(session.user.id)
               console.log('[AuthProvider] Role setup complete')
@@ -78,7 +77,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setSession(session)
           setUser(session?.user ?? null)
           if (session?.user) {
-            try { await supabase.rpc('ensure_default_viewer_role') } catch (e) { logSecureError(e, 'Ensure default role', supabase) }
             await fetchUserRole(session.user.id)
             await checkEmailVerification(session.user.id)
           } else {
@@ -194,7 +192,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Ensure default role then fetch user role before proceeding
       if (data?.user?.id) {
         try {
-          await supabase.rpc('ensure_default_viewer_role')
           await fetchUserRole(data.user.id)
           await supabase.rpc('check_mfa_requirement', {
             p_user_id: data.user.id

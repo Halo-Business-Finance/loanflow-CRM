@@ -38,12 +38,7 @@ export function useRealtimeLeads() {
         return
       }
 
-      // Ensure the user has at least a viewer role before querying (fixes first-load RLS timing)
-      try {
-        await supabase.rpc('ensure_default_viewer_role')
-      } catch (e) {
-        console.warn('[useRealtimeLeads] ensure_default_viewer_role failed (non-blocking):', e)
-      }
+      // Removed ensure_default_viewer_role RPC to prevent UI flicker and extra calls
 
       // 1) Fetch leads (RPC first for RLS-safe access), fallback to direct table select
       console.log('[useRealtimeLeads] Starting leads fetch (RPC first)...')
