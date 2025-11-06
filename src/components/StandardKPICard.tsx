@@ -23,7 +23,7 @@ export function StandardKPICard({
   return (
     <Card 
       className={cn(
-        "widget-glass widget-glow border-0 transition-all duration-200",
+        "widget-glass widget-glow border border-[#0A1628] transition-all duration-200",
         onClick && "cursor-pointer",
         className
       )}

@@ -16,7 +16,7 @@ export function StandardContentCard({
   headerActions 
 }: StandardContentCardProps) {
   return (
-    <Card className={cn("bg-card border-0 shadow-lg", className)}>
+    <Card className={cn("bg-card border border-[#0A1628] shadow-lg", className)}>
       {title && (
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
