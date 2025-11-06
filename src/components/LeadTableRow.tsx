@@ -97,7 +97,6 @@ export function LeadTableRow({
           <div className="flex flex-col gap-1.5 min-w-0">
             {lead.business_name && (
               <div className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
                 <span className="text-xs text-muted-foreground truncate">{lead.business_name}</span>
               </div>
             )}
