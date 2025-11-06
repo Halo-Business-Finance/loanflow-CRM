@@ -454,15 +454,6 @@ export default function Leads() {
                     <List className="h-3.5 w-3.5" />
                   </Button>
                 </div>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="h-8 text-xs font-medium"
-                  onClick={() => setShowFilters(!showFilters)}
-                >
-                  <Filter className="h-3 w-3 mr-2" />
-                  {showFilters ? 'Hide Filters' : 'Filter'}
-                </Button>
                 <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white">
                   <UserPlus className="h-3 w-3 mr-2" />
                   Add Lead
