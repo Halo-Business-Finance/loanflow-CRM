@@ -13,6 +13,7 @@ export function useRealtimeLeads() {
   const { user, loading: authLoading } = useAuth()
   const fetchingRef = useRef(false)
   const initializedRef = useRef(false)
+  const roleRetryRef = useRef(false)
 
   // Fetch initial leads data (optimized two-step query with minimal fields)
   const fetchLeads = async (opts?: { silent?: boolean }) => {
@@ -28,6 +29,13 @@ export function useRealtimeLeads() {
         setLeads([])
         setLoading(false)
         return
+      }
+
+      // Ensure the user has at least a viewer role before querying (fixes first-load RLS timing)
+      try {
+        await supabase.rpc('ensure_default_viewer_role')
+      } catch (e) {
+        console.warn('[useRealtimeLeads] ensure_default_viewer_role failed (non-blocking):', e)
       }
 
       // 1) Fetch leads with only essential fields
@@ -114,6 +122,15 @@ export function useRealtimeLeads() {
       console.log(`✅ Loaded ${transformedLeads.length} leads`)
       setLeads(transformedLeads)
       initializedRef.current = true
+
+      // If no leads returned on first run, retry once after role setup settles
+      if (transformedLeads.length === 0 && !roleRetryRef.current) {
+        roleRetryRef.current = true
+        setTimeout(() => {
+          console.log('[useRealtimeLeads] No leads on first fetch, retrying after short delay...')
+          fetchLeads({ silent: true })
+        }, 800)
+      }
     } catch (err: any) {
       const errorMsg = err?.message || 'Failed to load leads'
       console.error('❌ Leads fetch failed:', err)
