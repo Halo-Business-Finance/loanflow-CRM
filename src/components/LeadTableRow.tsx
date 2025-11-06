@@ -107,19 +107,12 @@ export function LeadTableRow({
               <span className="text-xs text-muted-foreground">
                 #{String(lead.lead_number).padStart(3, '0')}
               </span>
-              {lead.is_converted_to_client ? (
+              {lead.is_converted_to_client && (
                 <Badge 
                   variant="secondary" 
                   className="text-xs px-1.5 py-0 h-5 bg-emerald-500/10 text-emerald-600 border-0 dark:text-emerald-400"
                 >
                   Converted
-                </Badge>
-              ) : (
-                <Badge 
-                  variant="secondary" 
-                  className="text-xs px-1.5 py-0 h-5 bg-blue-500/10 text-blue-600 border-0 dark:text-blue-400"
-                >
-                  Active
                 </Badge>
               )}
             </div>
