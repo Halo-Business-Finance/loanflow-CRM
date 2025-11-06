@@ -6,7 +6,7 @@ import { MessageComposer } from '@/components/MessageComposer';
 import { MessagesSidebar } from '@/components/messages/MessagesSidebar';
 import { MessageList } from '@/components/messages/MessageList';
 import { MessageContent } from '@/components/messages/MessageContent';
-import { Send } from 'lucide-react';
+import { Send, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Message {
@@ -193,16 +193,26 @@ export default function Messages() {
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Top Bar */}
-      <div className="border-b px-6 py-3 bg-muted/30">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight text-foreground">Messages</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">Internal communication system</p>
+      <div className="border-b">
+        <div className="p-4 sm:p-6 lg:p-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">Messages</h1>
+                <p className="text-sm text-muted-foreground mt-1">Internal communication system</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button onClick={fetchMessages} variant="outline" size="sm" className="h-8 text-xs font-medium">
+                <RefreshCw className="h-3 w-3 mr-2" />
+                Refresh Data
+              </Button>
+              <Button onClick={handleCompose} size="sm" className="h-8 text-xs font-medium">
+                <Send className="h-3 w-3 mr-2" />
+                New Message
+              </Button>
+            </div>
           </div>
-          <Button onClick={handleCompose} size="sm" className="gap-2">
-            <Send className="h-4 w-4" />
-            New Message
-          </Button>
         </div>
       </div>
 
