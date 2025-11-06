@@ -37,6 +37,7 @@ interface LeadTableRowProps {
   currentUserId?: string
   isSelected?: boolean
   onSelectChange?: (selected: boolean) => void
+  isEvenRow?: boolean
 }
 
 export function LeadTableRow({ 
@@ -48,7 +49,8 @@ export function LeadTableRow({
   onRefresh, 
   currentUserId,
   isSelected = false,
-  onSelectChange
+  onSelectChange,
+  isEvenRow = false
 }: LeadTableRowProps) {
   const navigate = useNavigate()
 
@@ -78,9 +80,9 @@ export function LeadTableRow({
 
   return (
     <tr 
-      className={`group border-b border-border/50 hover:bg-accent/3 transition-colors cursor-pointer ${
+      className={`group border-b border-border/50 hover:bg-accent/50 transition-colors cursor-pointer ${
         lead.is_converted_to_client ? 'opacity-60' : ''
-      }`}
+      } ${isEvenRow ? 'bg-muted/20' : 'bg-background'}`}
       onClick={() => navigate(`/leads/${lead.id}`)}
     >
       {/* Column 1: Lead Info with Checkbox */}

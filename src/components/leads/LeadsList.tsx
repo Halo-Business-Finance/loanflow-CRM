@@ -68,7 +68,7 @@ export function LeadsList({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {leads.map((lead) => (
+          {leads.map((lead, index) => (
             <LeadTableRow
               key={lead.id}
               lead={lead}
@@ -80,6 +80,7 @@ export function LeadsList({
               currentUserId={currentUserId}
               isSelected={selectedLeads.includes(lead.id)}
               onSelectChange={(selected) => onSelectLead(lead.id, selected)}
+              isEvenRow={index % 2 === 0}
             />
           ))}
         </TableBody>
