@@ -38,6 +38,7 @@ interface LeadTableRowProps {
   isSelected?: boolean
   onSelectChange?: (selected: boolean) => void
   isEvenRow?: boolean
+  isCompact?: boolean
 }
 
 export function LeadTableRow({ 
@@ -50,7 +51,8 @@ export function LeadTableRow({
   currentUserId,
   isSelected = false,
   onSelectChange,
-  isEvenRow = false
+  isEvenRow = false,
+  isCompact = false
 }: LeadTableRowProps) {
   const navigate = useNavigate()
 
@@ -86,8 +88,8 @@ export function LeadTableRow({
       onClick={() => navigate(`/leads/${lead.id}`)}
     >
       {/* Column 1: Lead Info with Checkbox */}
-      <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center gap-3">
+      <td className={isCompact ? 'px-2 py-1.5' : 'px-4 py-4'} onClick={(e) => e.stopPropagation()}>
+        <div className={`flex items-center ${isCompact ? 'gap-2' : 'gap-3'}`}>
           <Checkbox
             checked={isSelected}
             onCheckedChange={(checked) => {
@@ -96,23 +98,23 @@ export function LeadTableRow({
             onClick={(e) => e.stopPropagation()}
             aria-label={`Select ${lead.name}`}
           />
-          <div className="flex flex-col gap-1.5 min-w-0">
+          <div className={`flex flex-col min-w-0 ${isCompact ? 'gap-0.5' : 'gap-1.5'}`}>
             {lead.business_name && (
               <div className="flex items-center gap-1.5">
-                <span className="text-xs text-muted-foreground truncate">{lead.business_name}</span>
+                <span className={`text-muted-foreground truncate ${isCompact ? 'text-[10px]' : 'text-xs'}`}>{lead.business_name}</span>
               </div>
             )}
-            <span className="text-xs text-foreground group-hover:text-primary transition-colors truncate">
+            <span className={`text-foreground group-hover:text-primary transition-colors truncate ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
               {lead.name}
             </span>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-muted-foreground">
+              <span className={`text-muted-foreground ${isCompact ? 'text-[9px]' : 'text-xs'}`}>
                 Loan ID: {String(lead.lead_number).padStart(3, '0')}
               </span>
               {lead.is_converted_to_client && (
                 <Badge 
                   variant="secondary" 
-                  className="text-xs px-1.5 py-0 h-5 bg-emerald-500/10 text-emerald-600 border-0 dark:text-emerald-400"
+                  className={`px-1.5 py-0 bg-emerald-500/10 text-emerald-600 border-0 dark:text-emerald-400 ${isCompact ? 'text-[9px] h-4' : 'text-xs h-5'}`}
                 >
                   Converted
                 </Badge>
@@ -123,23 +125,23 @@ export function LeadTableRow({
       </td>
 
       {/* Column 2: Contact Information */}
-      <td className="px-4 py-4">
-        <div className="space-y-1.5">
+      <td className={isCompact ? 'px-2 py-1.5' : 'px-4 py-4'}>
+        <div className={isCompact ? 'space-y-0.5' : 'space-y-1.5'}>
           {lead.phone && (
             <div className="flex items-center gap-2">
-              <Phone className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+              <Phone className={`text-muted-foreground flex-shrink-0 ${isCompact ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5'}`} />
               <ClickablePhone 
                 phoneNumber={lead.phone} 
-                className="text-xs text-foreground hover:text-primary transition-colors" 
+                className={`text-foreground hover:text-primary transition-colors ${isCompact ? 'text-[10px]' : 'text-xs'}`} 
               />
             </div>
           )}
           {lead.email && (
             <div className="flex items-center gap-2">
-              <Mail className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+              <Mail className={`text-muted-foreground flex-shrink-0 ${isCompact ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5'}`} />
               <a 
                 href={`mailto:${lead.email}`}
-                className="text-xs text-foreground hover:text-primary transition-colors truncate"
+                className={`text-foreground hover:text-primary transition-colors truncate ${isCompact ? 'text-[10px]' : 'text-xs'}`}
                 onClick={(e) => e.stopPropagation()}
               >
                 {lead.email}
@@ -147,26 +149,26 @@ export function LeadTableRow({
             </div>
           )}
           {!lead.phone && !lead.email && (
-            <span className="text-xs text-muted-foreground italic">No contact</span>
+            <span className={`text-muted-foreground italic ${isCompact ? 'text-[10px]' : 'text-xs'}`}>No contact</span>
           )}
         </div>
       </td>
 
       {/* Column 3: Lead Details */}
-      <td className="px-4 py-4">
-        <div className="space-y-1.5">
+      <td className={isCompact ? 'px-2 py-1.5' : 'px-4 py-4'}>
+        <div className={isCompact ? 'space-y-0.5' : 'space-y-1.5'}>
           {lead.loan_type && (
             <div className="flex items-center gap-2">
-              <FileText className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-xs text-foreground">
+              <FileText className={`text-muted-foreground ${isCompact ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5'}`} />
+              <span className={`text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
                 {lead.loan_type}
               </span>
             </div>
           )}
           {lead.loan_amount && (
             <div className="flex items-center gap-2">
-              <DollarSign className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-xs text-foreground">
+              <DollarSign className={`text-muted-foreground ${isCompact ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5'}`} />
+              <span className={`text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
                 {formatCurrency(lead.loan_amount)}
               </span>
             </div>
@@ -175,20 +177,20 @@ export function LeadTableRow({
       </td>
 
       {/* Column 4: Status (Loan Stage & Priority) */}
-      <td className="px-4 py-4">
-        <div className="space-y-1.5">
+      <td className={isCompact ? 'px-2 py-1.5' : 'px-4 py-4'}>
+        <div className={isCompact ? 'space-y-0.5' : 'space-y-1.5'}>
           {lead.stage && (
             <Badge 
               variant="secondary" 
-              className="text-xs px-2 py-0.5 bg-secondary/30 hover:bg-secondary/50 transition-colors border-0"
+              className={`px-2 bg-secondary/30 hover:bg-secondary/50 transition-colors border-0 ${isCompact ? 'text-[9px] py-0 h-4' : 'text-xs py-0.5'}`}
             >
               {lead.stage}
             </Badge>
           )}
           {lead.priority && (
             <div className="flex items-center gap-1.5">
-              <div className={`w-1.5 h-1.5 rounded-full ${getPriorityColor(lead.priority)}`} />
-              <span className="text-xs text-muted-foreground capitalize">
+              <div className={`rounded-full ${getPriorityColor(lead.priority)} ${isCompact ? 'w-1 h-1' : 'w-1.5 h-1.5'}`} />
+              <span className={`text-muted-foreground capitalize ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
                 {lead.priority}
               </span>
             </div>
@@ -197,26 +199,26 @@ export function LeadTableRow({
       </td>
 
       {/* Column 5: Actions */}
-      <td className="px-4 py-4 text-right" onClick={(e) => e.stopPropagation()}>
+      <td className={`text-right ${isCompact ? 'px-2 py-1.5' : 'px-4 py-4'}`} onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-1 justify-end">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate(`/leads/${lead.id}`)}
-            className="h-8 px-3 hover:bg-accent hover:text-foreground transition-colors"
+            className={`hover:bg-accent hover:text-foreground transition-colors ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
           >
-            <Eye className="h-3.5 w-3.5 mr-1" />
-            <span className="text-xs">View</span>
+            <Eye className={isCompact ? 'h-2.5 w-2.5 mr-0.5' : 'h-3.5 w-3.5 mr-1'} />
+            <span className={isCompact ? 'text-[10px]' : 'text-xs'}>View</span>
           </Button>
           
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onEdit(lead)}
-            className="h-8 px-3 hover:bg-accent hover:text-foreground transition-colors"
+            className={`hover:bg-accent hover:text-foreground transition-colors ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
           >
-            <Edit className="h-3.5 w-3.5 mr-1" />
-            <span className="text-xs">Edit</span>
+            <Edit className={isCompact ? 'h-2.5 w-2.5 mr-0.5' : 'h-3.5 w-3.5 mr-1'} />
+            <span className={isCompact ? 'text-[10px]' : 'text-xs'}>Edit</span>
           </Button>
           
           {!lead.is_converted_to_client && (
@@ -224,10 +226,10 @@ export function LeadTableRow({
               variant="ghost"
               size="sm"
               onClick={() => onConvert(lead)}
-              className="h-8 px-3 hover:bg-accent hover:text-foreground transition-colors"
+              className={`hover:bg-accent hover:text-foreground transition-colors ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
             >
-              <ArrowRight className="h-3.5 w-3.5 mr-1" />
-              <span className="text-xs">Convert</span>
+              <ArrowRight className={isCompact ? 'h-2.5 w-2.5 mr-0.5' : 'h-3.5 w-3.5 mr-1'} />
+              <span className={isCompact ? 'text-[10px]' : 'text-xs'}>Convert</span>
             </Button>
           )}
           
@@ -236,10 +238,10 @@ export function LeadTableRow({
               variant="ghost"
               size="sm"
               onClick={() => onDelete(lead.id, lead.name)}
-              className="h-8 px-3 hover:bg-destructive/10 hover:text-destructive transition-colors"
+              className={`hover:bg-destructive/10 hover:text-destructive transition-colors ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
             >
-              <Trash2 className="h-3.5 w-3.5 mr-1" />
-              <span className="text-xs">Delete</span>
+              <Trash2 className={isCompact ? 'h-2.5 w-2.5 mr-0.5' : 'h-3.5 w-3.5 mr-1'} />
+              <span className={isCompact ? 'text-[10px]' : 'text-xs'}>Delete</span>
             </Button>
           )}
         </div>

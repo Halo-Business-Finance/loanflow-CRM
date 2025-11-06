@@ -25,6 +25,7 @@ interface LeadsListProps {
   sortColumn?: 'name' | 'created_at' | 'loan_amount' | 'stage' | null
   sortDirection?: 'asc' | 'desc'
   onSort?: (column: 'name' | 'created_at' | 'loan_amount' | 'stage') => void
+  isCompact?: boolean
 }
 
 export function LeadsList({ 
@@ -40,7 +41,8 @@ export function LeadsList({
   onSelectLead,
   sortColumn,
   sortDirection,
-  onSort
+  onSort,
+  isCompact = false
 }: LeadsListProps) {
   if (leads.length === 0) {
     return (
@@ -64,9 +66,9 @@ export function LeadsList({
     <div className="border rounded-lg overflow-hidden bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="sticky top-0 z-10 border-b border-border hover:bg-transparent bg-muted/30 backdrop-blur supports-[backdrop-filter]:bg-muted/60">
-            <TableHead className="w-[220px] px-4">
-              <div className="flex items-center gap-3">
+          <TableRow className={`sticky top-0 z-10 border-b border-border hover:bg-transparent bg-muted/30 backdrop-blur supports-[backdrop-filter]:bg-muted/60 ${isCompact ? 'h-9' : ''}`}>
+            <TableHead className={`w-[220px] ${isCompact ? 'px-2 py-1' : 'px-4'}`}>
+              <div className={`flex items-center ${isCompact ? 'gap-2' : 'gap-3'}`}>
                 <Checkbox
                   checked={allSelected}
                   onCheckedChange={onSelectAll}
@@ -77,37 +79,37 @@ export function LeadsList({
                   variant="ghost"
                   size="sm"
                   onClick={() => onSort?.('name')}
-                  className="h-auto p-0 hover:bg-transparent font-medium text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                  className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
                 >
                   Lead Name
                   <SortIcon column="name" />
                 </Button>
               </div>
             </TableHead>
-            <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Contact Information</TableHead>
-            <TableHead className="px-4">
+            <TableHead className={`font-medium uppercase tracking-wider text-muted-foreground ${isCompact ? 'px-2 py-1 text-[10px]' : 'px-4 text-xs'}`}>Contact Information</TableHead>
+            <TableHead className={isCompact ? 'px-2 py-1' : 'px-4'}>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => onSort?.('loan_amount')}
-                className="h-auto p-0 hover:bg-transparent font-medium text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
               >
                 Loan Details
                 <SortIcon column="loan_amount" />
               </Button>
             </TableHead>
-            <TableHead className="px-4">
+            <TableHead className={isCompact ? 'px-2 py-1' : 'px-4'}>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => onSort?.('stage')}
-                className="h-auto p-0 hover:bg-transparent font-medium text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
               >
                 Lead Status
                 <SortIcon column="stage" />
               </Button>
             </TableHead>
-            <TableHead className="w-[280px] px-4 text-right font-medium text-xs uppercase tracking-wider text-muted-foreground">Actions</TableHead>
+            <TableHead className={`w-[280px] text-right font-medium uppercase tracking-wider text-muted-foreground ${isCompact ? 'px-2 py-1 text-[10px]' : 'px-4 text-xs'}`}>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -124,6 +126,7 @@ export function LeadsList({
               isSelected={selectedLeads.includes(lead.id)}
               onSelectChange={(selected) => onSelectLead(lead.id, selected)}
               isEvenRow={index % 2 === 0}
+              isCompact={isCompact}
             />
           ))}
         </TableBody>

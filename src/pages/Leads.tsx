@@ -22,7 +22,9 @@ import {
   CheckCircle,
   Trash2,
   Grid,
-  List
+  List,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -84,6 +86,7 @@ export default function Leads() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [sortColumn, setSortColumn] = useState<'name' | 'created_at' | 'loan_amount' | 'stage' | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [isCompact, setIsCompact] = useState(false);
   const { hasRole } = useRoleBasedAccess();
   const hasAdminRole = hasRole('admin') || hasRole('super_admin');
 
@@ -490,6 +493,17 @@ export default function Leads() {
                     <List className="h-3.5 w-3.5" />
                   </Button>
                 </div>
+                {viewMode === 'list' && (
+                  <Button
+                    variant={isCompact ? 'secondary' : 'outline'}
+                    size="sm"
+                    onClick={() => setIsCompact(!isCompact)}
+                    className="h-8 gap-2"
+                  >
+                    {isCompact ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                    <span className="text-xs">{isCompact ? 'Normal' : 'Compact'}</span>
+                  </Button>
+                )}
                 <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white">
                   <UserPlus className="h-3 w-3 mr-2" />
                   Add Lead
@@ -670,6 +684,7 @@ export default function Leads() {
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 onSort={handleSort}
+                isCompact={isCompact}
               />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
