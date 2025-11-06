@@ -39,7 +39,6 @@ import { Lead, ContactEntity } from '@/types/lead';
 import { useRealtimeLeads } from '@/hooks/useRealtimeLeads';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
-import { RLSAutoRepair } from '@/components/security/RLSAutoRepair';
 
 interface LeadsOverview {
   totalLeads: number;
@@ -511,15 +510,6 @@ export default function Leads() {
 
             {/* Content Area */}
             <div className="space-y-6">
-              {/* RLS Auto-Repair Component */}
-              <RLSAutoRepair 
-                autoDetect={true}
-                onRepairComplete={() => {
-                  console.log('RLS repair completed, refreshing leads...');
-                  realtimeRefetch();
-                }}
-              />
-
               {/* Key Metrics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card 
