@@ -220,20 +220,20 @@ export function LeadTableRow({
             variant="ghost"
             size="sm"
             onClick={() => navigate(`/leads/${lead.id}`)}
-            className={`hover:bg-accent hover:text-foreground transition-colors ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
+            className={`hover:bg-accent hover:text-foreground transition-colors flex items-center justify-center ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
           >
-            <Eye className={isCompact ? 'h-2.5 w-2.5 mr-0.5' : 'h-3.5 w-3.5 mr-1'} />
-            <span className={isCompact ? 'text-[10px]' : 'text-xs'}>View</span>
+            <Eye className={isCompact ? 'h-2.5 w-2.5' : 'h-3.5 w-3.5'} />
+            <span className={`ml-1 ${isCompact ? 'text-[10px]' : 'text-xs'}`}>View</span>
           </Button>
           
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onEdit(lead)}
-            className={`hover:bg-accent hover:text-foreground transition-colors ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
+            className={`hover:bg-accent hover:text-foreground transition-colors flex items-center justify-center ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
           >
-            <Edit className={isCompact ? 'h-2.5 w-2.5 mr-0.5' : 'h-3.5 w-3.5 mr-1'} />
-            <span className={isCompact ? 'text-[10px]' : 'text-xs'}>Edit</span>
+            <Edit className={isCompact ? 'h-2.5 w-2.5' : 'h-3.5 w-3.5'} />
+            <span className={`ml-1 ${isCompact ? 'text-[10px]' : 'text-xs'}`}>Edit</span>
           </Button>
           
           {!lead.is_converted_to_client && (
@@ -241,10 +241,10 @@ export function LeadTableRow({
               variant="ghost"
               size="sm"
               onClick={() => onConvert(lead)}
-              className={`hover:bg-accent hover:text-foreground transition-colors ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
+              className={`hover:bg-accent hover:text-foreground transition-colors flex items-center justify-center ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
             >
-              <ArrowRight className={isCompact ? 'h-2.5 w-2.5 mr-0.5' : 'h-3.5 w-3.5 mr-1'} />
-              <span className={isCompact ? 'text-[10px]' : 'text-xs'}>Convert</span>
+              <ArrowRight className={isCompact ? 'h-2.5 w-2.5' : 'h-3.5 w-3.5'} />
+              <span className={`ml-1 ${isCompact ? 'text-[10px]' : 'text-xs'}`}>Convert</span>
             </Button>
           )}
           
@@ -253,10 +253,10 @@ export function LeadTableRow({
               variant="ghost"
               size="sm"
               onClick={() => onDelete(lead.id, lead.name)}
-              className={`hover:bg-destructive/10 hover:text-destructive transition-colors ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
+              className={`hover:bg-destructive/10 hover:text-destructive transition-colors flex items-center justify-center ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
             >
-              <Trash2 className={isCompact ? 'h-2.5 w-2.5 mr-0.5' : 'h-3.5 w-3.5 mr-1'} />
-              <span className={isCompact ? 'text-[10px]' : 'text-xs'}>Delete</span>
+              <Trash2 className={isCompact ? 'h-2.5 w-2.5' : 'h-3.5 w-3.5'} />
+              <span className={`ml-1 ${isCompact ? 'text-[10px]' : 'text-xs'}`}>Delete</span>
             </Button>
           )}
         </div>
