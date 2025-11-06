@@ -105,7 +105,7 @@ export function LeadTableRow({
             </span>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs text-muted-foreground">
-                #{String(lead.lead_number).padStart(3, '0')}
+                Loan ID: {String(lead.lead_number).padStart(3, '0')}
               </span>
               {lead.is_converted_to_client && (
                 <Badge 
