@@ -61,7 +61,7 @@ export default function Leads() {
   }, [user, userRoles]);
   
   // Use real-time leads hook
-  const { leads: realtimeLeads, loading: realtimeLoading, error: realtimeError, refetch: realtimeRefetch, refetchSilent: realtimeRefetchSilent, ensureAccessAndRefetch } = useRealtimeLeads();
+  const { leads: realtimeLeads, loading: realtimeLoading, error: realtimeError, refetch: realtimeRefetch, refetchSilent: realtimeRefetchSilent } = useRealtimeLeads();
   
   const [overview, setOverview] = useState<LeadsOverview>({
     totalLeads: 0,
@@ -551,12 +551,7 @@ export default function Leads() {
               {!realtimeLoading && !realtimeError && realtimeLeads.length === 0 && (
                 <Alert className="border-l-4 border-l-primary bg-primary/10">
                   <AlertDescription>
-                    No leads are visible with your current access. Try Ensure Access & Reload.
-                    <div className="mt-2">
-                      <Button variant="secondary" size="sm" onClick={ensureAccessAndRefetch}>
-                        Ensure Access & Reload
-                      </Button>
-                    </div>
+                    No leads found. Create your first lead to get started.
                   </AlertDescription>
                 </Alert>
               )}

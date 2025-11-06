@@ -244,21 +244,12 @@ export function useRealtimeLeads() {
   const refetchSilent = () => {
     fetchLeads({ silent: true })
   }
-  const ensureAccessAndRefetch = async () => {
-    try {
-      await supabase.rpc('ensure_default_viewer_role')
-    } catch (e) {
-      console.warn('[useRealtimeLeads] ensure_default_viewer_role in ensureAccessAndRefetch failed:', e)
-    }
-    await fetchLeads()
-  }
 
   return {
     leads,
     loading,
     error,
     refetch,
-    refetchSilent,
-    ensureAccessAndRefetch
+    refetchSilent
   }
 }
