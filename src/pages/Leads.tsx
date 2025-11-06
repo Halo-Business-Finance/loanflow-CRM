@@ -412,10 +412,14 @@ export default function Leads() {
     }).format(amount);
   };
 
+  // Show loading state while auth is being determined
+  if (realtimeLoading && realtimeLeads.length === 0) {
+    return <LoadingSkeleton />;
+  }
+
   return (
-    <SecurityWrapper>
-      <SecureFormProvider>
-        <div className="min-h-screen bg-background">
+    <SecureFormProvider>
+      <div className="min-h-screen bg-background">
           <div className="p-8 space-y-8 animate-fade-in">
             {/* Header */}
             <div className="flex items-center justify-between">
@@ -828,6 +832,7 @@ export default function Leads() {
             </div>
           </TabsContent>
         </Tabs>
+        </div>
 
         <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -865,10 +870,8 @@ export default function Leads() {
             />
           </DialogContent>
         </Dialog>
-            </div>
           </div>
         </div>
       </SecureFormProvider>
-    </SecurityWrapper>
   );
 }
