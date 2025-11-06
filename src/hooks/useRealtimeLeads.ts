@@ -17,6 +17,13 @@ export function useRealtimeLeads() {
 
   // Fetch initial leads data (optimized two-step query with minimal fields)
   const fetchLeads = async (opts?: { silent?: boolean }) => {
+    // Silent no-op if user is not authenticated
+    if (!user) {
+      setLoading(false)
+      setError(null)
+      return
+    }
+
     try {
       if (fetchingRef.current) return
       fetchingRef.current = true

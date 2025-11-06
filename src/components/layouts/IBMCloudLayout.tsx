@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { IBMTopBar } from './IBMTopBar';
 import { IBMSidebar } from './IBMSidebar';
+import { AuthDebugBanner } from '@/components/auth/AuthDebugBanner';
 
 interface IBMCloudLayoutProps {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ export function IBMCloudLayout({ children }: IBMCloudLayoutProps) {
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
         />
         <main className="flex-1 overflow-auto bg-white no-scrollbar">
+          <AuthDebugBanner />
           {children}
         </main>
       </div>

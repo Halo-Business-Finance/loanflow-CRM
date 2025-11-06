@@ -50,11 +50,6 @@ export default function LeadAccessDiagnostics() {
 
   const runDiagnostics = async () => {
     if (!user) {
-      toast({
-        title: 'Error',
-        description: 'User not authenticated',
-        variant: 'destructive'
-      });
       return;
     }
 
@@ -201,6 +196,19 @@ export default function LeadAccessDiagnostics() {
         return <Badge variant="secondary">N/A</Badge>;
     }
   };
+
+  if (!user) {
+    return (
+      <div className="container mx-auto p-6">
+        <Alert>
+          <User className="h-4 w-4" />
+          <AlertDescription>
+            Please sign in to access Lead Access Diagnostics.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6 space-y-6">
