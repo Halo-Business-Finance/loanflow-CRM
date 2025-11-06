@@ -18,6 +18,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
+import { RLSAutoRepair } from '@/components/security/RLSAutoRepair';
 
 interface PolicyEvaluation {
   table: string;
@@ -213,10 +214,19 @@ export default function LeadAccessDiagnostics() {
             RLS Policy evaluation and access control testing
           </p>
         </div>
-        <Button onClick={runDiagnostics} disabled={loading}>
-          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          Run Diagnostics
-        </Button>
+        <div className="flex items-center gap-2">
+          <RLSAutoRepair 
+            autoDetect={false}
+            onRepairComplete={() => {
+              toast({ title: 'Repair complete, re-running diagnostics...' });
+              runDiagnostics();
+            }}
+          />
+          <Button onClick={runDiagnostics} disabled={loading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Run Diagnostics
+          </Button>
+        </div>
       </div>
 
       {diagnostics && (
