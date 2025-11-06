@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, 
   UserPlus, 
@@ -24,7 +25,8 @@ import {
   Grid,
   List,
   Maximize2,
-  Minimize2
+  Minimize2,
+  Edit2
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -87,8 +89,31 @@ export default function Leads() {
   const [sortColumn, setSortColumn] = useState<'name' | 'created_at' | 'loan_amount' | 'stage' | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [isCompact, setIsCompact] = useState(false);
+  const [showBulkEditDialog, setShowBulkEditDialog] = useState(false);
+  const [bulkEditData, setBulkEditData] = useState<{
+    stage?: string;
+    priority?: string;
+    assigned_to?: string;
+  }>({});
+  const [users, setUsers] = useState<Array<{ id: string; email: string }>>([]);
   const { hasRole } = useRoleBasedAccess();
   const hasAdminRole = hasRole('admin') || hasRole('super_admin');
+
+  // Fetch users for assignment
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, email')
+        .order('email');
+      
+      if (!error && data) {
+        setUsers(data);
+      }
+    };
+    
+    fetchUsers();
+  }, []);
 
   // Refresh leads when component mounts or user navigates back
   useEffect(() => {
@@ -161,6 +186,71 @@ export default function Leads() {
       toast({
         title: "Error",
         description: "Failed to delete selected leads",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleBulkEdit = async () => {
+    if (selectedLeads.length === 0) return;
+    
+    try {
+      // Get the contact_entity_ids for the selected leads
+      const { data: leadData, error: leadError } = await supabase
+        .from('leads')
+        .select('contact_entity_id')
+        .in('id', selectedLeads);
+
+      if (leadError) throw leadError;
+
+      const contactEntityIds = leadData.map(l => l.contact_entity_id).filter(Boolean);
+
+      if (contactEntityIds.length === 0) {
+        throw new Error('No valid contact entities found for selected leads');
+      }
+
+      // Prepare update data - only include fields that were set
+      const updateData: any = {};
+      if (bulkEditData.stage && bulkEditData.stage !== 'no-change') {
+        updateData.stage = bulkEditData.stage;
+      }
+      if (bulkEditData.priority && bulkEditData.priority !== 'no-change') {
+        updateData.priority = bulkEditData.priority;
+      }
+      if (bulkEditData.assigned_to && bulkEditData.assigned_to !== 'no-change') {
+        updateData.user_id = bulkEditData.assigned_to;
+      }
+
+      // Only update if there's something to update
+      if (Object.keys(updateData).length > 0) {
+        const { error } = await supabase
+          .from('contact_entities')
+          .update(updateData)
+          .in('id', contactEntityIds);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: `${selectedLeads.length} leads updated successfully`,
+        });
+
+        setSelectedLeads([]);
+        setBulkEditData({});
+        setShowBulkEditDialog(false);
+        realtimeRefetchSilent();
+      } else {
+        toast({
+          title: "No Changes",
+          description: "Please select at least one field to update",
+          variant: "default"
+        });
+      }
+    } catch (error) {
+      console.error('Error updating leads:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update selected leads",
         variant: "destructive"
       });
     }
@@ -624,6 +714,14 @@ export default function Leads() {
                   >
                     Clear Selection
                   </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => setShowBulkEditDialog(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Edit2 className="h-4 w-4 mr-2" />
+                    Bulk Edit
+                  </Button>
                   {hasAdminRole && (
                     <Button
                       variant="destructive"
@@ -910,6 +1008,97 @@ export default function Leads() {
               onCancel={() => setShowNewLeadForm(false)}
               isSubmitting={false}
             />
+          </DialogContent>
+        </Dialog>
+
+        {/* Bulk Edit Dialog */}
+        <Dialog open={showBulkEditDialog} onOpenChange={setShowBulkEditDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Bulk Edit {selectedLeads.length} Lead(s)</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="bulk-stage">Stage</Label>
+                <Select
+                  value={bulkEditData.stage || 'no-change'}
+                  onValueChange={(value) => setBulkEditData(prev => ({ ...prev, stage: value }))}
+                >
+                  <SelectTrigger id="bulk-stage">
+                    <SelectValue placeholder="No Change" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="no-change">No Change</SelectItem>
+                    <SelectItem value="New Lead">New Lead</SelectItem>
+                    <SelectItem value="Initial Contact">Initial Contact</SelectItem>
+                    <SelectItem value="Loan Application Signed">Loan Application Signed</SelectItem>
+                    <SelectItem value="Waiting for Documentation">Waiting for Documentation</SelectItem>
+                    <SelectItem value="Pre-Approved">Pre-Approved</SelectItem>
+                    <SelectItem value="Term Sheet Signed">Term Sheet Signed</SelectItem>
+                    <SelectItem value="Loan Approved">Loan Approved</SelectItem>
+                    <SelectItem value="Closing">Closing</SelectItem>
+                    <SelectItem value="Loan Funded">Loan Funded</SelectItem>
+                    <SelectItem value="Archive">Archive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="bulk-priority">Priority</Label>
+                <Select
+                  value={bulkEditData.priority || 'no-change'}
+                  onValueChange={(value) => setBulkEditData(prev => ({ ...prev, priority: value }))}
+                >
+                  <SelectTrigger id="bulk-priority">
+                    <SelectValue placeholder="No Change" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="no-change">No Change</SelectItem>
+                    <SelectItem value="High">High</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="Low">Low</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="bulk-assigned">Assign To</Label>
+                <Select
+                  value={bulkEditData.assigned_to || 'no-change'}
+                  onValueChange={(value) => setBulkEditData(prev => ({ ...prev, assigned_to: value }))}
+                >
+                  <SelectTrigger id="bulk-assigned">
+                    <SelectValue placeholder="No Change" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="no-change">No Change</SelectItem>
+                    {users.map(user => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.email}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowBulkEditDialog(false);
+                  setBulkEditData({});
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleBulkEdit}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Update Leads
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
           </div>
