@@ -22,8 +22,7 @@ import {
   CheckCircle,
   Trash2,
   Grid,
-  List,
-  Stethoscope
+  List
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -468,38 +467,6 @@ export default function Leads() {
                 >
                   <Filter className="h-3 w-3 mr-2" />
                   {showFilters ? 'Hide Filters' : 'Filter'}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 text-xs font-medium"
-                  onClick={() => navigate('/security/lead-diagnostics')}
-                  title="Diagnose lead access issues"
-                >
-                  <Stethoscope className="h-3 w-3 mr-2" />
-                  Diagnostics
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 text-xs font-medium"
-                  onClick={() => {
-                    toast({ title: 'Reloading leads' })
-                    realtimeRefetchSilent()
-                  }}
-                >
-                  Reload
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 text-xs font-medium"
-                  onClick={async () => {
-                    toast({ title: 'Ensuring access', description: 'Updating your access and reloading leads...' })
-                    await ensureAccessAndRefetch()
-                  }}
-                >
-                  Ensure Access
                 </Button>
                 <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white">
                   <UserPlus className="h-3 w-3 mr-2" />
