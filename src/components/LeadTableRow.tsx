@@ -97,27 +97,27 @@ export function LeadTableRow({
           <div className="flex flex-col gap-1.5 min-w-0">
             {lead.business_name && (
               <div className="flex items-center gap-1.5">
-                <span className="text-xs text-muted-foreground truncate">{lead.business_name}</span>
+                <span className="text-sm text-muted-foreground truncate">{lead.business_name}</span>
               </div>
             )}
-            <span className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors truncate">
+            <span className="text-sm text-foreground group-hover:text-primary transition-colors truncate">
               {lead.name}
             </span>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-muted-foreground font-mono">
+              <span className="text-sm text-muted-foreground">
                 #{String(lead.lead_number).padStart(3, '0')}
               </span>
               {lead.is_converted_to_client ? (
                 <Badge 
                   variant="secondary" 
-                  className="text-[10px] px-1.5 py-0 h-4 bg-emerald-500/10 text-emerald-600 border-0 dark:text-emerald-400"
+                  className="text-sm px-1.5 py-0 h-5 bg-emerald-500/10 text-emerald-600 border-0 dark:text-emerald-400"
                 >
                   Converted
                 </Badge>
               ) : (
                 <Badge 
                   variant="secondary" 
-                  className="text-[10px] px-1.5 py-0 h-4 bg-blue-500/10 text-blue-600 border-0 dark:text-blue-400"
+                  className="text-sm px-1.5 py-0 h-5 bg-blue-500/10 text-blue-600 border-0 dark:text-blue-400"
                 >
                   Active
                 </Badge>
@@ -171,7 +171,7 @@ export function LeadTableRow({
           {lead.loan_amount && (
             <div className="flex items-center gap-2">
               <DollarSign className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-sm font-semibold text-foreground">
+              <span className="text-sm text-foreground">
                 {formatCurrency(lead.loan_amount)}
               </span>
             </div>
@@ -185,7 +185,7 @@ export function LeadTableRow({
           {lead.stage && (
             <Badge 
               variant="secondary" 
-              className="text-xs font-medium px-2 py-0.5 bg-secondary/30 hover:bg-secondary/50 transition-colors border-0"
+              className="text-sm px-2 py-0.5 bg-secondary/30 hover:bg-secondary/50 transition-colors border-0"
             >
               {lead.stage}
             </Badge>
@@ -193,7 +193,7 @@ export function LeadTableRow({
           {lead.priority && (
             <div className="flex items-center gap-1.5">
               <div className={`w-1.5 h-1.5 rounded-full ${getPriorityColor(lead.priority)}`} />
-              <span className="text-xs text-muted-foreground capitalize">
+              <span className="text-sm text-muted-foreground capitalize">
                 {lead.priority}
               </span>
             </div>
