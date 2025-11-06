@@ -50,7 +50,7 @@ export function RLSAutoRepair({
     const detectedIssues: DiagnosticIssue[] = [];
 
     try {
-      // Check 1: User has viewer role
+      // Check 1: User has viewer role (with secure RPC fallback)
       const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('role, is_active')
@@ -59,7 +59,14 @@ export function RLSAutoRepair({
         .eq('is_active', true)
         .maybeSingle();
 
-      if (!roleData && !roleError) {
+      let viewerOk = !!roleData;
+      if (!viewerOk) {
+        const { data: hasRoleResult } = await supabase
+          .rpc('has_any_role', { _user_id: user.id, _roles: ['viewer'] });
+        viewerOk = Boolean(hasRoleResult);
+      }
+
+      if (!viewerOk) {
         detectedIssues.push({
           type: 'missing_viewer_role',
           severity: 'critical',
@@ -121,10 +128,10 @@ export function RLSAutoRepair({
         throw new Error(`Failed to assign viewer role: ${roleError.message}`);
       }
 
-      // Step 2: Verify role was assigned
+      // Step 2: Verify role was assigned (with secure RPC fallback)
       await new Promise(resolve => setTimeout(resolve, 500)); // Brief delay for DB consistency
       
-      const { data: verifyRole } = await supabase
+      const { data: verifyRole, error: verifyError } = await supabase
         .from('user_roles')
         .select('role, is_active')
         .eq('user_id', user.id)
@@ -132,7 +139,18 @@ export function RLSAutoRepair({
         .eq('is_active', true)
         .maybeSingle();
 
-      if (!verifyRole) {
+      // Fallback: use security-definer function to avoid RLS edge cases or duplicate rows
+      let hasViewer = !!verifyRole;
+      if (!hasViewer) {
+        const { data: hasRoleResult, error: hasRoleError } = await supabase
+          .rpc('has_any_role', { _user_id: user.id, _roles: ['viewer'] });
+        if (hasRoleError) {
+          console.warn('[RLSAutoRepair] has_any_role fallback error:', hasRoleError);
+        }
+        hasViewer = Boolean(hasRoleResult);
+      }
+
+      if (!hasViewer) {
         throw new Error('Role assignment could not be verified');
       }
 
