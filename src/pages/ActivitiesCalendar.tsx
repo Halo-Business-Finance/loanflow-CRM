@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
-import { StandardPageHeader } from "@/components/StandardPageHeader";
+
 import { StandardContentCard } from "@/components/StandardContentCard";
 import { ResponsiveContainer } from "@/components/ResponsiveContainer";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Users, RefreshCw } from "lucide-react";
@@ -63,16 +63,24 @@ export default function ActivitiesCalendar() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
-        title="Calendar"
-        description="Manage your appointments, meetings, and important deadlines"
-        actions={
-          <Button onClick={() => refetch()} variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh Data
-          </Button>
-        }
-      />
+      <ResponsiveContainer padding="lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">Calendar</h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Manage your appointments, meetings, and important deadlines
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button onClick={() => refetch()} variant="outline" size="sm" className="h-8 text-xs font-medium">
+              <RefreshCw className="h-3 w-3 mr-2" />
+              Refresh Data
+            </Button>
+          </div>
+        </div>
+      </ResponsiveContainer>
       
       <ResponsiveContainer>
         <div className="grid gap-6 lg:grid-cols-3">

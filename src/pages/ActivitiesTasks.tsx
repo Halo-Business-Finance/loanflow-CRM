@@ -1,26 +1,34 @@
 import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
+
 import { StandardKPICard } from "@/components/StandardKPICard"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
-import { CheckSquare, Clock, AlertTriangle, Plus, RefreshCw } from "lucide-react"
+import { CheckSquare, AlertTriangle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
+
 
 export default function ActivitiesTasks() {
   return (
     <StandardPageLayout>
-      <StandardPageHeader
-        title="Tasks"
-        description="Manage your daily tasks and action items"
-        actions={
-          <Button variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh Data
-          </Button>
-        }
-      />
+      <ResponsiveContainer padding="lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">Tasks</h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Manage your daily tasks and action items
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
+              <RefreshCw className="h-3 w-3 mr-2" />
+              Refresh Data
+            </Button>
+          </div>
+        </div>
+      </ResponsiveContainer>
 
       <ResponsiveContainer>
         <div className="space-y-6">
