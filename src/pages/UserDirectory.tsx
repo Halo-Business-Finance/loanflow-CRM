@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users } from 'lucide-react';
+import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users, KeyRound } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -117,6 +117,7 @@ export default function UserDirectory() {
   const [filterRole, setFilterRole] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [sendingPasswordReset, setSendingPasswordReset] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof userEditSchema>>({
@@ -477,6 +478,45 @@ export default function UserDirectory() {
     }
   };
 
+  const handleSendPasswordReset = async (user: UserProfile) => {
+    if (!user.email) {
+      toast({
+        title: 'Error',
+        description: 'User does not have an email address',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      setSendingPasswordReset(user.id);
+      
+      const { data, error } = await supabase.functions.invoke('microsoft-auth', {
+        body: {
+          action: 'send_password_reset',
+          recipientEmail: user.email,
+          recipientName: `${user.first_name} ${user.last_name}`.trim(),
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Password Reset Email Sent',
+        description: `A password reset email has been sent to ${user.email}`,
+      });
+    } catch (error: any) {
+      console.error('Error sending password reset:', error);
+      toast({
+        title: 'Error',
+        description: error?.message || 'Failed to send password reset email',
+        variant: 'destructive',
+      });
+    } finally {
+      setSendingPasswordReset(null);
+    }
+  };
+
   const totalUsers = users.length;
   const activeUsers = users.length; // All fetched users are considered active
   const pendingInvites = 0; // Would need a separate invites table
@@ -742,13 +782,28 @@ export default function UserDirectory() {
                         {new Date(user.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleViewUser(user)}
-                        >
-                          View
-                        </Button>
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleSendPasswordReset(user)}
+                            disabled={sendingPasswordReset === user.id || !user.email}
+                            title="Send password reset email"
+                          >
+                            {sendingPasswordReset === user.id ? (
+                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                            ) : (
+                              <KeyRound className="h-4 w-4" />
+                            )}
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleViewUser(user)}
+                          >
+                            View
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

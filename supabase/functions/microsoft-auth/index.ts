@@ -360,6 +360,121 @@ serve(async (req) => {
         });
       }
 
+      case 'send_password_reset': {
+        const { recipientEmail, recipientName } = await req.json();
+
+        // Get active email account for the admin user
+        const { data: emailAccount, error: accountError } = await supabase
+          .from('email_accounts')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .single();
+
+        if (accountError || !emailAccount) {
+          throw new Error('No active email account found. Please connect Microsoft 365 first.');
+        }
+
+        // Check if token needs refresh
+        const now = new Date();
+        const expiresAt = new Date(emailAccount.expires_at);
+        
+        let accessToken = emailAccount.access_token;
+        
+        if (now >= expiresAt) {
+          throw new Error('Email token expired. Please reconnect Microsoft 365.');
+        }
+
+        // Generate password reset link using Supabase Auth
+        const { data: resetData, error: resetError } = await supabase.auth.admin.generateLink({
+          type: 'recovery',
+          email: recipientEmail,
+        });
+
+        if (resetError || !resetData.properties?.action_link) {
+          console.error('Error generating reset link:', resetError);
+          throw new Error('Failed to generate password reset link');
+        }
+
+        const resetLink = resetData.properties.action_link;
+
+        // Create HTML email content
+        const htmlContent = `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; border-radius: 8px 8px 0 0; text-align: center; }
+                .content { background: #f9f9f9; padding: 30px 20px; border-radius: 0 0 8px 8px; }
+                .button { display: inline-block; background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+                .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+                .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h2>Password Reset Request</h2>
+                  <p>LoanFlow CRM</p>
+                </div>
+                <div class="content">
+                  <p>Hello ${recipientName || 'there'},</p>
+                  <p>A password reset has been requested for your account. Click the button below to reset your password:</p>
+                  <div style="text-align: center;">
+                    <a href="${resetLink}" class="button">Reset Password</a>
+                  </div>
+                  <div class="warning">
+                    <strong>Security Notice:</strong> This link will expire in 1 hour. If you didn't request this password reset, please ignore this email or contact your administrator.
+                  </div>
+                  <p>If the button doesn't work, copy and paste this link into your browser:</p>
+                  <p style="word-break: break-all; color: #667eea;">${resetLink}</p>
+                </div>
+                <div class="footer">
+                  <p>This email was sent from LoanFlow CRM</p>
+                  <p>Do not share this link with anyone</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
+        // Send email via Microsoft Graph
+        const emailData = {
+          message: {
+            subject: 'Password Reset Request - LoanFlow CRM',
+            body: {
+              contentType: 'HTML',
+              content: htmlContent,
+            },
+            toRecipients: [{
+              emailAddress: { address: recipientEmail }
+            }],
+          }
+        };
+
+        const sendResponse = await fetch('https://graph.microsoft.com/v1.0/me/sendMail', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(emailData),
+        });
+
+        if (!sendResponse.ok) {
+          const errorText = await sendResponse.text();
+          console.error('Send password reset email error:', errorText);
+          throw new Error('Failed to send password reset email');
+        }
+
+        return new Response(JSON.stringify({ success: true, message: 'Password reset email sent successfully' }), {
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
       default:
         throw new Error('Invalid action');
     }
