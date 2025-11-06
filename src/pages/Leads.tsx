@@ -82,6 +82,8 @@ export default function Leads() {
   const [selectedStage, setSelectedStage] = useState('All');
   const [selectedPriority, setSelectedPriority] = useState('All');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const [sortColumn, setSortColumn] = useState<'name' | 'created_at' | 'loan_amount' | 'stage' | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const { hasRole } = useRoleBasedAccess();
   const hasAdminRole = hasRole('admin') || hasRole('super_admin');
 
@@ -404,6 +406,40 @@ export default function Leads() {
     return matchesSearch && matchesStage && matchesPriority;
   });
 
+  // Handle column sorting
+  const handleSort = (column: 'name' | 'created_at' | 'loan_amount' | 'stage') => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
+  // Sort filtered leads
+  const sortedLeads = [...filteredLeads].sort((a, b) => {
+    if (!sortColumn) return 0;
+
+    let compareValue = 0;
+    
+    switch (sortColumn) {
+      case 'name':
+        compareValue = (a.name || '').localeCompare(b.name || '');
+        break;
+      case 'created_at':
+        compareValue = new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
+        break;
+      case 'loan_amount':
+        compareValue = (a.loan_amount || 0) - (b.loan_amount || 0);
+        break;
+      case 'stage':
+        compareValue = (a.stage || '').localeCompare(b.stage || '');
+        break;
+    }
+    
+    return sortDirection === 'asc' ? compareValue : -compareValue;
+  });
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -542,7 +578,7 @@ export default function Leads() {
                       selectedPriority={selectedPriority}
                       setSelectedPriority={setSelectedPriority}
                       totalLeads={realtimeLeads.length}
-                      filteredCount={filteredLeads.length}
+                      filteredCount={sortedLeads.length}
                     />
                   </CardContent>
                 </Card>
@@ -621,7 +657,7 @@ export default function Leads() {
             
             {viewMode === 'list' ? (
               <LeadsList 
-                leads={filteredLeads}
+                leads={sortedLeads}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onConvert={handleConvert}
@@ -631,10 +667,13 @@ export default function Leads() {
                 selectedLeads={selectedLeads}
                 onSelectAll={handleSelectAll}
                 onSelectLead={handleSelectLead}
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                onSort={handleSort}
               />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredLeads.length === 0 ? (
+                {sortedLeads.length === 0 ? (
                   <div className="col-span-full text-center py-12">
                     <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-medium mb-2">No leads found</h3>
@@ -649,7 +688,7 @@ export default function Leads() {
                     </Button>
                   </div>
                 ) : (
-                  filteredLeads.map((lead) => (
+                  sortedLeads.map((lead) => (
                     <Card 
                       key={lead.id}
                       className="hover:shadow-lg transition-all cursor-pointer group relative"

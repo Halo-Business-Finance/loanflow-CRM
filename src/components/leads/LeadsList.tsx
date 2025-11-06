@@ -1,6 +1,8 @@
 import { Lead } from "@/types/lead"
 import { LeadTableRow } from "@/components/LeadTableRow"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button"
+import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -20,6 +22,9 @@ interface LeadsListProps {
   selectedLeads: string[]
   onSelectAll: (selected: boolean) => void
   onSelectLead: (leadId: string, selected: boolean) => void
+  sortColumn?: 'name' | 'created_at' | 'loan_amount' | 'stage' | null
+  sortDirection?: 'asc' | 'desc'
+  onSort?: (column: 'name' | 'created_at' | 'loan_amount' | 'stage') => void
 }
 
 export function LeadsList({ 
@@ -32,7 +37,10 @@ export function LeadsList({
   currentUserId,
   selectedLeads,
   onSelectAll,
-  onSelectLead
+  onSelectLead,
+  sortColumn,
+  sortDirection,
+  onSort
 }: LeadsListProps) {
   if (leads.length === 0) {
     return (
@@ -44,6 +52,13 @@ export function LeadsList({
 
   const allSelected = leads.length > 0 && selectedLeads.length === leads.length
   const someSelected = selectedLeads.length > 0 && selectedLeads.length < leads.length
+
+  const SortIcon = ({ column }: { column: 'name' | 'created_at' | 'loan_amount' | 'stage' }) => {
+    if (sortColumn !== column) return <ArrowUpDown className="h-3.5 w-3.5 ml-1 opacity-40" />
+    return sortDirection === 'asc' 
+      ? <ArrowUp className="h-3.5 w-3.5 ml-1" />
+      : <ArrowDown className="h-3.5 w-3.5 ml-1" />
+  }
 
   return (
     <div className="border rounded-lg overflow-hidden bg-card">
@@ -58,12 +73,40 @@ export function LeadsList({
                   aria-label="Select all leads"
                   className={someSelected ? "data-[state=checked]:bg-primary/50" : ""}
                 />
-                <span className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Lead Name</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onSort?.('name')}
+                  className="h-auto p-0 hover:bg-transparent font-medium text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                >
+                  Lead Name
+                  <SortIcon column="name" />
+                </Button>
               </div>
             </TableHead>
             <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Contact Information</TableHead>
-            <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Loan Details</TableHead>
-            <TableHead className="px-4 font-medium text-xs uppercase tracking-wider text-muted-foreground">Lead Status</TableHead>
+            <TableHead className="px-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onSort?.('loan_amount')}
+                className="h-auto p-0 hover:bg-transparent font-medium text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground"
+              >
+                Loan Details
+                <SortIcon column="loan_amount" />
+              </Button>
+            </TableHead>
+            <TableHead className="px-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onSort?.('stage')}
+                className="h-auto p-0 hover:bg-transparent font-medium text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground"
+              >
+                Lead Status
+                <SortIcon column="stage" />
+              </Button>
+            </TableHead>
             <TableHead className="w-[280px] px-4 text-right font-medium text-xs uppercase tracking-wider text-muted-foreground">Actions</TableHead>
           </TableRow>
         </TableHeader>
