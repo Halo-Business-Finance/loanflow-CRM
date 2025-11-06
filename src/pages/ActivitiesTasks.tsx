@@ -12,25 +12,13 @@ export default function ActivitiesTasks() {
   return (
     <StandardPageLayout>
       <StandardPageHeader
-        title={
-          <div className="flex items-center gap-3">
-            <span>Tasks</span>
-            <Badge variant="default" className="bg-primary text-primary-foreground">
-              15 Tasks
-            </Badge>
-          </div>
-        }
+        title="Tasks"
         description="Manage your daily tasks and action items"
         actions={
-          <div className="flex gap-2">
-            <Button variant="outline" size="icon">
-              <RefreshCw className="h-4 w-4" />
-            </Button>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              New Task
-            </Button>
-          </div>
+          <Button variant="outline" size="sm">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh Data
+          </Button>
         }
       />
 

@@ -3,7 +3,7 @@ import { StandardPageLayout } from "@/components/StandardPageLayout";
 import { StandardPageHeader } from "@/components/StandardPageHeader";
 import { StandardContentCard } from "@/components/StandardContentCard";
 import { ResponsiveContainer } from "@/components/ResponsiveContainer";
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Users } from "lucide-react";
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Users, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { useCalendarData } from "@/hooks/useCalendarData";
@@ -64,19 +64,12 @@ export default function ActivitiesCalendar() {
   return (
     <StandardPageLayout>
       <StandardPageHeader
-        title={
-          <div className="flex items-center gap-3">
-            <span>Calendar</span>
-            <Badge variant="default" className="bg-primary text-primary-foreground">
-              {events.length} Events
-            </Badge>
-          </div>
-        }
+        title="Calendar"
         description="Manage your appointments, meetings, and important deadlines"
         actions={
-          <Button onClick={() => setShowScheduleModal(true)}>
-            <CalendarIcon className="h-4 w-4 mr-2" />
-            Schedule Event
+          <Button onClick={() => refetch()} variant="outline" size="sm">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh Data
           </Button>
         }
       />
