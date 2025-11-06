@@ -168,7 +168,7 @@ const SecurityPage: React.FC = () => {
             </StandardContentCard>
 
             {/* Security Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
               <Card 
                 className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
                 onClick={() => navigate('/security/compliance')}
@@ -210,6 +210,17 @@ const SecurityPage: React.FC = () => {
                   <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">MFA Status</p>
                   <p className="text-3xl font-semibold">Active</p>
                   <Progress value={100} className="h-1.5" />
+                </CardContent>
+              </Card>
+
+              <Card 
+                className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                onClick={() => navigate('/security/lead-diagnostics')}
+              >
+                <CardContent className="p-6 space-y-3">
+                  <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Lead Diagnostics</p>
+                  <p className="text-3xl font-semibold">RLS</p>
+                  <p className="text-xs text-muted-foreground">Access testing</p>
                 </CardContent>
               </Card>
             </div>
