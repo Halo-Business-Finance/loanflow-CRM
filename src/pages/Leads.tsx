@@ -541,7 +541,7 @@ export default function Leads() {
 
               {/* Filters Section */}
               {showFilters && (
-                <Card className="border border-blue-600">
+                <Card>
                   <CardContent className="p-6">
                     <LeadFilters
                       searchTerm={searchTerm}
@@ -609,7 +609,7 @@ export default function Leads() {
               </div>
             )}
 
-            <div className="border border-blue-600 rounded-lg p-4 bg-card mb-6">
+            <div className="rounded-lg p-4 bg-card mb-6">
               <div className="flex gap-4">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -673,7 +673,7 @@ export default function Leads() {
                   filteredLeads.map((lead) => (
                     <Card 
                       key={lead.id}
-                      className="border border-blue-600 hover:shadow-lg transition-all cursor-pointer group relative"
+                      className="hover:shadow-lg transition-all cursor-pointer group relative"
                       onClick={() => navigate(`/leads/${lead.id}`)}
                     >
                       <CardHeader className="pb-3">
@@ -765,7 +765,7 @@ export default function Leads() {
           </TabsContent>
 
           <TabsContent value="qualified" className="space-y-6">
-            <Card className="border border-blue-600">
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-green-500" />
@@ -800,7 +800,7 @@ export default function Leads() {
 
           <TabsContent value="management" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-3">
-              <Card className="border border-blue-600">
+              <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Phone className="h-5 w-5 text-green-500" />
@@ -813,7 +813,7 @@ export default function Leads() {
                 </CardContent>
               </Card>
 
-              <Card className="border border-blue-600">
+              <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Mail className="h-5 w-5 text-blue-500" />
@@ -826,7 +826,7 @@ export default function Leads() {
                 </CardContent>
               </Card>
 
-              <Card className="border border-blue-600">
+              <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Target className="h-5 w-5 text-orange-500" />
