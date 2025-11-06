@@ -426,14 +426,9 @@ export default function Leads() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div>
-                  <div className="flex items-center gap-3">
-                    <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                      Lead Management
-                    </h1>
-                    <Badge variant="default" className="text-xs font-medium px-2 py-1">
-                      {overview.totalLeads} Leads
-                    </Badge>
-                  </div>
+                  <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                    Lead Management
+                  </h1>
                   <p className="text-sm text-muted-foreground mt-1">
                     Manage and track your sales leads and prospects
                   </p>
