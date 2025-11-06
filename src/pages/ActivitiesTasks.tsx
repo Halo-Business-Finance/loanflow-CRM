@@ -54,7 +54,7 @@ export default function ActivitiesTasks() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <StandardContentCard title="Today's Tasks" className="border border-blue-600">
+            <StandardContentCard title="Today's Tasks">
               <div className="space-y-4">
                 <div className="flex items-center space-x-3 p-3 bg-card/50 border border-border/50 rounded-lg hover:bg-card/80 transition-colors">
                   <Checkbox />
@@ -84,7 +84,7 @@ export default function ActivitiesTasks() {
               </div>
             </StandardContentCard>
 
-            <StandardContentCard title="Upcoming Tasks" className="border border-blue-600">
+            <StandardContentCard title="Upcoming Tasks">
               <div className="space-y-4">
                 <div className="flex items-center space-x-3 p-3 bg-card/50 border border-border/50 rounded-lg hover:bg-card/80 transition-colors">
                   <Checkbox />
