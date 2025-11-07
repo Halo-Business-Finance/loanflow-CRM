@@ -1,19 +1,9 @@
 import { useState, useEffect } from "react"
-import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { StandardKPICard } from "@/components/StandardKPICard"
-import { ResponsiveContainer } from "@/components/ResponsiveContainer"
-import { AlertTriangle, Shield, Activity, TrendingUp, Settings, MoreVertical, Bell, Lock, Key, Ban, RefreshCw } from "lucide-react"
+import { AlertTriangle, Shield, Activity, TrendingUp, Bell, Lock, Key, Ban, RefreshCw, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { formatDistanceToNow } from "date-fns"
@@ -33,6 +23,7 @@ export default function SecurityThreats() {
   const { toast } = useToast()
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([])
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState("overview")
   const [stats, setStats] = useState({
     activeThreats: 0,
     blockedAttempts: 0,
@@ -206,230 +197,361 @@ export default function SecurityThreats() {
     )
     .slice(0, 5)
 
+  const getFilteredEvents = () => {
+    if (activeTab === "overview") return securityEvents.slice(0, 20)
+    if (activeTab === "active") {
+      return securityEvents.filter(event => 
+        event.severity === 'high' || event.severity === 'critical'
+      ).slice(0, 20)
+    }
+    if (activeTab === "history") {
+      return securityEvents.filter(event => {
+        const eventAge = Date.now() - new Date(event.created_at).getTime()
+        const hoursOld = eventAge / (1000 * 60 * 60)
+        return hoursOld >= 24
+      }).slice(0, 20)
+    }
+    return securityEvents.slice(0, 20)
+  }
+
   return (
-    <StandardPageLayout>
-      <StandardPageHeader 
-        title="Threat Detection"
-        description="Real-time threat monitoring and security incident management"
-        actions={
-          <div className="flex items-center gap-3">
-            <Button onClick={fetchSecurityEvents} disabled={loading} variant="outline">
-              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Threat Detection
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Real-time threat monitoring and security incident management
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={fetchSecurityEvents} 
+              disabled={loading}
+              size="sm" 
+              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]"
+            >
+              <RefreshCw className={`h-3 w-3 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
-            <Button>
-              <AlertTriangle className="mr-2 h-4 w-4" />
-              View Alerts
+            <Button 
+              size="sm"
+              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]"
+              onClick={() => toast({
+                title: "Coming Soon",
+                description: "Alert configuration will be available soon."
+              })}
+            >
+              <Bell className="h-3 w-3 mr-2" />
+              Alerts
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Options
-                  <MoreVertical className="ml-2 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Threat Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Bell className="mr-2 h-4 w-4" />
-                  Configure Alerts
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Ban className="mr-2 h-4 w-4" />
-                  Block IP Addresses
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Lock className="mr-2 h-4 w-4" />
-                  Lockdown Mode
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Key className="mr-2 h-4 w-4" />
-                  Detection Rules
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
-        }
-      />
-      
-      <ResponsiveContainer padding="md" maxWidth="full">
-        <div className="space-y-6">
-          {/* Stats Grid */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <StandardKPICard 
-              title="Active Threats"
-              value={stats.activeThreats}
-              trend={{
-                value: "Requires immediate attention",
-                direction: stats.activeThreats > 0 ? "down" : "neutral"
-              }}
-            />
-
-            <StandardKPICard 
-              title="Blocked Attempts"
-              value={stats.blockedAttempts}
-              trend={{
-                value: "Last 24 hours",
-                direction: "neutral"
-              }}
-            />
-
-            <StandardKPICard 
-              title="Security Score"
-              value={`${stats.securityScore}%`}
-              trend={{
-                value: "System security rating",
-                direction: stats.securityScore >= 95 ? "up" : "neutral"
-              }}
-            />
-
-            <StandardKPICard 
-              title="Anomalies"
-              value={stats.anomalies}
-              trend={{
-                value: "Under investigation",
-                direction: "neutral"
-              }}
-            />
-          </div>
-
-          {/* Active Threats and Categories Grid */}
-          <div className="grid gap-6 md:grid-cols-2">
-            <StandardContentCard title="Active Threats">
-              <p className="text-sm text-muted-foreground mb-4">
-                Current security incidents requiring attention
-              </p>
-              {loading ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  Loading threats...
-                </div>
-              ) : activeThreatsData.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Shield className="h-12 w-12 mx-auto mb-2 text-green-600" />
-                  <p>No active threats detected</p>
-                  <p className="text-xs">All systems secure</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {activeThreatsData.map((threat) => (
-                    <div 
-                      key={threat.id}
-                      className={`flex items-center justify-between p-4 border rounded-lg ${
-                        threat.severity === 'critical' 
-                          ? 'border-red-200 bg-red-50 dark:bg-red-950/20' 
-                          : 'border-orange-200 bg-orange-50 dark:bg-orange-950/20'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3 flex-1">
-                        <AlertTriangle className={`h-6 w-6 ${getSeverityColor(threat.severity)}`} />
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">
-                            {threat.event_type.replace(/_/g, ' ').toUpperCase()}
-                          </p>
-                          <p className="text-sm text-muted-foreground truncate">
-                            {formatDistanceToNow(new Date(threat.created_at), { addSuffix: true })}
-                          </p>
-                        </div>
-                      </div>
-                      <Button size="sm" variant="destructive" className="border-2 border-red-800">
-                        Investigate
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </StandardContentCard>
-
-            <StandardContentCard title="Threat Categories">
-              <p className="text-sm text-muted-foreground mb-4">
-                Breakdown of detected threats by type
-              </p>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 border rounded-lg">
-                  <div>
-                    <p className="font-medium">Brute Force Attacks</p>
-                    <p className="text-sm text-muted-foreground">Login attempts</p>
-                  </div>
-                  <span className="text-lg font-semibold">{threatCategories.bruteForce}</span>
-                </div>
-                
-                <div className="flex justify-between items-center p-3 border rounded-lg">
-                  <div>
-                    <p className="font-medium">Suspicious Activity</p>
-                    <p className="text-sm text-muted-foreground">Anomalous behavior</p>
-                  </div>
-                  <span className="text-lg font-semibold">{threatCategories.suspicious}</span>
-                </div>
-                
-                <div className="flex justify-between items-center p-3 border rounded-lg">
-                  <div>
-                    <p className="font-medium">Malware Detection</p>
-                    <p className="text-sm text-muted-foreground">File uploads</p>
-                  </div>
-                  <span className="text-lg font-semibold">{threatCategories.malware}</span>
-                </div>
-                
-                <div className="flex justify-between items-center p-3 border rounded-lg">
-                  <div>
-                    <p className="font-medium">Data Exfiltration</p>
-                    <p className="text-sm text-muted-foreground">Unusual downloads</p>
-                  </div>
-                  <span className="text-lg font-semibold">{threatCategories.dataExfiltration}</span>
-                </div>
-              </div>
-            </StandardContentCard>
-          </div>
-
-          {/* Recent Security Events */}
-          <StandardContentCard title="Recent Security Events">
-            <p className="text-sm text-muted-foreground mb-4">
-              Latest threat detection activities
-            </p>
-            {loading ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Loading security events...
-              </div>
-            ) : securityEvents.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                No security events found
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="grid grid-cols-5 gap-4 font-medium text-sm border-b pb-2">
-                  <span>Time</span>
-                  <span>Threat Type</span>
-                  <span>Source</span>
-                  <span>Severity</span>
-                  <span>Status</span>
-                </div>
-                
-                {securityEvents.slice(0, 20).map((event) => (
-                  <div key={event.id} className="grid grid-cols-5 gap-4 text-sm p-3 border rounded-lg hover:bg-accent/50 transition-colors">
-                    <span className="text-muted-foreground truncate">
-                      {formatDistanceToNow(new Date(event.created_at), { addSuffix: true })}
-                    </span>
-                    <span className="truncate" title={event.event_type}>
-                      {event.event_type.replace(/_/g, ' ')}
-                    </span>
-                    <span className="truncate" title={event.user_id || 'External'}>
-                      {event.user_id ? event.user_id.slice(0, 8) + '...' : 'External'}
-                    </span>
-                    <span className={getSeverityColor(event.severity)}>
-                      {event.severity}
-                    </span>
-                    <span className={getStatusColor(event)}>
-                      {getStatusText(event)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </StandardContentCard>
         </div>
-      </ResponsiveContainer>
-    </StandardPageLayout>
+
+        {/* Content Area */}
+        <div className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3 bg-[#0A1628] p-1 gap-2">
+              <TabsTrigger 
+                value="overview" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Activity className="w-4 h-4" />
+                <span>Overview</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="active" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <AlertTriangle className="w-4 h-4" />
+                <span>Active Threats</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="history" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Clock className="w-4 h-4" />
+                <span>History</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="space-y-6">
+              {/* Stats Grid */}
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <StandardKPICard 
+                  title="Active Threats"
+                  value={stats.activeThreats}
+                  trend={{
+                    value: "Requires immediate attention",
+                    direction: stats.activeThreats > 0 ? "down" : "neutral"
+                  }}
+                />
+
+                <StandardKPICard 
+                  title="Blocked Attempts"
+                  value={stats.blockedAttempts}
+                  trend={{
+                    value: "Last 24 hours",
+                    direction: "neutral"
+                  }}
+                />
+
+                <StandardKPICard 
+                  title="Security Score"
+                  value={`${stats.securityScore}%`}
+                  trend={{
+                    value: "System security rating",
+                    direction: stats.securityScore >= 95 ? "up" : "neutral"
+                  }}
+                />
+
+                <StandardKPICard 
+                  title="Anomalies"
+                  value={stats.anomalies}
+                  trend={{
+                    value: "Under investigation",
+                    direction: "neutral"
+                  }}
+                />
+              </div>
+
+              {/* Active Threats and Categories Grid */}
+              <div className="grid gap-6 md:grid-cols-2">
+                <StandardContentCard title="Active Threats">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Current security incidents requiring attention
+                  </p>
+                  {loading ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      Loading threats...
+                    </div>
+                  ) : activeThreatsData.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Shield className="h-12 w-12 mx-auto mb-2 text-green-600" />
+                      <p>No active threats detected</p>
+                      <p className="text-xs">All systems secure</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {activeThreatsData.map((threat) => (
+                        <div 
+                          key={threat.id}
+                          className={`flex items-center justify-between p-4 border-2 border-[#0A1628] rounded-lg ${
+                            threat.severity === 'critical' 
+                              ? 'bg-red-50 dark:bg-red-950/20' 
+                              : 'bg-orange-50 dark:bg-orange-950/20'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-3 flex-1">
+                            <AlertTriangle className={`h-6 w-6 ${getSeverityColor(threat.severity)}`} />
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium truncate">
+                                {threat.event_type.replace(/_/g, ' ').toUpperCase()}
+                              </p>
+                              <p className="text-sm text-muted-foreground truncate">
+                                {formatDistanceToNow(new Date(threat.created_at), { addSuffix: true })}
+                              </p>
+                            </div>
+                          </div>
+                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                            Investigate
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </StandardContentCard>
+
+                <StandardContentCard title="Threat Categories">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Breakdown of detected threats by type
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg">
+                      <div>
+                        <p className="font-medium">Brute Force Attacks</p>
+                        <p className="text-sm text-muted-foreground">Login attempts</p>
+                      </div>
+                      <span className="text-lg font-semibold">{threatCategories.bruteForce}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg">
+                      <div>
+                        <p className="font-medium">Suspicious Activity</p>
+                        <p className="text-sm text-muted-foreground">Anomalous behavior</p>
+                      </div>
+                      <span className="text-lg font-semibold">{threatCategories.suspicious}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg">
+                      <div>
+                        <p className="font-medium">Malware Detection</p>
+                        <p className="text-sm text-muted-foreground">File uploads</p>
+                      </div>
+                      <span className="text-lg font-semibold">{threatCategories.malware}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg">
+                      <div>
+                        <p className="font-medium">Data Exfiltration</p>
+                        <p className="text-sm text-muted-foreground">Unusual downloads</p>
+                      </div>
+                      <span className="text-lg font-semibold">{threatCategories.dataExfiltration}</span>
+                    </div>
+                  </div>
+                </StandardContentCard>
+              </div>
+
+              {/* Recent Security Events */}
+              <StandardContentCard title="Recent Security Events">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Latest threat detection activities
+                </p>
+                {loading ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Loading security events...
+                  </div>
+                ) : getFilteredEvents().length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No security events found
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-5 gap-4 font-medium text-sm border-b pb-2">
+                      <span>Time</span>
+                      <span>Threat Type</span>
+                      <span>Source</span>
+                      <span>Severity</span>
+                      <span>Status</span>
+                    </div>
+                    
+                    {getFilteredEvents().map((event) => (
+                      <div key={event.id} className="grid grid-cols-5 gap-4 text-sm p-3 border border-[#0A1628] rounded-lg hover:bg-accent/50 transition-colors">
+                        <span className="text-muted-foreground truncate">
+                          {formatDistanceToNow(new Date(event.created_at), { addSuffix: true })}
+                        </span>
+                        <span className="truncate" title={event.event_type}>
+                          {event.event_type.replace(/_/g, ' ')}
+                        </span>
+                        <span className="truncate" title={event.user_id || 'External'}>
+                          {event.user_id ? event.user_id.slice(0, 8) + '...' : 'External'}
+                        </span>
+                        <span className={getSeverityColor(event.severity)}>
+                          {event.severity}
+                        </span>
+                        <span className={getStatusColor(event)}>
+                          {getStatusText(event)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </StandardContentCard>
+            </TabsContent>
+
+            <TabsContent value="active" className="space-y-6">
+              <StandardContentCard title="Active Security Threats">
+                <p className="text-sm text-muted-foreground mb-4">
+                  High and critical severity threats requiring immediate attention
+                </p>
+                {loading ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Loading active threats...
+                  </div>
+                ) : getFilteredEvents().length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Shield className="h-12 w-12 mx-auto mb-2 text-green-600" />
+                    <p>No active threats detected</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-5 gap-4 font-medium text-sm border-b pb-2">
+                      <span>Time</span>
+                      <span>Threat Type</span>
+                      <span>Source</span>
+                      <span>Severity</span>
+                      <span>Status</span>
+                    </div>
+                    
+                    {getFilteredEvents().map((event) => (
+                      <div key={event.id} className="grid grid-cols-5 gap-4 text-sm p-3 border border-[#0A1628] rounded-lg hover:bg-accent/50 transition-colors">
+                        <span className="text-muted-foreground truncate">
+                          {formatDistanceToNow(new Date(event.created_at), { addSuffix: true })}
+                        </span>
+                        <span className="truncate" title={event.event_type}>
+                          {event.event_type.replace(/_/g, ' ')}
+                        </span>
+                        <span className="truncate" title={event.user_id || 'External'}>
+                          {event.user_id ? event.user_id.slice(0, 8) + '...' : 'External'}
+                        </span>
+                        <span className={getSeverityColor(event.severity)}>
+                          {event.severity}
+                        </span>
+                        <span className={getStatusColor(event)}>
+                          {getStatusText(event)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </StandardContentCard>
+            </TabsContent>
+
+            <TabsContent value="history" className="space-y-6">
+              <StandardContentCard title="Historical Security Events">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Archived threats and resolved security incidents
+                </p>
+                {loading ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Loading historical events...
+                  </div>
+                ) : getFilteredEvents().length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No historical events found
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-5 gap-4 font-medium text-sm border-b pb-2">
+                      <span>Time</span>
+                      <span>Threat Type</span>
+                      <span>Source</span>
+                      <span>Severity</span>
+                      <span>Status</span>
+                    </div>
+                    
+                    {getFilteredEvents().map((event) => (
+                      <div key={event.id} className="grid grid-cols-5 gap-4 text-sm p-3 border border-[#0A1628] rounded-lg hover:bg-accent/50 transition-colors">
+                        <span className="text-muted-foreground truncate">
+                          {formatDistanceToNow(new Date(event.created_at), { addSuffix: true })}
+                        </span>
+                        <span className="truncate" title={event.event_type}>
+                          {event.event_type.replace(/_/g, ' ')}
+                        </span>
+                        <span className="truncate" title={event.user_id || 'External'}>
+                          {event.user_id ? event.user_id.slice(0, 8) + '...' : 'External'}
+                        </span>
+                        <span className={getSeverityColor(event.severity)}>
+                          {event.severity}
+                        </span>
+                        <span className={getStatusColor(event)}>
+                          {getStatusText(event)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </StandardContentCard>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    </div>
   )
 }
