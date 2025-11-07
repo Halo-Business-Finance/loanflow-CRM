@@ -112,14 +112,22 @@ export default function Documents() {
   if (loading) {
     return (
       <StandardPageLayout>
-        <StandardPageHeader 
-          title="Files"
-          description="Document Command Center - Loan Document Management"
-        />
-        <div className="p-6">
-          <div className="animate-pulse space-y-4">
+        <div className="p-8 space-y-8">
+          {/* Header Skeleton */}
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="h-8 w-32 bg-muted rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-64 bg-muted rounded animate-pulse"></div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-20 bg-muted rounded animate-pulse"></div>
+              <div className="h-8 w-20 bg-muted rounded animate-pulse"></div>
+            </div>
+          </div>
+          {/* Content Skeleton */}
+          <div className="space-y-4">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-16 bg-muted rounded-lg"></div>
+              <div key={i} className="h-16 bg-muted rounded-lg animate-pulse"></div>
             ))}
           </div>
         </div>
@@ -129,19 +137,47 @@ export default function Documents() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader 
-        title="Files"
-        description="Document Command Center - Loan Document Management"
-        actions={
-          <Button onClick={() => setShowUploadModal(true)} className="gap-2">
-            <Upload className="h-4 w-4" />
-            New
-          </Button>
-        }
-      />
-      
-      <div className="p-6 space-y-6">
-        {/* Search and View Controls */}
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Files
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Document Command Center - Loan Document Management
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 border border-border rounded-lg p-1">
+              <Button
+                variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className="h-7 w-7 p-0"
+              >
+                <Grid className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+                className="h-7 w-7 p-0"
+              >
+                <List className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+            <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white gap-2">
+              <Upload className="h-3 w-3" />
+              New
+            </Button>
+          </div>
+        </div>
+
+        {/* Search and Selection Controls */}
         <div className="flex items-center gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -176,29 +212,12 @@ export default function Documents() {
               </Button>
             </div>
           )}
-          
-          <div className="flex items-center gap-2 border border-border rounded-lg p-1">
-            <Button
-              variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-              size="sm"
-              onClick={() => setViewMode('grid')}
-              className="h-8 w-8 p-0"
-            >
-              <Grid className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setViewMode('list')}
-              className="h-8 w-8 p-0"
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
         </div>
 
-        {/* Folder Header */}
-        {filteredFolders.length > 0 && (
+        {/* Content Area */}
+        <div className="space-y-6">
+          {/* Folder Header */}
+          {filteredFolders.length > 0 && (
           <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground border-b">
             <div className="col-span-5 flex items-center gap-3">
               <Checkbox
@@ -355,6 +374,7 @@ export default function Documents() {
             </div>
           </div>
         )}
+        </div>
       </div>
 
       {/* Upload Modal */}
