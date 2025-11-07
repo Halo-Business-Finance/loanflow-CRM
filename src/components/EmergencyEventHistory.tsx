@@ -151,7 +151,7 @@ export function EmergencyEventHistory() {
 
                     {/* Resolution Info */}
                     {event.resolved_at && (
-                      <div className="mt-3 pt-3 border-t border-border text-sm text-muted-foreground">
+                      <div className="mt-3 pt-3 border-t border-[#0A1628] text-sm text-muted-foreground">
                         Resolved {formatDistanceToNow(new Date(event.resolved_at), { addSuffix: true })}
                       </div>
                     )}

@@ -416,7 +416,7 @@ export function EmergencyShutdown() {
           ) : (
             <div className="space-y-3">
               {emergencyEvents.map((event) => (
-                <div key={event.id} className="flex items-center justify-between p-3 border rounded">
+                <div key={event.id} className="flex items-center justify-between p-3 border border-[#0A1628] rounded">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
                       <Badge variant={event.severity === 'critical' ? 'destructive' : 'default'}>
