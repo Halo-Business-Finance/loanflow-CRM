@@ -644,7 +644,7 @@ export default function UserDirectory() {
         </div>
 
       <Tabs defaultValue="users" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 bg-[#0A1628] p-1 gap-2">
+        <TabsList className="bg-[#0A1628] p-1 gap-2 inline-flex w-auto">
           <TabsTrigger value="users" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
             <UserCog className="h-4 w-4" />
             Users
