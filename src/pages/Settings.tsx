@@ -262,19 +262,6 @@ export default function Settings() {
               <CardContent className="space-y-8">
                 {/* Profile Information Section */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-medium text-[#161616]">Profile Information</h3>
-                  
-                  {/* User Role Display */}
-                  <div className="space-y-2">
-                    <Label>User Role</Label>
-                    <p className="text-sm text-foreground">
-                      {userRole || "Loading..."}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Contact an administrator to change your role
-                    </p>
-                  </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="displayName">Display Name</Label>
