@@ -257,15 +257,7 @@ const SecurityPage: React.FC = () => {
 
               <TabsContent value="monitoring" className="space-y-6 mt-6">
                 <Card className="border-0 shadow-sm">
-                  <CardHeader className="space-y-1 pb-4">
-                    <CardTitle className="text-2xl font-semibold">
-                      Real-Time Security Monitoring
-                    </CardTitle>
-                    <CardDescription className="text-base">
-                      Enterprise-grade threat detection and response system
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-6">
                     <EnhancedSecurityMonitor />
                   </CardContent>
                 </Card>
