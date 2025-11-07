@@ -280,7 +280,7 @@ export default function Settings() {
                         type="email" 
                         value={user?.email || ""} 
                         disabled 
-                        className="bg-muted border-[#0A1628]"
+                        className="bg-white text-black border-[#0A1628]"
                       />
                       <p className="text-xs text-muted-foreground">
                         Email cannot be changed
@@ -294,7 +294,7 @@ export default function Settings() {
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
                         placeholder="Enter your display name"
-                        className="border-[#0A1628]"
+                        className="bg-white text-black border-[#0A1628]"
                       />
                     </div>
 
@@ -306,14 +306,14 @@ export default function Settings() {
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         placeholder="Enter your phone number"
-                        className="border-[#0A1628]"
+                        className="bg-white text-black border-[#0A1628]"
                       />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="timeZone">Time Zone</Label>
                       <Select value={timeZone} onValueChange={setTimeZone}>
-                        <SelectTrigger className="border-[#0A1628]">
+                        <SelectTrigger className="bg-white text-black border-[#0A1628]">
                           <SelectValue placeholder="Select your time zone" />
                         </SelectTrigger>
                         <SelectContent>
@@ -396,7 +396,7 @@ export default function Settings() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Enter new password"
-                      className="border-[#0A1628]"
+                      className="bg-white text-black border-[#0A1628]"
                     />
                   </div>
 
@@ -408,7 +408,7 @@ export default function Settings() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Confirm new password"
-                      className="border-[#0A1628]"
+                      className="bg-white text-black border-[#0A1628]"
                     />
                   </div>
 
