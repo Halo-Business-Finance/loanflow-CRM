@@ -262,9 +262,9 @@ export default function LoanHistory() {
               <div className="flex-1">
                 <Input
                   placeholder="Search by borrower name, business name, or loan ID..."
+                  className="w-full border-[#0A1628]"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full"
                 />
               </div>
               <Select value={loanTypeFilter} onValueChange={setLoanTypeFilter}>

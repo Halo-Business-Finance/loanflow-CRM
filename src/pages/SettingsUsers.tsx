@@ -560,9 +560,9 @@ export default function SettingsUsers() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search users by name, email, or role..."
+                    className="pl-10 border-[#0A1628]"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400"
                   />
                 </div>
                 <Button variant="outline" size="default" className="shrink-0">

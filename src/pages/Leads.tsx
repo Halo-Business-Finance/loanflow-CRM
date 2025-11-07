@@ -742,9 +742,9 @@ export default function Leads() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     placeholder="Search leads by name, email, or company..."
+                    className="pl-10 border-[#0A1628]"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
                   />
                 </div>
                 <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setShowFilters(!showFilters)}>

@@ -318,7 +318,7 @@ export default function Documents() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search folders..."
-              className="pl-10"
+              className="pl-10 border-[#0A1628]"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />

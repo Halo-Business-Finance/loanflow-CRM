@@ -371,7 +371,7 @@ export default function Integrations() {
               <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search integrations and tools..."
-                className="pl-10"
+                className="pl-10 border-[#0A1628]"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />

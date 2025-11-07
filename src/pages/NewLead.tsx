@@ -313,6 +313,7 @@ export default function NewLead() {
                     <Input 
                       id="firstName" 
                       placeholder="Enter first name"
+                      className="border-[#0A1628]"
                       value={formData.firstName}
                       onChange={(e) => handleInputChange("firstName", e.target.value)}
                     />
@@ -322,6 +323,7 @@ export default function NewLead() {
                     <Input 
                       id="lastName" 
                       placeholder="Enter last name"
+                      className="border-[#0A1628]"
                       value={formData.lastName}
                       onChange={(e) => handleInputChange("lastName", e.target.value)}
                     />
@@ -334,6 +336,7 @@ export default function NewLead() {
                     id="email" 
                     type="email" 
                     placeholder="Enter email address"
+                    className="border-[#0A1628]"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
                   />
@@ -345,6 +348,7 @@ export default function NewLead() {
                     <Input 
                       id="phone" 
                       placeholder="(555) 123-4567"
+                      className="border-[#0A1628]"
                       value={formData.phone}
                       onChange={(e) => handleInputChange("phone", e.target.value)}
                     />
@@ -354,6 +358,7 @@ export default function NewLead() {
                     <Input 
                       id="mobilePhone" 
                       placeholder="(555) 987-6543"
+                      className="border-[#0A1628]"
                       value={formData.mobilePhone}
                       onChange={(e) => handleInputChange("mobilePhone", e.target.value)}
                     />
@@ -366,6 +371,7 @@ export default function NewLead() {
                     id="personalEmail" 
                     type="email" 
                     placeholder="Personal email address"
+                    className="border-[#0A1628]"
                     value={formData.personalEmail}
                     onChange={(e) => handleInputChange("personalEmail", e.target.value)}
                   />
@@ -376,6 +382,7 @@ export default function NewLead() {
                   <Input 
                     id="homeAddress" 
                     placeholder="123 Main St"
+                    className="border-[#0A1628]"
                     value={formData.homeAddress}
                     onChange={(e) => handleInputChange("homeAddress", e.target.value)}
                   />
