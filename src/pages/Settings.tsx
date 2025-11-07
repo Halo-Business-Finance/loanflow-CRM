@@ -267,11 +267,9 @@ export default function Settings() {
                       <Shield className="w-4 h-4" />
                       User Role
                     </Label>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium capitalize">
-                        {userRole || "Loading..."}
-                      </span>
-                    </div>
+                    <p className="text-sm text-foreground">
+                      {userRole || "Loading..."}
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       Contact an administrator to change your role
                     </p>
