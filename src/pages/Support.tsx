@@ -77,6 +77,7 @@ export default function Support() {
   const [newTicketCategory, setNewTicketCategory] = useState('General');
   const [chatInput, setChatInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
 
   // Fetch tickets from database
   useEffect(() => {
@@ -241,36 +242,35 @@ export default function Support() {
   );
 
   return (
-    <div className="min-h-screen bg-background overflow-auto no-scrollbar">
-      {/* Header */}
-      <div className="bg-card sticky top-0 z-10">
-        <div className="px-4 md:px-6 pt-6 pb-4 md:pt-8 md:pb-6">
-          <div className="flex items-start md:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground no-underline flex items-center gap-3">
-                <MessageSquare className="h-8 w-8 text-primary" />
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
                 Support Center
               </h1>
-              <p className="text-sm md:text-base text-muted-foreground">
+              <p className="text-sm text-muted-foreground mt-1">
                 Manage support tickets and connect with our team through live chat
               </p>
             </div>
-            <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter
-              </Button>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                <Plus className="h-4 w-4 mr-2" />
-                New Ticket
-              </Button>
-            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)} className="h-8 text-xs font-medium">
+              <Filter className="h-3 w-3 mr-2" />
+              Filter
+            </Button>
+            <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white">
+              <Plus className="h-3 w-3 mr-2" />
+              New Ticket
+            </Button>
           </div>
         </div>
-        <div className="mb-6 md:mb-8" />
-      </div>
 
-      <div className="px-4 md:px-6 space-y-6">
+        {/* Content Area */}
+        <div className="space-y-6">
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="border-[#0A1628] hover:border-primary/50 transition-colors">
@@ -548,6 +548,7 @@ export default function Support() {
             </Card>
           </TabsContent>
         </Tabs>
+        </div>
       </div>
     </div>
   );
