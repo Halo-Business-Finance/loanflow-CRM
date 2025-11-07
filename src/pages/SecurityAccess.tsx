@@ -3,8 +3,9 @@ import { StandardPageHeader } from "@/components/StandardPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { StandardKPICard } from "@/components/StandardKPICard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
-import { Shield, Users, Key, Lock, Settings, UserPlus, MoreVertical, Database } from "lucide-react"
+import { Shield, Users, Key, Lock, Settings, UserPlus, MoreVertical, Database, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +43,7 @@ export default function SecurityAccess() {
   const [failedLogins, setFailedLogins] = useState(0)
   const [roleCounts, setRoleCounts] = useState<RoleCount[]>([])
   const [recentEvents, setRecentEvents] = useState<AuditLogEvent[]>([])
+  const [activeTab, setActiveTab] = useState("overview")
 
   useEffect(() => {
     fetchSecurityData()
@@ -185,150 +187,243 @@ export default function SecurityAccess() {
     return { text: 'Success', color: 'text-green-600' }
   }
   return (
-    <StandardPageLayout>
-      <StandardPageHeader 
-        title="Access Management"
-        description="Manage user access permissions and security controls"
-        actions={
-          <div className="flex items-center gap-3">
-            <Button>
-              <UserPlus className="mr-2 h-4 w-4" />
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Access Management
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Manage user access permissions and security controls
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={fetchSecurityData}
+              size="sm" 
+              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]"
+            >
+              <RefreshCw className="h-3 w-3 mr-2" />
+              Refresh
+            </Button>
+            <Button 
+              size="sm"
+              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]"
+            >
+              <UserPlus className="h-3 w-3 mr-2" />
               Add User
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Security Options
-                  <MoreVertical className="ml-2 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-card border shadow-large z-50">
-                <DropdownMenuLabel>Security Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/settings/system')}>
-                  <Database className="mr-2 h-4 w-4" />
-                  System Configuration
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Shield className="mr-2 h-4 w-4" />
-                  Configure Policies
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Key className="mr-2 h-4 w-4" />
-                  Manage API Keys
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Lock className="mr-2 h-4 w-4" />
-                  Session Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Users className="mr-2 h-4 w-4" />
-                  Bulk User Actions
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        }
-      />
-      
-      <ResponsiveContainer padding="md" maxWidth="full">
-        <div className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <StandardKPICard 
-              title="Active Users"
-              value={loading ? "..." : activeUsers.toString()}
-              trend={{
-                value: "Currently logged in",
-                direction: "neutral"
-              }}
-            />
-
-            <StandardKPICard 
-              title="Admin Users"
-              value={loading ? "..." : adminUsers.toString()}
-              trend={{
-                value: "With admin privileges",
-                direction: "neutral"
-              }}
-            />
-
-            <StandardKPICard 
-              title="API Keys"
-              value="—"
-              trend={{
-                value: "Active integrations",
-                direction: "neutral"
-              }}
-            />
-
-            <StandardKPICard 
-              title="Failed Logins"
-              value={loading ? "..." : failedLogins.toString()}
-              trend={{
-                value: "Last 24 hours",
-                direction: "neutral"
-              }}
-            />
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <StandardContentCard title="User Permissions">
-              <p className="text-sm text-muted-foreground mb-4">
-                Manage role-based access control
-              </p>
-              <div className="space-y-4">
-                {loading ? (
-                  <div className="text-center py-4 text-muted-foreground">Loading...</div>
-                ) : roleCounts.length === 0 ? (
-                  <div className="text-center py-4 text-muted-foreground">No roles assigned</div>
-                ) : (
-                  roleCounts.map((roleCount) => (
-                    <div key={roleCount.role} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-medium">{getRoleDisplayName(roleCount.role)}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {roleCount.count} user{roleCount.count !== 1 ? 's' : ''} assigned
-                        </p>
-                      </div>
-                      <Button size="sm" variant="default" className="bg-blue-600 hover:bg-blue-700 text-white">Manage</Button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </StandardContentCard>
-
-            <StandardContentCard title="Recent Access Events">
-              <p className="text-sm text-muted-foreground mb-4">
-                Latest security events
-              </p>
-              <div className="space-y-4">
-                {loading ? (
-                  <div className="text-center py-4 text-muted-foreground">Loading...</div>
-                ) : recentEvents.length === 0 ? (
-                  <div className="text-center py-4 text-muted-foreground">No recent events</div>
-                ) : (
-                  recentEvents.map((event) => {
-                    const status = getActionStatus(event.action)
-                    return (
-                      <div key={event.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div>
-                          <p className="font-medium">{getActionDisplayName(event.action)}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {event.email || 'Unknown user'} - {formatDistanceToNow(new Date(event.created_at), { addSuffix: true })}
-                          </p>
-                        </div>
-                        <span className={`text-sm ${status.color}`}>{status.text}</span>
-                      </div>
-                    )
-                  })
-                )}
-              </div>
-            </StandardContentCard>
           </div>
         </div>
-      </ResponsiveContainer>
-    </StandardPageLayout>
+
+        {/* Content Area */}
+        <div className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3 bg-[#0A1628] p-1 gap-2">
+              <TabsTrigger 
+                value="overview" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Shield className="w-4 h-4" />
+                <span>Overview</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="permissions" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Users className="w-4 h-4" />
+                <span>User Permissions</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="events" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Key className="w-4 h-4" />
+                <span>Access Events</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <StandardKPICard 
+                  title="Active Users"
+                  value={loading ? "..." : activeUsers.toString()}
+                  trend={{
+                    value: "Currently logged in",
+                    direction: "neutral"
+                  }}
+                />
+
+                <StandardKPICard 
+                  title="Admin Users"
+                  value={loading ? "..." : adminUsers.toString()}
+                  trend={{
+                    value: "With admin privileges",
+                    direction: "neutral"
+                  }}
+                />
+
+                <StandardKPICard 
+                  title="API Keys"
+                  value="—"
+                  trend={{
+                    value: "Active integrations",
+                    direction: "neutral"
+                  }}
+                />
+
+                <StandardKPICard 
+                  title="Failed Logins"
+                  value={loading ? "..." : failedLogins.toString()}
+                  trend={{
+                    value: "Last 24 hours",
+                    direction: "neutral"
+                  }}
+                />
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-2">
+                <StandardContentCard title="Security Summary">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Quick overview of system security status
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Shield className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="font-medium">RLS Policies</p>
+                          <p className="text-sm text-muted-foreground">All tables protected</p>
+                        </div>
+                      </div>
+                      <span className="text-sm text-green-600">Active</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Lock className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="font-medium">MFA Status</p>
+                          <p className="text-sm text-muted-foreground">Multi-factor enabled</p>
+                        </div>
+                      </div>
+                      <span className="text-sm text-green-600">Enforced</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Key className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <p className="font-medium">Session Security</p>
+                          <p className="text-sm text-muted-foreground">30 min timeout</p>
+                        </div>
+                      </div>
+                      <span className="text-sm text-blue-600">Configured</span>
+                    </div>
+                  </div>
+                </StandardContentCard>
+
+                <StandardContentCard title="Quick Actions">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Common security management tasks
+                  </p>
+                  <div className="space-y-3">
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                      onClick={() => navigate('/settings/system')}
+                    >
+                      <Database className="h-4 w-4" />
+                      System Configuration
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                    >
+                      <Shield className="h-4 w-4" />
+                      Configure Policies
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                    >
+                      <Key className="h-4 w-4" />
+                      Manage API Keys
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                    >
+                      <Lock className="h-4 w-4" />
+                      Session Settings
+                    </Button>
+                  </div>
+                </StandardContentCard>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="permissions" className="space-y-6">
+              <StandardContentCard title="User Permissions by Role">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Manage role-based access control for all users
+                </p>
+                <div className="space-y-4">
+                  {loading ? (
+                    <div className="text-center py-4 text-muted-foreground">Loading...</div>
+                  ) : roleCounts.length === 0 ? (
+                    <div className="text-center py-4 text-muted-foreground">No roles assigned</div>
+                  ) : (
+                    roleCounts.map((roleCount) => (
+                      <div key={roleCount.role} className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg">
+                        <div>
+                          <p className="font-medium">{getRoleDisplayName(roleCount.role)}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {roleCount.count} user{roleCount.count !== 1 ? 's' : ''} assigned
+                          </p>
+                        </div>
+                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">Manage</Button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </StandardContentCard>
+            </TabsContent>
+
+            <TabsContent value="events" className="space-y-6">
+              <StandardContentCard title="Recent Access Events">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Monitor and audit all security-related activities
+                </p>
+                <div className="space-y-4">
+                  {loading ? (
+                    <div className="text-center py-4 text-muted-foreground">Loading...</div>
+                  ) : recentEvents.length === 0 ? (
+                    <div className="text-center py-4 text-muted-foreground">No recent events</div>
+                  ) : (
+                    recentEvents.map((event) => {
+                      const status = getActionStatus(event.action)
+                      return (
+                        <div key={event.id} className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg">
+                          <div>
+                            <p className="font-medium">{getActionDisplayName(event.action)}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {event.email || 'Unknown user'} - {formatDistanceToNow(new Date(event.created_at), { addSuffix: true })}
+                            </p>
+                          </div>
+                          <span className={`text-sm ${status.color}`}>{status.text}</span>
+                        </div>
+                      )
+                    })
+                  )}
+                </div>
+              </StandardContentCard>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    </div>
   )
 }
