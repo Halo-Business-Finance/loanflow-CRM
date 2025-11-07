@@ -207,7 +207,7 @@ export default function Settings() {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
+            <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white">
               <RefreshCw className="h-3 w-3 mr-2" />
               Refresh
             </Button>
