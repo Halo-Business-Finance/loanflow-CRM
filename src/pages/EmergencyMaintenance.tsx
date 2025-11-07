@@ -5,6 +5,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { EmergencyShutdown } from '@/components/security/EmergencyShutdown';
+import { EmergencyEventHistory } from '@/components/EmergencyEventHistory';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 
 export default function EmergencyMaintenance() {
@@ -116,22 +117,7 @@ export default function EmergencyMaintenance() {
             </TabsContent>
 
             <TabsContent value="history" className="space-y-6">
-              <Card className="border-0">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-normal text-[#161616]">Emergency Event History</CardTitle>
-                  <CardDescription className="text-[#525252]">
-                    View past emergency shutdown events and system responses
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Alert>
-                    <RefreshCw className="h-4 w-4" />
-                    <AlertDescription>
-                      Event history log - Coming soon
-                    </AlertDescription>
-                  </Alert>
-                </CardContent>
-              </Card>
+              <EmergencyEventHistory />
             </TabsContent>
           </Tabs>
         </div>
