@@ -371,6 +371,10 @@ export default function SecurityAccess() {
                     <Button 
                       variant="outline" 
                       className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                      onClick={() => toast({
+                        title: "Coming Soon",
+                        description: "Policy configuration will be available soon."
+                      })}
                     >
                       <Shield className="h-4 w-4" />
                       Configure Policies
@@ -378,6 +382,10 @@ export default function SecurityAccess() {
                     <Button 
                       variant="outline" 
                       className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                      onClick={() => toast({
+                        title: "Coming Soon",
+                        description: "API key management will be available soon."
+                      })}
                     >
                       <Key className="h-4 w-4" />
                       Manage API Keys
@@ -385,6 +393,7 @@ export default function SecurityAccess() {
                     <Button 
                       variant="outline" 
                       className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                      onClick={() => navigate('/settings')}
                     >
                       <Lock className="h-4 w-4" />
                       Session Settings
