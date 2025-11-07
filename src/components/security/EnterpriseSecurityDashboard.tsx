@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { StandardPageLayout } from "@/components/StandardPageLayout";
-import { StandardPageHeader } from "@/components/StandardPageHeader";
 import { StandardContentCard } from "@/components/StandardContentCard";
 import { StandardKPICard } from "@/components/StandardKPICard";
 import { ResponsiveContainer } from "@/components/ResponsiveContainer";
@@ -11,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 import { 
   Shield, 
   Activity, 
@@ -31,7 +30,8 @@ import {
   Download,
   Database,
   Users,
-  Eye
+  Eye,
+  ChevronRight
 } from "lucide-react";
 
 interface SecurityMetrics {
@@ -235,22 +235,36 @@ export function EnterpriseSecurityDashboard() {
   };
 
   return (
-    <StandardPageLayout>
-      <StandardPageHeader
-        title="ENTERPRISE SECURITY COMMAND CENTER"
-        description="Military-grade security monitoring and threat intelligence"
-        actions={
-          <>
-            <Badge variant={getThreatLevelColor(metrics.threatLevel) as any} className="mr-2">
-              {metrics.threatLevel}
-            </Badge>
-            <Button onClick={exportSecurityReport} variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Export Report
-            </Button>
-          </>
-        }
-      />
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b border-[#0A1628] bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                <Link to="/security" className="hover:text-foreground transition-colors">
+                  Security
+                </Link>
+                <ChevronRight className="h-4 w-4" />
+                <span className="text-foreground">Enterprise Command Center</span>
+              </div>
+              <h1 className="text-3xl font-bold text-foreground">ENTERPRISE SECURITY COMMAND CENTER</h1>
+              <p className="text-muted-foreground mt-1">
+                Military-grade security monitoring and threat intelligence
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Badge variant={getThreatLevelColor(metrics.threatLevel) as any} className="mr-2">
+                {metrics.threatLevel}
+              </Badge>
+              <Button onClick={exportSecurityReport} className="bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]" size="sm">
+                <Download className="h-4 w-4 mr-2" />
+                Export Report
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <ResponsiveContainer>
         {/* Critical Status Overview */}
@@ -311,7 +325,7 @@ export function EnterpriseSecurityDashboard() {
         </div>
 
         {/* Compliance Framework Status */}
-        <StandardContentCard title="Government Compliance Frameworks" className="mb-6">
+        <StandardContentCard title="Government Compliance Frameworks" className="mb-6 border-[#0A1628]">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center">
               <Globe className="h-8 w-8 mx-auto mb-2 text-primary" />
@@ -343,7 +357,7 @@ export function EnterpriseSecurityDashboard() {
         {/* Real-time Security Events */}
         <StandardContentCard 
           title="CLASSIFIED THREAT INTELLIGENCE FEED"
-          className="mb-6"
+          className="mb-6 border-[#0A1628]"
         >
           <div className="space-y-3">
             {securityEvents.length === 0 ? (
@@ -379,6 +393,7 @@ export function EnterpriseSecurityDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <StandardContentCard 
             title="Emergency Response Protocols"
+            className="border-[#0A1628]"
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -399,7 +414,7 @@ export function EnterpriseSecurityDashboard() {
                   <span className="text-sm font-medium text-destructive">ARMED</span>
                 </div>
               </div>
-              <Button className="w-full border-2 border-red-800" variant="destructive">
+              <Button className="w-full bg-red-600 hover:bg-red-700 text-white border-2 border-red-800">
                 <AlertTriangle className="w-4 h-4 mr-2" />
                 INITIATE EMERGENCY LOCKDOWN
               </Button>
@@ -408,6 +423,7 @@ export function EnterpriseSecurityDashboard() {
 
           <StandardContentCard 
             title="Cryptographic Controls"
+            className="border-[#0A1628]"
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -425,7 +441,7 @@ export function EnterpriseSecurityDashboard() {
                   <span className="text-sm font-medium text-primary">ACTIVE</span>
                 </div>
               </div>
-              <Button className="w-full" variant="default">
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]">
                 <Key className="w-4 h-4 mr-2" />
                 QUANTUM-SAFE KEY ROTATION
               </Button>
@@ -435,15 +451,35 @@ export function EnterpriseSecurityDashboard() {
 
         {/* Advanced Security Tabs */}
         <Tabs defaultValue="sessions" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="sessions">Active Sessions</TabsTrigger>
-            <TabsTrigger value="behavioral">Behavioral AI</TabsTrigger>
-            <TabsTrigger value="quantum">Quantum Defense</TabsTrigger>
-            <TabsTrigger value="intelligence">Threat Intel</TabsTrigger>
+          <TabsList className="bg-[#0A1628] border border-[#0A1628] grid w-full grid-cols-4">
+            <TabsTrigger 
+              value="sessions"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Active Sessions
+            </TabsTrigger>
+            <TabsTrigger 
+              value="behavioral"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Behavioral AI
+            </TabsTrigger>
+            <TabsTrigger 
+              value="quantum"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Quantum Defense
+            </TabsTrigger>
+            <TabsTrigger 
+              value="intelligence"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Threat Intel
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="sessions" className="mt-6">
-            <StandardContentCard title="Active Security Sessions">
+            <StandardContentCard title="Active Security Sessions" className="border-[#0A1628]">
               <div className="space-y-3">
                 {activeSessions.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
@@ -478,7 +514,7 @@ export function EnterpriseSecurityDashboard() {
           </TabsContent>
 
           <TabsContent value="behavioral" className="mt-6">
-            <StandardContentCard title="AI-Powered Behavioral Analytics">
+            <StandardContentCard title="AI-Powered Behavioral Analytics" className="border-[#0A1628]">
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                   <div className="flex items-center gap-3">
@@ -509,7 +545,7 @@ export function EnterpriseSecurityDashboard() {
           </TabsContent>
 
           <TabsContent value="quantum" className="mt-6">
-            <StandardContentCard title="Quantum-Resistant Cryptography">
+            <StandardContentCard title="Quantum-Resistant Cryptography" className="border-[#0A1628]">
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                   <div className="flex items-center gap-3">
@@ -537,7 +573,7 @@ export function EnterpriseSecurityDashboard() {
           </TabsContent>
 
           <TabsContent value="intelligence" className="mt-6">
-            <StandardContentCard title="Classified Threat Intelligence">
+            <StandardContentCard title="Classified Threat Intelligence" className="border-[#0A1628]">
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                   <div className="flex items-center gap-3">
@@ -566,6 +602,6 @@ export function EnterpriseSecurityDashboard() {
           </TabsContent>
         </Tabs>
       </ResponsiveContainer>
-    </StandardPageLayout>
+    </div>
   );
 }
