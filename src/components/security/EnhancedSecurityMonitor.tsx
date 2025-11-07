@@ -191,8 +191,23 @@ export const EnhancedSecurityMonitor: React.FC = () => {
         fetchSecurityMetrics();
         fetchSecurityAlerts();
       }, 30000); // Update every 30 seconds
+      
+      // Real-time subscription for active sessions
+      const sessionsChannel = supabase
+        .channel('monitor-sessions-changes')
+        .on('postgres_changes', {
+          event: '*',
+          schema: 'public',
+          table: 'active_sessions'
+        }, () => {
+          fetchSecurityMetrics(); // Refresh metrics when sessions change
+        })
+        .subscribe();
 
-      return () => clearInterval(interval);
+      return () => {
+        clearInterval(interval);
+        supabase.removeChannel(sessionsChannel);
+      };
     }
   }, [autoMonitoring, fetchSecurityMetrics, fetchSecurityAlerts]);
 
