@@ -241,7 +241,6 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
                     : 'text-[#525252] hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-[#161616]'
                 )}
               >
-                <subItem.icon className="h-3 w-3 flex-shrink-0 mr-2 text-[#003f88]" />
                 <span className="truncate text-xs">{subItem.label}</span>
               </NavLink>
             ))}
