@@ -87,6 +87,22 @@ export default function SecurityAccess() {
       if (lockoutsError) throw lockoutsError
       setFailedLogins(lockouts?.length || 0)
 
+      // Define all possible roles
+      const allPossibleRoles = [
+        'super_admin',
+        'admin',
+        'manager',
+        'loan_originator',
+        'loan_processor',
+        'underwriter',
+        'closer',
+        'funder',
+        'agent',
+        'tech',
+        'viewer',
+        'user'
+      ]
+
       // Fetch role counts from user_roles
       const { data: roles, error: rolesError } = await supabase
         .from('user_roles')
@@ -96,12 +112,21 @@ export default function SecurityAccess() {
 
       // Count users by role
       const roleCounts: { [key: string]: number } = {}
+      
+      // Initialize all roles with 0
+      allPossibleRoles.forEach(role => {
+        roleCounts[role] = 0
+      })
+      
+      // Update counts for roles that have users
       roles?.forEach(r => {
         roleCounts[r.role] = (roleCounts[r.role] || 0) + 1
       })
 
+      // Convert to array and sort by role priority
+      const roleOrder = allPossibleRoles
       setRoleCounts(
-        Object.entries(roleCounts).map(([role, count]) => ({ role, count }))
+        roleOrder.map(role => ({ role, count: roleCounts[role] || 0 }))
       )
 
       // Fetch recent audit log events with user emails
@@ -152,16 +177,20 @@ export default function SecurityAccess() {
 
   const getRoleDisplayName = (role: string) => {
     const roleMap: { [key: string]: string } = {
-      'admin': 'Administrator',
       'super_admin': 'Super Administrator',
+      'admin': 'Administrator',
       'manager': 'Manager',
-      'user': 'User',
+      'loan_originator': 'Loan Originator',
+      'loan_processor': 'Loan Processor',
       'underwriter': 'Underwriter',
       'closer': 'Closer',
-      'processor': 'Loan Processor',
-      'funder': 'Funder'
+      'funder': 'Funder',
+      'agent': 'Agent',
+      'tech': 'Technical Support',
+      'viewer': 'Viewer',
+      'user': 'Standard User'
     }
-    return roleMap[role] || role.charAt(0).toUpperCase() + role.slice(1)
+    return roleMap[role] || role.charAt(0).toUpperCase() + role.slice(1).replace('_', ' ')
   }
 
   const getActionDisplayName = (action: string) => {
@@ -373,18 +402,22 @@ export default function SecurityAccess() {
                 <div className="space-y-4">
                   {loading ? (
                     <div className="text-center py-4 text-muted-foreground">Loading...</div>
-                  ) : roleCounts.length === 0 ? (
-                    <div className="text-center py-4 text-muted-foreground">No roles assigned</div>
                   ) : (
                     roleCounts.map((roleCount) => (
                       <div key={roleCount.role} className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg">
-                        <div>
+                        <div className="flex-1">
                           <p className="font-medium">{getRoleDisplayName(roleCount.role)}</p>
                           <p className="text-sm text-muted-foreground">
                             {roleCount.count} user{roleCount.count !== 1 ? 's' : ''} assigned
                           </p>
                         </div>
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">Manage</Button>
+                        <Button 
+                          size="sm" 
+                          className="bg-blue-600 hover:bg-blue-700 text-white"
+                          disabled={roleCount.count === 0}
+                        >
+                          Manage
+                        </Button>
                       </div>
                     ))
                   )}
