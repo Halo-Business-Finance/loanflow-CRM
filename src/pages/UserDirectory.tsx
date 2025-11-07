@@ -712,7 +712,7 @@ export default function UserDirectory() {
         </div>
 
         {/* User Directory Table */}
-        <Card className="border-[#0A1628]">
+        <Card className="border-0">
           <CardHeader>
             <CardTitle className="text-lg">User Directory</CardTitle>
             <CardDescription className="text-[#525252]">
