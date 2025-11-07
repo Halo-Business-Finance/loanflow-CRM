@@ -280,7 +280,7 @@ export default function Settings() {
                         type="email" 
                         value={user?.email || ""} 
                         disabled 
-                        className="!bg-white !text-black border-[#0A1628] disabled:!opacity-100"
+                        className="!bg-white !text-black !border !border-gray-300 disabled:!opacity-100"
                       />
                       <p className="text-xs text-muted-foreground">
                         Email cannot be changed
@@ -306,7 +306,7 @@ export default function Settings() {
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         placeholder="Enter your phone number"
-                        className="!bg-white !text-black border-[#0A1628] disabled:!opacity-100"
+                        className="!bg-white !text-black !border !border-gray-300 disabled:!opacity-100"
                       />
                     </div>
 
@@ -396,7 +396,7 @@ export default function Settings() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Enter new password"
-                      className="!bg-white !text-black border-[#0A1628]"
+                      className="!bg-white !text-black !border !border-gray-300"
                     />
                   </div>
 
@@ -408,7 +408,7 @@ export default function Settings() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Confirm new password"
-                      className="!bg-white !text-black border-[#0A1628]"
+                      className="!bg-white !text-black !border !border-gray-300"
                     />
                   </div>
 
