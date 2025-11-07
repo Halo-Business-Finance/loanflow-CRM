@@ -239,18 +239,18 @@ const SecurityPage: React.FC = () => {
             </div>
 
             {/* Security Modules Tabs */}
-            <Tabs defaultValue="monitoring" className="space-y-8">
-              <TabsList className="inline-flex h-11 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground w-full max-w-3xl">
-                <TabsTrigger value="monitoring">
+            <Tabs defaultValue="monitoring" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">
+                <TabsTrigger value="monitoring" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
                   Live Monitoring
                 </TabsTrigger>
-                <TabsTrigger value="patterns">
+                <TabsTrigger value="patterns" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
                   Pattern Detection
                 </TabsTrigger>
-                <TabsTrigger value="access-control">
+                <TabsTrigger value="access-control" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
                   Access Control
                 </TabsTrigger>
-                <TabsTrigger value="mfa">
+                <TabsTrigger value="mfa" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
                   MFA Setup
                 </TabsTrigger>
               </TabsList>
