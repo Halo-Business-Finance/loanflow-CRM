@@ -263,10 +263,7 @@ export default function Settings() {
                 <CardContent className="space-y-6">
                   {/* User Role Display */}
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
-                      <Shield className="w-4 h-4" />
-                      User Role
-                    </Label>
+                    <Label>User Role</Label>
                     <p className="text-sm text-foreground">
                       {userRole || "Loading..."}
                     </p>
