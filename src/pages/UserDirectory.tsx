@@ -612,6 +612,37 @@ export default function UserDirectory() {
         {/* Content Area */}
         <div className="space-y-6">
 
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card className="border-[#0A1628]">
+            <CardHeader className="pb-2">
+              <CardDescription className="text-[#525252]">Total Users</CardDescription>
+              <CardTitle className="text-2xl text-[#161616]">{totalUsers}</CardTitle>
+            </CardHeader>
+          </Card>
+
+          <Card className="border-[#0A1628]">
+            <CardHeader className="pb-2">
+              <CardDescription className="text-[#525252]">Active Users</CardDescription>
+              <CardTitle className="text-2xl text-[#161616]">{activeUsers}</CardTitle>
+            </CardHeader>
+          </Card>
+
+          <Card className="border-[#0A1628]">
+            <CardHeader className="pb-2">
+              <CardDescription className="text-[#525252]">Pending Invites</CardDescription>
+              <CardTitle className="text-2xl text-[#161616]">{pendingInvites}</CardTitle>
+            </CardHeader>
+          </Card>
+
+          <Card className="border-[#0A1628]">
+            <CardHeader className="pb-2">
+              <CardDescription className="text-[#525252]">Roles</CardDescription>
+              <CardTitle className="text-2xl text-[#161616]">{uniqueRoles}</CardTitle>
+            </CardHeader>
+          </Card>
+        </div>
+
       <Tabs defaultValue="users" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2 bg-[#0A1628] p-1 gap-2">
           <TabsTrigger value="users" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
@@ -678,37 +709,6 @@ export default function UserDirectory() {
               />
             </div>
           </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="border-[#0A1628]">
-            <CardHeader className="pb-2">
-              <CardDescription className="text-[#525252]">Total Users</CardDescription>
-              <CardTitle className="text-2xl text-[#161616]">{totalUsers}</CardTitle>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-[#0A1628]">
-            <CardHeader className="pb-2">
-              <CardDescription className="text-[#525252]">Active Users</CardDescription>
-              <CardTitle className="text-2xl text-[#161616]">{activeUsers}</CardTitle>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-[#0A1628]">
-            <CardHeader className="pb-2">
-              <CardDescription className="text-[#525252]">Pending Invites</CardDescription>
-              <CardTitle className="text-2xl text-[#161616]">{pendingInvites}</CardTitle>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-[#0A1628]">
-            <CardHeader className="pb-2">
-              <CardDescription className="text-[#525252]">Roles</CardDescription>
-              <CardTitle className="text-2xl text-[#161616]">{uniqueRoles}</CardTitle>
-            </CardHeader>
-          </Card>
         </div>
 
         {/* User Directory Table */}
