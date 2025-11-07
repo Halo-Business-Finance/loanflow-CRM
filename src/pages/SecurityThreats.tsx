@@ -359,7 +359,7 @@ export default function SecurityThreats() {
                               </p>
                             </div>
                           </div>
-                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                          <Button size="sm" className="bg-[#0f62fe] hover:bg-[#0353e9] text-white">
                             Investigate
                           </Button>
                         </div>

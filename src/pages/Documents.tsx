@@ -253,7 +253,7 @@ export default function Documents() {
                 <span className="text-xs">{isCompact ? 'Normal' : 'Compact'}</span>
               </Button>
             )}
-            <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white gap-2">
+            <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white gap-2">
               <Upload className="h-3 w-3" />
               New
             </Button>

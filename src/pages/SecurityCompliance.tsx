@@ -529,7 +529,7 @@ export default function SecurityCompliance() {
                         <p className="font-medium text-yellow-900">PCI DSS Certificate Renewal</p>
                         <p className="text-sm text-yellow-700">Certificate expires in 30 days - requires renewal</p>
                       </div>
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">Schedule Renewal</Button>
+                      <Button size="sm" className="bg-[#0f62fe] hover:bg-[#0353e9] text-white">Schedule Renewal</Button>
                     </div>
                     
                     <div className="flex items-center justify-between p-4 border-2 border-[#0A1628] rounded-lg bg-blue-50">
@@ -537,7 +537,7 @@ export default function SecurityCompliance() {
                         <p className="font-medium text-blue-900">Quarterly Access Review</p>
                         <p className="text-sm text-blue-700">Review user permissions and access rights</p>
                       </div>
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">Start Review</Button>
+                      <Button size="sm" className="bg-[#0f62fe] hover:bg-[#0353e9] text-white">Start Review</Button>
                     </div>
                   </div>
                 </StandardContentCard>

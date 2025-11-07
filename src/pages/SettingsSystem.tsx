@@ -31,7 +31,7 @@ export default function SettingsSystem() {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]">
+            <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]">
               <Settings className="h-3 w-3 mr-2" />
               Save Changes
             </Button>

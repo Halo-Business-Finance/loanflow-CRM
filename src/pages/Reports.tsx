@@ -145,7 +145,7 @@ export default function Reports() {
               </p>
             </div>
             <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-              <Button className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+              <Button className="gap-2 bg-[#0f62fe] hover:bg-[#0353e9] text-white">
                 <Download className="h-4 w-4" />
                 Export Reports
               </Button>

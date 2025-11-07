@@ -60,7 +60,7 @@ export default function EmergencyMaintenance() {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]">
+            <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]">
               <RefreshCw className="h-3 w-3 mr-2" />
               Refresh Status
             </Button>
@@ -70,24 +70,24 @@ export default function EmergencyMaintenance() {
         {/* Content Area */}
         <div className="space-y-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 bg-[#0A1628] p-1 gap-2">
+            <TabsList className="grid w-full grid-cols-3 bg-muted p-1 gap-1">
               <TabsTrigger 
                 value="shutdown" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+                className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10 flex items-center gap-2"
               >
                 <ShieldAlert className="w-4 h-4" />
                 <span>Emergency Shutdown</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="monitoring" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+                className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10 flex items-center gap-2"
               >
                 <AlertTriangle className="w-4 h-4" />
                 <span>System Monitoring</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="history" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+                className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10 flex items-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span>Event History</span>

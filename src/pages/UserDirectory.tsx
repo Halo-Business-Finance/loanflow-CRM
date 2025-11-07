@@ -602,7 +602,7 @@ export default function UserDirectory() {
                 </div>
               </PopoverContent>
             </Popover>
-            <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]" onClick={() => setIsAddUserOpen(true)}>
+            <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]" onClick={() => setIsAddUserOpen(true)}>
               <Plus className="h-3 w-3 mr-2" />
               Add User
             </Button>
@@ -644,12 +644,12 @@ export default function UserDirectory() {
         </div>
 
       <Tabs defaultValue="users" className="space-y-6">
-        <TabsList className="bg-[#0A1628] p-1 gap-2 inline-flex w-auto">
-          <TabsTrigger value="users" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+        <TabsList className="bg-muted p-1 gap-1 inline-flex w-auto">
+          <TabsTrigger value="users" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10 flex items-center gap-2">
             <UserCog className="h-4 w-4" />
             Users
           </TabsTrigger>
-          <TabsTrigger value="lead-assignment" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+          <TabsTrigger value="lead-assignment" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10 flex items-center gap-2">
             <Users className="h-4 w-4" />
             Lead Assignment
           </TabsTrigger>

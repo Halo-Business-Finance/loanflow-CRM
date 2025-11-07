@@ -812,7 +812,7 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-2">
               <Button 
-                className="w-full justify-start h-auto py-3 bg-blue-600 hover:bg-blue-700 text-white border-0"
+                className="w-full justify-start h-auto py-3 bg-[#0f62fe] hover:bg-[#0353e9] text-white border-0"
                 onClick={() => navigate('/leads/new')}
               >
                 <Users className="h-4 w-4 mr-3" />
@@ -822,7 +822,7 @@ export default function Dashboard() {
                 </div>
               </Button>
               <Button 
-                className="w-full justify-start h-auto py-3 bg-blue-600 hover:bg-blue-700 text-white border-0"
+                className="w-full justify-start h-auto py-3 bg-[#0f62fe] hover:bg-[#0353e9] text-white border-0"
                 onClick={() => navigate('/activities/calendar')}
               >
                 <CalendarIcon className="h-4 w-4 mr-3" />
@@ -832,7 +832,7 @@ export default function Dashboard() {
                 </div>
               </Button>
               <Button 
-                className="w-full justify-start h-auto py-3 bg-blue-600 hover:bg-blue-700 text-white border-0"
+                className="w-full justify-start h-auto py-3 bg-[#0f62fe] hover:bg-[#0353e9] text-white border-0"
                 onClick={() => navigate('/documents')}
               >
                 <FileText className="h-4 w-4 mr-3" />
@@ -864,7 +864,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <Button 
               onClick={() => navigate('/leads/new')}
-              className="h-10 px-4 gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+              className="h-10 px-4 gap-2 bg-[#0f62fe] hover:bg-[#0353e9] text-white"
             >
               <UserPlus className="h-4 w-4" />
               Create New Lead

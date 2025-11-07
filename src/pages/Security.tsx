@@ -128,7 +128,7 @@ const SecurityPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <Button 
               size="sm" 
-              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white"
+              className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white"
               onClick={() => window.location.reload()}
             >
               <RefreshCw className="h-3 w-3 mr-2" />
@@ -258,17 +258,17 @@ const SecurityPage: React.FC = () => {
 
             {/* Security Modules Tabs */}
             <Tabs defaultValue="monitoring" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">
-                <TabsTrigger value="monitoring" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+              <TabsList className="grid w-full grid-cols-4 bg-muted p-1 gap-1">
+                <TabsTrigger value="monitoring" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10 flex items-center gap-2">
                   Live Monitoring
                 </TabsTrigger>
-                <TabsTrigger value="patterns" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+                <TabsTrigger value="patterns" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10 flex items-center gap-2">
                   Pattern Detection
                 </TabsTrigger>
-                <TabsTrigger value="access-control" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+                <TabsTrigger value="access-control" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10 flex items-center gap-2">
                   Access Control
                 </TabsTrigger>
-                <TabsTrigger value="mfa" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+                <TabsTrigger value="mfa" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10 flex items-center gap-2">
                   MFA Setup
                 </TabsTrigger>
               </TabsList>

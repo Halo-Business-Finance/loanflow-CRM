@@ -291,7 +291,7 @@ export default function DocumentTemplates() {
               </Button>
             </div>
             {canAccessAdminFeatures() && (
-              <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white gap-2">
+              <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white gap-2">
                 <Plus className="h-3 w-3" />
                 Create Template
               </Button>
@@ -324,7 +324,7 @@ export default function DocumentTemplates() {
                 {canAccessAdminFeatures() ? "Upload your first template to get started" : "Templates will appear here once uploaded"}
               </p>
               {canAccessAdminFeatures() && (
-                <Button onClick={() => setShowUploadModal(true)} className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={() => setShowUploadModal(true)} className="bg-[#0f62fe] hover:bg-[#0353e9] text-white">
                   <Plus className="h-4 w-4 mr-2" />
                   Upload Template
                 </Button>

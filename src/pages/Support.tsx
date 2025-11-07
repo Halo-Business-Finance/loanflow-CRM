@@ -262,7 +262,7 @@ export default function Support() {
               <Filter className="h-3 w-3 mr-2" />
               Filter
             </Button>
-            <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white">
+            <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
               <Plus className="h-3 w-3 mr-2" />
               New Ticket
             </Button>
@@ -384,7 +384,7 @@ export default function Support() {
                         />
                       </div>
                       
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={handleCreateTicket}>
+                      <Button className="w-full bg-[#0f62fe] hover:bg-[#0353e9] text-white" onClick={handleCreateTicket}>
                         <Plus className="h-4 w-4 mr-2" />
                         Submit Ticket
                       </Button>
@@ -539,7 +539,7 @@ export default function Support() {
                       onChange={(e) => setChatInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     />
-                    <Button onClick={handleSendMessage} size="icon" className="bg-blue-600 hover:bg-blue-700 text-white">
+                    <Button onClick={handleSendMessage} size="icon" className="bg-[#0f62fe] hover:bg-[#0353e9] text-white">
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>

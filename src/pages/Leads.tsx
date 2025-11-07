@@ -594,7 +594,7 @@ export default function Leads() {
                     <span className="text-xs">{isCompact ? 'Normal' : 'Compact'}</span>
                   </Button>
                 )}
-                <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white">
+                <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
                   <UserPlus className="h-3 w-3 mr-2" />
                   Add Lead
                 </Button>
@@ -717,7 +717,7 @@ export default function Leads() {
                   <Button
                     size="sm"
                     onClick={() => setShowBulkEditDialog(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                      className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white"
                   >
                     <Edit2 className="h-4 w-4 mr-2" />
                     Bulk Edit
@@ -747,7 +747,7 @@ export default function Leads() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
-                <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setShowFilters(!showFilters)}>
+                <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white" onClick={() => setShowFilters(!showFilters)}>
                   <Filter className="h-3 w-3 mr-2" />
                   {showFilters ? 'Hide Filters' : 'Filter'}
                 </Button>
@@ -868,7 +868,7 @@ export default function Leads() {
                           <Button
                             size="sm"
                             variant="default"
-                            className="flex-1 h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white"
+                            className="flex-1 h-8 text-xs bg-[#0f62fe] hover:bg-[#0353e9] text-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleEdit(lead);
@@ -878,7 +878,7 @@ export default function Leads() {
                           </Button>
                           <Button
                             size="sm"
-                            className="flex-1 h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white"
+                            className="flex-1 h-8 text-xs bg-[#0f62fe] hover:bg-[#0353e9] text-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate(`/leads/${lead.id}`);
@@ -940,7 +940,7 @@ export default function Leads() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">Make calls and track communication</p>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Launch Dialer</Button>
+                  <Button className="w-full bg-[#0f62fe] hover:bg-[#0353e9] text-white">Launch Dialer</Button>
                 </CardContent>
               </Card>
 
@@ -953,7 +953,7 @@ export default function Leads() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">Send targeted email sequences</p>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" variant="default">Create Campaign</Button>
+                  <Button className="w-full bg-[#0f62fe] hover:bg-[#0353e9] text-white">Create Campaign</Button>
                 </CardContent>
               </Card>
 
@@ -966,7 +966,7 @@ export default function Leads() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">Automatic lead qualification</p>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" variant="default">Configure Rules</Button>
+                  <Button className="w-full bg-[#0f62fe] hover:bg-[#0353e9] text-white">Configure Rules</Button>
                 </CardContent>
               </Card>
             </div>
@@ -1094,7 +1094,7 @@ export default function Leads() {
               </Button>
               <Button
                 onClick={handleBulkEdit}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-[#0f62fe] hover:bg-[#0353e9] text-white"
               >
                 Update Leads
               </Button>
