@@ -134,6 +134,8 @@ export default function Settings() {
   }
 
   const handleChangePassword = async () => {
+    console.log('handleChangePassword called', { newPassword: !!newPassword, confirmPassword: !!confirmPassword });
+    
     if (!newPassword || !confirmPassword) {
       toast({
         title: "Error",
@@ -146,7 +148,7 @@ export default function Settings() {
     if (newPassword !== confirmPassword) {
       toast({
         title: "Error",
-        description: "New passwords don\'t match.",
+        description: "New passwords don't match.",
         variant: "destructive",
       })
       return
@@ -162,12 +164,19 @@ export default function Settings() {
     }
 
     setIsChangingPassword(true)
+    console.log('Attempting to update password...');
+    
     try {
       const { error } = await supabase.auth.updateUser({
         password: newPassword
       })
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase password update error:', error);
+        throw error;
+      }
+
+      console.log('Password updated successfully');
 
       // Clear password fields
       setCurrentPassword("")
@@ -414,8 +423,9 @@ export default function Settings() {
 
                   <Button 
                     onClick={handleChangePassword} 
+                    type="button"
                     disabled={isChangingPassword || !newPassword || !confirmPassword}
-                    className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                    className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Lock className="w-4 h-4" />
                     {isChangingPassword ? "Updating..." : "Update Password"}
