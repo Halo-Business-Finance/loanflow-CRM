@@ -58,7 +58,6 @@ const navItems: NavItemData[] = [
     subItems: [
       { icon: Users, label: 'All Leads', to: '/leads' },
       { icon: Users, label: 'Create New Lead', to: '/leads/new' },
-      { icon: BarChart3, label: 'Lead Stats', to: '/leads/stats' },
       { icon: UserCog, label: 'Lead Assignment', to: '/leads/assignment' },
     ]
   },
