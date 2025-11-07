@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import { Link, useSearchParams } from "react-router-dom"
-import { IBMPageHeader } from '@/components/ui/IBMPageHeader'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 // Badge component removed - using plain text instead
@@ -192,19 +191,31 @@ export default function Settings() {
   }
 
   return (
-    <div data-testid="page-settings" className="min-h-screen bg-[#f4f4f4]">
-      <IBMPageHeader 
-        title="Settings"
-        subtitle="Manage your profile, preferences, and system configuration"
-        actions={
-          <Button variant="outline" className="flex items-center gap-2">
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </Button>
-        }
-      />
-      
-      <div className="px-6 py-8 space-y-6">
+    <div data-testid="page-settings" className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Settings
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Manage your profile, preferences, and system configuration
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
+              <RefreshCw className="h-3 w-3 mr-2" />
+              Refresh
+            </Button>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div className="space-y-6">
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="bg-white border border-[#e0e0e0]">
@@ -490,6 +501,7 @@ export default function Settings() {
             <WebhookManager />
           </TabsContent>
         </Tabs>
+        </div>
       </div>
     </div>
   )
