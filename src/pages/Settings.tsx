@@ -306,7 +306,7 @@ export default function Settings() {
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         placeholder="Enter your phone number"
-                        className="bg-white text-black border-[#0A1628]"
+                        className="!bg-white !text-black border-[#0A1628] disabled:!opacity-100"
                       />
                     </div>
 
