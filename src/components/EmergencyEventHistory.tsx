@@ -55,7 +55,7 @@ export function EmergencyEventHistory() {
 
   return (
     <div className="space-y-6">
-      <Card className="border-0">
+      <Card className="border-2 border-[#0A1628]">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-normal text-[#161616] flex items-center gap-2">
             <Activity className="h-5 w-5" />
