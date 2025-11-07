@@ -105,17 +105,14 @@ export function SystemMonitoring() {
         {/* Database Status */}
         <Card className="border-2 border-[#0A1628]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Database className="h-4 w-4" />
-                  Database
-                </p>
-                <p className="text-2xl font-bold text-primary">
-                  {health.databaseStatus === 'healthy' ? 'Online' : 'Offline'}
-                </p>
-              </div>
-              {getStatusIcon(health.databaseStatus)}
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <Database className="h-4 w-4" />
+                Database
+              </p>
+              <p className="text-2xl font-bold text-primary">
+                {health.databaseStatus === 'healthy' ? 'Online' : 'Offline'}
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -123,15 +120,12 @@ export function SystemMonitoring() {
         {/* Active Users */}
         <Card className="border-2 border-[#0A1628]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Active Users
-                </p>
-                <p className="text-2xl font-bold text-primary">{health.activeUsers}</p>
-              </div>
-              <Users className="h-8 w-8 text-muted-foreground" />
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Active Users
+              </p>
+              <p className="text-2xl font-bold text-primary">{health.activeUsers}</p>
             </div>
           </CardContent>
         </Card>
@@ -139,15 +133,12 @@ export function SystemMonitoring() {
         {/* Total Sessions */}
         <Card className="border-2 border-[#0A1628]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Activity className="h-4 w-4" />
-                  Sessions
-                </p>
-                <p className="text-2xl font-bold text-primary">{health.totalSessions}</p>
-              </div>
-              <Activity className="h-8 w-8 text-muted-foreground" />
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <Activity className="h-4 w-4" />
+                Sessions
+              </p>
+              <p className="text-2xl font-bold text-primary">{health.totalSessions}</p>
             </div>
           </CardContent>
         </Card>
@@ -155,17 +146,14 @@ export function SystemMonitoring() {
         {/* Uptime */}
         <Card className="border-2 border-[#0A1628]">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Uptime
-                </p>
-                <p className="text-2xl font-bold text-primary">
-                  {formatUptime(health.uptime)}
-                </p>
-              </div>
-              <Clock className="h-8 w-8 text-muted-foreground" />
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Uptime
+              </p>
+              <p className="text-2xl font-bold text-primary">
+                {formatUptime(health.uptime)}
+              </p>
             </div>
           </CardContent>
         </Card>
