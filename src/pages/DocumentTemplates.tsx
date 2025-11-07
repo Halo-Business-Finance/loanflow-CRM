@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileText, Download, Plus, Trash2, Eye, Mail, Upload } from "lucide-react"
+import { FileText, Download, Plus, Trash2, Eye, Mail, Upload, Grid, List } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
 import { TemplateUploadModal } from "@/components/TemplateUploadModal"
 import { EmailComposer } from "@/components/EmailComposer"
 import { supabase } from "@/integrations/supabase/client"
@@ -37,6 +35,7 @@ export default function DocumentTemplates() {
   const [isVersionUploadOpen, setIsVersionUploadOpen] = useState(false)
   const [selectedTemplateForVersion, setSelectedTemplateForVersion] = useState<DocumentTemplate | null>(null)
   const [newVersionFile, setNewVersionFile] = useState<File | null>(null)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const { toast } = useToast()
   const { canAccessAdminFeatures } = useRoleBasedAccess()
 
@@ -257,21 +256,51 @@ export default function DocumentTemplates() {
   }
 
   return (
-    <StandardPageLayout>
-      <StandardPageHeader
-        title="Document Templates"
-        description="Manage and customize loan document templates"
-        actions={
-          canAccessAdminFeatures() && (
-            <Button onClick={() => setShowUploadModal(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Template
-            </Button>
-          )
-        }
-      />
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Document Templates
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Manage and customize loan document templates
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 border border-border rounded-lg p-1">
+              <Button
+                variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className="h-7 w-7 p-0"
+              >
+                <Grid className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+                className="h-7 w-7 p-0"
+              >
+                <List className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+            {canAccessAdminFeatures() && (
+              <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white gap-2">
+                <Plus className="h-3 w-3" />
+                Create Template
+              </Button>
+            )}
+          </div>
+        </div>
 
-      <div className="p-6">
+        {/* Content Area */}
+        <div className="space-y-6">
         {loading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map((i) => (
@@ -287,7 +316,7 @@ export default function DocumentTemplates() {
             ))}
           </div>
         ) : templates.length === 0 ? (
-          <Card>
+          <Card className="bg-card border border-[#0A1628]">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <FileText className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-lg font-medium mb-2">No templates available</p>
@@ -295,7 +324,7 @@ export default function DocumentTemplates() {
                 {canAccessAdminFeatures() ? "Upload your first template to get started" : "Templates will appear here once uploaded"}
               </p>
               {canAccessAdminFeatures() && (
-                <Button onClick={() => setShowUploadModal(true)}>
+                <Button onClick={() => setShowUploadModal(true)} className="bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Upload Template
                 </Button>
@@ -305,7 +334,7 @@ export default function DocumentTemplates() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {templates.map((template) => (
-              <Card key={template.id}>
+              <Card key={template.id} className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between gap-2">
                     {editingTemplate === template.id ? (
@@ -411,6 +440,7 @@ export default function DocumentTemplates() {
             ))}
           </div>
         )}
+        </div>
       </div>
 
       {canAccessAdminFeatures() && (
@@ -458,6 +488,6 @@ export default function DocumentTemplates() {
           </div>
         </DialogContent>
       </Dialog>
-    </StandardPageLayout>
+    </div>
   )
 }
