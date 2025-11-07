@@ -359,7 +359,7 @@ export default function Settings() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <RingCentralSetup 
                       trigger={
-                        <Button className="w-full justify-start gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+                        <Button variant="outline" className="w-full justify-start gap-2 border-[#0A1628] text-[#161616] hover:bg-[#0A1628] hover:text-white transition-colors">
                           <Phone className="w-4 h-4" />
                           <span>Phone Settings</span>
                         </Button>
@@ -367,7 +367,7 @@ export default function Settings() {
                     />
                     <EmailSetup 
                       trigger={
-                        <Button className="w-full justify-start gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+                        <Button variant="outline" className="w-full justify-start gap-2 border-[#0A1628] text-[#161616] hover:bg-[#0A1628] hover:text-white transition-colors">
                           <Mail className="w-4 h-4" />
                           <span>Email Settings</span>
                         </Button>
