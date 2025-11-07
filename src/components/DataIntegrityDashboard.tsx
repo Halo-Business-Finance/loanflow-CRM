@@ -278,7 +278,7 @@ export function DataIntegrityDashboard() {
               disabled={loading || !auditResults}
               size="sm"
               variant="outline"
-              className="h-8 text-xs font-medium"
+              className="h-8 text-xs font-medium border-2 border-[#0A1628] hover:bg-[#0A1628] hover:text-white"
             >
               <Check className="h-3 w-3 mr-2" />
               Auto-Fix Issues
