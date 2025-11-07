@@ -1,4 +1,3 @@
-import { StandardPageLayout } from '@/components/StandardPageLayout'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -178,7 +177,7 @@ export default function Documents() {
 
   if (loading) {
     return (
-      <StandardPageLayout>
+      <div className="min-h-screen bg-background">
         <div className="p-8 space-y-8">
           {/* Header Skeleton */}
           <div className="flex items-center justify-between">
@@ -191,6 +190,12 @@ export default function Documents() {
               <div className="h-8 w-20 bg-muted rounded animate-pulse"></div>
             </div>
           </div>
+          {/* Metrics Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="h-24 bg-muted rounded-lg animate-pulse"></div>
+            ))}
+          </div>
           {/* Content Skeleton */}
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
@@ -198,12 +203,12 @@ export default function Documents() {
             ))}
           </div>
         </div>
-      </StandardPageLayout>
+      </div>
     )
   }
 
   return (
-    <StandardPageLayout>
+    <div className="min-h-screen bg-background">
       <div className="p-8 space-y-8 animate-fade-in">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -528,6 +533,6 @@ export default function Documents() {
         onClose={() => setShowUploadModal(false)}
         onUpload={uploadDocument}
       />
-    </StandardPageLayout>
+    </div>
   )
 }
