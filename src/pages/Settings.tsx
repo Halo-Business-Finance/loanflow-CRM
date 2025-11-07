@@ -356,7 +356,7 @@ export default function Settings() {
                 {/* Communication Settings Section */}
                 <div className="space-y-4">
                   <h3 className="text-sm font-medium text-[#161616]">Communication Settings</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
                     <RingCentralSetup 
                       trigger={
                         <Button variant="outline" className="w-full justify-start gap-2 border-[#0A1628] text-[#161616] hover:bg-[#0A1628] hover:text-white transition-colors">
