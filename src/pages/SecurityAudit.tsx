@@ -1,19 +1,9 @@
 import { useState, useEffect } from "react"
-import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { StandardKPICard } from "@/components/StandardKPICard"
-import { ResponsiveContainer } from "@/components/ResponsiveContainer"
-import { FileText, Download, Filter, RefreshCw, Settings, MoreVertical, Shield, Key, Lock, AlertTriangle } from "lucide-react"
+import { FileText, Download, Filter, RefreshCw, Shield, Key, Lock, AlertTriangle, Activity, Users, Database } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { formatDistanceToNow } from "date-fns"
@@ -37,6 +27,7 @@ export default function SecurityAudit() {
   const { toast } = useToast()
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([])
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState("all")
   const [stats, setStats] = useState({
     totalEvents: 0,
     loginEvents: 0,
@@ -140,157 +131,307 @@ export default function SecurityAudit() {
     return 'text-green-600'
   }
 
+  const getFilteredLogs = () => {
+    if (activeTab === "all") return auditLogs
+    if (activeTab === "auth") {
+      return auditLogs.filter(log => 
+        log.action?.toLowerCase().includes('login') || 
+        log.action?.toLowerCase().includes('auth') ||
+        log.action?.toLowerCase().includes('logout')
+      )
+    }
+    if (activeTab === "data") {
+      return auditLogs.filter(log => 
+        log.action?.toLowerCase().includes('view') || 
+        log.action?.toLowerCase().includes('read') ||
+        log.action?.toLowerCase().includes('select') ||
+        log.action?.toLowerCase().includes('update') ||
+        log.action?.toLowerCase().includes('create') ||
+        log.action?.toLowerCase().includes('delete')
+      )
+    }
+    return auditLogs
+  }
+
   return (
-    <StandardPageLayout>
-      <StandardPageHeader 
-        title="Audit Logs"
-        description="Comprehensive audit trail of all system activities"
-        actions={
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={fetchAuditLogs} disabled={loading}>
-              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Audit Logs
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Comprehensive audit trail of all system activities
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={fetchAuditLogs} 
+              disabled={loading}
+              size="sm" 
+              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]"
+            >
+              <RefreshCw className={`h-3 w-3 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
-            <Button variant="outline">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2" />
+            <Button 
+              size="sm"
+              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]"
+              onClick={() => toast({
+                title: "Coming Soon",
+                description: "Export functionality will be available soon."
+              })}
+            >
+              <Download className="h-3 w-3 mr-2" />
               Export
             </Button>
-            <Button>
-              <FileText className="h-4 w-4 mr-2" />
-              Generate Report
+            <Button 
+              size="sm"
+              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]"
+              onClick={() => toast({
+                title: "Coming Soon",
+                description: "Report generation will be available soon."
+              })}
+            >
+              <FileText className="h-3 w-3 mr-2" />
+              Report
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Options
-                  <MoreVertical className="ml-2 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Audit Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Shield className="mr-2 h-4 w-4" />
-                  Configure Retention
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Key className="mr-2 h-4 w-4" />
-                  Access Controls
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Lock className="mr-2 h-4 w-4" />
-                  Archive Logs
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <AlertTriangle className="mr-2 h-4 w-4" />
-                  Alert Settings
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
-        }
-      />
-      
-      <ResponsiveContainer padding="md" maxWidth="full">
-        <div className="space-y-6">
-          {/* Stats Grid */}
-          <div className="grid gap-4 md:grid-cols-4">
-            <StandardKPICard 
-              title="Total Events"
-              value={stats.totalEvents}
-              trend={{
-                value: "Last 24 hours",
-                direction: "neutral"
-              }}
-            />
-
-            <StandardKPICard 
-              title="Login Events"
-              value={stats.loginEvents}
-              trend={{
-                value: "Authentication activities",
-                direction: "neutral"
-              }}
-            />
-
-            <StandardKPICard 
-              title="Data Access"
-              value={stats.dataAccess}
-              trend={{
-                value: "Records accessed",
-                direction: "neutral"
-              }}
-            />
-
-            <StandardKPICard 
-              title="System Changes"
-              value={stats.systemChanges}
-              trend={{
-                value: "Configuration updates",
-                direction: "neutral"
-              }}
-            />
-          </div>
-
-          {/* Audit Logs Table */}
-          <StandardContentCard title="Recent Audit Events">
-            <p className="text-sm text-muted-foreground mb-4">
-              Latest system activities and security events
-            </p>
-            
-            {loading ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Loading audit logs...
-              </div>
-            ) : auditLogs.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                No audit logs found
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="grid grid-cols-6 gap-4 font-medium text-sm border-b pb-2">
-                  <span>Timestamp</span>
-                  <span>User ID</span>
-                  <span>Action</span>
-                  <span>Resource</span>
-                  <span>IP Address</span>
-                  <span>Risk</span>
-                </div>
-                
-                {auditLogs.map((log) => (
-                  <div key={log.id} className="grid grid-cols-6 gap-4 text-sm p-3 border rounded-lg hover:bg-accent/50 transition-colors">
-                    <span className="text-muted-foreground">
-                      {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
-                    </span>
-                    <span className="truncate" title={log.user_id || 'System'}>
-                      {log.user_id ? log.user_id.slice(0, 8) + '...' : 'System'}
-                    </span>
-                    <span className={getActionColor(log.action)}>
-                      {log.action}
-                    </span>
-                    <span className="truncate" title={log.table_name || 'N/A'}>
-                      {log.table_name || 'N/A'}
-                      {log.record_id && ` #${log.record_id.slice(0, 8)}`}
-                    </span>
-                    <span className="truncate" title={String(log.ip_address || 'N/A')}>
-                      {String(log.ip_address || 'N/A')}
-                    </span>
-                    <span className={getRiskColor(log.risk_score)}>
-                      {log.risk_score !== null ? `${log.risk_score}%` : 'Low'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </StandardContentCard>
         </div>
-      </ResponsiveContainer>
-    </StandardPageLayout>
+
+        {/* Content Area */}
+        <div className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3 bg-[#0A1628] p-1 gap-2">
+              <TabsTrigger 
+                value="all" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Activity className="w-4 h-4" />
+                <span>All Events</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="auth" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Users className="w-4 h-4" />
+                <span>Authentication</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="data" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Database className="w-4 h-4" />
+                <span>Data Changes</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="all" className="space-y-6">
+              {/* Stats Grid */}
+              <div className="grid gap-4 md:grid-cols-4">
+                <StandardKPICard 
+                  title="Total Events"
+                  value={stats.totalEvents}
+                  trend={{
+                    value: "Last 24 hours",
+                    direction: "neutral"
+                  }}
+                />
+
+                <StandardKPICard 
+                  title="Login Events"
+                  value={stats.loginEvents}
+                  trend={{
+                    value: "Authentication activities",
+                    direction: "neutral"
+                  }}
+                />
+
+                <StandardKPICard 
+                  title="Data Access"
+                  value={stats.dataAccess}
+                  trend={{
+                    value: "Records accessed",
+                    direction: "neutral"
+                  }}
+                />
+
+                <StandardKPICard 
+                  title="System Changes"
+                  value={stats.systemChanges}
+                  trend={{
+                    value: "Configuration updates",
+                    direction: "neutral"
+                  }}
+                />
+              </div>
+
+              {/* Audit Logs Table */}
+              <StandardContentCard title="All Audit Events">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Complete system activity log
+                </p>
+                
+                {loading ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Loading audit logs...
+                  </div>
+                ) : getFilteredLogs().length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No audit logs found
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-6 gap-4 font-medium text-sm border-b pb-2">
+                      <span>Timestamp</span>
+                      <span>User ID</span>
+                      <span>Action</span>
+                      <span>Resource</span>
+                      <span>IP Address</span>
+                      <span>Risk</span>
+                    </div>
+                    
+                    {getFilteredLogs().map((log) => (
+                      <div key={log.id} className="grid grid-cols-6 gap-4 text-sm p-3 border border-[#0A1628] rounded-lg hover:bg-accent/50 transition-colors">
+                        <span className="text-muted-foreground">
+                          {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
+                        </span>
+                        <span className="truncate" title={log.user_id || 'System'}>
+                          {log.user_id ? log.user_id.slice(0, 8) + '...' : 'System'}
+                        </span>
+                        <span className={getActionColor(log.action)}>
+                          {log.action}
+                        </span>
+                        <span className="truncate" title={log.table_name || 'N/A'}>
+                          {log.table_name || 'N/A'}
+                          {log.record_id && ` #${log.record_id.slice(0, 8)}`}
+                        </span>
+                        <span className="truncate" title={String(log.ip_address || 'N/A')}>
+                          {String(log.ip_address || 'N/A')}
+                        </span>
+                        <span className={getRiskColor(log.risk_score)}>
+                          {log.risk_score !== null ? `${log.risk_score}%` : 'Low'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </StandardContentCard>
+            </TabsContent>
+
+            <TabsContent value="auth" className="space-y-6">
+              <StandardContentCard title="Authentication Events">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Login, logout, and authentication activities
+                </p>
+                
+                {loading ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Loading authentication logs...
+                  </div>
+                ) : getFilteredLogs().length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No authentication events found
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-6 gap-4 font-medium text-sm border-b pb-2">
+                      <span>Timestamp</span>
+                      <span>User ID</span>
+                      <span>Action</span>
+                      <span>Resource</span>
+                      <span>IP Address</span>
+                      <span>Risk</span>
+                    </div>
+                    
+                    {getFilteredLogs().map((log) => (
+                      <div key={log.id} className="grid grid-cols-6 gap-4 text-sm p-3 border border-[#0A1628] rounded-lg hover:bg-accent/50 transition-colors">
+                        <span className="text-muted-foreground">
+                          {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
+                        </span>
+                        <span className="truncate" title={log.user_id || 'System'}>
+                          {log.user_id ? log.user_id.slice(0, 8) + '...' : 'System'}
+                        </span>
+                        <span className={getActionColor(log.action)}>
+                          {log.action}
+                        </span>
+                        <span className="truncate" title={log.table_name || 'N/A'}>
+                          {log.table_name || 'N/A'}
+                          {log.record_id && ` #${log.record_id.slice(0, 8)}`}
+                        </span>
+                        <span className="truncate" title={String(log.ip_address || 'N/A')}>
+                          {String(log.ip_address || 'N/A')}
+                        </span>
+                        <span className={getRiskColor(log.risk_score)}>
+                          {log.risk_score !== null ? `${log.risk_score}%` : 'Low'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </StandardContentCard>
+            </TabsContent>
+
+            <TabsContent value="data" className="space-y-6">
+              <StandardContentCard title="Data Change Events">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Create, update, and delete operations
+                </p>
+                
+                {loading ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Loading data change logs...
+                  </div>
+                ) : getFilteredLogs().length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No data change events found
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-6 gap-4 font-medium text-sm border-b pb-2">
+                      <span>Timestamp</span>
+                      <span>User ID</span>
+                      <span>Action</span>
+                      <span>Resource</span>
+                      <span>IP Address</span>
+                      <span>Risk</span>
+                    </div>
+                    
+                    {getFilteredLogs().map((log) => (
+                      <div key={log.id} className="grid grid-cols-6 gap-4 text-sm p-3 border border-[#0A1628] rounded-lg hover:bg-accent/50 transition-colors">
+                        <span className="text-muted-foreground">
+                          {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
+                        </span>
+                        <span className="truncate" title={log.user_id || 'System'}>
+                          {log.user_id ? log.user_id.slice(0, 8) + '...' : 'System'}
+                        </span>
+                        <span className={getActionColor(log.action)}>
+                          {log.action}
+                        </span>
+                        <span className="truncate" title={log.table_name || 'N/A'}>
+                          {log.table_name || 'N/A'}
+                          {log.record_id && ` #${log.record_id.slice(0, 8)}`}
+                        </span>
+                        <span className="truncate" title={String(log.ip_address || 'N/A')}>
+                          {String(log.ip_address || 'N/A')}
+                        </span>
+                        <span className={getRiskColor(log.risk_score)}>
+                          {log.risk_score !== null ? `${log.risk_score}%` : 'Low'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </StandardContentCard>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    </div>
   )
 }
