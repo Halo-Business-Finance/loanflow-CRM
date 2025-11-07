@@ -297,7 +297,7 @@ export default function SecurityCompliance() {
                     {complianceScore}% Compliant
                   </Badge>
                 </div>
-                <Alert className="mt-4 border-[#0A1628]">
+                <Alert className="mt-4 border-0">
                   <CheckCircle className="h-4 w-4" />
                   <AlertDescription>
                     All minor security observations have been successfully addressed.
