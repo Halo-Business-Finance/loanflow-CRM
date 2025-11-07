@@ -54,8 +54,15 @@ export const EnhancedSecurityMonitor: React.FC = () => {
     try {
       // Use existing database queries to get metrics
       const [sessionsResult, eventsResult] = await Promise.all([
-        supabase.from('active_sessions').select('*').eq('is_active', true),
-        supabase.from('security_events').select('*').gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+        supabase
+          .from('active_sessions')
+          .select('*')
+          .eq('is_active', true)
+          .gt('expires_at', new Date().toISOString()),
+        supabase
+          .from('security_events')
+          .select('*')
+          .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
       ]);
 
       const activeSessions = sessionsResult.data?.length || 0;
