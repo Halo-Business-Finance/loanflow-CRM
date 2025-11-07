@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { EmergencyShutdown } from '@/components/security/EmergencyShutdown';
 import { EmergencyEventHistory } from '@/components/EmergencyEventHistory';
+import { SystemMonitoring } from '@/components/SystemMonitoring';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 
 export default function EmergencyMaintenance() {
@@ -98,22 +99,7 @@ export default function EmergencyMaintenance() {
             </TabsContent>
 
             <TabsContent value="monitoring" className="space-y-6">
-              <Card className="border-0">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-normal text-[#161616]">System Status Monitoring</CardTitle>
-                  <CardDescription className="text-[#525252]">
-                    Real-time monitoring of critical system components
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Alert>
-                    <AlertTriangle className="h-4 w-4" />
-                    <AlertDescription>
-                      System monitoring dashboard - Coming soon
-                    </AlertDescription>
-                  </Alert>
-                </CardContent>
-              </Card>
+              <SystemMonitoring />
             </TabsContent>
 
             <TabsContent value="history" className="space-y-6">
