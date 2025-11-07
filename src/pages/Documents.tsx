@@ -2,7 +2,8 @@ import { StandardPageLayout } from '@/components/StandardPageLayout'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Search, FolderOpen, Upload, Users, ChevronRight, Grid, List, Trash2, Download, CheckSquare } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Search, FolderOpen, Upload, Users, ChevronRight, Grid, List, Trash2, Download, CheckSquare, FileText, Clock, AlertCircle } from "lucide-react"
 import { useState, useMemo } from "react"
 import { useDocuments } from "@/hooks/useDocuments"
 import { DocumentUploadModal } from "@/components/DocumentUploadModal"
@@ -73,6 +74,27 @@ export default function Documents() {
     folder.loanType.toLowerCase().includes(searchTerm.toLowerCase()) ||
     folder.location.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  // Calculate metrics
+  const metrics = useMemo(() => {
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+    
+    const recentUploads = documents.filter(doc => 
+      new Date(doc.created_at) > sevenDaysAgo
+    ).length
+    
+    const pendingDocuments = documents.filter(doc => 
+      doc.status === 'pending' || doc.status === 'pending_review'
+    ).length
+    
+    return {
+      totalFolders: loanFolders.length,
+      totalFiles: documents.length,
+      recentUploads,
+      pendingDocuments
+    }
+  }, [documents, loanFolders])
 
   const handleFolderClick = (leadId: string, event: React.MouseEvent) => {
     // Don't navigate if clicking on checkbox area
@@ -174,6 +196,58 @@ export default function Documents() {
               New
             </Button>
           </div>
+        </div>
+
+        {/* Key Metrics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Total Folders</p>
+                  <p className="text-2xl font-bold text-primary">{metrics.totalFolders}</p>
+                </div>
+                <FolderOpen className="h-8 w-8 text-blue-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Total Files</p>
+                  <p className="text-2xl font-bold text-primary">{metrics.totalFiles}</p>
+                </div>
+                <FileText className="h-8 w-8 text-blue-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Recent Uploads</p>
+                  <p className="text-2xl font-bold text-primary">{metrics.recentUploads}</p>
+                  <p className="text-xs text-muted-foreground">Last 7 days</p>
+                </div>
+                <Clock className="h-8 w-8 text-green-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Pending Documents</p>
+                  <p className="text-2xl font-bold text-primary">{metrics.pendingDocuments}</p>
+                </div>
+                <AlertCircle className="h-8 w-8 text-orange-500" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Search and Selection Controls */}
