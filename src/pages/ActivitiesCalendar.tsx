@@ -253,16 +253,14 @@ export default function ActivitiesCalendar() {
             <StandardContentCard title="Quick Actions">
               <div className="space-y-2">
                 <Button 
-                  className="w-full" 
-                  variant="outline"
+                  className="w-full bg-[#0f62fe] hover:bg-[#0353e9] text-white" 
                   onClick={() => setShowScheduleModal(true)}
                 >
                   <CalendarIcon className="h-4 w-4 mr-2" />
                   New Event
                 </Button>
                 <Button 
-                  className="w-full" 
-                  variant="outline"
+                  className="w-full bg-[#0f62fe] hover:bg-[#0353e9] text-white" 
                   onClick={() => {
                     setShowScheduleModal(true);
                   }}
@@ -271,8 +269,7 @@ export default function ActivitiesCalendar() {
                   Block Time
                 </Button>
                 <Button 
-                  className="w-full" 
-                  variant="outline"
+                  className="w-full bg-[#0f62fe] hover:bg-[#0353e9] text-white" 
                   onClick={() => {
                     setShowScheduleModal(true);
                   }}
