@@ -359,7 +359,7 @@ export default function Settings() {
                   <div className="space-y-3">
                     <RingCentralSetup 
                       trigger={
-                        <Button variant="outline" className="w-full justify-start gap-2 border-[#0A1628] text-[#161616] hover:bg-[#0A1628] hover:text-white transition-colors">
+                        <Button variant="outline" className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors">
                           <Phone className="w-4 h-4" />
                           <span>Phone Settings</span>
                         </Button>
@@ -367,7 +367,7 @@ export default function Settings() {
                     />
                     <EmailSetup 
                       trigger={
-                        <Button variant="outline" className="w-full justify-start gap-2 border-[#0A1628] text-[#161616] hover:bg-[#0A1628] hover:text-white transition-colors">
+                        <Button variant="outline" className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors">
                           <Mail className="w-4 h-4" />
                           <span>Email Settings</span>
                         </Button>
