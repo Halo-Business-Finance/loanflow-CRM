@@ -238,15 +238,22 @@ export function DataIntegrityDashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            Data Integrity Dashboard
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex gap-4">
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Data Integrity Dashboard
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Audit and fix data quality issues across your database
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
             <Button 
               onClick={() => {
                 console.log('Run Data Audit button clicked!');
@@ -254,9 +261,10 @@ export function DataIntegrityDashboard() {
                 runDataAudit();
               }} 
               disabled={loading}
-              className="flex items-center gap-2"
+              size="sm" 
+              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white"
             >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-3 w-3 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Run Data Audit
             </Button>
             
@@ -268,155 +276,178 @@ export function DataIntegrityDashboard() {
                 runAutoFix();
               }} 
               disabled={loading || !auditResults}
+              size="sm"
               variant="outline"
-              className="flex items-center gap-2"
+              className="h-8 text-xs font-medium"
             >
-              <Check className="h-4 w-4" />
+              <Check className="h-3 w-3 mr-2" />
               Auto-Fix Issues
             </Button>
           </div>
+        </div>
 
-          {auditResults && (
-            <Alert>
-              <Database className="h-4 w-4" />
-              <AlertDescription>
-                <div className="grid grid-cols-3 gap-4 mt-2">
-                  <div>
-                    <span className="font-medium">Field Issues:</span> {fieldIssues.length}
-                  </div>
-                  <div>
-                    <span className="font-medium">Critical:</span> {auditResults.summary?.criticalIssues || 0}
-                  </div>
-                  <div>
-                    <span className="font-medium">Warnings:</span> {auditResults.summary?.warningIssues || 0}
-                  </div>
+        {/* Summary Alert */}
+        {auditResults && (
+          <Alert>
+            <Database className="h-4 w-4" />
+            <AlertDescription>
+              <div className="grid grid-cols-3 gap-4 mt-2">
+                <div>
+                  <span className="font-medium">Field Issues:</span> {fieldIssues.length}
                 </div>
-              </AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
+                <div>
+                  <span className="font-medium">Critical:</span> {auditResults.summary?.criticalIssues || 0}
+                </div>
+                <div>
+                  <span className="font-medium">Warnings:</span> {auditResults.summary?.warningIssues || 0}
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
 
-      {auditResults && (
-        <Tabs defaultValue="issues" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="issues">Field Issues</TabsTrigger>
-            <TabsTrigger value="summary">Summary</TabsTrigger>
-            <TabsTrigger value="autofix">Auto-Fix Results</TabsTrigger>
-          </TabsList>
+        {/* Content Area */}
+        {auditResults && (
+          <div className="space-y-6">
+            <Tabs defaultValue="issues" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-3 bg-[#0A1628] p-1 gap-2">
+                <TabsTrigger 
+                  value="issues" 
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>Field Issues</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="summary" 
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+                >
+                  <Database className="w-4 h-4" />
+                  <span>Summary</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="autofix" 
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>Auto-Fix Results</span>
+                </TabsTrigger>
+              </TabsList>
 
-          <TabsContent value="issues" className="space-y-4">
-            <div className="space-y-2">
-              {fieldIssues.map((issue) => (
-                <Card key={`${issue.recordId}-${issue.fieldName}-${issue.issueType}`}>
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-2">
-                         <div className="flex items-center gap-2">
-                           {getIssueTypeIcon(issue.issueType)}
-                           <span className="font-medium text-xs">
-                             {issue.severity.toUpperCase()}
-                           </span>
-                           <span className="font-medium">{issue.fieldName}</span>
-                           <span className="text-xs">
-                             {issue.recordType}
-                           </span>
-                         </div>
-                        <p className="text-sm text-muted-foreground">{issue.description}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Record ID: {issue.recordId} | Type: {issue.issueType}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              
-              {fieldIssues.length === 0 && auditResults && (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <Check className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium">No Field Issues Found</h3>
-                    <p className="text-muted-foreground">All data fields are correctly named and consistent.</p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="summary" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm">Lead Issues</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{auditResults.leadIssues?.length || 0}</div>
-                  <p className="text-sm text-muted-foreground">Records with issues</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm">Client Issues</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{auditResults.clientIssues?.length || 0}</div>
-                  <p className="text-sm text-muted-foreground">Records with issues</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm">Pipeline Issues</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{auditResults.pipelineIssues?.length || 0}</div>
-                  <p className="text-sm text-muted-foreground">Records with issues</p>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="autofix" className="space-y-4">
-            {autoFixResults ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Auto-Fix Results</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <span className="font-medium">Issues Fixed:</span> {autoFixResults.fixed || 0}
-                    </div>
-                    <div>
-                      <span className="font-medium">Errors:</span> {autoFixResults.errors?.length || 0}
-                    </div>
-                  </div>
+              <TabsContent value="issues" className="space-y-4">
+                <div className="space-y-2">
+                  {fieldIssues.map((issue) => (
+                    <Card key={`${issue.recordId}-${issue.fieldName}-${issue.issueType}`}>
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start">
+                          <div className="space-y-2">
+                             <div className="flex items-center gap-2">
+                               {getIssueTypeIcon(issue.issueType)}
+                               <span className="font-medium text-xs">
+                                 {issue.severity.toUpperCase()}
+                               </span>
+                               <span className="font-medium">{issue.fieldName}</span>
+                               <span className="text-xs">
+                                 {issue.recordType}
+                               </span>
+                             </div>
+                            <p className="text-sm text-muted-foreground">{issue.description}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Record ID: {issue.recordId} | Type: {issue.issueType}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                   
-                  {autoFixResults.errors && autoFixResults.errors.length > 0 && (
-                    <div className="space-y-2">
-                      <h4 className="font-medium">Errors:</h4>
-                      {autoFixResults.errors.map((error: string) => (
-                        <Alert key={error} variant="destructive">
-                          <AlertTriangle className="h-4 w-4" />
-                          <AlertDescription>{error}</AlertDescription>
-                        </Alert>
-                      ))}
-                    </div>
+                  {fieldIssues.length === 0 && auditResults && (
+                    <Card>
+                      <CardContent className="p-8 text-center">
+                        <Check className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium">No Field Issues Found</h3>
+                        <p className="text-muted-foreground">All data fields are correctly named and consistent.</p>
+                      </CardContent>
+                    </Card>
                   )}
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <p className="text-muted-foreground">No auto-fix results yet. Run auto-fix to see results.</p>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-        </Tabs>
-      )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="summary" className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Lead Issues</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{auditResults.leadIssues?.length || 0}</div>
+                      <p className="text-sm text-muted-foreground">Records with issues</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Client Issues</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{auditResults.clientIssues?.length || 0}</div>
+                      <p className="text-sm text-muted-foreground">Records with issues</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Pipeline Issues</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{auditResults.pipelineIssues?.length || 0}</div>
+                      <p className="text-sm text-muted-foreground">Records with issues</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="autofix" className="space-y-4">
+                {autoFixResults ? (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Auto-Fix Results</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <span className="font-medium">Issues Fixed:</span> {autoFixResults.fixed || 0}
+                        </div>
+                        <div>
+                          <span className="font-medium">Errors:</span> {autoFixResults.errors?.length || 0}
+                        </div>
+                      </div>
+                      
+                      {autoFixResults.errors && autoFixResults.errors.length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="font-medium">Errors:</h4>
+                          {autoFixResults.errors.map((error: string) => (
+                            <Alert key={error} variant="destructive">
+                              <AlertTriangle className="h-4 w-4" />
+                              <AlertDescription>{error}</AlertDescription>
+                            </Alert>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <p className="text-muted-foreground">No auto-fix results yet. Run auto-fix to see results.</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+            </Tabs>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
