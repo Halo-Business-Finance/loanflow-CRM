@@ -79,7 +79,7 @@ export function SystemMonitoring() {
   return (
     <div className="space-y-6">
       {/* Overall Status */}
-      <Card className="border-2 border-[#0A1628]">
+      <Card className="border-0">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             {getStatusIcon(health.databaseStatus)}
