@@ -371,7 +371,7 @@ export function EmergencyShutdown() {
                   <Button 
                     onClick={() => triggerEmergencyShutdown("Manual security shutdown", "partial")}
                     variant="outline"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-2 border-[#001f3f] hover:bg-[#001f3f] hover:text-white"
                   >
                     <Power className="h-4 w-4" />
                     Partial Shutdown
