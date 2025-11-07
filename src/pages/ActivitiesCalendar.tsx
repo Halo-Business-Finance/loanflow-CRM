@@ -90,26 +90,26 @@ export default function ActivitiesCalendar() {
                 <div className="flex items-center justify-end">
                   <div className="flex items-center gap-2">
                     <Button
-                      variant="outline"
                       size="icon"
                       onClick={handlePreviousMonth}
+                      className="bg-[#0f62fe] hover:bg-[#0353e9] text-white"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant="outline"
                       size="sm"
                       onClick={() => {
                         setCurrentMonth(new Date());
                         setSelectedDate(new Date());
                       }}
+                      className="bg-[#0f62fe] hover:bg-[#0353e9] text-white"
                     >
                       Today
                     </Button>
                     <Button
-                      variant="outline"
                       size="icon"
                       onClick={handleNextMonth}
+                      className="bg-[#0f62fe] hover:bg-[#0353e9] text-white"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Button>
