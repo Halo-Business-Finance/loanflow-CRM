@@ -56,14 +56,15 @@ const SecurityPage: React.FC = () => {
         setThreatsBlocked(events?.length || 0);
 
         // Active sessions
-        const { count: sessionsCount, error: sessionsErr } = await supabase
+        // Active users (distinct)
+        const { data: userSessions } = await supabase
           .from('active_sessions')
-          .select('id', { count: 'exact', head: true })
+          .select('user_id')
           .eq('is_active', true)
           .gt('expires_at', new Date().toISOString());
         
-        if (sessionsErr) console.warn('Active sessions count error:', sessionsErr);
-        setActiveSessions(sessionsCount ?? 0);
+        const uniqueUsers = new Set(userSessions?.map(s => s.user_id) || []).size;
+        setActiveSessions(uniqueUsers);
 
         // Set system status based on threats
         if (criticalCount > 0) {
@@ -145,7 +146,7 @@ const SecurityPage: React.FC = () => {
                       <p className="text-2xl font-semibold">AES-256</p>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Active Sessions</p>
+                      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Active Users</p>
                       <p className="text-2xl font-semibold">{activeSessions}</p>
                     </div>
                     <div className="space-y-2">

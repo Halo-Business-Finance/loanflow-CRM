@@ -53,10 +53,10 @@ export const EnhancedSecurityMonitor: React.FC = () => {
   const fetchSecurityMetrics = useCallback(async () => {
     try {
       // Use existing database queries to get metrics
-      const [sessionsResult, eventsResult] = await Promise.all([
+      const [userSessionsResult, eventsResult] = await Promise.all([
         supabase
           .from('active_sessions')
-          .select('id', { count: 'exact', head: true })
+          .select('user_id')
           .eq('is_active', true)
           .gt('expires_at', new Date().toISOString()),
         supabase
@@ -65,13 +65,13 @@ export const EnhancedSecurityMonitor: React.FC = () => {
           .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
       ]);
 
-      const activeSessions = (sessionsResult as any).count ?? 0;
+      const uniqueUsers = new Set(userSessionsResult.data?.map(s => s.user_id) || []).size;
       const recentEvents = eventsResult.data || [];
       const criticalEvents = recentEvents.filter(e => e.severity === 'critical' || e.severity === 'high').length;
       
       setMetrics({
         threat_level: criticalEvents > 5 ? 'critical' : criticalEvents > 2 ? 'high' : criticalEvents > 0 ? 'medium' : 'low',
-        active_sessions: activeSessions,
+        active_sessions: uniqueUsers,
         failed_logins: recentEvents.filter(e => e.event_type?.includes('login') && e.event_type?.includes('fail')).length,
         suspicious_activities: recentEvents.filter(e => e.event_type?.includes('suspicious')).length,
         last_scan: new Date().toISOString(),
@@ -305,7 +305,7 @@ export const EnhancedSecurityMonitor: React.FC = () => {
         <Card>
           <CardContent className="pt-6">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Active Sessions</p>
+              <p className="text-sm font-medium text-muted-foreground">Active Users</p>
               <p className="text-2xl font-bold">{metrics?.active_sessions || 0}</p>
             </div>
           </CardContent>
