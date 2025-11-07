@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
-import { Search, FolderOpen, Upload, Users, ChevronRight, Grid, List, Trash2, Download, CheckSquare, FileText, Clock, AlertCircle, Maximize2, Minimize2 } from "lucide-react"
+import { Search, FolderOpen, Upload, Users, ChevronRight, Grid, List, Trash2, Download, CheckSquare, FileText, Clock, AlertCircle, Maximize2, Minimize2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 import { useState, useMemo } from "react"
 import { useDocuments } from "@/hooks/useDocuments"
 import { DocumentUploadModal } from "@/components/DocumentUploadModal"
@@ -27,6 +27,8 @@ export default function Documents() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
   const [isCompact, setIsCompact] = useState(false)
   const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set())
+  const [sortColumn, setSortColumn] = useState<'name' | 'updated' | 'size' | null>(null)
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const navigate = useNavigate()
 
   // Group documents by lead to create folder structure
@@ -75,6 +77,49 @@ export default function Documents() {
     folder.loanType.toLowerCase().includes(searchTerm.toLowerCase()) ||
     folder.location.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  // Handle sorting
+  const handleSort = (column: 'name' | 'updated' | 'size') => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortColumn(column)
+      setSortDirection('asc')
+    }
+  }
+
+  // Sort filtered folders
+  const sortedFolders = useMemo(() => {
+    if (!sortColumn) return filteredFolders
+
+    return [...filteredFolders].sort((a, b) => {
+      let comparison = 0
+
+      switch (sortColumn) {
+        case 'name':
+          comparison = a.leadName.localeCompare(b.leadName)
+          break
+        case 'updated':
+          comparison = new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime()
+          break
+        case 'size':
+          comparison = a.documentCount - b.documentCount
+          break
+      }
+
+      return sortDirection === 'asc' ? comparison : -comparison
+    })
+  }, [filteredFolders, sortColumn, sortDirection])
+
+  // Render sort icon
+  const SortIcon = ({ column }: { column: 'name' | 'updated' | 'size' }) => {
+    if (sortColumn !== column) {
+      return <ArrowUpDown className="h-3 w-3 text-muted-foreground" />
+    }
+    return sortDirection === 'asc' 
+      ? <ArrowUp className="h-3 w-3 text-primary" />
+      : <ArrowDown className="h-3 w-3 text-primary" />
+  }
 
   // Calculate metrics
   const metrics = useMemo(() => {
@@ -302,27 +347,42 @@ export default function Documents() {
         {/* Content Area */}
         <div className="space-y-6">
           {/* Folder Header */}
-          {filteredFolders.length > 0 && (
+          {sortedFolders.length > 0 && (
           <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground border-b">
             <div className="col-span-5 flex items-center gap-3">
               <Checkbox
-                checked={selectedFolders.size === filteredFolders.length && filteredFolders.length > 0}
+                checked={selectedFolders.size === sortedFolders.length && sortedFolders.length > 0}
                 onCheckedChange={toggleSelectAll}
                 className="mt-0.5"
                 data-checkbox
               />
-              <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleSort('name')}
+                className="flex items-center gap-2 hover:text-foreground transition-colors"
+              >
                 NAME
-                <ChevronRight className="h-3 w-3 rotate-90" />
-              </div>
+                <SortIcon column="name" />
+              </button>
             </div>
-            <div className="col-span-4">UPDATED</div>
-            <div className="col-span-3 text-right">SIZE</div>
+            <button
+              onClick={() => handleSort('updated')}
+              className="col-span-4 flex items-center gap-2 hover:text-foreground transition-colors"
+            >
+              UPDATED
+              <SortIcon column="updated" />
+            </button>
+            <button
+              onClick={() => handleSort('size')}
+              className="col-span-3 text-right flex items-center justify-end gap-2 hover:text-foreground transition-colors"
+            >
+              SIZE
+              <SortIcon column="size" />
+            </button>
           </div>
         )}
 
         {/* Folder List/Grid */}
-        {filteredFolders.length === 0 ? (
+        {sortedFolders.length === 0 ? (
           <div className="text-center py-12">
             <FolderOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium mb-2">No loan folders found</h3>
@@ -340,7 +400,7 @@ export default function Documents() {
           </div>
         ) : viewMode === 'list' ? (
           <div className="space-y-2">
-            {filteredFolders.map((folder) => (
+            {sortedFolders.map((folder) => (
               <div
                 key={folder.leadId}
                 onClick={(e) => handleFolderClick(folder.leadId, e)}
@@ -386,7 +446,7 @@ export default function Documents() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filteredFolders.map((folder) => (
+            {sortedFolders.map((folder) => (
               <div
                 key={folder.leadId}
                 onClick={(e) => handleFolderClick(folder.leadId, e)}
@@ -442,7 +502,7 @@ export default function Documents() {
         )}
 
         {/* Empty State Illustration */}
-        {filteredFolders.length === 0 && !searchTerm && (
+        {sortedFolders.length === 0 && !searchTerm && (
           <div className="flex justify-center mt-8">
             <div className="text-center space-y-4 max-w-md">
               <div className="relative inline-block">
