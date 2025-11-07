@@ -1,7 +1,6 @@
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { StandardKPICard } from "@/components/StandardKPICard"
-import { ResponsiveContainer } from "@/components/ResponsiveContainer"
-import { Settings, Database, Server, Monitor, Shield, Activity, MoreVertical, ChevronRight } from "lucide-react"
+import { Settings, Database, Server, Monitor, Shield, Activity, MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -13,107 +12,102 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Link } from "react-router-dom"
 
 export default function SettingsSystem() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-[#0A1628] bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
             <div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                <Link to="/settings" className="hover:text-foreground transition-colors">
-                  Settings
-                </Link>
-                <ChevronRight className="h-4 w-4" />
-                <span className="text-foreground">System Configuration</span>
-              </div>
-              <h1 className="text-3xl font-bold text-foreground">System Configuration</h1>
-              <p className="text-muted-foreground mt-1">
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                System Configuration
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
                 Manage system-wide settings and configurations
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]">
-                <Settings className="mr-2 h-4 w-4" />
-                Save Changes
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="border-2 border-[#001f3f] hover:bg-[#001f3f] hover:text-white">
-                    <Activity className="mr-2 h-4 w-4" />
-                    Actions
-                    <MoreVertical className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-card border shadow-large z-50">
-                  <DropdownMenuLabel>System Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Database className="mr-2 h-4 w-4" />
-                    Backup Database
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Clear Cache
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Monitor className="mr-2 h-4 w-4" />
-                    System Health Check
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Server className="mr-2 h-4 w-4" />
-                    Restart Services
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Shield className="mr-2 h-4 w-4" />
-                    Security Scan
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]">
+              <Settings className="h-3 w-3 mr-2" />
+              Save Changes
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" variant="outline" className="h-8 text-xs border-2 border-[#001f3f] hover:bg-[#001f3f] hover:text-white">
+                  <Activity className="h-3 w-3 mr-2" />
+                  Actions
+                  <MoreVertical className="h-3 w-3 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-card border shadow-large z-50">
+                <DropdownMenuLabel>System Actions</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Database className="mr-2 h-4 w-4" />
+                  Backup Database
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Clear Cache
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Monitor className="mr-2 h-4 w-4" />
+                  System Health Check
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Server className="mr-2 h-4 w-4" />
+                  Restart Services
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Shield className="mr-2 h-4 w-4" />
+                  Security Scan
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
-      </div>
 
-      <ResponsiveContainer padding="md" maxWidth="full">
+        {/* Content Area */}
+        <div className="space-y-6">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-[#0A1628] border border-[#0A1628]">
+          <TabsList className="grid w-full grid-cols-5 bg-[#0A1628] p-1 gap-2">
             <TabsTrigger 
               value="overview"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
             >
-              <Monitor className="mr-2 h-4 w-4" />
+              <Monitor className="h-4 w-4" />
               Overview
             </TabsTrigger>
             <TabsTrigger 
               value="system"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
             >
-              <Settings className="mr-2 h-4 w-4" />
+              <Settings className="h-4 w-4" />
               System
             </TabsTrigger>
             <TabsTrigger 
               value="performance"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
             >
-              <Activity className="mr-2 h-4 w-4" />
+              <Activity className="h-4 w-4" />
               Performance
             </TabsTrigger>
             <TabsTrigger 
               value="security"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
             >
-              <Shield className="mr-2 h-4 w-4" />
+              <Shield className="h-4 w-4" />
               Security
             </TabsTrigger>
             <TabsTrigger 
               value="information"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
             >
-              <Server className="mr-2 h-4 w-4" />
+              <Server className="h-4 w-4" />
               Information
             </TabsTrigger>
           </TabsList>
@@ -343,7 +337,8 @@ export default function SettingsSystem() {
             </StandardContentCard>
           </TabsContent>
         </Tabs>
-      </ResponsiveContainer>
+        </div>
+      </div>
     </div>
   )
 }
