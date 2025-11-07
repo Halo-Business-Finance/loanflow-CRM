@@ -74,7 +74,7 @@ export default function ActivitiesCalendar() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button onClick={() => refetch()} variant="outline" size="sm" className="h-8 text-xs font-medium">
+            <Button onClick={() => refetch()} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
               <RefreshCw className="h-3 w-3 mr-2" />
               Refresh Data
             </Button>
