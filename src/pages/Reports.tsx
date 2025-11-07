@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { StandardPageLayout } from '@/components/StandardPageLayout';
-import { StandardPageHeader } from '@/components/StandardPageHeader';
-import { StandardContentCard } from '@/components/StandardContentCard';
-import { ResponsiveContainer } from '@/components/ResponsiveContainer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -134,62 +130,84 @@ export default function Reports() {
   };
 
   return (
-    <StandardPageLayout>
-      <StandardPageHeader 
-        title="Business Intelligence Center"
-        description="Advanced analytics, reporting, and performance insights"
-        actions={
-          <Button className="gap-2">
-            <Download className="h-4 w-4" />
-            Export Reports
-          </Button>
-        }
-      />
-      
-      <ResponsiveContainer padding="md">
+    <div className="min-h-screen bg-background overflow-auto no-scrollbar">
+      {/* Header */}
+      <div className="bg-card sticky top-0 z-10">
+        <div className="px-4 md:px-6 pt-6 pb-4 md:pt-8 md:pb-6">
+          <div className="flex items-start md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground no-underline flex items-center gap-3">
+                <BarChart3 className="h-8 w-8 text-primary" />
+                Business Intelligence Center
+              </h1>
+              <p className="text-sm md:text-base text-muted-foreground">
+                Advanced analytics, reporting, and performance insights
+              </p>
+            </div>
+            <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+              <Button className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+                <Download className="h-4 w-4" />
+                Export Reports
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="mb-6 md:mb-8" />
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Reports</h3>
-                <p className="text-2xl font-bold">{overview.totalReports}</p>
+      <div className="px-4 md:px-6 space-y-6">
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="border-[#0A1628] hover:border-primary/50 transition-colors">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Reports</h3>
+                  <p className="text-2xl font-bold">{overview.totalReports}</p>
+                </div>
+                <FileText className="w-8 h-8 text-primary" />
               </div>
-              <FileText className="w-8 h-8 text-primary" />
-            </div>
-          </StandardContentCard>
+            </CardContent>
+          </Card>
           
-          <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Data Accuracy</h3>
-                <p className="text-2xl font-bold">{overview.dataAccuracy}%</p>
+          <Card className="border-[#0A1628] hover:border-primary/50 transition-colors">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Data Accuracy</h3>
+                  <p className="text-2xl font-bold">{overview.dataAccuracy}%</p>
+                </div>
+                <Target className="w-8 h-8 text-primary" />
               </div>
-              <Target className="w-8 h-8 text-primary" />
-            </div>
-          </StandardContentCard>
+            </CardContent>
+          </Card>
           
-          <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Processing Time</h3>
-                <p className="text-2xl font-bold">{overview.processingTime}s</p>
+          <Card className="border-[#0A1628] hover:border-primary/50 transition-colors">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Processing Time</h3>
+                  <p className="text-2xl font-bold">{overview.processingTime}s</p>
+                </div>
+                <Activity className="w-8 h-8 text-primary" />
               </div>
-              <Activity className="w-8 h-8 text-primary" />
-            </div>
-          </StandardContentCard>
+            </CardContent>
+          </Card>
           
-          <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Compliance Score</h3>
-                <p className="text-2xl font-bold">{overview.complianceScore}%</p>
+          <Card className="border-[#0A1628] hover:border-primary/50 transition-colors">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Compliance Score</h3>
+                  <p className="text-2xl font-bold">{overview.complianceScore}%</p>
+                </div>
+                <CheckCircle className="w-8 h-8 text-primary" />
               </div>
-              <CheckCircle className="w-8 h-8 text-primary" />
-            </div>
-          </StandardContentCard>
+            </CardContent>
+          </Card>
         </div>
 
+        {/* Alert */}
         {overview.alertsActive > 0 && (
           <Alert className="border-warning/50">
             <AlertTriangle className="h-4 w-4 text-warning" />
@@ -199,6 +217,7 @@ export default function Reports() {
           </Alert>
         )}
 
+        {/* Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">
@@ -217,147 +236,180 @@ export default function Reports() {
 
           <TabsContent value="overview" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
-              <StandardContentCard title="Revenue Analytics">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Monthly revenue tracking and performance metrics
-                </p>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Total Revenue</span>
-                    <span className="font-semibold">—</span>
+              <Card className="border-[#0A1628]">
+                <CardHeader>
+                  <CardTitle>Revenue Analytics</CardTitle>
+                  <CardDescription>Monthly revenue tracking and performance metrics</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Total Revenue</span>
+                      <span className="font-semibold">—</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Monthly Growth</span>
+                      <span className="font-semibold">—</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Avg Deal Size</span>
+                      <span className="font-semibold">—</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Monthly Growth</span>
-                    <span className="font-semibold">—</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Avg Deal Size</span>
-                    <span className="font-semibold">—</span>
-                  </div>
-                </div>
-              </StandardContentCard>
+                </CardContent>
+              </Card>
 
-              <StandardContentCard title="Lead Performance">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Lead generation and conversion analytics
-                </p>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Total Leads</span>
-                    <span className="font-semibold">{overview.totalReports}</span>
+              <Card className="border-[#0A1628]">
+                <CardHeader>
+                  <CardTitle>Lead Performance</CardTitle>
+                  <CardDescription>Lead generation and conversion analytics</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Total Leads</span>
+                      <span className="font-semibold">{overview.totalReports}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Conversion Rate</span>
+                      <span className="font-semibold">{reportData?.applications?.approvalRate || overview.complianceScore}%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Quality Score</span>
+                      <span className="font-semibold text-blue-600">{(overview.dataAccuracy / 10).toFixed(1)}/10</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Conversion Rate</span>
-                    <span className="font-semibold">{reportData?.applications?.approvalRate || overview.complianceScore}%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Quality Score</span>
-                    <span className="font-semibold text-blue-600">{(overview.dataAccuracy / 10).toFixed(1)}/10</span>
-                  </div>
-                </div>
-              </StandardContentCard>
+                </CardContent>
+              </Card>
             </div>
 
-            <StandardContentCard title="Quick Report Generation">
-              <p className="text-sm text-muted-foreground mb-4">
-                Generate standard business reports instantly
-              </p>
-              <div className="grid gap-4 md:grid-cols-3">
-                <Button className="w-full gap-2" variant="outline">
-                  <Download className="h-4 w-4" />
-                  Revenue Report
-                </Button>
-                <Button className="w-full gap-2" variant="outline">
-                  <Download className="h-4 w-4" />
-                  Lead Analysis
-                </Button>
-                <Button className="w-full gap-2" variant="outline">
-                  <Download className="h-4 w-4" />
-                  Performance Summary
-                </Button>
-              </div>
-            </StandardContentCard>
+            <Card className="border-[#0A1628]">
+              <CardHeader>
+                <CardTitle>Quick Report Generation</CardTitle>
+                <CardDescription>Generate standard business reports instantly</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <Button className="w-full gap-2" variant="outline">
+                    <Download className="h-4 w-4" />
+                    Revenue Report
+                  </Button>
+                  <Button className="w-full gap-2" variant="outline">
+                    <Download className="h-4 w-4" />
+                    Lead Analysis
+                  </Button>
+                  <Button className="w-full gap-2" variant="outline">
+                    <Download className="h-4 w-4" />
+                    Performance Summary
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="performance" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
-              <StandardContentCard title="Goal Achievement">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Performance against set targets
-                </p>
-                <div className="text-sm text-muted-foreground text-center py-6">
-                  Goal tracking not configured yet.
-                </div>
-              </StandardContentCard>
+              <Card className="border-[#0A1628]">
+                <CardHeader>
+                  <CardTitle>Goal Achievement</CardTitle>
+                  <CardDescription>Performance against set targets</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-muted-foreground text-center py-6">
+                    Goal tracking not configured yet.
+                  </div>
+                </CardContent>
+              </Card>
 
-              <StandardContentCard title="Time-Based Metrics">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Efficiency and timing analytics
-                </p>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Avg Response Time</span>
-                    <span className="font-semibold">{overview.processingTime}h</span>
+              <Card className="border-[#0A1628]">
+                <CardHeader>
+                  <CardTitle>Time-Based Metrics</CardTitle>
+                  <CardDescription>Efficiency and timing analytics</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Avg Response Time</span>
+                      <span className="font-semibold">{overview.processingTime}h</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Deal Closure Time</span>
+                      <span className="font-semibold">—</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Follow-up Rate</span>
+                      <span className="font-semibold">—</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Deal Closure Time</span>
-                    <span className="font-semibold">—</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Follow-up Rate</span>
-                    <span className="font-semibold">—</span>
-                  </div>
-                </div>
-              </StandardContentCard>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-3">
-              <StandardContentCard title="Data Insights">
-                <div className="text-2xl font-bold mb-2">{overview.dataAccuracy}%</div>
-                <p className="text-sm text-muted-foreground">Data accuracy across {overview.totalReports} records</p>
-              </StandardContentCard>
+              <Card className="border-[#0A1628]">
+                <CardHeader>
+                  <CardTitle>Data Insights</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold mb-2">{overview.dataAccuracy}%</div>
+                  <p className="text-sm text-muted-foreground">Data accuracy across {overview.totalReports} records</p>
+                </CardContent>
+              </Card>
 
-              <StandardContentCard title="Processing Speed">
-                <div className="text-2xl font-bold mb-2">{overview.processingTime}h</div>
-                <p className="text-sm text-muted-foreground">Average processing time per lead</p>
-              </StandardContentCard>
+              <Card className="border-[#0A1628]">
+                <CardHeader>
+                  <CardTitle>Processing Speed</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold mb-2">{overview.processingTime}h</div>
+                  <p className="text-sm text-muted-foreground">Average processing time per lead</p>
+                </CardContent>
+              </Card>
 
-              <StandardContentCard title="Cost Efficiency">
-                <div className="text-2xl font-bold mb-2">${overview.storageUsed}MB</div>
-                <p className="text-sm text-muted-foreground">Storage used for {overview.totalReports} leads</p>
-              </StandardContentCard>
+              <Card className="border-[#0A1628]">
+                <CardHeader>
+                  <CardTitle>Cost Efficiency</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold mb-2">${overview.storageUsed}MB</div>
+                  <p className="text-sm text-muted-foreground">Storage used for {overview.totalReports} leads</p>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
           <TabsContent value="compliance" className="space-y-6">
-            <StandardContentCard title="Compliance Dashboard">
-              <p className="text-sm text-muted-foreground mb-4">
-                Regulatory compliance and audit readiness
-              </p>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="flex justify-between items-center p-4 border rounded-lg">
-                  <span className="text-sm font-medium">SOX Compliance</span>
-                  <span className="font-bold text-green-600">{overview.complianceScore}%</span>
+            <Card className="border-[#0A1628]">
+              <CardHeader>
+                <CardTitle>Compliance Dashboard</CardTitle>
+                <CardDescription>Regulatory compliance and audit readiness</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="flex justify-between items-center p-4 border rounded-lg">
+                    <span className="text-sm font-medium">SOX Compliance</span>
+                    <span className="font-bold text-green-600">{overview.complianceScore}%</span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 border rounded-lg">
+                    <span className="text-sm font-medium">Data Retention</span>
+                    <span className="font-bold text-blue-600">—</span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 border rounded-lg">
+                    <span className="text-sm font-medium">Security Score</span>
+                    <span className="font-bold text-purple-600">—</span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 border rounded-lg">
+                    <span className="text-sm font-medium">Audit Readiness</span>
+                    <span className="font-bold text-orange-600">—</span>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center p-4 border rounded-lg">
-                  <span className="text-sm font-medium">Data Retention</span>
-                  <span className="font-bold text-blue-600">—</span>
-                </div>
-                <div className="flex justify-between items-center p-4 border rounded-lg">
-                  <span className="text-sm font-medium">Security Score</span>
-                  <span className="font-bold text-purple-600">—</span>
-                </div>
-                <div className="flex justify-between items-center p-4 border rounded-lg">
-                  <span className="text-sm font-medium">Audit Readiness</span>
-                  <span className="font-bold text-orange-600">—</span>
-                </div>
-              </div>
-            </StandardContentCard>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
-      </ResponsiveContainer>
-    </StandardPageLayout>
+      </div>
+    </div>
   );
 }
