@@ -277,6 +277,17 @@ export default function Settings() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
+                      <Label htmlFor="displayName">Display Name</Label>
+                      <Input 
+                        id="displayName" 
+                        value={displayName}
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        placeholder="Enter your display name"
+                        className="!bg-white !text-black !border !border-[#0A1628]"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
                       <Input 
                         id="email" 
@@ -288,17 +299,6 @@ export default function Settings() {
                       <p className="text-xs text-muted-foreground">
                         Email cannot be changed
                       </p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="displayName">Display Name</Label>
-                      <Input 
-                        id="displayName" 
-                        value={displayName}
-                        onChange={(e) => setDisplayName(e.target.value)}
-                        placeholder="Enter your display name"
-                        className="!bg-white !text-black !border !border-[#0A1628]"
-                      />
                     </div>
 
                     <div className="space-y-2">
