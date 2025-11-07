@@ -103,20 +103,19 @@ export default function LeadAssignmentPage() {
 
       if (profilesError) throw profilesError
 
-      // Get lead counts for each team member
-      const membersWithCounts = await Promise.all(
-        (profiles || []).map(async (profile) => {
-          const { count, error } = await supabase
-            .from('leads')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', profile.id)
+      // Get lead counts using secure RPC function
+      const { data: leadCounts, error: countsError } = await supabase
+        .rpc('get_lead_counts')
 
-          return {
-            ...profile,
-            leadCount: error ? 0 : (count || 0)
-          }
-        })
-      )
+      if (countsError) throw countsError
+
+      // Combine profiles with lead counts
+      const countsMap = new Map((leadCounts || []).map((lc: any) => [lc.user_id, lc.lead_count]))
+      
+      const membersWithCounts = (profiles || []).map((profile) => ({
+        ...profile,
+        leadCount: countsMap.get(profile.id) || 0
+      }))
 
       setTeamMembers(membersWithCounts)
     } catch (error) {

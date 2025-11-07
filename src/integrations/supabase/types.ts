@@ -4704,6 +4704,13 @@ export type Database = {
           refresh_token: string
         }[]
       }
+      get_lead_counts: {
+        Args: never
+        Returns: {
+          lead_count: number
+          user_id: string
+        }[]
+      }
       get_masked_contact_data: {
         Args: { p_contact_id: string; p_requesting_user_id?: string }
         Returns: Json
