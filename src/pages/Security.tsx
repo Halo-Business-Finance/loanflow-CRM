@@ -93,6 +93,7 @@ const SecurityPage: React.FC = () => {
   return (
     <SecurityWrapper>
       <StandardPageLayout>
+        <div className="p-8 space-y-8 animate-fade-in">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -390,6 +391,7 @@ const SecurityPage: React.FC = () => {
             </Tabs>
           </div>
         </ResponsiveContainer>
+        </div>
       </StandardPageLayout>
     </SecurityWrapper>
   );
