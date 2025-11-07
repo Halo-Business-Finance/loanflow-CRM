@@ -1,5 +1,3 @@
-import { StandardPageLayout } from '@/components/StandardPageLayout'
-import { StandardPageHeader } from '@/components/StandardPageHeader'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -111,7 +109,7 @@ export default function Documents() {
 
   if (loading) {
     return (
-      <StandardPageLayout>
+      <div className="min-h-screen bg-background">
         <div className="p-8 space-y-8">
           {/* Header Skeleton */}
           <div className="flex items-center justify-between">
@@ -131,12 +129,12 @@ export default function Documents() {
             ))}
           </div>
         </div>
-      </StandardPageLayout>
+      </div>
     )
   }
 
   return (
-    <StandardPageLayout>
+    <div className="min-h-screen bg-background">
       <div className="p-8 space-y-8 animate-fade-in">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -383,6 +381,6 @@ export default function Documents() {
         onClose={() => setShowUploadModal(false)}
         onUpload={uploadDocument}
       />
-    </StandardPageLayout>
+    </div>
   )
 }
