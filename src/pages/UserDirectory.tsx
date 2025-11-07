@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users, KeyRound } from 'lucide-react';
+import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users, KeyRound, RefreshCw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -522,16 +521,26 @@ export default function UserDirectory() {
   const pendingInvites = 0; // Would need a separate invites table
   const uniqueRoles = new Set(users.map(u => u.role)).size;
   return (
-    <div className="bg-white min-h-full">
-      <IBMPageHeader
-        title="User Directory Management"
-        subtitle="Manage users, roles, and permissions across your organization"
-        actions={
-          <>
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                User Directory Management
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Manage users, roles, and permissions across your organization
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
             <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <Filter className="h-4 w-4 mr-2" />
+                <Button size="sm" variant="outline" className="h-8 text-xs border-2 border-[#001f3f] hover:bg-[#001f3f] hover:text-white">
+                  <Filter className="h-3 w-3 mr-2" />
                   Filter
                   {hasActiveFilters && (
                     <Badge variant="secondary" className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center">
@@ -593,21 +602,23 @@ export default function UserDirectory() {
                 </div>
               </PopoverContent>
             </Popover>
-            <Button size="sm" onClick={() => setIsAddUserOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
+            <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]" onClick={() => setIsAddUserOpen(true)}>
+              <Plus className="h-3 w-3 mr-2" />
               Add User
             </Button>
-          </>
-        }
-      />
+          </div>
+        </div>
 
-      <Tabs defaultValue="users" className="px-6 py-6">
-        <TabsList className="mb-6">
-          <TabsTrigger value="users" className="gap-2">
+        {/* Content Area */}
+        <div className="space-y-6">
+
+      <Tabs defaultValue="users" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2 bg-[#0A1628] p-1 gap-2">
+          <TabsTrigger value="users" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
             <UserCog className="h-4 w-4" />
             Users
           </TabsTrigger>
-          <TabsTrigger value="lead-assignment" className="gap-2">
+          <TabsTrigger value="lead-assignment" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
             <Users className="h-4 w-4" />
             Lead Assignment
           </TabsTrigger>
@@ -671,28 +682,28 @@ export default function UserDirectory() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="border-[#e0e0e0]">
+          <Card className="border-[#0A1628]">
             <CardHeader className="pb-2">
               <CardDescription className="text-[#525252]">Total Users</CardDescription>
               <CardTitle className="text-2xl text-[#161616]">{totalUsers}</CardTitle>
             </CardHeader>
           </Card>
 
-          <Card className="border-[#e0e0e0]">
+          <Card className="border-[#0A1628]">
             <CardHeader className="pb-2">
               <CardDescription className="text-[#525252]">Active Users</CardDescription>
               <CardTitle className="text-2xl text-[#161616]">{activeUsers}</CardTitle>
             </CardHeader>
           </Card>
 
-          <Card className="border-[#e0e0e0]">
+          <Card className="border-[#0A1628]">
             <CardHeader className="pb-2">
               <CardDescription className="text-[#525252]">Pending Invites</CardDescription>
               <CardTitle className="text-2xl text-[#161616]">{pendingInvites}</CardTitle>
             </CardHeader>
           </Card>
 
-          <Card className="border-[#e0e0e0]">
+          <Card className="border-[#0A1628]">
             <CardHeader className="pb-2">
               <CardDescription className="text-[#525252]">Roles</CardDescription>
               <CardTitle className="text-2xl text-[#161616]">{uniqueRoles}</CardTitle>
@@ -701,7 +712,7 @@ export default function UserDirectory() {
         </div>
 
         {/* User Directory Table */}
-        <Card className="border-[#e0e0e0]">
+        <Card className="border-[#0A1628]">
           <CardHeader>
             <CardTitle className="text-lg">User Directory</CardTitle>
             <CardDescription className="text-[#525252]">
@@ -1309,6 +1320,8 @@ export default function UserDirectory() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
+      </div>
     </div>
   );
 }
