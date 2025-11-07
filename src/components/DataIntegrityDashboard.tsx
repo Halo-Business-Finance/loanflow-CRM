@@ -315,7 +315,6 @@ export function DataIntegrityDashboard() {
                   value="issues" 
                   className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
                 >
-                  <AlertTriangle className="w-4 h-4" />
                   <span>Field Issues</span>
                 </TabsTrigger>
                 <TabsTrigger 
