@@ -287,7 +287,7 @@ export default function SecurityCompliance() {
 
             <TabsContent value="overview" className="space-y-6">
               {/* Compliance Score Card */}
-              <StandardContentCard>
+              <StandardContentCard className="border-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Shield className="h-5 w-5" />
