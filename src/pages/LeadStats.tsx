@@ -101,12 +101,12 @@ export default function LeadStats() {
           </div>
           
           <Tabs value={location.pathname} onValueChange={(value) => navigate(value)}>
-            <TabsList className="grid w-full max-w-md grid-cols-2">
-              <TabsTrigger value="/leads/assignment" className="flex items-center gap-2">
+            <TabsList className="grid w-full max-w-md grid-cols-2 bg-muted p-1">
+              <TabsTrigger value="/leads/assignment" className="flex items-center gap-2 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">
                 <Users className="h-4 w-4" />
                 Lead Assignment
               </TabsTrigger>
-              <TabsTrigger value="/leads/stats" className="flex items-center gap-2">
+              <TabsTrigger value="/leads/stats" className="flex items-center gap-2 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">
                 <BarChart3 className="h-4 w-4" />
                 Lead Stats
               </TabsTrigger>
