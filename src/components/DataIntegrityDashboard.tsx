@@ -289,7 +289,6 @@ export function DataIntegrityDashboard() {
         {/* Summary Alert */}
         {auditResults && (
           <Alert>
-            <Database className="h-4 w-4" />
             <AlertDescription>
               <div className="grid grid-cols-3 gap-4 mt-2">
                 <div>
@@ -315,6 +314,7 @@ export function DataIntegrityDashboard() {
                   value="issues" 
                   className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
                 >
+                  <AlertTriangle className="w-4 h-4" />
                   <span>Field Issues</span>
                 </TabsTrigger>
                 <TabsTrigger 
