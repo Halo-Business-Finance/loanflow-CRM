@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
-import { Search, FolderOpen, Upload, Users, ChevronRight, Grid, List, Trash2, Download, CheckSquare, FileText, Clock, AlertCircle, Maximize2, Minimize2, ArrowUpDown, ArrowUp, ArrowDown, Star, History } from "lucide-react"
+import { Search, FolderOpen, Upload, Users, ChevronRight, Grid, List, Trash2, Download, CheckSquare, FileText, Clock, AlertCircle, Maximize2, Minimize2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 import { useState, useMemo } from "react"
 import { useDocuments } from "@/hooks/useDocuments"
 import { DocumentUploadModal } from "@/components/DocumentUploadModal"
@@ -177,21 +177,29 @@ export default function Documents() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex">
-        <div className="w-64 border-r border-border bg-card/50 p-4">
-          <div className="space-y-4">
-            {[1, 2].map(i => (
-              <div key={i} className="h-8 bg-muted rounded animate-pulse"></div>
+      <div className="min-h-screen bg-background">
+        <div className="p-8 space-y-8">
+          {/* Header Skeleton */}
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="h-8 w-32 bg-muted rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-64 bg-muted rounded animate-pulse"></div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-20 bg-muted rounded animate-pulse"></div>
+              <div className="h-8 w-20 bg-muted rounded animate-pulse"></div>
+            </div>
+          </div>
+          {/* Metrics Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="h-24 bg-muted rounded-lg animate-pulse"></div>
             ))}
           </div>
-        </div>
-        <div className="flex-1">
-          <div className="border-b border-border p-4">
-            <div className="h-10 bg-muted rounded animate-pulse"></div>
-          </div>
-          <div className="p-6 space-y-4">
+          {/* Content Skeleton */}
+          <div className="space-y-4">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-16 bg-muted rounded animate-pulse"></div>
+              <div key={i} className="h-16 bg-muted rounded-lg animate-pulse"></div>
             ))}
           </div>
         </div>
@@ -200,131 +208,322 @@ export default function Documents() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Left Sidebar */}
-      <div className="w-64 border-r border-border bg-card/50 p-4 space-y-6">
-        <div className="space-y-2">
-          <h3 className="text-sm font-medium text-muted-foreground px-3">Quick Access</h3>
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 text-sm"
-          >
-            <History className="h-4 w-4" />
-            Recent Files
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 text-sm"
-          >
-            <Star className="h-4 w-4" />
-            Favorites
-          </Button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Bar */}
-        <div className="border-b border-border bg-card/50 px-6 py-4">
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-semibold text-foreground">Files</h1>
-            <div className="flex-1 max-w-2xl">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search files and folders"
-                  className="pl-10 bg-background"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Loan Documents
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Document Command Center - Loan Document Management
+              </p>
             </div>
-            <Button variant="outline" size="sm">
-              <Users className="h-4 w-4 mr-2" />
-              Add Users
-            </Button>
-            <Button onClick={() => setShowUploadModal(true)} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-              <Upload className="h-4 w-4 mr-2" />
-              Upload
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 border border-border rounded-lg p-1">
+              <Button
+                variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className="h-7 w-7 p-0"
+              >
+                <Grid className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+                className="h-7 w-7 p-0"
+              >
+                <List className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+            {viewMode === 'list' && (
+              <Button
+                variant={isCompact ? 'secondary' : 'outline'}
+                size="sm"
+                onClick={() => setIsCompact(!isCompact)}
+                className="h-8 gap-2"
+              >
+                {isCompact ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                <span className="text-xs">{isCompact ? 'Normal' : 'Compact'}</span>
+              </Button>
+            )}
+            <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white gap-2">
+              <Upload className="h-3 w-3" />
+              New
             </Button>
           </div>
+        </div>
+
+        {/* Key Metrics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Total Folders</p>
+                  <p className="text-2xl font-bold text-primary">{metrics.totalFolders}</p>
+                </div>
+                <FolderOpen className="h-8 w-8 text-blue-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Total Files</p>
+                  <p className="text-2xl font-bold text-primary">{metrics.totalFiles}</p>
+                </div>
+                <FileText className="h-8 w-8 text-blue-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Recent Uploads</p>
+                  <p className="text-2xl font-bold text-primary">{metrics.recentUploads}</p>
+                  <p className="text-xs text-muted-foreground">Last 7 days</p>
+                </div>
+                <Clock className="h-8 w-8 text-green-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card border border-[#0A1628] shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Pending Documents</p>
+                  <p className="text-2xl font-bold text-primary">{metrics.pendingDocuments}</p>
+                </div>
+                <AlertCircle className="h-8 w-8 text-orange-500" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Search and Selection Controls */}
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search folders..."
+              className="pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          {selectedFolders.size > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                {selectedFolders.size} selected
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBulkDelete}
+                className="gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedFolders(new Set())}
+              >
+                Clear
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-auto p-6">
-          <div className="space-y-4">
-            {sortedFolders.length === 0 ? (
-              <div className="text-center py-12 bg-card rounded-lg border border-border">
-                <FolderOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium mb-2">Select a file or folder to view details.</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  {searchTerm ? "No folders match your search" : "Upload documents to create loan folders"}
-                </p>
-                {!searchTerm && (
-                  <Button onClick={() => setShowUploadModal(true)} className="bg-blue-600 hover:bg-blue-700">
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload First Document
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <>
-                {/* Table Header */}
-                <div className="grid grid-cols-12 gap-4 px-4 py-3 text-xs font-medium text-muted-foreground border-b border-border">
-                  <button
-                    onClick={() => handleSort('name')}
-                    className="col-span-6 flex items-center gap-2 hover:text-foreground transition-colors text-left"
-                  >
-                    NAME
-                    <SortIcon column="name" />
-                  </button>
-                  <button
-                    onClick={() => handleSort('updated')}
-                    className="col-span-4 flex items-center gap-2 hover:text-foreground transition-colors"
-                  >
-                    UPDATED
-                    <SortIcon column="updated" />
-                  </button>
-                  <button
-                    onClick={() => handleSort('size')}
-                    className="col-span-2 text-right flex items-center justify-end gap-2 hover:text-foreground transition-colors"
-                  >
-                    SIZE
-                    <SortIcon column="size" />
-                  </button>
-                </div>
+        <div className="space-y-6">
+          {/* Folder Header */}
+          {sortedFolders.length > 0 && (
+          <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground border-b">
+            <div className="col-span-5 flex items-center gap-3">
+              <Checkbox
+                checked={selectedFolders.size === sortedFolders.length && sortedFolders.length > 0}
+                onCheckedChange={toggleSelectAll}
+                className="mt-0.5"
+                data-checkbox
+              />
+              <button
+                onClick={() => handleSort('name')}
+                className="flex items-center gap-2 hover:text-foreground transition-colors"
+              >
+                NAME
+                <SortIcon column="name" />
+              </button>
+            </div>
+            <button
+              onClick={() => handleSort('updated')}
+              className="col-span-4 flex items-center gap-2 hover:text-foreground transition-colors"
+            >
+              UPDATED
+              <SortIcon column="updated" />
+            </button>
+            <button
+              onClick={() => handleSort('size')}
+              className="col-span-3 text-right flex items-center justify-end gap-2 hover:text-foreground transition-colors"
+            >
+              SIZE
+              <SortIcon column="size" />
+            </button>
+          </div>
+        )}
 
-                {/* Folder Rows */}
-                <div className="space-y-1">
-                  {sortedFolders.map((folder) => (
-                    <div
-                      key={folder.leadId}
-                      onClick={(e) => handleFolderClick(folder.leadId, e)}
-                      className="grid grid-cols-12 gap-4 px-4 py-3 rounded-md hover:bg-muted/50 transition-colors cursor-pointer items-center group"
-                    >
-                      {/* Name Column */}
-                      <div className="col-span-6 flex items-center gap-3">
-                        <FolderOpen className="h-5 w-5 text-blue-500 flex-shrink-0" />
-                        <span className="text-sm font-medium text-foreground truncate">
-                          {folder.leadName} - {folder.loanType}
-                        </span>
-                      </div>
-
-                      {/* Updated Column */}
-                      <div className="col-span-4 text-sm text-muted-foreground">
-                        {format(new Date(folder.lastUpdated), 'MMM d, yyyy')} by {folder.updatedBy}
-                      </div>
-
-                      {/* Size Column */}
-                      <div className="col-span-2 text-right text-sm text-muted-foreground">
-                        {folder.documentCount} Files
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
+        {/* Folder List/Grid */}
+        {sortedFolders.length === 0 ? (
+          <div className="text-center py-12">
+            <FolderOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium mb-2">No loan folders found</h3>
+            <p className="text-muted-foreground mb-4">
+              {searchTerm 
+                ? "Try adjusting your search" 
+                : "Upload documents to create loan folders"}
+            </p>
+            {!searchTerm && (
+              <Button onClick={() => setShowUploadModal(true)} className="gap-2">
+                <Upload className="h-4 w-4" />
+                Upload First Document
+              </Button>
             )}
           </div>
+        ) : viewMode === 'list' ? (
+          <div className="space-y-2">
+            {sortedFolders.map((folder) => (
+              <div
+                key={folder.leadId}
+                onClick={(e) => handleFolderClick(folder.leadId, e)}
+                className={`w-full grid grid-cols-12 gap-4 px-4 ${isCompact ? 'py-2' : 'py-3'} rounded-lg hover:bg-muted/50 transition-colors cursor-pointer items-center group ${
+                  selectedFolders.has(folder.leadId) ? 'bg-muted/50 ring-2 ring-primary' : ''
+                }`}
+              >
+                {/* Checkbox and Folder Icon */}
+                <div className="col-span-5 flex items-center gap-3">
+                  <Checkbox
+                    checked={selectedFolders.has(folder.leadId)}
+                    onCheckedChange={() => toggleSelectFolder(folder.leadId)}
+                    onClick={(e) => e.stopPropagation()}
+                    data-checkbox
+                  />
+                  <div className="relative">
+                    <FolderOpen className={`${isCompact ? 'h-6 w-6' : 'h-8 w-8'} text-blue-500 group-hover:text-blue-600 transition-colors`} />
+                    <Users className={`absolute -bottom-0.5 -right-0.5 ${isCompact ? 'h-3 w-3' : 'h-3.5 w-3.5'} text-blue-600 bg-white dark:bg-background rounded-full p-0.5`} />
+                  </div>
+                  <div>
+                    <div className={`font-medium text-foreground ${isCompact ? 'text-sm' : ''}`}>
+                      {folder.leadName} - {folder.loanType}
+                    </div>
+                    {folder.location && (
+                      <div className="text-xs text-muted-foreground">
+                        {folder.location}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Updated Info */}
+                <div className={`col-span-4 text-muted-foreground ${isCompact ? 'text-xs' : 'text-sm'}`}>
+                  {format(new Date(folder.lastUpdated), 'MMM d, yyyy')} by {folder.updatedBy}
+                </div>
+
+                {/* File Count */}
+                <div className={`col-span-3 text-right text-muted-foreground ${isCompact ? 'text-xs' : 'text-sm'}`}>
+                  {folder.documentCount} {folder.documentCount === 1 ? 'File' : 'Files'}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {sortedFolders.map((folder) => (
+              <div
+                key={folder.leadId}
+                onClick={(e) => handleFolderClick(folder.leadId, e)}
+                className={`relative p-4 rounded-lg border hover:border-primary/50 hover:shadow-md transition-all cursor-pointer group ${
+                  selectedFolders.has(folder.leadId) ? 'border-primary shadow-md ring-2 ring-primary' : 'border-border'
+                }`}
+              >
+                {/* Checkbox */}
+                <div className="absolute top-3 right-3 z-10" data-checkbox>
+                  <Checkbox
+                    checked={selectedFolders.has(folder.leadId)}
+                    onCheckedChange={() => toggleSelectFolder(folder.leadId)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+
+                {/* Folder Icon */}
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <div className="relative">
+                    <FolderOpen className="h-16 w-16 text-blue-500 group-hover:text-blue-600 transition-colors" />
+                    <Users className="absolute -bottom-1 -right-1 h-5 w-5 text-blue-600 bg-white dark:bg-background rounded-full p-0.5" />
+                  </div>
+                  
+                  {/* Folder Info */}
+                  <div className="w-full">
+                    <h3 className="font-medium text-foreground truncate mb-1">
+                      {folder.leadName}
+                    </h3>
+                    <p className="text-sm text-muted-foreground truncate">
+                      {folder.loanType}
+                    </p>
+                    {folder.location && (
+                      <p className="text-xs text-muted-foreground truncate mt-1">
+                        {folder.location}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Stats */}
+                  <div className="w-full pt-3 border-t border-border space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Files</span>
+                      <span className="font-medium">{folder.documentCount}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {format(new Date(folder.lastUpdated), 'MMM d, yyyy')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Empty State Illustration */}
+        {sortedFolders.length === 0 && !searchTerm && (
+          <div className="flex justify-center mt-8">
+            <div className="text-center space-y-4 max-w-md">
+              <div className="relative inline-block">
+                <FolderOpen className="h-32 w-32 text-blue-500/20" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-4xl">📁</div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Select a file or folder to view details.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         </div>
       </div>
 
