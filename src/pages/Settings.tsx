@@ -252,7 +252,7 @@ export default function Settings() {
 
           <TabsContent value="profile" className="space-y-6">
             {/* Single Widget Layout */}
-            <Card className="border-[#0A1628]">
+            <Card className="border-0">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-normal text-[#161616]">Profile & Account Settings</CardTitle>
                 <CardDescription className="text-[#525252]">
