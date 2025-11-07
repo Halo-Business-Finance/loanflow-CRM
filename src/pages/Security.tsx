@@ -93,26 +93,37 @@ const SecurityPage: React.FC = () => {
   return (
     <SecurityWrapper>
       <StandardPageLayout>
-        <StandardPageHeader 
-          title="Security Overview"
-          description="Military-grade security monitoring and threat intelligence"
-          actions={
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Security Overview
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Military-grade security monitoring and threat intelligence
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
             <Button 
+              size="sm" 
+              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white"
               onClick={() => window.location.reload()}
-              variant="outline"
-              size="sm"
             >
-              <RefreshCw className="w-4 h-4 mr-2" />
+              <RefreshCw className="h-3 w-3 mr-2" />
               Refresh Data
             </Button>
-          }
-        />
+          </div>
+        </div>
         
         <ResponsiveContainer padding="md" maxWidth="full">
           <div className="space-y-6">
             {/* Security Score Overview */}
-            <StandardContentCard title="Overall Security Posture">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <Card className="border-0">
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div className="lg:col-span-2 space-y-8">
                   <div>
                     <h2 className="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-3">
@@ -164,13 +175,14 @@ const SecurityPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </StandardContentCard>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Security Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
               <Card 
-                className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
                 onClick={() => navigate('/security/compliance')}
               >
                 <CardContent className="p-6 space-y-3">
@@ -181,7 +193,7 @@ const SecurityPage: React.FC = () => {
               </Card>
 
               <Card 
-                className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
                 onClick={() => navigate('/security/audit')}
               >
                 <CardContent className="p-6 space-y-3">
@@ -192,7 +204,7 @@ const SecurityPage: React.FC = () => {
               </Card>
 
               <Card 
-                className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
                 onClick={() => navigate('/security/threats')}
               >
                 <CardContent className="p-6 space-y-3">
@@ -203,7 +215,7 @@ const SecurityPage: React.FC = () => {
               </Card>
 
               <Card 
-                className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
                 onClick={() => navigate('/security/access')}
               >
                 <CardContent className="p-6 space-y-3">
@@ -214,7 +226,7 @@ const SecurityPage: React.FC = () => {
               </Card>
 
               <Card 
-                className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
                 onClick={() => navigate('/security/lead-diagnostics')}
               >
                 <CardContent className="p-6 space-y-3">
@@ -243,7 +255,7 @@ const SecurityPage: React.FC = () => {
               </TabsList>
 
               <TabsContent value="monitoring" className="space-y-6 mt-6">
-                <Card className="border shadow-sm">
+                <Card className="border-0 shadow-sm">
                   <CardHeader className="space-y-1 pb-4">
                     <CardTitle className="text-2xl font-semibold">
                       Real-Time Security Monitoring
@@ -259,7 +271,7 @@ const SecurityPage: React.FC = () => {
 
                 <div className="grid gap-5 md:grid-cols-2">
                   <Card 
-                    className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
                     onClick={() => navigate('/security/threats')}
                   >
                     <CardHeader className="space-y-1 pb-4">
@@ -276,7 +288,7 @@ const SecurityPage: React.FC = () => {
                   </Card>
 
                   <Card 
-                    className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
                     onClick={() => navigate('/security/threats')}
                   >
                     <CardHeader className="space-y-1 pb-4">
@@ -293,7 +305,7 @@ const SecurityPage: React.FC = () => {
                   </Card>
 
                   <Card 
-                    className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
                     onClick={() => navigate('/security/threats')}
                   >
                     <CardHeader className="space-y-1 pb-4">
@@ -310,7 +322,7 @@ const SecurityPage: React.FC = () => {
                   </Card>
 
                   <Card 
-                    className="border shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md hover:border-primary/50"
+                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
                     onClick={() => navigate('/security/threats')}
                   >
                     <CardHeader className="space-y-1 pb-4">
@@ -329,7 +341,7 @@ const SecurityPage: React.FC = () => {
               </TabsContent>
 
               <TabsContent value="patterns" className="space-y-6 mt-6">
-                <Card className="border shadow-sm">
+                <Card className="border-0 shadow-sm">
                   <CardHeader className="space-y-1 pb-4">
                     <CardTitle className="text-2xl font-semibold">
                       Security Pattern Detection
@@ -345,7 +357,7 @@ const SecurityPage: React.FC = () => {
               </TabsContent>
 
               <TabsContent value="access-control" className="space-y-6 mt-6">
-                <Card className="border shadow-sm">
+                <Card className="border-0 shadow-sm">
                   <CardHeader className="space-y-1 pb-4">
                     <CardTitle className="text-2xl font-semibold">
                       Data Access Control Management
@@ -361,7 +373,7 @@ const SecurityPage: React.FC = () => {
               </TabsContent>
 
               <TabsContent value="mfa" className="space-y-6 mt-6">
-                <Card className="border shadow-sm">
+                <Card className="border-0 shadow-sm">
                   <CardHeader className="space-y-1 pb-4">
                     <CardTitle className="text-2xl font-semibold">
                       Multi-Factor Authentication
