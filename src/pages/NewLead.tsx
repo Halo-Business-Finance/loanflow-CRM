@@ -681,7 +681,7 @@ export default function NewLead() {
                   <div className="space-y-2">
                     <Label htmlFor="stage">Loan Stage</Label>
                     <Select value={formData.stage} onValueChange={(value) => handleInputChange("stage", value)}>
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-[#0f62fe] text-white hover:bg-[#0353e9]">
                         <SelectValue placeholder="Select stage" />
                       </SelectTrigger>
                       <SelectContent>
@@ -694,7 +694,7 @@ export default function NewLead() {
                   <div className="space-y-2">
                     <Label htmlFor="priority">Priority</Label>
                     <Select value={formData.priority} onValueChange={(value) => handleInputChange("priority", value)}>
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-[#0f62fe] text-white hover:bg-[#0353e9]">
                         <SelectValue placeholder="Select priority" />
                       </SelectTrigger>
                       <SelectContent>
