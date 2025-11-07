@@ -242,7 +242,7 @@ export default function Settings() {
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">
-            <Card className="bg-white border border-[#e0e0e0]">
+            <Card className="border-[#0A1628]">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-normal text-[#161616]">Profile Settings</CardTitle>
                 <CardDescription className="text-[#525252]">
@@ -341,7 +341,7 @@ export default function Settings() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white border border-[#e0e0e0]">
+            <Card className="border-[#0A1628]">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-normal text-[#161616]">Communication Settings</CardTitle>
                 <CardDescription className="text-[#525252]">
@@ -370,7 +370,7 @@ export default function Settings() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white border border-[#e0e0e0]">
+            <Card className="border-[#0A1628]">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg font-normal text-[#161616]">
                   <Lock className="w-5 h-5" />
@@ -420,7 +420,7 @@ export default function Settings() {
           </TabsContent>
 
           <TabsContent value="notifications">
-            <Card className="bg-white border border-[#e0e0e0]">
+            <Card className="border-[#0A1628]">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-normal text-[#161616]">Notification Preferences</CardTitle>
                 <CardDescription className="text-[#525252]">
@@ -480,7 +480,7 @@ export default function Settings() {
           </TabsContent>
 
           <TabsContent value="security">
-            <Card className="bg-white border border-[#e0e0e0]">
+            <Card className="border-[#0A1628]">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-normal text-[#161616]">Multi-Factor Authentication</CardTitle>
                 <CardDescription className="text-[#525252]">
