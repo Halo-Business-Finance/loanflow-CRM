@@ -251,8 +251,8 @@ export default function Settings() {
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">
-            {/* Three-Column Grid for all widgets */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Two-Column Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="border-[#0A1628]">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-normal text-[#161616]">Profile Settings</CardTitle>
@@ -350,81 +350,83 @@ export default function Settings() {
 
               <Card className="border-[#0A1628]">
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-normal text-[#161616]">Communication Settings</CardTitle>
+                  <CardTitle className="text-lg font-normal text-[#161616]">Communication & Security</CardTitle>
                   <CardDescription className="text-[#525252]">
-                    Configure phone and email
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-4">
-                    <RingCentralSetup 
-                      trigger={
-                        <Button className="w-full justify-start gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-                          <Phone className="w-4 h-4" />
-                          <span>Phone Settings</span>
-                        </Button>
-                      }
-                    />
-                    <EmailSetup 
-                      trigger={
-                        <Button className="w-full justify-start gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-                          <Mail className="w-4 h-4" />
-                          <span>Email Settings</span>
-                        </Button>
-                      }
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-[#0A1628]">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-lg font-normal text-[#161616]">
-                    <Lock className="w-5 h-5" />
-                    Change Password
-                  </CardTitle>
-                  <CardDescription className="text-[#525252]">
-                    Update your account password
+                    Configure phone, email, and password
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="newPassword">New Password</Label>
-                    <Input 
-                      id="newPassword" 
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Enter new password"
-                      className="!bg-white !text-black !border !border-[#0A1628]"
-                    />
+                  {/* Communication Settings */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-medium text-[#161616]">Communication Settings</h3>
+                    <div className="space-y-3">
+                      <RingCentralSetup 
+                        trigger={
+                          <Button className="w-full justify-start gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+                            <Phone className="w-4 h-4" />
+                            <span>Phone Settings</span>
+                          </Button>
+                        }
+                      />
+                      <EmailSetup 
+                        trigger={
+                          <Button className="w-full justify-start gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+                            <Mail className="w-4 h-4" />
+                            <span>Email Settings</span>
+                          </Button>
+                        }
+                      />
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                    <Input 
-                      id="confirmPassword" 
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Confirm new password"
-                      className="!bg-white !text-black !border !border-[#0A1628]"
-                    />
+                  {/* Divider */}
+                  <div className="border-t border-[#0A1628]" />
+
+                  {/* Change Password */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-medium text-[#161616] flex items-center gap-2">
+                      <Lock className="w-4 h-4" />
+                      Change Password
+                    </h3>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="newPassword">New Password</Label>
+                      <Input 
+                        id="newPassword" 
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="Enter new password"
+                        className="!bg-white !text-black !border !border-[#0A1628]"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                      <Input 
+                        id="confirmPassword" 
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirm new password"
+                        className="!bg-white !text-black !border !border-[#0A1628]"
+                      />
+                    </div>
+
+                    <p className="text-xs text-muted-foreground">
+                      Password must be at least 6 characters long
+                    </p>
+
+                    <Button 
+                      onClick={handleChangePassword} 
+                      type="button"
+                      disabled={isChangingPassword || !newPassword || !confirmPassword}
+                      className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Lock className="w-4 h-4" />
+                      {isChangingPassword ? "Updating..." : "Update Password"}
+                    </Button>
                   </div>
-
-                  <p className="text-xs text-muted-foreground">
-                    Password must be at least 6 characters long
-                  </p>
-
-                  <Button 
-                    onClick={handleChangePassword} 
-                    type="button"
-                    disabled={isChangingPassword || !newPassword || !confirmPassword}
-                    className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Lock className="w-4 h-4" />
-                    {isChangingPassword ? "Updating..." : "Update Password"}
-                  </Button>
                 </CardContent>
               </Card>
             </div>
