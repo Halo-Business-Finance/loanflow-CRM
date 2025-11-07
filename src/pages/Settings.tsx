@@ -242,119 +242,117 @@ export default function Settings() {
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">
-            {/* Profile Settings - Full Width */}
-            <Card className="border-[#0A1628]">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-normal text-[#161616]">Profile Settings</CardTitle>
-                <CardDescription className="text-[#525252]">
-                  Update your personal information and preferences
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* User Role Display */}
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Shield className="w-4 h-4" />
-                    User Role
-                  </Label>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium capitalize">
-                      {userRole || "Loading..."}
-                    </span>
+            {/* Three-Column Grid for all widgets */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card className="border-[#0A1628]">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-normal text-[#161616]">Profile Settings</CardTitle>
+                  <CardDescription className="text-[#525252]">
+                    Update your personal information
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* User Role Display */}
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Shield className="w-4 h-4" />
+                      User Role
+                    </Label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium capitalize">
+                        {userRole || "Loading..."}
+                      </span>
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       Contact an administrator to change your role
                     </p>
                   </div>
-                </div>
 
-                {/* Two-column grid for form fields */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      value={user?.email || ""} 
-                      disabled 
-                      className="bg-muted border-[#0A1628]"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Email cannot be changed from this interface
-                    </p>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input 
+                        id="email" 
+                        type="email" 
+                        value={user?.email || ""} 
+                        disabled 
+                        className="bg-muted border-[#0A1628]"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Email cannot be changed
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="displayName">Display Name</Label>
+                      <Input 
+                        id="displayName" 
+                        value={displayName}
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        placeholder="Enter your display name"
+                        className="border-[#0A1628]"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="phoneNumber">Phone Number</Label>
+                      <Input 
+                        id="phoneNumber" 
+                        type="tel"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        placeholder="Enter your phone number"
+                        className="border-[#0A1628]"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="timeZone">Time Zone</Label>
+                      <Select value={timeZone} onValueChange={setTimeZone}>
+                        <SelectTrigger className="border-[#0A1628]">
+                          <SelectValue placeholder="Select your time zone" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="America/New_York">Eastern Time (ET)</SelectItem>
+                          <SelectItem value="America/Chicago">Central Time (CT)</SelectItem>
+                          <SelectItem value="America/Denver">Mountain Time (MT)</SelectItem>
+                          <SelectItem value="America/Los_Angeles">Pacific Time (PT)</SelectItem>
+                          <SelectItem value="America/Phoenix">Arizona Time (MST)</SelectItem>
+                          <SelectItem value="America/Anchorage">Alaska Time (AKT)</SelectItem>
+                          <SelectItem value="Pacific/Honolulu">Hawaii Time (HST)</SelectItem>
+                          <SelectItem value="Europe/London">London (GMT)</SelectItem>
+                          <SelectItem value="Europe/Paris">Paris (CET)</SelectItem>
+                          <SelectItem value="Europe/Berlin">Berlin (CET)</SelectItem>
+                          <SelectItem value="Asia/Tokyo">Tokyo (JST)</SelectItem>
+                          <SelectItem value="Asia/Shanghai">Shanghai (CST)</SelectItem>
+                          <SelectItem value="Asia/Kolkata">Mumbai (IST)</SelectItem>
+                          <SelectItem value="Australia/Sydney">Sydney (AEDT)</SelectItem>
+                          <SelectItem value="UTC">UTC</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="displayName">Display Name</Label>
-                    <Input 
-                      id="displayName" 
-                      value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
-                      placeholder="Enter your display name"
-                      className="border-[#0A1628]"
-                    />
-                  </div>
+                  <Button 
+                    onClick={handleSaveProfile} 
+                    disabled={isLoading}
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    {isLoading ? "Saving..." : "Save Profile"}
+                  </Button>
+                </CardContent>
+              </Card>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="phoneNumber">Phone Number</Label>
-                    <Input 
-                      id="phoneNumber" 
-                      type="tel"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      placeholder="Enter your phone number"
-                      className="border-[#0A1628]"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="timeZone">Time Zone</Label>
-                    <Select value={timeZone} onValueChange={setTimeZone}>
-                      <SelectTrigger className="border-[#0A1628]">
-                        <SelectValue placeholder="Select your time zone" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="America/New_York">Eastern Time (ET)</SelectItem>
-                        <SelectItem value="America/Chicago">Central Time (CT)</SelectItem>
-                        <SelectItem value="America/Denver">Mountain Time (MT)</SelectItem>
-                        <SelectItem value="America/Los_Angeles">Pacific Time (PT)</SelectItem>
-                        <SelectItem value="America/Phoenix">Arizona Time (MST)</SelectItem>
-                        <SelectItem value="America/Anchorage">Alaska Time (AKT)</SelectItem>
-                        <SelectItem value="Pacific/Honolulu">Hawaii Time (HST)</SelectItem>
-                        <SelectItem value="Europe/London">London (GMT)</SelectItem>
-                        <SelectItem value="Europe/Paris">Paris (CET)</SelectItem>
-                        <SelectItem value="Europe/Berlin">Berlin (CET)</SelectItem>
-                        <SelectItem value="Asia/Tokyo">Tokyo (JST)</SelectItem>
-                        <SelectItem value="Asia/Shanghai">Shanghai (CST)</SelectItem>
-                        <SelectItem value="Asia/Kolkata">Mumbai (IST)</SelectItem>
-                        <SelectItem value="Australia/Sydney">Sydney (AEDT)</SelectItem>
-                        <SelectItem value="UTC">UTC</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <Button 
-                  onClick={handleSaveProfile} 
-                  disabled={isLoading}
-                  className="flex items-center gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  {isLoading ? "Saving..." : "Save Profile"}
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Two-Column Grid for Communication and Password */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="border-[#0A1628]">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-normal text-[#161616]">Communication Settings</CardTitle>
                   <CardDescription className="text-[#525252]">
-                    Configure your phone and email settings
+                    Configure phone and email
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="space-y-4">
                     <RingCentralSetup 
                       trigger={
                         <Button variant="outline" className="w-full justify-start gap-2">
@@ -417,7 +415,7 @@ export default function Settings() {
                   <Button 
                     onClick={handleChangePassword} 
                     disabled={isChangingPassword || !newPassword || !confirmPassword}
-                    className="flex items-center gap-2"
+                    className="w-full flex items-center justify-center gap-2"
                   >
                     <Lock className="w-4 h-4" />
                     {isChangingPassword ? "Updating..." : "Update Password"}
