@@ -310,7 +310,7 @@ export function QuantumCryptographyManager() {
                 </>
               )}
             </Button>
-            <Button variant="outline" className="flex-1">
+            <Button variant="outline" className="flex-1 border-2 border-[#001f3f] hover:bg-[#001f3f] hover:text-white">
               <Shield className="w-4 h-4 mr-2" />
               Validate Quantum Resistance
             </Button>

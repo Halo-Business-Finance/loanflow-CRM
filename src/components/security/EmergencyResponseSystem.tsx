@@ -525,7 +525,7 @@ export function EmergencyResponseSystem() {
                   <Radio className="w-4 h-4 mr-2" />
                   Schedule Emergency Drill
                 </Button>
-                <Button variant="outline" className="flex-1">
+                <Button variant="outline" className="flex-1 border-2 border-[#001f3f] hover:bg-[#001f3f] hover:text-white">
                   <Satellite className="w-4 h-4 mr-2" />
                   Test Communication Systems
                 </Button>

@@ -58,7 +58,7 @@ export default function EmergencyMaintenance() {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white">
+            <Button size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]">
               <RefreshCw className="h-3 w-3 mr-2" />
               Refresh Status
             </Button>

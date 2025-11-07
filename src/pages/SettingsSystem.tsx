@@ -23,13 +23,13 @@ export default function SettingsSystem() {
         description="Manage system-wide settings and configurations"
         actions={
           <div className="flex items-center gap-3">
-            <Button>
+            <Button className="border-2 border-[#001f3f]">
               <Settings className="mr-2 h-4 w-4" />
               Save Changes
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className="border-2 border-[#001f3f] hover:bg-[#001f3f] hover:text-white">
                   <Activity className="mr-2 h-4 w-4" />
                   Actions
                   <MoreVertical className="ml-2 h-4 w-4" />

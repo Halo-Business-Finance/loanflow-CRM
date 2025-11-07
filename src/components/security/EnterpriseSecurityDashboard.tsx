@@ -399,7 +399,7 @@ export function EnterpriseSecurityDashboard() {
                   <span className="text-sm font-medium text-destructive">ARMED</span>
                 </div>
               </div>
-              <Button className="w-full" variant="destructive">
+              <Button className="w-full border-2 border-red-800" variant="destructive">
                 <AlertTriangle className="w-4 h-4 mr-2" />
                 INITIATE EMERGENCY LOCKDOWN
               </Button>

@@ -379,7 +379,7 @@ export function EmergencyShutdown() {
                   <Button 
                     onClick={() => triggerEmergencyShutdown("Manual emergency shutdown", "complete")}
                     variant="destructive"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-2 border-red-800"
                   >
                     <Lock className="h-4 w-4" />
                     Complete Shutdown
@@ -389,7 +389,7 @@ export function EmergencyShutdown() {
                 <Button 
                   onClick={restoreSystem}
                   variant="default"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 border-2 border-[#001f3f]"
                 >
                   <Unlock className="h-4 w-4" />
                   Restore System

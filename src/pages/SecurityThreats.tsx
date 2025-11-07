@@ -334,7 +334,7 @@ export default function SecurityThreats() {
                           </p>
                         </div>
                       </div>
-                      <Button size="sm" variant="destructive">
+                      <Button size="sm" variant="destructive" className="border-2 border-red-800">
                         Investigate
                       </Button>
                     </div>
