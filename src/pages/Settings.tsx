@@ -218,24 +218,24 @@ export default function Settings() {
         <div className="space-y-6">
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-white border border-[#e0e0e0]">
-            <TabsTrigger value="profile" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-5 bg-[#0A1628] p-1 gap-2">
+            <TabsTrigger value="profile" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <User className="w-4 h-4" />
               <span>Profile</span>
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2">
+            <TabsTrigger value="notifications" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <Bell className="w-4 h-4" />
               <span>Notifications</span>
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center gap-2">
+            <TabsTrigger value="security" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <Shield className="w-4 h-4" />
               <span>Authentication</span>
             </TabsTrigger>
-            <TabsTrigger value="system" className="flex items-center gap-2">
+            <TabsTrigger value="system" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <RefreshCw className="w-4 h-4" />
               <span>System Health</span>
             </TabsTrigger>
-            <TabsTrigger value="integrations" className="flex items-center gap-2">
+            <TabsTrigger value="integrations" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <Lock className="w-4 h-4" />
               <span>Integrations</span>
             </TabsTrigger>
