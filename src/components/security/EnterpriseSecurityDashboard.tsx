@@ -236,37 +236,33 @@ export function EnterpriseSecurityDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-[#0A1628] bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
             <div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                <Link to="/security" className="hover:text-foreground transition-colors">
-                  Security
-                </Link>
-                <ChevronRight className="h-4 w-4" />
-                <span className="text-foreground">Enterprise Command Center</span>
-              </div>
-              <h1 className="text-3xl font-bold text-foreground">ENTERPRISE SECURITY COMMAND CENTER</h1>
-              <p className="text-muted-foreground mt-1">
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                ENTERPRISE SECURITY COMMAND CENTER
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
                 Military-grade security monitoring and threat intelligence
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <Badge variant={getThreatLevelColor(metrics.threatLevel) as any} className="mr-2">
-                {metrics.threatLevel}
-              </Badge>
-              <Button onClick={exportSecurityReport} className="bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export Report
-              </Button>
-            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Badge variant={getThreatLevelColor(metrics.threatLevel) as any} className="mr-2">
+              {metrics.threatLevel}
+            </Badge>
+            <Button onClick={exportSecurityReport} size="sm" className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]">
+              <Download className="h-4 w-4 mr-2" />
+              Export Report
+            </Button>
           </div>
         </div>
-      </div>
 
-      <ResponsiveContainer>
+        {/* Content Area */}
+        <div className="space-y-6">
         {/* Critical Status Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           <StandardKPICard
@@ -451,28 +447,28 @@ export function EnterpriseSecurityDashboard() {
 
         {/* Advanced Security Tabs */}
         <Tabs defaultValue="sessions" className="w-full">
-          <TabsList className="bg-[#0A1628] border border-[#0A1628] grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">
             <TabsTrigger 
               value="sessions"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md"
             >
               Active Sessions
             </TabsTrigger>
             <TabsTrigger 
               value="behavioral"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md"
             >
               Behavioral AI
             </TabsTrigger>
             <TabsTrigger 
               value="quantum"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md"
             >
               Quantum Defense
             </TabsTrigger>
             <TabsTrigger 
               value="intelligence"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md"
             >
               Threat Intel
             </TabsTrigger>
@@ -601,7 +597,8 @@ export function EnterpriseSecurityDashboard() {
             </StandardContentCard>
           </TabsContent>
         </Tabs>
-      </ResponsiveContainer>
+        </div>
+      </div>
     </div>
   );
 }
