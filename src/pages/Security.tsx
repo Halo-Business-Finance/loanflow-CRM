@@ -272,7 +272,7 @@ const SecurityPage: React.FC = () => {
 
                 <div className="grid gap-5 md:grid-cols-2">
                   <Card 
-                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
+                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md overflow-visible"
                     onClick={() => navigate('/security/threats')}
                   >
                     <CardHeader className="space-y-1 pb-4">
@@ -283,13 +283,13 @@ const SecurityPage: React.FC = () => {
                         Behavioral analysis and anomaly detection
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="overflow-visible">
                       <PersistentAISecurityMonitor />
                     </CardContent>
                   </Card>
 
                   <Card 
-                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
+                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md overflow-visible"
                     onClick={() => navigate('/security/threats')}
                   >
                     <CardHeader className="space-y-1 pb-4">
@@ -300,13 +300,13 @@ const SecurityPage: React.FC = () => {
                         Continuous dark web threat detection
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="overflow-visible">
                       <DarkWebSecurityBot />
                     </CardContent>
                   </Card>
 
                   <Card 
-                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
+                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md overflow-visible"
                     onClick={() => navigate('/security/threats')}
                   >
                     <CardHeader className="space-y-1 pb-4">
@@ -317,13 +317,13 @@ const SecurityPage: React.FC = () => {
                         ML-powered threat identification
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="overflow-visible">
                       <AdvancedThreatDetection />
                     </CardContent>
                   </Card>
 
                   <Card 
-                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md"
+                    className="border-0 shadow-sm cursor-pointer group transition-all duration-200 hover:shadow-md overflow-visible"
                     onClick={() => navigate('/security/threats')}
                   >
                     <CardHeader className="space-y-1 pb-4">
@@ -334,7 +334,7 @@ const SecurityPage: React.FC = () => {
                         Advanced intrusion detection system
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="overflow-visible">
                       <ThreatDetectionMonitor />
                     </CardContent>
                   </Card>
