@@ -329,7 +329,7 @@ export function EmergencyShutdown() {
   return (
     <div className="space-y-6">
       {/* Current Status */}
-      <Card>
+      <Card className="border-0">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ShieldAlert className="h-5 w-5" />
@@ -401,7 +401,7 @@ export function EmergencyShutdown() {
       </Card>
 
       {/* Recent Emergency Events */}
-      <Card>
+      <Card className="border-0">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Activity className="h-5 w-5" />
@@ -446,7 +446,7 @@ export function EmergencyShutdown() {
       </Card>
 
       {/* Bot Integration Info */}
-      <Card>
+      <Card className="border-0">
         <CardHeader>
           <CardTitle>AI Security Bot Integration</CardTitle>
         </CardHeader>
