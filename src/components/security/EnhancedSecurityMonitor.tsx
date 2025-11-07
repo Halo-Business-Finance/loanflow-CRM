@@ -56,7 +56,7 @@ export const EnhancedSecurityMonitor: React.FC = () => {
       const [sessionsResult, eventsResult] = await Promise.all([
         supabase
           .from('active_sessions')
-          .select('*')
+          .select('id', { count: 'exact', head: true })
           .eq('is_active', true)
           .gt('expires_at', new Date().toISOString()),
         supabase
@@ -65,7 +65,7 @@ export const EnhancedSecurityMonitor: React.FC = () => {
           .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
       ]);
 
-      const activeSessions = sessionsResult.data?.length || 0;
+      const activeSessions = (sessionsResult as any).count ?? 0;
       const recentEvents = eventsResult.data || [];
       const criticalEvents = recentEvents.filter(e => e.severity === 'critical' || e.severity === 'high').length;
       

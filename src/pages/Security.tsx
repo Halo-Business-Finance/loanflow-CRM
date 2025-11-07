@@ -56,13 +56,14 @@ const SecurityPage: React.FC = () => {
         setThreatsBlocked(events?.length || 0);
 
         // Active sessions
-        const { data: sessions } = await supabase
+        const { count: sessionsCount, error: sessionsErr } = await supabase
           .from('active_sessions')
-          .select('id')
+          .select('id', { count: 'exact', head: true })
           .eq('is_active', true)
           .gt('expires_at', new Date().toISOString());
         
-        setActiveSessions(sessions?.length || 0);
+        if (sessionsErr) console.warn('Active sessions count error:', sessionsErr);
+        setActiveSessions(sessionsCount ?? 0);
 
         // Set system status based on threats
         if (criticalCount > 0) {
