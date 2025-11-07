@@ -210,7 +210,7 @@ export default function Documents() {
           <div className="flex items-center gap-4">
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Files
+                Loan Documents
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
                 Document Command Center - Loan Document Management
