@@ -191,9 +191,9 @@ export default function Messages() {
   const unreadCount = messages.filter(msg => !msg.is_read && msg.recipient_id === currentUserId).length;
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-full bg-background">
       {/* Top Bar */}
-      <div className="border-b">
+      <div className="border-b bg-card">
         <div className="p-4 sm:p-6 lg:p-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -217,7 +217,7 @@ export default function Messages() {
       </div>
 
       {/* Three-Pane Layout */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden min-h-0">
         {/* Left Sidebar - Folders */}
         <MessagesSidebar
           activeFolder={activeFolder}
