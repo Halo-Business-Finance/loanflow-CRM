@@ -1,15 +1,16 @@
-import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
-import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 import { useEffect, useState } from "react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
+import { RefreshCw, TrendingUp, Award, BarChart3 } from "lucide-react"
 
 export default function PipelineAnalytics() {
   const [pipelineStages, setPipelineStages] = useState<{ name: string; value: number }[]>([])
+  const [activeTab, setActiveTab] = useState("stages")
   const { user } = useAuth()
   const { hasRole } = useRoleBasedAccess()
 
@@ -53,49 +54,97 @@ export default function PipelineAnalytics() {
   useRealtimeSubscription({ table: 'contact_entities', event: '*', onChange: fetchStages })
 
   return (
-    <StandardPageLayout>
-      <StandardPageHeader
-        title="Pipeline Analytics"
-        description="Detailed analytics and insights for your sales pipeline"
-      />
-
-      <ResponsiveContainer>
-        <div className="space-y-6">
-
-          {/* Metrics removed - use real data from leads table if needed */}
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <StandardContentCard title="Pipeline by Stage">
-              <div className="space-y-4">
-                {pipelineStages.length === 0 ? (
-                  <div className="text-sm text-muted-foreground">No pipeline data</div>
-                ) : (
-                  pipelineStages.map((stage) => (
-                    <div className="flex justify-between items-center" key={stage.name}>
-                      <span className="text-sm">{stage.name}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">{stage.value} deals</span>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </StandardContentCard>
-
-            <StandardContentCard title="Win/Loss Analysis">
-              <div className="text-sm text-muted-foreground text-center py-8">
-                No win/loss data available. Track deal outcomes to see analysis here.
-              </div>
-            </StandardContentCard>
-          </div>
-
-          <StandardContentCard title="Agent Performance">
-            <div className="text-sm text-muted-foreground text-center py-8">
-              No agent performance data available yet.
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Pipeline Analytics
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Detailed analytics and insights for your sales pipeline
+              </p>
             </div>
-          </StandardContentCard>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              size="sm" 
+              onClick={fetchStages}
+              className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]"
+            >
+              <RefreshCw className="h-3 w-3 mr-2" />
+              Refresh Data
+            </Button>
+          </div>
         </div>
-      </ResponsiveContainer>
-    </StandardPageLayout>
+
+        {/* Content Area */}
+        <div className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3 bg-[#0A1628] p-1 gap-2">
+              <TabsTrigger 
+                value="stages" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <BarChart3 className="w-4 h-4" />
+                <span>Pipeline Stages</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="winloss" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <TrendingUp className="w-4 h-4" />
+                <span>Win/Loss</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="performance" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Award className="w-4 h-4" />
+                <span>Performance</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="stages" className="space-y-6">
+              <StandardContentCard title="Pipeline by Stage">
+                <div className="space-y-4">
+                  {pipelineStages.length === 0 ? (
+                    <div className="text-sm text-muted-foreground">No pipeline data</div>
+                  ) : (
+                    pipelineStages.map((stage) => (
+                      <div className="flex justify-between items-center" key={stage.name}>
+                        <span className="text-sm">{stage.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">{stage.value} deals</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </StandardContentCard>
+            </TabsContent>
+
+            <TabsContent value="winloss" className="space-y-6">
+              <StandardContentCard title="Win/Loss Analysis">
+                <div className="text-sm text-muted-foreground text-center py-8">
+                  No win/loss data available. Track deal outcomes to see analysis here.
+                </div>
+              </StandardContentCard>
+            </TabsContent>
+
+            <TabsContent value="performance" className="space-y-6">
+              <StandardContentCard title="Agent Performance">
+                <div className="text-sm text-muted-foreground text-center py-8">
+                  No agent performance data available yet.
+                </div>
+              </StandardContentCard>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    </div>
   )
 }
