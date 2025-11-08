@@ -6,6 +6,7 @@ import { MessageComposer } from '@/components/MessageComposer';
 import { MessagesSidebar } from '@/components/messages/MessagesSidebar';
 import { MessageList } from '@/components/messages/MessageList';
 import { MessageContent } from '@/components/messages/MessageContent';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { Send, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -192,29 +193,22 @@ export default function Messages() {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      {/* Top Bar */}
-      <div className="border-b bg-card">
-        <div className="p-4 sm:p-6 lg:p-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight text-foreground">Messages</h1>
-                <p className="text-sm text-muted-foreground mt-1">Internal communication system</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button onClick={fetchMessages} variant="outline" size="sm" className="h-8 text-xs font-medium">
-                <RefreshCw className="h-3 w-3 mr-2" />
-                Refresh Data
-              </Button>
-              <Button onClick={handleCompose} size="sm" className="h-8 text-xs font-medium">
-                <Send className="h-3 w-3 mr-2" />
-                New Message
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <IBMPageHeader
+        title="Messages"
+        subtitle="Internal communication system"
+        actions={
+          <>
+            <Button onClick={fetchMessages} variant="outline" size="sm">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+            <Button onClick={handleCompose} size="sm">
+              <Send className="h-4 w-4 mr-2" />
+              New Message
+            </Button>
+          </>
+        }
+      />
 
       {/* Three-Pane Layout */}
       <div className="flex-1 flex overflow-hidden min-h-0">
