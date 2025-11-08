@@ -92,107 +92,77 @@ export default function Pipeline() {
       // Check if user is manager/admin to see all data
       const isManagerOrAdmin = hasRole('manager') || hasRole('admin') || hasRole('super_admin');
       
-      // First try to get data from pipeline_entries
-      let pipelineQuery = supabase
-        .from('pipeline_entries')
-        .select('*');
+      // Directly query leads with only actual columns
+      let leadsQuery = supabase
+        .from('leads')
+        .select('id, user_id, contact_entity_id')
+        .order('created_at', { ascending: false });
       
       // Only filter by user_id if not a manager/admin
       if (!isManagerOrAdmin) {
-        pipelineQuery = pipelineQuery.eq('user_id', user?.id);
+        leadsQuery = leadsQuery.eq('user_id', user?.id);
       }
       
-      const { data: pipelineEntries, error: pipelineError } = await pipelineQuery;
+      const { data: leadsData, error: leadsError } = await leadsQuery;
       
-      // If no pipeline_entries found, try leads data instead
-      if ((!pipelineEntries || pipelineEntries.length === 0) && !pipelineError) {
-        let leadsQuery = supabase
-          .from('leads')
-          .select(`
-            *,
-            contact_entity:contact_entities!leads_contact_entity_id_fkey(*)
-          `);
+      if (leadsError) throw leadsError;
+
+      // Get contact entities for stage and loan amount information
+      const contactIds = leadsData?.map(l => l.contact_entity_id).filter(Boolean) || [];
+      let contactMap: Record<string, { stage: string; loan_amount: number }> = {};
+      
+      if (contactIds.length > 0) {
+        const { data: contactData } = await supabase
+          .from('contact_entities')
+          .select('id, stage, loan_amount')
+          .in('id', contactIds);
         
-        // Only filter by user_id if not a manager/admin
-        if (!isManagerOrAdmin) {
-          leadsQuery = leadsQuery.eq('user_id', user?.id);
-        }
-        
-        const { data: leadsData, error: leadsError } = await leadsQuery;
-        
-        if (!leadsError && leadsData) {
-          // Transform leads data to look like pipeline entries
-          const leadsAny = (leadsData as any[]) || [];
-          const transformedLeads = leadsAny.map((lead: any) => ({
-            ...lead,
-            amount: lead.loan_amount ?? lead.contact_entity?.loan_amount ?? 0,
-            stage: lead.contact_entity?.stage ?? lead.stage ?? 'New Lead'
-          }));
-          
-          const totalOpportunities = transformedLeads.length;
-          const activeDeals = transformedLeads.filter((lead: any) => 
-            lead.stage !== 'Closed Won' && lead.stage !== 'Closed Lost'
-          ).length;
-          const closedDeals = transformedLeads.filter((lead: any) => 
-            lead.stage === 'Closed Won' || lead.stage === 'Loan Funded'
-          ).length;
-          const totalValue = transformedLeads.reduce((sum: number, lead: any) => 
-            sum + (lead.amount || 0), 0
-          );
-          const avgDealSize = totalOpportunities > 0 ? totalValue / totalOpportunities : 0;
-          const conversionRate = totalOpportunities > 0 ? (closedDeals / totalOpportunities) * 100 : 0;
-
-          // Count by stages
-          const stagesCount: Record<string, number> = {};
-          transformedLeads.forEach((lead: any) => {
-            const stage = lead.stage || 'Unknown';
-            stagesCount[stage] = (stagesCount[stage] || 0) + 1;
-          });
-
-          setOverview({
-            totalOpportunities,
-            activeDeals,
-            closedDeals,
-            totalValue,
-            avgDealSize,
-            avgCycleTime: 42, // Sample data
-            conversionRate,
-            stagesCount
-          });
-        }
-      } else if (pipelineEntries && pipelineEntries.length > 0) {
-        // Use pipeline_entries data
-        const totalOpportunities = pipelineEntries.length;
-        const activeDeals = pipelineEntries.filter(entry => 
-          entry.stage !== 'Closed Won' && entry.stage !== 'Closed Lost'
-        ).length;
-        const closedDeals = pipelineEntries.filter(entry => 
-          entry.stage === 'Closed Won'
-        ).length;
-        const totalValue = pipelineEntries.reduce((sum, entry) => 
-          sum + (entry.amount || 0), 0
-        );
-        const avgDealSize = totalOpportunities > 0 ? totalValue / totalOpportunities : 0;
-        const conversionRate = totalOpportunities > 0 ? (closedDeals / totalOpportunities) * 100 : 0;
-
-        // Count by stages
-        const stagesCount: Record<string, number> = {};
-        pipelineEntries.forEach(entry => {
-          const stage = entry.stage || 'Unknown';
-          stagesCount[stage] = (stagesCount[stage] || 0) + 1;
-        });
-
-        setOverview({
-          totalOpportunities,
-          activeDeals,
-          closedDeals,
-          totalValue,
-          avgDealSize,
-          avgCycleTime: 42, // Sample data
-          conversionRate,
-          stagesCount
+        contactData?.forEach(c => {
+          contactMap[c.id] = {
+            stage: c.stage || 'New Lead',
+            loan_amount: c.loan_amount || 0
+          };
         });
       }
+      
+      // Process the data
+      const leads = leadsData?.map(lead => {
+        const contact = lead.contact_entity_id ? contactMap[lead.contact_entity_id] : null;
+        return {
+          ...lead,
+          stage: contact?.stage || 'New Lead',
+          amount: contact?.loan_amount || 0
+        };
+      }) || [];
+      
+      const totalOpportunities = leads.length;
+      const activeDeals = leads.filter(lead => 
+        lead.stage !== 'Closed Won' && lead.stage !== 'Closed Lost'
+      ).length;
+      const closedDeals = leads.filter(lead => 
+        lead.stage === 'Closed Won' || lead.stage === 'Loan Funded'
+      ).length;
+      const totalValue = leads.reduce((sum, lead) => sum + (lead.amount || 0), 0);
+      const avgDealSize = totalOpportunities > 0 ? totalValue / totalOpportunities : 0;
+      const conversionRate = totalOpportunities > 0 ? (closedDeals / totalOpportunities) * 100 : 0;
+
+      // Count by stages
+      const stagesCount: Record<string, number> = {};
+      leads.forEach(lead => {
+        const stage = lead.stage || 'Unknown';
+        stagesCount[stage] = (stagesCount[stage] || 0) + 1;
+      });
+
+      setOverview({
+        totalOpportunities,
+        activeDeals,
+        closedDeals,
+        totalValue,
+        avgDealSize,
+        avgCycleTime: 42,
+        conversionRate,
+        stagesCount
+      });
     } catch (error) {
       console.error('Error fetching pipeline overview:', error);
       toast({
