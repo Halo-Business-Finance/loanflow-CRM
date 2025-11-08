@@ -10,6 +10,7 @@ import {
 import { NotificationCenter } from "./NotificationCenter"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
+import { useCollaborationNotifications } from "@/hooks/useCollaborationNotifications"
 
 interface Notification {
   id: string
@@ -31,6 +32,7 @@ export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false)
   const { user } = useAuth()
   const [hasError, setHasError] = useState(false)
+  const { notifications: collaborationNotifications, refresh: refreshCollaboration } = useCollaborationNotifications()
 
   const fetchNotifications = async () => {
     if (!user) return
@@ -251,6 +253,13 @@ export function NotificationBell() {
     return () => clearTimeout(timer)
   }, [user, hasError])
 
+  // Update unread count when collaboration notifications change
+  useEffect(() => {
+    const generalUnread = notifications.filter(n => !n.is_read).length
+    const collaborationUnread = collaborationNotifications.filter(n => n.status === 'pending').length
+    setUnreadCount(generalUnread + collaborationUnread)
+  }, [notifications, collaborationNotifications])
+
   if (!user || hasError) return null
 
   return (
@@ -276,9 +285,13 @@ export function NotificationBell() {
       >
         <NotificationCenter
           notifications={notifications}
+          collaborationNotifications={collaborationNotifications}
           onMarkAsRead={markAsRead}
           onMarkAllAsRead={markAllAsRead}
-          onRefresh={fetchNotifications}
+          onRefresh={() => {
+            fetchNotifications();
+            refreshCollaboration();
+          }}
         />
       </DropdownMenuContent>
     </DropdownMenu>
