@@ -363,14 +363,35 @@ export default function Pipeline() {
         )}
 
         <Tabs defaultValue="visual" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7 bg-muted/50">
-          <TabsTrigger value="visual">Visual Pipeline</TabsTrigger>
-          <TabsTrigger value="analytics">Performance</TabsTrigger>
-          <TabsTrigger value="stages">Stage Analysis</TabsTrigger>
-          <TabsTrigger value="forecasting">Forecasting</TabsTrigger>
-          <TabsTrigger value="advanced-analytics">Advanced</TabsTrigger>
-          <TabsTrigger value="collaboration">Team</TabsTrigger>
-          <TabsTrigger value="automation">Automation</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-7 bg-[#0A1628] p-1 gap-2">
+          <TabsTrigger value="visual" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+            <GitBranch className="w-4 h-4" />
+            <span>Visual</span>
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+            <TrendingUp className="w-4 h-4" />
+            <span>Performance</span>
+          </TabsTrigger>
+          <TabsTrigger value="stages" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+            <BarChart3 className="w-4 h-4" />
+            <span>Stages</span>
+          </TabsTrigger>
+          <TabsTrigger value="forecasting" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+            <DollarSign className="w-4 h-4" />
+            <span>Forecasting</span>
+          </TabsTrigger>
+          <TabsTrigger value="advanced-analytics" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+            <Activity className="w-4 h-4" />
+            <span>Advanced</span>
+          </TabsTrigger>
+          <TabsTrigger value="collaboration" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            <span>Team</span>
+          </TabsTrigger>
+          <TabsTrigger value="automation" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+            <Target className="w-4 h-4" />
+            <span>Automation</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="visual" className="space-y-6">
