@@ -312,14 +312,14 @@ export default function Support() {
 
         {/* Main Content */}
         <Tabs defaultValue="tickets" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="tickets" className="flex items-center gap-2">
+          <TabsList className="grid w-full max-w-md grid-cols-2 bg-[#0A1628] p-1 gap-2">
+            <TabsTrigger value="tickets" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <Ticket className="h-4 w-4" />
-              Support Tickets
+              <span>Support Tickets</span>
             </TabsTrigger>
-            <TabsTrigger value="chat" className="flex items-center gap-2">
+            <TabsTrigger value="chat" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
-              Live Chat
+              <span>Live Chat</span>
             </TabsTrigger>
           </TabsList>
 
