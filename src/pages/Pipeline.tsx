@@ -395,7 +395,7 @@ export default function Pipeline() {
         </TabsList>
 
         <TabsContent value="visual" className="space-y-6">
-          <Card>
+          <Card className="border-0">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
                 <GitBranch className="h-5 w-5 text-primary" />
