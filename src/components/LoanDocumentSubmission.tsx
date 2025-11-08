@@ -16,11 +16,13 @@ import {
   X, 
   Eye,
   Download,
-  Trash2
+  Trash2,
+  Loader2
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useFileUploadProgress, formatBytes } from '@/hooks/useFileUpload';
 
 // File validation schema
 const fileValidationSchema = z.object({
@@ -103,6 +105,8 @@ export function LoanDocumentSubmission({
   const [validationError, setValidationError] = useState('');
   const [bulkMode, setBulkMode] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [overallProgress, setOverallProgress] = useState(0);
+  const { simulateProgress } = useFileUploadProgress();
 
   useEffect(() => {
     fetchUploadedDocuments();
@@ -291,8 +295,22 @@ export function LoanDocumentSubmission({
     try {
       // Update status to uploading
       setSelectedFiles(prev =>
-        prev.map(f => f.id === fileItem.id ? { ...f, status: 'uploading' as const, progress: 10 } : f)
+        prev.map(f => f.id === fileItem.id ? { ...f, status: 'uploading' as const, progress: 0 } : f)
       );
+
+      // Simulate realistic progress for better UX
+      const progressInterval = setInterval(() => {
+        setSelectedFiles(prev =>
+          prev.map(f => {
+            if (f.id === fileItem.id && f.progress < 85) {
+              // Increase progress gradually, slowing down as it approaches 85%
+              const increment = Math.max(1, (85 - f.progress) / 10);
+              return { ...f, progress: Math.min(f.progress + increment, 85) };
+            }
+            return f;
+          })
+        );
+      }, 400);
 
       // Generate secure file path
       const timestamp = Date.now();
@@ -308,11 +326,13 @@ export function LoanDocumentSubmission({
           upsert: false,
         });
 
+      clearInterval(progressInterval);
+
       if (uploadError) throw uploadError;
 
-      // Update progress
+      // Update progress to 90% after successful upload (before DB write)
       setSelectedFiles(prev =>
-        prev.map(f => f.id === fileItem.id ? { ...f, progress: 70 } : f)
+        prev.map(f => f.id === fileItem.id ? { ...f, progress: 90 } : f)
       );
 
       // Create database record
@@ -372,21 +392,33 @@ export function LoanDocumentSubmission({
 
     setUploading(true);
     setValidationError('');
+    setOverallProgress(0);
 
     let successCount = 0;
     let errorCount = 0;
+    const totalFiles = selectedFiles.length;
 
     // Upload files sequentially to avoid overwhelming the server
-    for (const fileItem of selectedFiles) {
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const fileItem = selectedFiles[i];
+      
+      // Update overall progress
+      const baseProgress = (i / totalFiles) * 100;
+      setOverallProgress(baseProgress);
+
       const success = await uploadSingleFile(fileItem);
       if (success) {
         successCount++;
       } else {
         errorCount++;
       }
+
+      // Update overall progress after each file
+      setOverallProgress(((i + 1) / totalFiles) * 100);
     }
 
     setUploading(false);
+    setOverallProgress(100);
 
     // Show summary toast
     if (successCount > 0 && errorCount === 0) {
@@ -412,6 +444,9 @@ export function LoanDocumentSubmission({
 
     // Refresh documents list
     await fetchUploadedDocuments();
+
+    // Reset overall progress after a delay
+    setTimeout(() => setOverallProgress(0), 2000);
   };
 
   const handleDelete = async (docId: string, filePath?: string) => {
@@ -487,6 +522,20 @@ export function LoanDocumentSubmission({
             </div>
             <Progress value={status.percentage} className="h-2" />
           </div>
+
+          {/* Overall Upload Progress */}
+          {uploading && overallProgress > 0 && (
+            <div className="space-y-2 p-4 bg-primary/5 border border-primary/20 rounded-lg">
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                  <span className="font-medium">Uploading documents...</span>
+                </div>
+                <span className="text-muted-foreground">{Math.round(overallProgress)}%</span>
+              </div>
+              <Progress value={overallProgress} className="h-2" />
+            </div>
+          )}
 
           {/* Upload Mode Toggle */}
           <div className="flex justify-end">
@@ -607,7 +656,15 @@ export function LoanDocumentSubmission({
                         ))}
                       </select>
                       {fileItem.status === 'uploading' && (
-                        <Progress value={fileItem.progress} className="h-1" />
+                        <div className="space-y-1">
+                          <Progress value={fileItem.progress} className="h-1.5" />
+                          <p className="text-xs text-muted-foreground">
+                            {fileItem.progress < 90 
+                              ? `Uploading... ${Math.round(fileItem.progress)}%`
+                              : 'Finalizing...'
+                            }
+                          </p>
+                        </div>
                       )}
                       {fileItem.status === 'error' && fileItem.error && (
                         <p className="text-xs text-destructive">{fileItem.error}</p>
