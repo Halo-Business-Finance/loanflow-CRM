@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronDown, ArrowLeft } from 'lucide-react';
+import { ChevronDown, ArrowLeft, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,6 +21,7 @@ interface IBMPageHeaderProps {
   className?: string;
   showBreadcrumbs?: boolean;
   showBackButton?: boolean;
+  showForwardButton?: boolean;
 }
 
 export function IBMPageHeader({
@@ -31,6 +32,7 @@ export function IBMPageHeader({
   className,
   showBreadcrumbs = true,
   showBackButton = true,
+  showForwardButton = true,
 }: IBMPageHeaderProps) {
   const breadcrumbs = useBreadcrumbs();
   const navigate = useNavigate();
@@ -39,21 +41,38 @@ export function IBMPageHeader({
     navigate(-1);
   };
 
+  const handleForward = () => {
+    navigate(1);
+  };
+
   return (
     <div className={cn('bg-white px-6 py-4 border-b border-[#e0e0e0]', className)}>
       {showBreadcrumbs && breadcrumbs.length > 1 && (
-        <div className="flex items-center gap-3 mb-3">
-          {showBackButton && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleBack}
-              className="h-8 px-2 text-[#525252] hover:text-[#161616] hover:bg-[#f4f4f4]"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          )}
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-1">
+            {showBackButton && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleBack}
+                className="h-8 px-2 text-[#525252] hover:text-[#161616] hover:bg-[#f4f4f4]"
+                aria-label="Go back"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            )}
+            {showForwardButton && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleForward}
+                className="h-8 px-2 text-[#525252] hover:text-[#161616] hover:bg-[#f4f4f4]"
+                aria-label="Go forward"
+              >
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
           <Breadcrumb className="flex-1">
             <BreadcrumbList>
               {breadcrumbs.map((breadcrumb, index) => (
