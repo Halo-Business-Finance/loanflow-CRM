@@ -3,7 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { 
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
+import {
   BarChart3, 
   TrendingUp, 
   DollarSign, 
@@ -131,29 +132,16 @@ export default function Reports() {
 
   return (
     <div className="min-h-screen bg-background overflow-auto no-scrollbar">
-      {/* Header */}
-      <div className="bg-card sticky top-0 z-10">
-        <div className="px-4 md:px-6 pt-6 pb-4 md:pt-8 md:pb-6">
-          <div className="flex items-start md:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground no-underline flex items-center gap-3">
-                <BarChart3 className="h-8 w-8 text-primary" />
-                Business Intelligence Center
-              </h1>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Advanced analytics, reporting, and performance insights
-              </p>
-            </div>
-            <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-              <Button className="gap-2 bg-[#0f62fe] hover:bg-[#0353e9] text-white">
-                <Download className="h-4 w-4" />
-                Export Reports
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div className="mb-6 md:mb-8" />
-      </div>
+      <IBMPageHeader
+        title="Business Intelligence Center"
+        subtitle="Advanced analytics, reporting, and performance insights"
+        actions={
+          <Button className="gap-2 bg-[#0f62fe] hover:bg-[#0353e9] text-white">
+            <Download className="h-4 w-4" />
+            Export Reports
+          </Button>
+        }
+      />
 
       <div className="px-4 md:px-6 space-y-6">
         {/* Key Metrics */}
