@@ -850,21 +850,14 @@ export default function Dashboard() {
   
   return (
     <div data-testid="page-dashboard" className="min-h-screen bg-background">
-      <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              {userName ? `Welcome, ${userName}` : 'Welcome'}
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Your SBA & Commercial Loan Command Center
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
+      <IBMPageHeader
+        title={userName ? `Welcome, ${userName}` : 'Welcome'}
+        subtitle="Your SBA & Commercial Loan Command Center"
+        actions={
+          <>
             <Button 
               onClick={() => navigate('/leads/new')}
-              className="h-10 px-4 gap-2 bg-[#0f62fe] hover:bg-[#0353e9] text-white"
+              className="h-9 px-4 gap-2 bg-[#0f62fe] hover:bg-[#0353e9] text-white"
             >
               <UserPlus className="h-4 w-4" />
               Create New Lead
@@ -874,7 +867,7 @@ export default function Dashboard() {
               size="sm"
               onClick={() => setCustomizeMode(!customizeMode)}
               className={cn(
-                "h-10 px-4 gap-2 border-2 border-[#001f3f]",
+                "h-9 px-4 gap-2",
                 customizeMode && "bg-blue-600 hover:bg-blue-700 text-white"
               )}
             >
@@ -886,13 +879,16 @@ export default function Dashboard() {
                 variant="outline"
                 size="sm"
                 onClick={resetWidgetOrder}
-                className="h-10 px-4 gap-2"
+                className="h-9 px-4 gap-2"
               >
                 Reset Layout
               </Button>
             )}
-          </div>
-        </div>
+          </>
+        }
+      />
+
+      <div className="p-8 space-y-8 animate-fade-in">
 
         {customizeMode && (
           <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
