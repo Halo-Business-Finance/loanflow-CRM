@@ -17,12 +17,14 @@ import {
   Eye,
   Download,
   Trash2,
-  Loader2
+  Loader2,
+  History
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useFileUploadProgress, formatBytes } from '@/hooks/useFileUpload';
+import { DocumentVersionHistory } from '@/components/DocumentVersionHistory';
 
 // File validation schema
 const fileValidationSchema = z.object({
@@ -74,6 +76,9 @@ interface UploadedDocument {
   uploaded_at: string;
   notes?: string;
   file_path?: string;
+  current_version?: number;
+  total_versions?: number;
+  last_version_date?: string;
 }
 
 interface FileUploadItem {
@@ -106,6 +111,10 @@ export function LoanDocumentSubmission({
   const [bulkMode, setBulkMode] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [overallProgress, setOverallProgress] = useState(0);
+  const [selectedDocForVersions, setSelectedDocForVersions] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   const { simulateProgress } = useFileUploadProgress();
 
   useEffect(() => {
@@ -742,8 +751,18 @@ export function LoanDocumentSubmission({
                       <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                       <div className="min-w-0 flex-1">
                         <div className="font-medium truncate">{doc.document_name}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {doc.document_type} • {(doc.file_size / 1024).toFixed(2)} KB
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+                          <span>{doc.document_type}</span>
+                          <span>•</span>
+                          <span>{(doc.file_size / 1024).toFixed(2)} KB</span>
+                          {doc.total_versions && doc.total_versions > 1 && (
+                            <>
+                              <span>•</span>
+                              <span className="text-primary font-medium">
+                                v{doc.current_version} of {doc.total_versions}
+                              </span>
+                            </>
+                          )}
                         </div>
                       </div>
                       <Badge variant={doc.status === 'verified' ? 'default' : 'secondary'}>
@@ -751,6 +770,21 @@ export function LoanDocumentSubmission({
                       </Badge>
                     </div>
                     <div className="flex items-center gap-1 ml-2">
+                      {doc.total_versions && doc.total_versions >= 1 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            setSelectedDocForVersions({
+                              id: doc.id,
+                              name: doc.document_name,
+                            })
+                          }
+                          title="View version history"
+                        >
+                          <History className="h-4 w-4" />
+                        </Button>
+                      )}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -766,6 +800,19 @@ export function LoanDocumentSubmission({
           </div>
         </CardContent>
       </Card>
+
+      {/* Version History Modal */}
+      {selectedDocForVersions && (
+        <DocumentVersionHistory
+          isOpen={!!selectedDocForVersions}
+          onClose={() => {
+            setSelectedDocForVersions(null);
+            fetchUploadedDocuments(); // Refresh to show updated version info
+          }}
+          documentId={selectedDocForVersions.id}
+          documentName={selectedDocForVersions.name}
+        />
+      )}
     </div>
   );
 }

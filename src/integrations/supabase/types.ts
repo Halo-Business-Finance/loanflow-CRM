@@ -1581,6 +1581,62 @@ export type Database = {
         }
         Relationships: []
       }
+      document_versions: {
+        Row: {
+          change_description: string | null
+          checksum: string | null
+          created_at: string
+          document_id: string
+          file_mime_type: string
+          file_path: string
+          file_size: number
+          id: string
+          is_current: boolean
+          metadata: Json | null
+          uploaded_at: string
+          uploaded_by: string
+          version_number: number
+        }
+        Insert: {
+          change_description?: string | null
+          checksum?: string | null
+          created_at?: string
+          document_id: string
+          file_mime_type: string
+          file_path: string
+          file_size: number
+          id?: string
+          is_current?: boolean
+          metadata?: Json | null
+          uploaded_at?: string
+          uploaded_by: string
+          version_number: number
+        }
+        Update: {
+          change_description?: string | null
+          checksum?: string | null
+          created_at?: string
+          document_id?: string
+          file_mime_type?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          is_current?: boolean
+          metadata?: Json | null
+          uploaded_at?: string
+          uploaded_by?: string
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_versions_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "lead_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_accounts: {
         Row: {
           access_token: string
@@ -2311,16 +2367,19 @@ export type Database = {
         Row: {
           contact_entity_id: string | null
           created_at: string
+          current_version: number | null
           document_name: string
           document_type: string
           file_mime_type: string | null
           file_path: string | null
           file_size: number | null
           id: string
+          last_version_date: string | null
           lead_id: string
           metadata: Json | null
           notes: string | null
           status: string
+          total_versions: number | null
           updated_at: string
           uploaded_at: string | null
           user_id: string
@@ -2330,16 +2389,19 @@ export type Database = {
         Insert: {
           contact_entity_id?: string | null
           created_at?: string
+          current_version?: number | null
           document_name: string
           document_type: string
           file_mime_type?: string | null
           file_path?: string | null
           file_size?: number | null
           id?: string
+          last_version_date?: string | null
           lead_id: string
           metadata?: Json | null
           notes?: string | null
           status?: string
+          total_versions?: number | null
           updated_at?: string
           uploaded_at?: string | null
           user_id: string
@@ -2349,16 +2411,19 @@ export type Database = {
         Update: {
           contact_entity_id?: string | null
           created_at?: string
+          current_version?: number | null
           document_name?: string
           document_type?: string
           file_mime_type?: string | null
           file_path?: string | null
           file_size?: number | null
           id?: string
+          last_version_date?: string | null
           lead_id?: string
           metadata?: Json | null
           notes?: string | null
           status?: string
+          total_versions?: number | null
           updated_at?: string
           uploaded_at?: string | null
           user_id?: string
@@ -4571,6 +4636,17 @@ export type Database = {
         }
         Returns: string
       }
+      create_document_version: {
+        Args: {
+          p_change_description?: string
+          p_checksum?: string
+          p_document_id: string
+          p_file_mime_type: string
+          p_file_path: string
+          p_file_size: number
+        }
+        Returns: string
+      }
       create_secure_session:
         | {
             Args: {
@@ -5035,6 +5111,10 @@ export type Database = {
       }
       restore_user: {
         Args: { p_restored_by?: string; p_user_id: string }
+        Returns: boolean
+      }
+      revert_to_document_version: {
+        Args: { p_document_id: string; p_version_number: number }
         Returns: boolean
       }
       revoke_user_role: {
