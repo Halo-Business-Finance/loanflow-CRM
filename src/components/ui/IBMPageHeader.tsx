@@ -1,7 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { useBreadcrumbs } from '@/hooks/useBreadcrumbs';
 
 interface IBMPageHeaderProps {
   title: string;
@@ -9,6 +18,7 @@ interface IBMPageHeaderProps {
   actions?: React.ReactNode;
   hasDropdown?: boolean;
   className?: string;
+  showBreadcrumbs?: boolean;
 }
 
 export function IBMPageHeader({
@@ -17,9 +27,36 @@ export function IBMPageHeader({
   actions,
   hasDropdown = false,
   className,
+  showBreadcrumbs = true,
 }: IBMPageHeaderProps) {
+  const breadcrumbs = useBreadcrumbs();
+
   return (
     <div className={cn('bg-white px-6 py-4 border-b border-[#e0e0e0]', className)}>
+      {showBreadcrumbs && breadcrumbs.length > 1 && (
+        <Breadcrumb className="mb-3">
+          <BreadcrumbList>
+            {breadcrumbs.map((breadcrumb, index) => (
+              <React.Fragment key={index}>
+                {index > 0 && <BreadcrumbSeparator />}
+                <BreadcrumbItem>
+                  {breadcrumb.href ? (
+                    <BreadcrumbLink asChild>
+                      <Link to={breadcrumb.href} className="text-[#525252] hover:text-[#161616]">
+                        {breadcrumb.label}
+                      </Link>
+                    </BreadcrumbLink>
+                  ) : (
+                    <BreadcrumbPage className="text-[#161616]">
+                      {breadcrumb.label}
+                    </BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+              </React.Fragment>
+            ))}
+          </BreadcrumbList>
+        </Breadcrumb>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
