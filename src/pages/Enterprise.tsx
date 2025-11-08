@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
-import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { StandardContentCard } from "@/components/StandardContentCard";
 import { ResponsiveContainer } from "@/components/ResponsiveContainer";
 
@@ -132,9 +132,9 @@ export default function Enterprise() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader 
+      <IBMPageHeader 
         title="Enterprise Command Center"
-        description="Advanced CRM capabilities for enterprise-level sales management"
+        subtitle="Advanced CRM capabilities for enterprise-level sales management"
       />
       
       <ResponsiveContainer padding="md">
@@ -186,11 +186,11 @@ export default function Enterprise() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid grid-cols-5 w-full">
+          <TabsList className="grid grid-cols-5 w-full bg-[#0A1628] p-1 gap-2">
             {features.map((feature) => {
               const Icon = feature.icon;
               return (
-                <TabsTrigger key={feature.id} value={feature.id} className="flex items-center gap-2 text-xs">
+                <TabsTrigger key={feature.id} value={feature.id} className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2 text-xs">
                   <Icon className="h-4 w-4" />
                   <span className="hidden md:inline">{feature.label}</span>
                 </TabsTrigger>
