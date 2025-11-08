@@ -5,6 +5,8 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
+import { TaskTimelineWidget } from '@/components/widgets/TaskTimelineWidget';
+import { DocumentChecklistWidget } from '@/components/widgets/DocumentChecklistWidget';
 import { 
   FileText, 
   Clock, 
@@ -250,6 +252,12 @@ export const LoanProcessorDashboard = () => {
             <p className="text-xs text-muted-foreground">Total applications</p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Role-Specific Widgets */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TaskTimelineWidget />
+        <DocumentChecklistWidget />
       </div>
 
       {/* Main Content */}

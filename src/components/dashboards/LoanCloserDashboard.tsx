@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
+import { FundingQueueWidget } from '@/components/widgets/FundingQueueWidget';
+import { ClosingCalendarWidget } from '@/components/widgets/ClosingCalendarWidget';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -343,6 +345,12 @@ export const LoanCloserDashboard = () => {
             <p className="text-xs text-muted-foreground">Pending approval</p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Role-Specific Widgets */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <FundingQueueWidget />
+        <ClosingCalendarWidget />
       </div>
 
       {/* Main Content Tabs */}

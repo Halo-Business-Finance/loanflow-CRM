@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { StandardContentCard } from '@/components/StandardContentCard';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
+import { ApprovalQueueWidget } from '@/components/widgets/ApprovalQueueWidget';
+import { RiskAssessmentWidget } from '@/components/widgets/RiskAssessmentWidget';
 import { 
   Shield, 
   Clock, 
@@ -232,6 +234,12 @@ export const UnderwriterDashboard = () => {
               <TrendingUp className="w-8 h-8 text-primary" />
             </div>
           </StandardContentCard>
+          </div>
+
+          {/* Role-Specific Widgets */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ApprovalQueueWidget />
+            <RiskAssessmentWidget />
           </div>
 
           {/* Main Content */}

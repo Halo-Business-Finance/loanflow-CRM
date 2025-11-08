@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
+import { FundingQueueWidget } from '@/components/widgets/FundingQueueWidget';
+import { ClosingCalendarWidget } from '@/components/widgets/ClosingCalendarWidget';
 import { 
   FileCheck, 
   Calendar, 
@@ -184,6 +186,12 @@ export const CloserDashboard = () => {
             <p className="text-xs text-muted-foreground">Closing pipeline</p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Role-Specific Widgets */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <FundingQueueWidget />
+        <ClosingCalendarWidget />
       </div>
 
       {/* Main Content */}
