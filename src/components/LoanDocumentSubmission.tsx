@@ -74,6 +74,15 @@ interface UploadedDocument {
   file_path?: string;
 }
 
+interface FileUploadItem {
+  file: File;
+  documentType: string;
+  status: 'pending' | 'uploading' | 'success' | 'error';
+  progress: number;
+  error?: string;
+  id: string;
+}
+
 interface LoanDocumentSubmissionProps {
   leadId: string;
   contactEntityId: string;
@@ -88,12 +97,11 @@ export function LoanDocumentSubmission({
   const { user } = useAuth();
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedDocType, setSelectedDocType] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState<FileUploadItem[]>([]);
   const [notes, setNotes] = useState('');
   const [uploadedDocs, setUploadedDocs] = useState<UploadedDocument[]>([]);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [validationError, setValidationError] = useState('');
+  const [bulkMode, setBulkMode] = useState(false);
 
   useEffect(() => {
     fetchUploadedDocuments();
@@ -139,75 +147,91 @@ export function LoanDocumentSubmission({
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const files = e.target.files;
     setValidationError('');
     
-    if (!file) {
-      setSelectedFile(null);
+    if (!files || files.length === 0) {
       return;
     }
 
-    const error = validateFile(file);
-    if (error) {
-      setValidationError(error);
+    const newFiles: FileUploadItem[] = [];
+    const errors: string[] = [];
+
+    Array.from(files).forEach((file, index) => {
+      const error = validateFile(file);
+      if (error) {
+        errors.push(`${file.name}: ${error}`);
+      } else {
+        newFiles.push({
+          file,
+          documentType: '',
+          status: 'pending',
+          progress: 0,
+          id: `${Date.now()}-${index}`,
+        });
+      }
+    });
+
+    if (errors.length > 0) {
+      setValidationError(errors.join('; '));
       toast({
-        title: 'Invalid File',
-        description: error,
+        title: 'Some files are invalid',
+        description: `${errors.length} file(s) could not be added`,
         variant: 'destructive',
       });
-      return;
     }
 
-    setSelectedFile(file);
+    if (newFiles.length > 0) {
+      setSelectedFiles(prev => [...prev, ...newFiles]);
+      toast({
+        title: 'Files added',
+        description: `${newFiles.length} file(s) ready to upload`,
+      });
+    }
+
+    // Reset input
+    e.target.value = '';
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile || !selectedDocType || !user) {
-      setValidationError('Please select a file and document type');
-      return;
-    }
+  const updateFileDocType = (fileId: string, docType: string) => {
+    setSelectedFiles(prev => 
+      prev.map(f => f.id === fileId ? { ...f, documentType: docType } : f)
+    );
+  };
 
-    // Validate with zod schema
-    try {
-      fileValidationSchema.parse({
-        file: selectedFile,
-        documentType: selectedDocType,
-        notes: notes || undefined,
-      });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        setValidationError(error.errors[0].message);
-        return;
-      }
-    }
+  const removeFile = (fileId: string) => {
+    setSelectedFiles(prev => prev.filter(f => f.id !== fileId));
+  };
 
-    setUploading(true);
-    setUploadProgress(0);
+  const uploadSingleFile = async (fileItem: FileUploadItem): Promise<boolean> => {
+    if (!user) return false;
 
     try {
+      // Update status to uploading
+      setSelectedFiles(prev =>
+        prev.map(f => f.id === fileItem.id ? { ...f, status: 'uploading' as const, progress: 10 } : f)
+      );
+
       // Generate secure file path
       const timestamp = Date.now();
-      const sanitizedFileName = selectedFile.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const sanitizedFileName = fileItem.file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const fileName = `${timestamp}_${sanitizedFileName}`;
       const filePath = `${user.id}/${leadId}/${fileName}`;
-
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setUploadProgress(prev => Math.min(prev + 10, 90));
-      }, 200);
 
       // Upload to storage
       const { error: uploadError } = await supabase.storage
         .from('lead-documents')
-        .upload(filePath, selectedFile, {
+        .upload(filePath, fileItem.file, {
           cacheControl: '3600',
           upsert: false,
         });
 
-      clearInterval(progressInterval);
-      setUploadProgress(95);
-
       if (uploadError) throw uploadError;
+
+      // Update progress
+      setSelectedFiles(prev =>
+        prev.map(f => f.id === fileItem.id ? { ...f, progress: 70 } : f)
+      );
 
       // Create database record
       const { error: dbError } = await supabase
@@ -216,44 +240,96 @@ export function LoanDocumentSubmission({
           lead_id: leadId,
           contact_entity_id: contactEntityId,
           user_id: user.id,
-          document_name: selectedFile.name,
-          document_type: selectedDocType,
+          document_name: fileItem.file.name,
+          document_type: fileItem.documentType,
           file_path: filePath,
-          file_size: selectedFile.size,
-          file_mime_type: selectedFile.type,
+          file_size: fileItem.file.size,
+          file_mime_type: fileItem.file.type,
           status: 'pending',
           notes: notes || null,
         });
 
       if (dbError) throw dbError;
 
-      setUploadProgress(100);
+      // Update to success
+      setSelectedFiles(prev =>
+        prev.map(f => f.id === fileItem.id ? { ...f, status: 'success' as const, progress: 100 } : f)
+      );
 
-      toast({
-        title: 'Success',
-        description: `${selectedFile.name} uploaded successfully`,
-      });
-
-      // Reset form
-      setSelectedFile(null);
-      setSelectedDocType('');
-      setNotes('');
-      setValidationError('');
-      
-      // Refresh documents list
-      await fetchUploadedDocuments();
-
+      return true;
     } catch (error: any) {
       console.error('Upload error:', error);
+      setSelectedFiles(prev =>
+        prev.map(f => f.id === fileItem.id ? { 
+          ...f, 
+          status: 'error' as const, 
+          error: error.message || 'Upload failed' 
+        } : f)
+      );
+      return false;
+    }
+  };
+
+  const handleBulkUpload = async () => {
+    if (selectedFiles.length === 0) {
+      setValidationError('Please select at least one file');
+      return;
+    }
+
+    // Check if all files have document types
+    const filesWithoutType = selectedFiles.filter(f => !f.documentType);
+    if (filesWithoutType.length > 0) {
+      setValidationError('Please select document type for all files');
       toast({
-        title: 'Upload Failed',
-        description: error.message || 'Failed to upload document',
+        title: 'Missing document types',
+        description: `${filesWithoutType.length} file(s) need document type`,
         variant: 'destructive',
       });
-    } finally {
-      setUploading(false);
-      setUploadProgress(0);
+      return;
     }
+
+    setUploading(true);
+    setValidationError('');
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    // Upload files sequentially to avoid overwhelming the server
+    for (const fileItem of selectedFiles) {
+      const success = await uploadSingleFile(fileItem);
+      if (success) {
+        successCount++;
+      } else {
+        errorCount++;
+      }
+    }
+
+    setUploading(false);
+
+    // Show summary toast
+    if (successCount > 0 && errorCount === 0) {
+      toast({
+        title: 'Upload Complete',
+        description: `Successfully uploaded ${successCount} document(s)`,
+      });
+      setSelectedFiles([]);
+      setNotes('');
+    } else if (successCount > 0 && errorCount > 0) {
+      toast({
+        title: 'Partial Upload',
+        description: `${successCount} succeeded, ${errorCount} failed`,
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Upload Failed',
+        description: `Failed to upload ${errorCount} document(s)`,
+        variant: 'destructive',
+      });
+    }
+
+    // Refresh documents list
+    await fetchUploadedDocuments();
   };
 
   const handleDelete = async (docId: string, filePath?: string) => {
@@ -330,31 +406,34 @@ export function LoanDocumentSubmission({
             <Progress value={status.percentage} className="h-2" />
           </div>
 
+          {/* Upload Mode Toggle */}
+          <div className="flex justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setBulkMode(!bulkMode);
+                setSelectedFiles([]);
+                setValidationError('');
+              }}
+            >
+              {bulkMode ? 'Single Upload Mode' : 'Bulk Upload Mode'}
+            </Button>
+          </div>
+
           {/* Upload Section */}
           <div className="space-y-4 p-4 border rounded-lg bg-muted/20">
             <div className="space-y-2">
-              <Label htmlFor="doc-type" className="text-sm font-medium">
-                Document Type <span className="text-destructive">*</span>
-              </Label>
-              <select
-                id="doc-type"
-                value={selectedDocType}
-                onChange={(e) => setSelectedDocType(e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-input bg-background"
-              >
-                <option value="">Select document type...</option>
-                {REQUIRED_DOCUMENTS.map((doc) => (
-                  <option key={doc.id} value={doc.label}>
-                    {doc.label} {doc.required && '*'}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="file-upload" className="text-sm font-medium">
-                Select File <span className="text-destructive">*</span>
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="file-upload" className="text-sm font-medium">
+                  {bulkMode ? 'Select Multiple Files' : 'Select File'} <span className="text-destructive">*</span>
+                </Label>
+                {bulkMode && selectedFiles.length > 0 && (
+                  <span className="text-sm text-muted-foreground">
+                    {selectedFiles.length} file(s) selected
+                  </span>
+                )}
+              </div>
               <div className="border-2 border-dashed rounded-lg p-6 text-center hover:bg-muted/30 transition-colors">
                 <input
                   id="file-upload"
@@ -362,61 +441,103 @@ export function LoanDocumentSubmission({
                   onChange={handleFileSelect}
                   className="hidden"
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                  multiple={bulkMode}
                 />
                 <label htmlFor="file-upload" className="cursor-pointer">
-                  {selectedFile ? (
-                    <div className="flex items-center gap-3 justify-center">
-                      <FileText className="h-8 w-8 text-primary" />
-                      <div className="text-left">
-                        <div className="font-medium">{selectedFile.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {(selectedFile.size / 1024).toFixed(2)} KB
-                        </div>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setSelectedFile(null);
-                        }}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                  <div className="space-y-2">
+                    <Upload className="h-10 w-10 mx-auto text-muted-foreground" />
+                    <div className="text-sm">
+                      <span className="font-medium text-primary">Click to upload</span>
+                      {' '}or drag and drop
                     </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="h-10 w-10 mx-auto text-muted-foreground" />
-                      <div className="text-sm">
-                        <span className="font-medium text-primary">Click to upload</span>
-                        {' '}or drag and drop
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (max 10MB)
-                      </div>
+                    <div className="text-xs text-muted-foreground">
+                      PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (max 10MB each)
+                      {bulkMode && <div className="mt-1">Multiple files can be selected</div>}
                     </div>
-                  )}
+                  </div>
                 </label>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="notes" className="text-sm font-medium">
-                Notes (Optional)
-              </Label>
-              <Textarea
-                id="notes"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Add any relevant notes..."
-                maxLength={500}
-                rows={3}
-              />
-              <div className="text-xs text-muted-foreground text-right">
-                {notes.length}/500
+            {/* Selected Files List for Bulk Upload */}
+            {bulkMode && selectedFiles.length > 0 && (
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {selectedFiles.map((fileItem) => (
+                  <div
+                    key={fileItem.id}
+                    className="flex items-start gap-3 p-3 border rounded-lg bg-background"
+                  >
+                    <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-medium truncate">{fileItem.file.name}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {(fileItem.file.size / 1024).toFixed(2)} KB
+                          </div>
+                        </div>
+                        {fileItem.status === 'success' && (
+                          <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
+                        )}
+                        {fileItem.status === 'error' && (
+                          <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+                        )}
+                        {fileItem.status === 'pending' && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeFile(fileItem.id)}
+                            disabled={uploading}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                      <select
+                        value={fileItem.documentType}
+                        onChange={(e) => updateFileDocType(fileItem.id, e.target.value)}
+                        className="w-full h-9 px-2 text-sm rounded-md border border-input bg-background"
+                        disabled={fileItem.status !== 'pending' || uploading}
+                      >
+                        <option value="">Select document type...</option>
+                        {REQUIRED_DOCUMENTS.map((doc) => (
+                          <option key={doc.id} value={doc.label}>
+                            {doc.label} {doc.required && '*'}
+                          </option>
+                        ))}
+                      </select>
+                      {fileItem.status === 'uploading' && (
+                        <Progress value={fileItem.progress} className="h-1" />
+                      )}
+                      {fileItem.status === 'error' && fileItem.error && (
+                        <p className="text-xs text-destructive">{fileItem.error}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
+
+            {/* Notes Section */}
+            {selectedFiles.length > 0 && (
+              <div className="space-y-2">
+                <Label htmlFor="notes" className="text-sm font-medium">
+                  Notes (Optional - applies to all uploads)
+                </Label>
+                <Textarea
+                  id="notes"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Add any relevant notes..."
+                  maxLength={500}
+                  rows={3}
+                  disabled={uploading}
+                />
+                <div className="text-xs text-muted-foreground text-right">
+                  {notes.length}/500
+                </div>
+              </div>
+            )}
 
             {validationError && (
               <Alert variant="destructive">
@@ -425,23 +546,25 @@ export function LoanDocumentSubmission({
               </Alert>
             )}
 
-            {uploading && (
-              <div className="space-y-2">
-                <Progress value={uploadProgress} />
-                <p className="text-sm text-center text-muted-foreground">
-                  Uploading... {uploadProgress}%
-                </p>
-              </div>
+            {bulkMode ? (
+              <Button
+                onClick={handleBulkUpload}
+                disabled={selectedFiles.length === 0 || uploading}
+                className="w-full"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                {uploading ? 'Uploading...' : `Upload ${selectedFiles.length} Document(s)`}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleBulkUpload}
+                disabled={selectedFiles.length === 0 || uploading}
+                className="w-full"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                {uploading ? 'Uploading...' : 'Upload Document'}
+              </Button>
             )}
-
-            <Button
-              onClick={handleUpload}
-              disabled={!selectedFile || !selectedDocType || uploading}
-              className="w-full"
-            >
-              <Upload className="h-4 w-4 mr-2" />
-              {uploading ? 'Uploading...' : 'Upload Document'}
-            </Button>
           </div>
 
           {/* Uploaded Documents */}
