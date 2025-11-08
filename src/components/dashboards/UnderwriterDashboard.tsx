@@ -4,10 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { StandardPageLayout } from '@/components/StandardPageLayout';
-import { StandardPageHeader } from '@/components/StandardPageHeader';
 import { StandardContentCard } from '@/components/StandardContentCard';
-import { ResponsiveContainer } from '@/components/ResponsiveContainer';
 import { 
   Shield, 
   Clock, 
@@ -20,7 +17,8 @@ import {
   BarChart3,
   Calculator,
   Eye,
-  DollarSign
+  DollarSign,
+  RefreshCw
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -159,15 +157,36 @@ export const UnderwriterDashboard = () => {
   }
 
   return (
-    <StandardPageLayout>
-      <StandardPageHeader 
-        title="Underwriter Dashboard"
-        description="Review and approve loan applications"
-      />
-      
-      <ResponsiveContainer padding="md">
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Underwriter Dashboard
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Review and approve loan applications
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              size="sm" 
+              onClick={fetchUnderwriterData}
+              className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]"
+            >
+              <RefreshCw className="h-3 w-3 mr-2" />
+              Refresh Data
+            </Button>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        {/* Content Area */}
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <StandardContentCard>
             <div className="flex items-center justify-between">
               <div>
@@ -222,20 +241,68 @@ export const UnderwriterDashboard = () => {
               <TrendingUp className="w-8 h-8 text-primary" />
             </div>
           </StandardContentCard>
-        </div>
+          </div>
 
-      {/* Main Content */}
-      <Tabs defaultValue="pending" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="pending">Pending Reviews</TabsTrigger>
-          <TabsTrigger value="documents">Documents & Files</TabsTrigger>
-          <TabsTrigger value="risk">Risk Assessment</TabsTrigger>
-          <TabsTrigger value="analytics">Review Analytics</TabsTrigger>
-          <TabsTrigger value="loan-tools">Loan Analysis Tools</TabsTrigger>
-          <TabsTrigger value="charts">Charts & Visualizations</TabsTrigger>
-          <TabsTrigger value="advanced-analytics">Advanced Analytics</TabsTrigger>
-          <TabsTrigger value="collaboration">Team Collaboration</TabsTrigger>
-        </TabsList>
+          {/* Main Content */}
+          <Tabs defaultValue="pending" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-8 bg-[#0A1628] p-1 gap-2">
+              <TabsTrigger 
+                value="pending" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Clock className="w-4 h-4" />
+                <span>Pending</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="documents" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <FileCheck className="w-4 h-4" />
+                <span>Documents</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="risk" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Shield className="w-4 h-4" />
+                <span>Risk</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="analytics" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <BarChart3 className="w-4 h-4" />
+                <span>Analytics</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="loan-tools" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Calculator className="w-4 h-4" />
+                <span>Tools</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="charts" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <PieChart className="w-4 h-4" />
+                <span>Charts</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="advanced-analytics" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <TrendingUp className="w-4 h-4" />
+                <span>Advanced</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="collaboration" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Users className="w-4 h-4" />
+                <span>Team</span>
+              </TabsTrigger>
+            </TabsList>
 
         <TabsContent value="pending" className="space-y-4">
           <Card>
@@ -647,8 +714,9 @@ export const UnderwriterDashboard = () => {
         <TabsContent value="collaboration" className="space-y-4">
           <TeamCollaboration />
         </TabsContent>
-      </Tabs>
-      </ResponsiveContainer>
-    </StandardPageLayout>
+        </Tabs>
+        </div>
+      </div>
+    </div>
   );
 };
