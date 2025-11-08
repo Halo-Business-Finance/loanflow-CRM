@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { formatDistanceToNow } from "date-fns"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
+import { StandardPageLayout } from "@/components/StandardPageLayout"
 
 interface AuditLog {
   id: string
@@ -154,22 +156,12 @@ export default function SecurityAudit() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Audit Logs
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Comprehensive audit trail of all system activities
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
+    <StandardPageLayout>
+      <IBMPageHeader 
+        title="Audit Logs"
+        subtitle="Comprehensive audit trail of all system activities"
+        actions={
+          <>
             <Button 
               onClick={fetchAuditLogs} 
               disabled={loading}
@@ -201,8 +193,10 @@ export default function SecurityAudit() {
               <FileText className="h-3 w-3 mr-2" />
               Report
             </Button>
-          </div>
-        </div>
+          </>
+        }
+      />
+      <div className="p-8 space-y-8 animate-fade-in">
 
         {/* Content Area */}
         <div className="space-y-6">
@@ -432,6 +426,6 @@ export default function SecurityAudit() {
           </Tabs>
         </div>
       </div>
-    </div>
+    </StandardPageLayout>
   )
 }

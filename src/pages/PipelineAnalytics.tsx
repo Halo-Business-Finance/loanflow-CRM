@@ -7,6 +7,8 @@ import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { RefreshCw, TrendingUp, Award, BarChart3 } from "lucide-react"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
+import { StandardPageLayout } from "@/components/StandardPageLayout"
 
 export default function PipelineAnalytics() {
   const [pipelineStages, setPipelineStages] = useState<{ name: string; value: number }[]>([])
@@ -54,32 +56,22 @@ export default function PipelineAnalytics() {
   useRealtimeSubscription({ table: 'contact_entities', event: '*', onChange: fetchStages })
 
   return (
-    <div className="min-h-screen bg-background">
+    <StandardPageLayout>
+      <IBMPageHeader 
+        title="Pipeline Analytics"
+        subtitle="Detailed analytics and insights for your sales pipeline"
+        actions={
+          <Button 
+            size="sm" 
+            onClick={fetchStages}
+            className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]"
+          >
+            <RefreshCw className="h-3 w-3 mr-2" />
+            Refresh Data
+          </Button>
+        }
+      />
       <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Pipeline Analytics
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Detailed analytics and insights for your sales pipeline
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button 
-              size="sm" 
-              onClick={fetchStages}
-              className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]"
-            >
-              <RefreshCw className="h-3 w-3 mr-2" />
-              Refresh Data
-            </Button>
-          </div>
-        </div>
 
         {/* Content Area */}
         <div className="space-y-6">
@@ -145,6 +137,6 @@ export default function PipelineAnalytics() {
           </Tabs>
         </div>
       </div>
-    </div>
+    </StandardPageLayout>
   )
 }

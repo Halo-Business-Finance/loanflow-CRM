@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { formatDistanceToNow } from "date-fns"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
+import { StandardPageLayout } from "@/components/StandardPageLayout"
 
 interface SecurityEvent {
   id: string
@@ -215,22 +217,12 @@ export default function SecurityThreats() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Threat Detection
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Real-time threat monitoring and security incident management
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
+    <StandardPageLayout>
+      <IBMPageHeader 
+        title="Threat Detection"
+        subtitle="Real-time threat monitoring and security incident management"
+        actions={
+          <>
             <Button 
               onClick={fetchSecurityEvents} 
               disabled={loading}
@@ -251,8 +243,10 @@ export default function SecurityThreats() {
               <Bell className="h-3 w-3 mr-2" />
               Alerts
             </Button>
-          </div>
-        </div>
+          </>
+        }
+      />
+      <div className="p-8 space-y-8 animate-fade-in">
 
         {/* Content Area */}
         <div className="space-y-6">
@@ -552,6 +546,6 @@ export default function SecurityThreats() {
           </Tabs>
         </div>
       </div>
-    </div>
+    </StandardPageLayout>
   )
 }

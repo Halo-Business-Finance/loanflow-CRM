@@ -28,6 +28,8 @@ import { EmailSetup } from "@/components/EmailSetup"
 import { SystemHealthMonitor } from "@/components/SystemHealthMonitor"
 import { WebhookManager } from "@/components/webhooks/WebhookManager"
 import { MicrosoftAuthenticatorSetup } from "@/components/auth/MicrosoftAuthenticatorSetup"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
+import { StandardPageLayout } from "@/components/StandardPageLayout"
 
 export default function Settings() {
   const { user } = useAuth()
@@ -199,30 +201,18 @@ export default function Settings() {
   }
 
   return (
-    <div data-testid="page-settings" className="min-h-screen bg-background">
+    <StandardPageLayout>
+      <IBMPageHeader 
+        title="Settings"
+        subtitle="Manage your profile, preferences, and system configuration"
+        actions={
+          <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]">
+            <RefreshCw className="h-3 w-3 mr-2" />
+            Refresh
+          </Button>
+        }
+      />
       <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Settings
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage your profile, preferences, and system configuration
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]">
-              <RefreshCw className="h-3 w-3 mr-2" />
-              Refresh
-            </Button>
-          </div>
-        </div>
-
-        {/* Content Area */}
         <div className="space-y-6">
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -500,6 +490,6 @@ export default function Settings() {
         </Tabs>
         </div>
       </div>
-    </div>
+    </StandardPageLayout>
   )
 }

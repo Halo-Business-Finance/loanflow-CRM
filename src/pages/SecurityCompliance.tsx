@@ -9,6 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useZeroLocalStorage } from '@/lib/zero-localStorage-security';
 import { toast } from 'sonner';
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
+import { StandardPageLayout } from "@/components/StandardPageLayout"
 
 interface SecurityMetrics {
   sessionSecurity: {
@@ -213,22 +215,12 @@ export default function SecurityCompliance() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Compliance
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Monitor regulatory compliance and security standards adherence
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
+    <StandardPageLayout>
+      <IBMPageHeader 
+        title="Compliance"
+        subtitle="Monitor regulatory compliance and security standards adherence"
+        actions={
+          <>
             <Button 
               onClick={loadSecurityMetrics}
               size="sm" 
@@ -255,10 +247,10 @@ export default function SecurityCompliance() {
               <Download className="h-3 w-3 mr-2" />
               Report
             </Button>
-          </div>
-        </div>
-
-        {/* Content Area */}
+          </>
+        }
+      />
+      <div className="p-8 space-y-8 animate-fade-in">
         <div className="space-y-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-3 bg-[#0A1628] p-1 gap-2">
@@ -582,9 +574,9 @@ export default function SecurityCompliance() {
                 </div>
               </StandardContentCard>
             </TabsContent>
-          </Tabs>
+        </Tabs>
         </div>
       </div>
-    </div>
-  )
+    </StandardPageLayout>
+  );
 }
