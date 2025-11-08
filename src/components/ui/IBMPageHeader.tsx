@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ChevronDown } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ChevronDown, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -19,6 +20,7 @@ interface IBMPageHeaderProps {
   hasDropdown?: boolean;
   className?: string;
   showBreadcrumbs?: boolean;
+  showBackButton?: boolean;
 }
 
 export function IBMPageHeader({
@@ -28,34 +30,53 @@ export function IBMPageHeader({
   hasDropdown = false,
   className,
   showBreadcrumbs = true,
+  showBackButton = true,
 }: IBMPageHeaderProps) {
   const breadcrumbs = useBreadcrumbs();
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1);
+  };
 
   return (
     <div className={cn('bg-white px-6 py-4 border-b border-[#e0e0e0]', className)}>
       {showBreadcrumbs && breadcrumbs.length > 1 && (
-        <Breadcrumb className="mb-3">
-          <BreadcrumbList>
-            {breadcrumbs.map((breadcrumb, index) => (
-              <React.Fragment key={index}>
-                {index > 0 && <BreadcrumbSeparator />}
-                <BreadcrumbItem>
-                  {breadcrumb.href ? (
-                    <BreadcrumbLink asChild>
-                      <Link to={breadcrumb.href} className="text-[#525252] hover:text-[#161616]">
+        <div className="flex items-center gap-3 mb-3">
+          {showBackButton && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBack}
+              className="h-8 px-2 text-[#525252] hover:text-[#161616] hover:bg-[#f4f4f4]"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          )}
+          <Breadcrumb className="flex-1">
+            <BreadcrumbList>
+              {breadcrumbs.map((breadcrumb, index) => (
+                <React.Fragment key={index}>
+                  {index > 0 && <BreadcrumbSeparator />}
+                  <BreadcrumbItem>
+                    {breadcrumb.href ? (
+                      <BreadcrumbLink asChild>
+                        <Link to={breadcrumb.href} className="text-[#525252] hover:text-[#161616]">
+                          {breadcrumb.label}
+                        </Link>
+                      </BreadcrumbLink>
+                    ) : (
+                      <BreadcrumbPage className="text-[#161616]">
                         {breadcrumb.label}
-                      </Link>
-                    </BreadcrumbLink>
-                  ) : (
-                    <BreadcrumbPage className="text-[#161616]">
-                      {breadcrumb.label}
-                    </BreadcrumbPage>
-                  )}
-                </BreadcrumbItem>
-              </React.Fragment>
-            ))}
-          </BreadcrumbList>
-        </Breadcrumb>
+                      </BreadcrumbPage>
+                    )}
+                  </BreadcrumbItem>
+                </React.Fragment>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
       )}
       <div className="flex items-center justify-between">
         <div>
