@@ -18,6 +18,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 
 interface PolicyEvaluation {
   table: string;
@@ -221,12 +222,6 @@ export default function LeadAccessDiagnostics() {
           </Button>
         }
       />
-          <Button onClick={runDiagnostics} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            Run Diagnostics
-          </Button>
-        </div>
-      </div>
 
       {diagnostics && (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">

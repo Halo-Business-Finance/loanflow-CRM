@@ -4,6 +4,7 @@ import { Client } from "@/types/lead"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { useNavigate } from "react-router-dom"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 // Badge component removed - using plain text instead

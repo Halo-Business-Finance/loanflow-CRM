@@ -24,6 +24,7 @@ import {
   DollarSign,
   Calendar,
   Eye
+} from "lucide-react"
 import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 
 export default function LeadDocuments() {

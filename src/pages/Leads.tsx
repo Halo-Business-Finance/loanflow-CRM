@@ -38,6 +38,7 @@ import { LeadStats } from '@/components/leads/LeadStats';
 import { SecurityWrapper } from '@/components/SecurityWrapper';
 import { SecureFormProvider } from '@/components/security/SecureFormValidator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { Lead, ContactEntity } from '@/types/lead';
 import { useRealtimeLeads } from '@/hooks/useRealtimeLeads';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';

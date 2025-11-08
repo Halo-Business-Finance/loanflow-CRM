@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
+import { format } from "date-fns"
 
 interface DocumentTemplate {
   id: string

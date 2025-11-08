@@ -8,6 +8,7 @@ import { EmergencyShutdown } from '@/components/security/EmergencyShutdown';
 import { EmergencyEventHistory } from '@/components/EmergencyEventHistory';
 import { SystemMonitoring } from '@/components/SystemMonitoring';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 
 export default function EmergencyMaintenance() {
   const { canAccessAdminFeatures } = useRoleBasedAccess();
