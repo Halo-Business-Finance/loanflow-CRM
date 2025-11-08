@@ -102,6 +102,7 @@ export function LoanDocumentSubmission({
   const [uploadedDocs, setUploadedDocs] = useState<UploadedDocument[]>([]);
   const [validationError, setValidationError] = useState('');
   const [bulkMode, setBulkMode] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     fetchUploadedDocuments();
@@ -201,6 +202,87 @@ export function LoanDocumentSubmission({
 
   const removeFile = (fileId: string) => {
     setSelectedFiles(prev => prev.filter(f => f.id !== fileId));
+  };
+
+  // Drag and drop handlers
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Only set dragging to false if we're leaving the drop zone entirely
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+    
+    if (x <= rect.left || x >= rect.right || y <= rect.top || y >= rect.bottom) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    const newFiles: FileUploadItem[] = [];
+    const errors: string[] = [];
+
+    Array.from(files).forEach((file, index) => {
+      const error = validateFile(file);
+      if (error) {
+        errors.push(`${file.name}: ${error}`);
+      } else {
+        newFiles.push({
+          file,
+          documentType: '',
+          status: 'pending',
+          progress: 0,
+          id: `${Date.now()}-${index}`,
+        });
+      }
+    });
+
+    if (errors.length > 0) {
+      setValidationError(errors.join('; '));
+      toast({
+        title: 'Some files are invalid',
+        description: `${errors.length} file(s) could not be added`,
+        variant: 'destructive',
+      });
+    }
+
+    if (newFiles.length > 0) {
+      if (bulkMode) {
+        setSelectedFiles(prev => [...prev, ...newFiles]);
+        toast({
+          title: 'Files added',
+          description: `${newFiles.length} file(s) ready to upload`,
+        });
+      } else {
+        // In single mode, only keep the first file
+        setSelectedFiles([newFiles[0]]);
+        toast({
+          title: 'File added',
+          description: '1 file ready to upload',
+        });
+      }
+    }
   };
 
   const uploadSingleFile = async (fileItem: FileUploadItem): Promise<boolean> => {
@@ -434,7 +516,17 @@ export function LoanDocumentSubmission({
                   </span>
                 )}
               </div>
-              <div className="border-2 border-dashed rounded-lg p-6 text-center hover:bg-muted/30 transition-colors">
+              <div 
+                className={`border-2 border-dashed rounded-lg p-6 text-center transition-all ${
+                  isDragging 
+                    ? 'bg-primary/10 border-primary scale-[1.02]' 
+                    : 'hover:bg-muted/30 border-border'
+                }`}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+              >
                 <input
                   id="file-upload"
                   type="file"
@@ -443,12 +535,20 @@ export function LoanDocumentSubmission({
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
                   multiple={bulkMode}
                 />
-                <label htmlFor="file-upload" className="cursor-pointer">
+                <label htmlFor="file-upload" className="cursor-pointer block">
                   <div className="space-y-2">
-                    <Upload className="h-10 w-10 mx-auto text-muted-foreground" />
+                    <Upload className={`h-10 w-10 mx-auto transition-colors ${
+                      isDragging ? 'text-primary' : 'text-muted-foreground'
+                    }`} />
                     <div className="text-sm">
-                      <span className="font-medium text-primary">Click to upload</span>
-                      {' '}or drag and drop
+                      {isDragging ? (
+                        <span className="font-medium text-primary">Drop files here</span>
+                      ) : (
+                        <>
+                          <span className="font-medium text-primary">Click to upload</span>
+                          {' '}or drag and drop
+                        </>
+                      )}
                     </div>
                     <div className="text-xs text-muted-foreground">
                       PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (max 10MB each)
