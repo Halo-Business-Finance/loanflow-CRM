@@ -3,10 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle, XCircle, AlertTriangle, Clock } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, Clock, UserPlus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency } from '@/lib/utils';
+import { TaskAssignmentDialog } from '@/components/collaboration/TaskAssignmentDialog';
+import { EscalationDialog } from '@/components/collaboration/EscalationDialog';
 
 interface QueueItem {
   id: string;
@@ -23,6 +25,9 @@ export function ApprovalQueueWidget() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
+  const [escalationDialogOpen, setEscalationDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<QueueItem | null>(null);
 
   useEffect(() => {
     fetchQueue();
@@ -177,7 +182,7 @@ export function ApprovalQueueWidget() {
                     </span>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 mb-2">
                     <Button
                       size="sm"
                       onClick={() => handleApprove(item.id)}
@@ -196,12 +201,56 @@ export function ApprovalQueueWidget() {
                       Reject
                     </Button>
                   </div>
+                  
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedItem(item);
+                        setTaskDialogOpen(true);
+                      }}
+                      className="flex-1 h-8 text-xs"
+                    >
+                      <UserPlus className="h-3 w-3 mr-1" />
+                      Assign
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedItem(item);
+                        setEscalationDialogOpen(true);
+                      }}
+                      className="flex-1 h-8 text-xs border-orange-500 text-orange-600 hover:bg-orange-50"
+                    >
+                      <AlertTriangle className="h-3 w-3 mr-1" />
+                      Escalate
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
           </ScrollArea>
         )}
       </CardContent>
+
+      <TaskAssignmentDialog
+        open={taskDialogOpen}
+        onOpenChange={setTaskDialogOpen}
+        relatedEntityId={selectedItem?.id}
+        relatedEntityType="contact_entity"
+        defaultTitle={`Review approval for ${selectedItem?.business_name || selectedItem?.name}`}
+        onSuccess={fetchQueue}
+      />
+
+      <EscalationDialog
+        open={escalationDialogOpen}
+        onOpenChange={setEscalationDialogOpen}
+        applicationId={selectedItem?.id || ''}
+        applicationName={selectedItem?.business_name || selectedItem?.name}
+        onSuccess={fetchQueue}
+      />
     </Card>
   );
 }

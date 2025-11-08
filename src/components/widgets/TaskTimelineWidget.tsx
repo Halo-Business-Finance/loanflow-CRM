@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle, Circle, Clock, AlertCircle } from 'lucide-react';
+import { CheckCircle, Circle, Clock, AlertCircle, UserPlus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { TaskAssignmentDialog } from '@/components/collaboration/TaskAssignmentDialog';
+import { EscalationDialog } from '@/components/collaboration/EscalationDialog';
 
 interface TimelineTask {
   id: string;
@@ -19,6 +22,9 @@ interface TimelineTask {
 export function TaskTimelineWidget() {
   const [tasks, setTasks] = useState<TimelineTask[]>([]);
   const [loading, setLoading] = useState(true);
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
+  const [escalationDialogOpen, setEscalationDialogOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<TimelineTask | null>(null);
 
   useEffect(() => {
     fetchTasks();
@@ -129,10 +135,39 @@ export function TaskTimelineWidget() {
                         {getStatusBadge(task.status, task.daysInStage)}
                       </div>
                       
-                      <div className="flex items-center gap-4 text-xs text-[#525252]">
+                      <div className="flex items-center gap-4 text-xs text-[#525252] mb-2">
                         <span>Stage: <span className="text-[#161616]">{task.stage}</span></span>
                         <span>•</span>
                         <span>Started: {new Date(task.created_at).toLocaleDateString()}</span>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedTask(task);
+                            setTaskDialogOpen(true);
+                          }}
+                          className="h-7 text-xs"
+                        >
+                          <UserPlus className="h-3 w-3 mr-1" />
+                          Assign
+                        </Button>
+                        {task.status === 'overdue' && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedTask(task);
+                              setEscalationDialogOpen(true);
+                            }}
+                            className="h-7 text-xs border-orange-500 text-orange-600 hover:bg-orange-50"
+                          >
+                            <AlertCircle className="h-3 w-3 mr-1" />
+                            Escalate
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -142,6 +177,23 @@ export function TaskTimelineWidget() {
           </ScrollArea>
         )}
       </CardContent>
+
+      <TaskAssignmentDialog
+        open={taskDialogOpen}
+        onOpenChange={setTaskDialogOpen}
+        relatedEntityId={selectedTask?.id}
+        relatedEntityType="contact_entity"
+        defaultTitle={`Process ${selectedTask?.business_name || selectedTask?.name}`}
+        onSuccess={fetchTasks}
+      />
+
+      <EscalationDialog
+        open={escalationDialogOpen}
+        onOpenChange={setEscalationDialogOpen}
+        applicationId={selectedTask?.id || ''}
+        applicationName={selectedTask?.business_name || selectedTask?.name}
+        onSuccess={fetchTasks}
+      />
     </Card>
   );
 }

@@ -3,10 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { DollarSign, CheckCircle, Clock } from 'lucide-react';
+import { DollarSign, CheckCircle, Clock, UserPlus, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency } from '@/lib/utils';
+import { TaskAssignmentDialog } from '@/components/collaboration/TaskAssignmentDialog';
+import { EscalationDialog } from '@/components/collaboration/EscalationDialog';
 
 interface FundingItem {
   id: string;
@@ -23,6 +25,9 @@ export function FundingQueueWidget() {
   const [queue, setQueue] = useState<FundingItem[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
+  const [escalationDialogOpen, setEscalationDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<FundingItem | null>(null);
 
   useEffect(() => {
     fetchFundingQueue();
@@ -158,17 +163,61 @@ export function FundingQueueWidget() {
                   <Button
                     size="sm"
                     onClick={() => handleFund(item.id, item.loan_amount || 0)}
-                    className="w-full h-8 text-xs bg-[#0f62fe] hover:bg-[#0353e9] text-white"
+                    className="w-full h-8 text-xs bg-[#0f62fe] hover:bg-[#0353e9] text-white mb-2"
                   >
                     <DollarSign className="h-3 w-3 mr-1" />
                     Fund Loan
                   </Button>
+
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedItem(item);
+                        setTaskDialogOpen(true);
+                      }}
+                      className="flex-1 h-8 text-xs"
+                    >
+                      <UserPlus className="h-3 w-3 mr-1" />
+                      Assign
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedItem(item);
+                        setEscalationDialogOpen(true);
+                      }}
+                      className="flex-1 h-8 text-xs border-orange-500 text-orange-600 hover:bg-orange-50"
+                    >
+                      <AlertTriangle className="h-3 w-3 mr-1" />
+                      Escalate
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
           </ScrollArea>
         )}
       </CardContent>
+
+      <TaskAssignmentDialog
+        open={taskDialogOpen}
+        onOpenChange={setTaskDialogOpen}
+        relatedEntityId={selectedItem?.id}
+        relatedEntityType="contact_entity"
+        defaultTitle={`Fund loan for ${selectedItem?.business_name || selectedItem?.name}`}
+        onSuccess={fetchFundingQueue}
+      />
+
+      <EscalationDialog
+        open={escalationDialogOpen}
+        onOpenChange={setEscalationDialogOpen}
+        applicationId={selectedItem?.id || ''}
+        applicationName={selectedItem?.business_name || selectedItem?.name}
+        onSuccess={fetchFundingQueue}
+      />
     </Card>
   );
 }
