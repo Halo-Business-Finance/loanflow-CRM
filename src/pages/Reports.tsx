@@ -219,18 +219,18 @@ export default function Reports() {
 
         {/* Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">
-              Report Overview
+          <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
+              <span>Report Overview</span>
             </TabsTrigger>
-            <TabsTrigger value="performance">
-              Performance
+            <TabsTrigger value="performance" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
+              <span>Performance</span>
             </TabsTrigger>
-            <TabsTrigger value="analytics">
-              Analytics
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
+              <span>Analytics</span>
             </TabsTrigger>
-            <TabsTrigger value="compliance">
-              Compliance
+            <TabsTrigger value="compliance" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
+              <span>Compliance</span>
             </TabsTrigger>
           </TabsList>
 
