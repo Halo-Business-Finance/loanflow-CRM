@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 import { LOAN_TYPES, STAGES, PRIORITIES } from "@/types/lead"
@@ -286,19 +286,14 @@ export default function NewLead() {
 
   return (
     <StandardPageLayout>
-      <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold text-foreground no-underline">Create New Lead</h1>
-            <p className="text-sm text-muted-foreground">Add a new lead to your SBA & Commercial Loan pipeline</p>
-          </div>
-          <Button 
-            onClick={() => navigate('/leads')}
-          >
-            Back to Leads
-          </Button>
-        </div>
+      <IBMPageHeader 
+        title="Create New Lead"
+        subtitle="Add a new lead to your SBA & Commercial Loan pipeline"
+      />
+      <ResponsiveContainer>
+        <div className="p-8 space-y-8 animate-fade-in">
+        
+        <div className="space-y-8">
         
         {/* Row 1: Personal, Financial, and Business Information */}
         <div className="grid gap-6 md:grid-cols-3">
@@ -866,6 +861,7 @@ export default function NewLead() {
             </Button>
           </div>
         </div>
+      </ResponsiveContainer>
     </StandardPageLayout>
   )
 }

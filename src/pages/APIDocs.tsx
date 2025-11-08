@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator"
 import { Copy, ExternalLink, Code, Database, Lock, Zap, Search } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 
@@ -137,9 +137,9 @@ export default function APIDocs() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader 
+      <IBMPageHeader 
         title="API Command Center"
-        description="Complete API reference and integration documentation"
+        subtitle="Complete API reference and integration documentation"
       />
 
       <ResponsiveContainer>

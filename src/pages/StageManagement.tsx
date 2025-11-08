@@ -1,5 +1,5 @@
 import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 import { Button } from "@/components/ui/button"
@@ -82,9 +82,9 @@ export default function StageManagement() {
   if (loading) {
     return (
       <StandardPageLayout>
-        <StandardPageHeader
+        <IBMPageHeader
           title="Stage Management"
-          description="Loading stages..."
+          subtitle="Loading stages..."
         />
         <ResponsiveContainer>
           <div className="space-y-4">
@@ -101,9 +101,9 @@ export default function StageManagement() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
+      <IBMPageHeader
         title="Stage Management"
-        description="Configure and manage your sales pipeline stages"
+        subtitle="Configure and manage your sales pipeline stages"
       />
 
       <ResponsiveContainer>

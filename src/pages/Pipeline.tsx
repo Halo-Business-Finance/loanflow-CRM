@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StandardPageLayout } from '@/components/StandardPageLayout';
-import { StandardPageHeader } from '@/components/StandardPageHeader';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { ResponsiveContainer } from '@/components/ResponsiveContainer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -187,11 +187,11 @@ export default function Pipeline() {
   if (loading) {
     return (
       <div className="flex flex-col h-full bg-background">
+        <IBMPageHeader 
+          title="Pipeline Management"
+          subtitle="Loading pipeline data..."
+        />
         <div className="p-8 space-y-8 animate-fade-in">
-          <div className="space-y-4">
-            <h1 className="text-xl font-semibold text-foreground no-underline">Pipeline Management</h1>
-            <p className="text-sm text-muted-foreground">Loading pipeline data...</p>
-          </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="animate-pulse border border-border shadow-sm bg-card rounded-lg p-6">
@@ -208,13 +208,11 @@ export default function Pipeline() {
 
   return (
     <div className="flex flex-col h-full bg-background">
+      <IBMPageHeader 
+        title="Pipeline Management"
+        subtitle="Advanced sales pipeline tracking, opportunity management, and revenue forecasting"
+      />
       <div className="p-8 space-y-8 animate-fade-in">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-semibold text-foreground no-underline">Pipeline Management</h1>
-              <p className="text-sm text-muted-foreground">Advanced sales pipeline tracking, opportunity management, and revenue forecasting</p>
-            </div>
             <div className="flex items-center gap-3">
               <Badge variant="default" className="text-xs font-medium px-2 py-1">
                 {overview.totalOpportunities} Opportunities
@@ -225,7 +223,6 @@ export default function Pipeline() {
               </Button>
             </div>
           </div>
-        </div>
 
         {/* Pipeline Overview Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -547,6 +544,7 @@ export default function Pipeline() {
           <WorkflowAutomation />
         </TabsContent>
       </Tabs>
+      </div>
       </div>
     </div>
   )

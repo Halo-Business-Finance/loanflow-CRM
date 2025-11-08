@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 // Badge component removed - using plain text instead
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart3, TrendingUp, TrendingDown, Users, Target, Clock } from "lucide-react"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
@@ -92,13 +92,11 @@ export default function LeadStats() {
 
   return (
     <div className="flex flex-col h-full bg-background">
+      <IBMPageHeader 
+        title="Lead Management"
+        subtitle="Assign leads to team members and view performance statistics"
+      />
       <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="space-y-4">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground no-underline">Lead Management</h1>
-            <p className="text-sm text-muted-foreground">Assign leads to team members and view performance statistics</p>
-          </div>
           
           <Tabs value={location.pathname} onValueChange={(value) => navigate(value)}>
             <TabsList className="grid w-full max-w-md grid-cols-2 bg-muted p-1">

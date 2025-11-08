@@ -1,5 +1,5 @@
 import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { StandardKPICard } from "@/components/StandardKPICard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
@@ -217,20 +217,11 @@ export default function SecurityAccess() {
   }
   return (
     <div className="min-h-screen bg-background">
+      <IBMPageHeader 
+        title="Access Management"
+        subtitle="Manage user roles, permissions, and access controls"
+      />
       <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Access Management
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage user access permissions and security controls
-              </p>
-            </div>
-          </div>
-          
           <div className="flex items-center gap-2">
             <Button 
               onClick={fetchSecurityData}
@@ -464,6 +455,7 @@ export default function SecurityAccess() {
               </StandardContentCard>
             </TabsContent>
           </Tabs>
+          </div>
         </div>
       </div>
     </div>

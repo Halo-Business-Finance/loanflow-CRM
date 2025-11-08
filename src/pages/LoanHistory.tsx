@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StandardPageLayout } from '@/components/StandardPageLayout';
-import { StandardPageHeader } from '@/components/StandardPageHeader';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -240,9 +240,9 @@ export default function LoanHistory() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
+      <IBMPageHeader
         title="Loan History"
-        description="Complete history of all loans and their current status"
+        subtitle="Complete history of all loans and their current status"
       />
       
       <div className="space-y-6">

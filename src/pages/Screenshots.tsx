@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Camera, Download, ExternalLink, Navigation } from "lucide-react";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
-import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { StandardContentCard } from "@/components/StandardContentCard";
 import { StandardKPICard } from "@/components/StandardKPICard";
 import { ResponsiveContainer } from "@/components/ResponsiveContainer";
@@ -86,9 +86,9 @@ const Screenshots = () => {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader 
+      <IBMPageHeader 
         title="Screenshot Command Center"
-        description="Capture and manage CRM system screenshots for presentations"
+        subtitle="Capture and manage CRM system screenshots for presentations"
       />
 
       <ResponsiveContainer>

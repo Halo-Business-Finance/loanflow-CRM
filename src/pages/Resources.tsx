@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
-import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { StandardContentCard } from "@/components/StandardContentCard";
 import { ResponsiveContainer } from "@/components/ResponsiveContainer";
 import { 
@@ -83,9 +83,9 @@ export default function Resources() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader 
+      <IBMPageHeader 
         title="Resources"
-        description="Access documentation, training materials, and support resources"
+        subtitle="Access documentation, training materials, and support resources"
       />
 
       <ResponsiveContainer>

@@ -9,7 +9,7 @@ import { EnhancedSecurityMonitor } from '@/components/security/EnhancedSecurityM
 import { SecurityPatternDashboard } from '@/components/security/SecurityPatternDashboard';
 import { SecurityWrapper } from '@/components/SecurityWrapper';
 import { StandardPageLayout } from '@/components/StandardPageLayout';
-import { StandardPageHeader } from '@/components/StandardPageHeader';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { StandardContentCard } from '@/components/StandardContentCard';
 import { StandardKPICard } from '@/components/StandardKPICard';
 import { ResponsiveContainer } from '@/components/ResponsiveContainer';
@@ -111,22 +111,14 @@ const SecurityPage: React.FC = () => {
   return (
     <SecurityWrapper>
       <StandardPageLayout>
-        <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Security Overview
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Military-grade security monitoring and threat intelligence
-              </p>
-            </div>
-          </div>
-          
+        <IBMPageHeader 
+          title="Security Overview"
+          subtitle="Real-time security monitoring and threat detection"
+        />
+        <ResponsiveContainer>
+          <div className="p-8 space-y-8 animate-fade-in">
           <div className="flex items-center gap-2">
-            <Button 
+            <Button
               size="sm" 
               className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white"
               onClick={() => window.location.reload()}

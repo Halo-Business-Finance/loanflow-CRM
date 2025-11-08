@@ -13,7 +13,7 @@ import { LeadScoring } from "@/components/ai/LeadScoring"
 import { PredictiveAnalytics } from "@/components/ai/PredictiveAnalytics"
 import { WorkflowAutomation } from "@/components/ai/WorkflowAutomation"
 import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 import { 
@@ -392,9 +392,9 @@ export default function AITools() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader 
+      <IBMPageHeader 
         title="AI Intelligence Center"
-        description="Advanced AI-powered tools for enhanced CRM performance"
+        subtitle="Advanced AI-powered tools for enhanced CRM performance"
       />
 
       <ResponsiveContainer>

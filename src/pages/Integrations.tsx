@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 import { 
@@ -314,9 +314,9 @@ export default function Integrations() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader 
+      <IBMPageHeader 
         title="Integration Command Center"
-        description="Connect external services and configure AI-powered automation tools"
+        subtitle="Connect external services and configure AI-powered automation tools"
       />
       
       <ResponsiveContainer padding="md">{/* Integration Metrics Overview */}

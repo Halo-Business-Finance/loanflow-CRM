@@ -1,5 +1,5 @@
 import { StandardPageLayout } from '@/components/StandardPageLayout'
-import { StandardPageHeader } from '@/components/StandardPageHeader'
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader'
 import { BorrowerDocumentsWidget } from '@/components/BorrowerDocumentsWidget'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -125,25 +125,18 @@ export default function LoanDocumentsFolder() {
 
   return (
     <StandardPageLayout>
-      <div className="border-b">
-        <div className="p-6">
-          <Button variant="outline" onClick={() => navigate('/documents')} className="gap-2 mb-4">
+      <IBMPageHeader 
+        title={`${businessName} - ${loanType}`}
+        subtitle={location || 'Loan document management'}
+        actions={
+          <Button variant="outline" onClick={() => navigate('/documents')} className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             Back to All Loans
           </Button>
-          <div>
-            <h1 className="text-2xl font-bold">{businessName} - {loanType}</h1>
-            {location && (
-              <p className="text-sm text-muted-foreground">
-                {location}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-      
+        }
+      />
       <div className="p-6">
-        <BorrowerDocumentsWidget 
+        <BorrowerDocumentsWidget
           leadId={leadId} 
           contactEntityId={leadInfo.contact_entity?.name || ''} 
         />
