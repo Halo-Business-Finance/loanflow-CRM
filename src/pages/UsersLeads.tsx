@@ -32,6 +32,7 @@ import { useToast } from "@/hooks/use-toast"
 import { formatCurrency } from "@/lib/utils"
 import { mapLeadFields, LEAD_WITH_CONTACT_QUERY } from "@/lib/field-mapping"
 import { Lead } from "@/types/lead"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 
 interface UserWithLeads {
   id: string
@@ -208,32 +209,20 @@ export default function UsersLeads() {
         <div className="flex-1">
           <div className="min-h-screen bg-background">
             {/* Header */}
-            <div className="border-b bg-card">
-              <div className="container mx-auto px-6 py-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <SidebarTrigger />
-                    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
-                      <Shield className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <h1 className="text-xl font-semibold">Users & Leads Analytics</h1>
-                      <p className="text-sm text-muted-foreground">
-                        Comprehensive view of user performance and detailed lead information
-                      </p>
-                    </div>
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    onClick={fetchUsersWithLeads}
-                    size="sm"
-                  >
-                    <TrendingUp className="h-4 w-4 mr-2" />
-                    Refresh Data
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <IBMPageHeader 
+              title="Users & Leads Analytics"
+              subtitle="Comprehensive view of user performance and detailed lead information"
+              actions={
+                <Button 
+                  variant="outline" 
+                  onClick={fetchUsersWithLeads}
+                  size="sm"
+                >
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Refresh Data
+                </Button>
+              }
+            />
 
             {/* Main Content */}
             <div className="container mx-auto p-6 space-y-6">

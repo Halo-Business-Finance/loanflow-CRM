@@ -12,6 +12,7 @@ import { ScheduleMeetingModal } from "@/components/calendar/ScheduleMeetingModal
 import { addMonths, subMonths, format, isToday, isSameDay } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 
 export default function ActivitiesCalendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -63,24 +64,16 @@ export default function ActivitiesCalendar() {
 
   return (
     <StandardPageLayout>
-      <ResponsiveContainer padding="lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">Calendar</h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage your appointments, meetings, and important deadlines
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button onClick={() => refetch()} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
-              <RefreshCw className="h-3 w-3 mr-2" />
-              Refresh Data
-            </Button>
-          </div>
-        </div>
-      </ResponsiveContainer>
+      <IBMPageHeader 
+        title="Calendar"
+        subtitle="Manage your appointments, meetings, and important deadlines"
+        actions={
+          <Button onClick={() => refetch()} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
+            <RefreshCw className="h-3 w-3 mr-2" />
+            Refresh Data
+          </Button>
+        }
+      />
       
       <ResponsiveContainer>
         <div className="grid gap-6 lg:grid-cols-3">

@@ -6,29 +6,21 @@ import { ResponsiveContainer } from "@/components/ResponsiveContainer"
 import { CheckSquare, AlertTriangle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 
 export default function ActivitiesTasks() {
   return (
     <StandardPageLayout>
-      <ResponsiveContainer padding="lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">Tasks</h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage your daily tasks and action items
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
-              <RefreshCw className="h-3 w-3 mr-2" />
-              Refresh Data
-            </Button>
-          </div>
-        </div>
-      </ResponsiveContainer>
+      <IBMPageHeader 
+        title="Tasks"
+        subtitle="Manage your daily tasks and action items"
+        actions={
+          <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
+            <RefreshCw className="h-3 w-3 mr-2" />
+            Refresh Data
+          </Button>
+        }
+      />
 
       <ResponsiveContainer>
         <div className="space-y-6">

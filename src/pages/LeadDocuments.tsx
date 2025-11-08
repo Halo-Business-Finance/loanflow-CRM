@@ -24,7 +24,7 @@ import {
   DollarSign,
   Calendar,
   Eye
-} from "lucide-react"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 
 export default function LeadDocuments() {
   const { leadId } = useParams<{ leadId: string }>()
@@ -178,31 +178,26 @@ export default function LeadDocuments() {
 
   return (
     <div className="space-y-6 p-6">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate(`/leads/${leadId}`)}
-            className="gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Lead
-          </Button>
-          
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-foreground">
-              Document Portal - {lead.contact_entity?.name || 'Unknown Lead'}
-            </h1>
-            <p className="text-muted-foreground">
-              Manage financial documents for this lead
-            </p>
-          </div>
-          
-          <Button onClick={() => setShowUploadModal(true)} className="gap-2">
-            <Upload className="h-4 w-4" />
-            Upload Document
-          </Button>
-        </div>
+      <IBMPageHeader 
+        title={`Document Portal - ${lead.contact_entity?.name || 'Unknown Lead'}`}
+        subtitle="Manage financial documents for this lead"
+        actions={
+          <>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate(`/leads/${leadId}`)}
+              className="gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Lead
+            </Button>
+            <Button onClick={() => setShowUploadModal(true)} className="gap-2">
+              <Upload className="h-4 w-4" />
+              Upload Document
+            </Button>
+          </>
+        }
+      />
 
         {/* Lead Information Card */}
         <Card className="shadow-soft">

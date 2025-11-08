@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -245,29 +246,22 @@ export default function Support() {
     <div className="min-h-screen bg-background">
       <div className="p-8 space-y-8 animate-fade-in">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Support Center
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage support tickets and connect with our team through live chat
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)} className="h-8 text-xs font-medium">
-              <Filter className="h-3 w-3 mr-2" />
-              Filter
-            </Button>
-            <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
-              <Plus className="h-3 w-3 mr-2" />
-              New Ticket
-            </Button>
-          </div>
-        </div>
+        <IBMPageHeader 
+          title="Support Center"
+          subtitle="Manage support tickets and connect with our team through live chat"
+          actions={
+            <>
+              <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)} className="h-8 text-xs font-medium">
+                <Filter className="h-3 w-3 mr-2" />
+                Filter
+              </Button>
+              <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
+                <Plus className="h-3 w-3 mr-2" />
+                New Ticket
+              </Button>
+            </>
+          }
+        />
 
         {/* Content Area */}
         <div className="space-y-6">

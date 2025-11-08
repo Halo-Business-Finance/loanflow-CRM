@@ -8,6 +8,7 @@ import { useDocuments } from "@/hooks/useDocuments"
 import { DocumentUploadModal } from "@/components/DocumentUploadModal"
 import { format } from "date-fns"
 import { useNavigate } from "react-router-dom"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 
 interface LoanFolder {
   leadId: string
@@ -178,7 +179,7 @@ export default function Documents() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="p-8 space-y-8">
+      <div className="p-8 space-y-8 animate-fade-in">
           {/* Header Skeleton */}
           <div className="flex items-center justify-between">
             <div>
@@ -211,54 +212,47 @@ export default function Documents() {
     <div className="min-h-screen bg-background">
       <div className="p-8 space-y-8 animate-fade-in">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Loan Documents
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Document Command Center - Loan Document Management
-              </p>
+        <IBMPageHeader 
+          title="Loan Documents"
+          subtitle="Document Command Center - Loan Document Management"
+          actions={
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 border border-border rounded-lg p-1">
+                <Button
+                  variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className="h-7 w-7 p-0"
+                >
+                  <Grid className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="h-7 w-7 p-0"
+                >
+                  <List className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              {viewMode === 'list' && (
+                <Button
+                  variant={isCompact ? 'secondary' : 'outline'}
+                  size="sm"
+                  onClick={() => setIsCompact(!isCompact)}
+                  className="h-8 gap-2"
+                >
+                  {isCompact ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                  <span className="text-xs">{isCompact ? 'Normal' : 'Compact'}</span>
+                </Button>
+              )}
+              <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white gap-2">
+                <Upload className="h-3 w-3" />
+                New
+              </Button>
             </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 border border-border rounded-lg p-1">
-              <Button
-                variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                className="h-7 w-7 p-0"
-              >
-                <Grid className="h-3.5 w-3.5" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-                className="h-7 w-7 p-0"
-              >
-                <List className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-            {viewMode === 'list' && (
-              <Button
-                variant={isCompact ? 'secondary' : 'outline'}
-                size="sm"
-                onClick={() => setIsCompact(!isCompact)}
-                className="h-8 gap-2"
-              >
-                {isCompact ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-                <span className="text-xs">{isCompact ? 'Normal' : 'Compact'}</span>
-              </Button>
-            )}
-            <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white gap-2">
-              <Upload className="h-3 w-3" />
-              New
-            </Button>
-          </div>
-        </div>
+          }
+        />
 
         {/* Key Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

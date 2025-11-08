@@ -9,6 +9,7 @@ import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 
 interface DocumentMetrics {
   pending: number

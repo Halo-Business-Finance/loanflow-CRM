@@ -47,25 +47,16 @@ export default function EmergencyMaintenance() {
     <div className="min-h-screen bg-background">
       <div className="p-8 space-y-8 animate-fade-in">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Emergency Maintenance Control
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Monitor and manage emergency shutdown system for critical security incidents
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
+        <IBMPageHeader 
+          title="Emergency Maintenance Control"
+          subtitle="Monitor and manage emergency shutdown system for critical security incidents"
+          actions={
             <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]">
               <RefreshCw className="h-3 w-3 mr-2" />
               Refresh Status
             </Button>
-          </div>
-        </div>
+          }
+        />
 
         {/* Content Area */}
         <div className="space-y-6">

@@ -458,34 +458,22 @@ export default function ExistingBorrowers() {
     <div className="flex flex-col h-full bg-background">
       {/* Modern Header */}
       <div className="p-8 space-y-8 animate-fade-in">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-xl font-semibold text-foreground no-underline">
-                  Existing Borrowers
-                </h1>
-                <span className="text-xs font-medium px-2 py-1">
-                  {clients.length} Borrowers
-                </span>
-              </div>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage and track your existing borrower relationships and portfolios
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
-              <Filter className="h-3 w-3 mr-2" />
-              Filter
-            </Button>
-            <Button onClick={() => setShowAddDialog(true)} size="sm" className="h-8 text-xs font-medium">
-              <Plus className="h-3 w-3 mr-2" />
-              Add Borrower
-            </Button>
-          </div>
-        </div>
+          <IBMPageHeader 
+            title="Existing Borrowers"
+            subtitle="Manage and track your existing borrower relationships and portfolios"
+            actions={
+              <>
+                <Button variant="outline" size="sm" className="h-8 text-xs font-medium">
+                  <Filter className="h-3 w-3 mr-2" />
+                  Filter
+                </Button>
+                <Button onClick={() => setShowAddDialog(true)} size="sm" className="h-8 text-xs font-medium">
+                  <Plus className="h-3 w-3 mr-2" />
+                  Add Borrower
+                </Button>
+              </>
+            }
+          />
 
       {/* Content Area */}
       <div className="space-y-6">

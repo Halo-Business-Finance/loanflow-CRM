@@ -8,6 +8,7 @@ import { useAuth } from "@/components/auth/AuthProvider"
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { Badge } from "@/components/ui/badge"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 
 interface RiskMetrics {
   highRisk: number

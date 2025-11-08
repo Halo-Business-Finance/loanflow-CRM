@@ -55,7 +55,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 interface Notification {
   id: string
   message: string
@@ -422,26 +422,16 @@ export default function Activities() {
   return (
     <div className="min-h-screen bg-background">
       <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Activity Command Center
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Monitor system notifications, user activities, and important updates in real-time
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
+        <IBMPageHeader 
+          title="Activity Command Center"
+          subtitle="Monitor system notifications, user activities, and important updates in real-time"
+          actions={
             <Button onClick={fetchData} variant="outline" size="sm" className="h-8 text-xs font-medium">
               <RefreshCw className="h-3 w-3 mr-2" />
               Refresh Data
             </Button>
-          </div>
-        </div>
+          }
+        />
 
         {/* Content */}
         <div className="space-y-6">

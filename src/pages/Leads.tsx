@@ -551,55 +551,47 @@ export default function Leads() {
     <SecureFormProvider>
       <div className="min-h-screen bg-background">
           <div className="p-8 space-y-8 animate-fade-in">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div>
-                  <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                    Lead Management
-                  </h1>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Manage and track your sales leads and prospects
-                  </p>
+            <IBMPageHeader 
+              title="Lead Management"
+              subtitle="Manage and track your sales leads and prospects"
+              actions={
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 border border-border rounded-lg p-1">
+                    <Button
+                      variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('grid')}
+                      className="h-7 w-7 p-0"
+                    >
+                      <Grid className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      variant={viewMode === 'list' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('list')}
+                      className="h-7 w-7 p-0"
+                    >
+                      <List className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                  {viewMode === 'list' && (
+                    <Button
+                      variant={isCompact ? 'secondary' : 'outline'}
+                      size="sm"
+                      onClick={() => setIsCompact(!isCompact)}
+                      className="h-8 gap-2"
+                    >
+                      {isCompact ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                      <span className="text-xs">{isCompact ? 'Normal' : 'Compact'}</span>
+                    </Button>
+                  )}
+                  <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
+                    <UserPlus className="h-3 w-3 mr-2" />
+                    Add Lead
+                  </Button>
                 </div>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 border border-border rounded-lg p-1">
-                  <Button
-                    variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('grid')}
-                    className="h-7 w-7 p-0"
-                  >
-                    <Grid className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button
-                    variant={viewMode === 'list' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('list')}
-                    className="h-7 w-7 p-0"
-                  >
-                    <List className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-                {viewMode === 'list' && (
-                  <Button
-                    variant={isCompact ? 'secondary' : 'outline'}
-                    size="sm"
-                    onClick={() => setIsCompact(!isCompact)}
-                    className="h-8 gap-2"
-                  >
-                    {isCompact ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-                    <span className="text-xs">{isCompact ? 'Normal' : 'Compact'}</span>
-                  </Button>
-                )}
-                <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
-                  <UserPlus className="h-3 w-3 mr-2" />
-                  Add Lead
-                </Button>
-              </div>
-            </div>
+              }
+            />
 
             {/* Content Area */}
             <div className="space-y-6">

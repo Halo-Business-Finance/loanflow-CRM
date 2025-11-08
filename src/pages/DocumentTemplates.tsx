@@ -9,7 +9,7 @@ import { EmailComposer } from "@/components/EmailComposer"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
-import { format } from "date-fns"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 
 interface DocumentTemplate {
   id: string
@@ -259,45 +259,38 @@ export default function DocumentTemplates() {
     <div className="min-h-screen bg-background">
       <div className="p-8 space-y-8 animate-fade-in">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Document Templates
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage and customize loan document templates
-              </p>
+        <IBMPageHeader 
+          title="Document Templates"
+          subtitle="Manage and customize loan document templates"
+          actions={
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 border border-border rounded-lg p-1">
+                <Button
+                  variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className="h-7 w-7 p-0"
+                >
+                  <Grid className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="h-7 w-7 p-0"
+                >
+                  <List className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              {canAccessAdminFeatures() && (
+                <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white gap-2">
+                  <Plus className="h-3 w-3" />
+                  Create Template
+                </Button>
+              )}
             </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 border border-border rounded-lg p-1">
-              <Button
-                variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                className="h-7 w-7 p-0"
-              >
-                <Grid className="h-3.5 w-3.5" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-                className="h-7 w-7 p-0"
-              >
-                <List className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-            {canAccessAdminFeatures() && (
-              <Button onClick={() => setShowUploadModal(true)} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white gap-2">
-                <Plus className="h-3 w-3" />
-                Create Template
-              </Button>
-            )}
-          </div>
-        </div>
+          }
+        />
 
         {/* Content Area */}
         <div className="space-y-6">

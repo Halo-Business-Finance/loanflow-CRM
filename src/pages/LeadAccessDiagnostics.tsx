@@ -211,17 +211,16 @@ export default function LeadAccessDiagnostics() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Shield className="h-8 w-8" />
-            Lead Access Diagnostics
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            RLS Policy evaluation and access control testing
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
+      <IBMPageHeader 
+        title="Lead Access Diagnostics"
+        subtitle="RLS Policy evaluation and access control testing"
+        actions={
+          <Button onClick={runDiagnostics} disabled={loading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Run Diagnostics
+          </Button>
+        }
+      />
           <Button onClick={runDiagnostics} disabled={loading}>
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Run Diagnostics

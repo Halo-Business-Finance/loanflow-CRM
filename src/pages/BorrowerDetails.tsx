@@ -4,18 +4,16 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 
 export default function BorrowerDetails() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-8 space-y-8 animate-fade-in">
-        <div className="space-y-4">
-          <h1 className="text-xl font-semibold text-foreground no-underline">Borrower Details</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage borrower information and loan details
-          </p>
-        </div>
+        <IBMPageHeader 
+          title="Borrower Details"
+          subtitle="Manage borrower information and loan details"
+        />
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="border border-blue-600">
