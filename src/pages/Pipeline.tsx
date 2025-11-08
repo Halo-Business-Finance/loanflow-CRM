@@ -213,16 +213,15 @@ export default function Pipeline() {
         subtitle="Advanced sales pipeline tracking, opportunity management, and revenue forecasting"
       />
       <div className="p-8 space-y-8 animate-fade-in">
-            <div className="flex items-center gap-3">
-              <Badge variant="default" className="text-xs font-medium px-2 py-1">
-                {overview.totalOpportunities} Opportunities
-              </Badge>
-              <Button onClick={fetchPipelineOverview} variant="outline" size="sm" className="h-8 text-xs font-medium">
-                <RefreshCw className="h-3 w-3 mr-2" />
-                Refresh
-              </Button>
-            </div>
-          </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="default" className="text-xs font-medium px-2 py-1">
+            {overview.totalOpportunities} Opportunities
+          </Badge>
+          <Button onClick={fetchPipelineOverview} variant="outline" size="sm" className="h-8 text-xs font-medium">
+            <RefreshCw className="h-3 w-3 mr-2" />
+            Refresh
+          </Button>
+        </div>
 
         {/* Pipeline Overview Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -544,7 +543,6 @@ export default function Pipeline() {
           <WorkflowAutomation />
         </TabsContent>
       </Tabs>
-      </div>
       </div>
     </div>
   )

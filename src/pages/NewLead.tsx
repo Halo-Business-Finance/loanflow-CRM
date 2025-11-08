@@ -293,8 +293,6 @@ export default function NewLead() {
       <ResponsiveContainer>
         <div className="p-8 space-y-8 animate-fade-in">
         
-        <div className="space-y-8">
-        
         {/* Row 1: Personal, Financial, and Business Information */}
         <div className="grid gap-6 md:grid-cols-3">
           <StandardContentCard title="Personal Information" className="border border-blue-600">

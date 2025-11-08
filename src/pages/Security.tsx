@@ -117,20 +117,20 @@ const SecurityPage: React.FC = () => {
         />
         <ResponsiveContainer>
           <div className="p-8 space-y-8 animate-fade-in">
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm" 
-              className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white"
-              onClick={() => window.location.reload()}
-            >
-              <RefreshCw className="h-3 w-3 mr-2" />
-              Refresh Data
-            </Button>
-          </div>
-        </div>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm" 
+                className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white"
+                onClick={() => window.location.reload()}
+              >
+                <RefreshCw className="h-3 w-3 mr-2" />
+                Refresh Data
+              </Button>
+            </div>
+
+        {/* Security Overview Metrics */}
         
-        <ResponsiveContainer padding="md" maxWidth="full">
-          <div className="space-y-6">
+        <div className="space-y-6">
             {/* Security Score Overview */}
             <Card className="border-0">
               <CardContent className="pt-6">
@@ -392,8 +392,8 @@ const SecurityPage: React.FC = () => {
               </TabsContent>
             </Tabs>
           </div>
+          </div>
         </ResponsiveContainer>
-        </div>
       </StandardPageLayout>
     </SecurityWrapper>
   );

@@ -204,8 +204,8 @@ export default function LeadAssignmentPage() {
         subtitle="Assign leads to team members and view performance statistics"
       />
       <div className="p-8 space-y-8 animate-fade-in">
-          
-          <Tabs value={location.pathname} onValueChange={(value) => navigate(value)}>
+        
+        <Tabs value={location.pathname} onValueChange={(value) => navigate(value)}>
             <TabsList className="grid w-full max-w-md grid-cols-2 bg-muted p-1">
               <TabsTrigger value="/leads/assignment" className="flex items-center gap-2 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">
                 <Users className="h-4 w-4" />
@@ -407,7 +407,7 @@ export default function LeadAssignmentPage() {
                 <Button size="sm" className="h-9">Save Assignment Rules</Button>
             </div>
           </div>
-        </div>
+        </StandardContentCard>
       </div>
     </div>
   )

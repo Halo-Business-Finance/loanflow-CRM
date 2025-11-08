@@ -222,12 +222,12 @@ export default function SecurityAccess() {
         subtitle="Manage user roles, permissions, and access controls"
       />
       <div className="p-8 space-y-8 animate-fade-in">
-          <div className="flex items-center gap-2">
-            <Button 
-              onClick={fetchSecurityData}
-              size="sm" 
-              className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]"
-            >
+        <div className="flex items-center gap-2">
+          <Button 
+            onClick={fetchSecurityData}
+            size="sm" 
+            className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]"
+          >
               <RefreshCw className="h-3 w-3 mr-2" />
               Refresh
             </Button>
@@ -239,7 +239,6 @@ export default function SecurityAccess() {
               Add User
             </Button>
           </div>
-        </div>
 
         {/* Content Area */}
         <div className="space-y-6">
@@ -455,7 +454,6 @@ export default function SecurityAccess() {
               </StandardContentCard>
             </TabsContent>
           </Tabs>
-          </div>
         </div>
       </div>
     </div>
