@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
+import { logger } from '@/lib/logger';
 
 interface EmailAccount {
   id: string;
@@ -45,7 +46,7 @@ export const useSecureEmailAccounts = () => {
 
       setEmailAccounts(data || []);
     } catch (error: any) {
-      console.error('Error loading email accounts:', error);
+      logger.error('Error loading email accounts:', error);
       toast({
         title: "Error",
         description: "Failed to load email accounts",
@@ -71,7 +72,7 @@ export const useSecureEmailAccounts = () => {
 
       return data?.[0] || null;
     } catch (error: any) {
-      console.error('Error getting secure tokens:', error);
+      logger.error('Error getting secure tokens');
       toast({
         title: "Security Error",
         description: "Failed to retrieve email tokens securely",
@@ -113,7 +114,7 @@ export const useSecureEmailAccounts = () => {
         description: "Email account connected securely",
       });
     } catch (error: any) {
-      console.error('Error storing secure tokens:', error);
+      logger.error('Error storing secure tokens');
       toast({
         title: "Security Error",
         description: "Failed to store email tokens securely",
@@ -147,7 +148,7 @@ export const useSecureEmailAccounts = () => {
         description: "Email account disconnected securely",
       });
     } catch (error: any) {
-      console.error('Error deactivating account:', error);
+      logger.error('Error deactivating account');
       toast({
         title: "Error",
         description: "Failed to disconnect account",

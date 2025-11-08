@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 import { useToast } from '@/hooks/use-toast';
 import {
   Table,
@@ -188,7 +189,7 @@ export default function UserDirectory() {
         throw new Error('No users data returned from edge function');
       }
     } catch (error: any) {
-      console.error('Error fetching users:', error);
+      logger.error('Error fetching users:', error);
       toast({
         title: 'Error loading users',
         description: error?.message || 'Failed to send a request to the Edge Function',
@@ -283,7 +284,7 @@ export default function UserDirectory() {
       setIsEditing(false);
       fetchUsers(); // Refresh the user list
     } catch (error: any) {
-      console.error('Error updating user:', error);
+      logger.error('Error updating user');
       toast({
         title: 'Error',
         description: error?.message || 'Failed to update user details',
@@ -329,7 +330,7 @@ export default function UserDirectory() {
       createForm.reset();
       fetchUsers(); // Refresh the user list
     } catch (error: any) {
-      console.error('Error creating user:', error);
+      logger.error('Error creating user');
       toast({
         title: 'Error',
         description: error?.message || 'Failed to create user',
@@ -363,7 +364,7 @@ export default function UserDirectory() {
       setIsDialogOpen(false);
       fetchUsers(); // Refresh the user list
     } catch (error: any) {
-      console.error('Error deleting user:', error);
+      logger.error('Error deleting user');
       toast({
         title: 'Error',
         description: error?.message || 'Failed to delete user',
@@ -466,7 +467,7 @@ export default function UserDirectory() {
       setBulkActionType(null);
       fetchUsers(); // Refresh the user list
     } catch (error: any) {
-      console.error('Error in bulk action:', error);
+      logger.error('Error in bulk action');
       toast({
         title: 'Error',
         description: error?.message || 'Failed to complete bulk action',
@@ -505,7 +506,7 @@ export default function UserDirectory() {
         description: `A password reset email has been sent to ${user.email}`,
       });
     } catch (error: any) {
-      console.error('Error sending password reset:', error);
+      logger.error('Error sending password reset');
       toast({
         title: 'Error',
         description: error?.message || 'Failed to send password reset email',

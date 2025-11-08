@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import { Users, Plus, Settings, Shield, Search, Edit3, Trash2, RotateCcw, UserCheck, MoreHorizontal, Lock, Archive, Filter } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
+import { logger } from "@/lib/logger"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { useToast } from "@/hooks/use-toast"
 import { useSecureRoleManagement } from "@/hooks/useSecureRoleManagement"
@@ -93,21 +94,19 @@ export default function SettingsUsers() {
         }
 
         if (edgeResponse?.users) {
-          console.log('Raw edge response users:', edgeResponse.users)
+          logger.debug('Processing users from edge response');
           const transformedUsers = edgeResponse.users.map((profile: any) => {
-            console.log('Transforming profile:', profile)
             const transformed = {
-              ...profile,
-              user_id: profile.id,
-              phone: profile.phone_number || '',
-              role: normalizeRole(profile.role || 'loan_originator'),
-              is_active: profile.is_active !== false // Ensure boolean
+              id: profile.id,
+              email: profile.email || '',
+              role: profile.role || 'user',
+              is_active: profile.is_active ?? true,
+              display_name: profile.display_name || ''
             }
-            console.log('Transformed user:', transformed)
             return transformed
           })
           
-          console.log('Final transformed users:', transformedUsers)
+          logger.debug('Users transformed successfully');
           setUsers(transformedUsers)
           return
         }
@@ -301,7 +300,7 @@ export default function SettingsUsers() {
       // Refresh users list
       await fetchUsers()
     } catch (error: any) {
-      console.error('Error deleting user:', error)
+      logger.error('Error deleting user:', error)
       toast({
         title: "Error",
         description: error.message || "Failed to delete user.",
@@ -341,11 +340,11 @@ export default function SettingsUsers() {
             successCount++
           } else {
             failCount++
-            console.error('Bulk delete failed for user', userIds[idx], r.value?.error || payload)
+            logger.error('Bulk delete failed for user', userIds[idx])
           }
         } else {
           failCount++
-          console.error('Bulk delete rejected for user', userIds[idx], r.reason)
+          logger.error('Bulk delete rejected for user', userIds[idx])
         }
       })
 
@@ -460,7 +459,7 @@ export default function SettingsUsers() {
             <Button 
               variant="outline" 
               onClick={() => {
-                console.log('Force refreshing user data...')
+                logger.debug('Force refreshing user data');
                 fetchUsers()
               }}
               disabled={loading}
@@ -679,7 +678,6 @@ export default function SettingsUsers() {
                 {/* Enterprise Table Body */}
                 <div className="bg-white dark:bg-slate-950 rounded-b-xl overflow-hidden">
                   {filteredUsers.map((user, index) => {
-                    console.log('Rendering user:', user.email, 'role:', user.role, 'is_active:', user.is_active)
                     return (
                     <div key={user.id} className={`grid grid-cols-[280px_300px_220px_200px] gap-4 text-sm p-6 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-900/50 ${index !== filteredUsers.length - 1 ? 'border-b border-slate-100 dark:border-slate-800' : ''}`}>
                       <div className="flex items-center gap-4">
@@ -1142,7 +1140,7 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
         description: "User password has been successfully reset.",
       });
     } catch (error: any) {
-      console.error('Password reset error:', error);
+      logger.error('Password reset failed');
       toast({
         title: "Password Reset Failed",
         description: error.message || "Failed to reset password.",
@@ -1173,8 +1171,7 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
     setSaving(true);
 
     try {
-      console.log('Attempting to update user:', user.id);
-      console.log('Form data:', formData);
+      logger.secureLog('User update initiated', { targetUserId: user.id });
 
       // Try to update using the admin function first
       try {
@@ -1187,18 +1184,18 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
         });
 
         if (adminError) {
-          console.error('Admin update profile error:', adminError);
+          logger.error('Admin update profile failed');
           throw new Error(`Failed to update profile: ${adminError.message}`);
         }
 
-        console.log('Profile updated successfully via admin function:', updateResult);
+        logger.secureLog('Profile updated successfully', { targetUserId: user.id });
       } catch (error) {
         throw error;
       }
 
       // Handle role separately if it changed - using secure role management
       if (roleChanged) {
-        console.log('Updating role from', user.role, 'to', formData.role);
+        logger.secureLog('Role change initiated', { targetUserId: user.id, newRole: formData.role });
         
         const result = await assignUserRole(
           user.id,
@@ -1229,7 +1226,7 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
       });
 
     } catch (error: any) {
-      console.error('Error updating user:', error);
+      logger.error('Error updating user');
       const errorMessage = error.message || 'An unknown error occurred';
       
       toast({
@@ -1244,9 +1241,9 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
 
   const handleGenerateMfa = async () => {
     try {
-      console.log('Generating MFA verification token...');
+      logger.secureLog('MFA verification token generation initiated');
       const result = await generateMfaVerification();
-      console.log('MFA generation result:', result);
+      logger.secureLog('MFA generation completed');
       
       if (!result.success) {
         toast({
@@ -1256,7 +1253,7 @@ function EditUserForm({ user, onSave, onCancel }: EditUserFormProps) {
         });
       }
     } catch (error: any) {
-      console.error('Error generating MFA:', error);
+      logger.error('Error generating MFA');
       toast({
         title: "Error",
         description: error.message || "An error occurred while generating MFA token.",
@@ -1558,7 +1555,7 @@ function AddUserForm({ onSave, onCancel }: AddUserFormProps) {
 
       onSave(data);
     } catch (error: any) {
-      console.error('Error creating user:', error);
+      logger.error('Error creating user');
       toast({
         title: "Failed to Create User",
         description: error.message || 'An unknown error occurred',

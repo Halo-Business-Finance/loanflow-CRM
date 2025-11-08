@@ -5,6 +5,8 @@
  * For World Government and Military Grade Security requirements.
  */
 
+import { logger } from './logger';
+
 export interface CSPConfig {
   'default-src': string[];
   'script-src': string[];
@@ -117,7 +119,7 @@ export function applyCSPMetaTag(): void {
   meta.content = cspString;
   document.head.appendChild(meta);
 
-  console.log('[Security] CSP meta tag applied');
+  logger.info('[Security] CSP meta tag applied');
 }
 
 /**
@@ -165,7 +167,7 @@ export function applySecurityHeaders(): void {
     document.head.appendChild(meta4);
   }
 
-  console.log('[Security] Security headers applied');
+  logger.info('[Security] Security headers applied');
 }
 
 /**
@@ -185,12 +187,9 @@ export function initializeSecurityHeaders(): void {
 export function setupCSPReporting(): void {
   if (typeof document !== 'undefined') {
     document.addEventListener('securitypolicyviolation', async (e) => {
-      console.error('[CSP Violation]', {
+      logger.warn('[CSP Violation]', {
         blockedURI: e.blockedURI,
-        violatedDirective: e.violatedDirective,
-        originalPolicy: e.originalPolicy,
-        sourceFile: e.sourceFile,
-        lineNumber: e.lineNumber
+        violatedDirective: e.violatedDirective
       });
 
       // Log to Supabase for monitoring
@@ -208,7 +207,7 @@ export function setupCSPReporting(): void {
           }
         });
       } catch (error) {
-        console.error('Failed to log CSP violation:', error);
+        logger.error('Failed to log CSP violation');
       }
     });
   }

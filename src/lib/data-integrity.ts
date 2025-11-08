@@ -173,22 +173,50 @@ export class DataIntegrity {
       }
     };
     
-    // Store audit entry (in production, this would go to a secure audit log)
-    const auditLog = JSON.parse(localStorage.getItem('_audit_log') || '[]');
-    auditLog.push(entry);
-    
-    // Keep only last 1000 entries to prevent storage overflow
-    if (auditLog.length > 1000) {
-      auditLog.splice(0, auditLog.length - 1000);
+    // Store audit entry to server for critical operations
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      await supabase.from('audit_logs').insert({
+        action,
+        user_id: userId,
+        details: {
+          ...entry.metadata,
+          dataHash: entry.dataHash
+        }
+      });
+    } catch (error) {
+      // Fallback to localStorage only if server logging fails
+      const auditLog = JSON.parse(localStorage.getItem('_audit_log') || '[]');
+      auditLog.push(entry);
+      
+      // Keep only last 100 entries to prevent storage overflow
+      if (auditLog.length > 100) {
+        auditLog.splice(0, auditLog.length - 100);
+      }
+      
+      localStorage.setItem('_audit_log', JSON.stringify(auditLog));
     }
-    
-    localStorage.setItem('_audit_log', JSON.stringify(auditLog));
     
     return entry;
   }
 
-  // Retrieve audit trail
-  static getAuditTrail(limit: number = 100): any[] {
+  // Retrieve audit trail - prefer server-side
+  static async getAuditTrail(limit: number = 100): Promise<any[]> {
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data, error } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      
+      if (!error && data) {
+        return data;
+      }
+    } catch (error) {
+      // Fallback to localStorage if server query fails
+    }
+    
     const auditLog = JSON.parse(localStorage.getItem('_audit_log') || '[]');
     return auditLog.slice(-limit).reverse(); // Most recent first
   }

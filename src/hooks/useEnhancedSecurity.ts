@@ -8,6 +8,8 @@ import { sanitizeError } from '@/lib/error-sanitizer';
 import { applyClientSecurityHeaders } from '@/lib/security-headers';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export const useEnhancedSecurity = () => {
   const { user } = useAuth();
@@ -128,7 +130,7 @@ export const useEnhancedSecurity = () => {
     }
   }, []);
 
-  // Monitor suspicious activity
+  // Monitor suspicious activity - Server-side for critical events
   const logSecurityEvent = useCallback(async (
     eventType: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
@@ -137,33 +139,40 @@ export const useEnhancedSecurity = () => {
     try {
       if (!user) return;
 
-      // Only log in production or for high/critical events
-      if (!import.meta.env.PROD && severity !== 'high' && severity !== 'critical') {
-        return;
-      }
+      // For high/critical events, log to server immediately
+      if (severity === 'high' || severity === 'critical') {
+        await supabase.from('security_events').insert({
+          event_type: eventType,
+          severity,
+          user_id: user.id,
+          details: {
+            ...details,
+            timestamp: new Date().toISOString()
+          }
+        });
 
-      // Log to local storage for batching (privacy-preserving)
-      const events = JSON.parse(localStorage.getItem('_security_events') || '[]');
-      events.push({
-        type: eventType,
-        severity,
-        timestamp: Date.now(),
-        details: severity === 'high' || severity === 'critical' ? details : undefined
-      });
+        // Immediately notify for critical events
+        if (severity === 'critical') {
+          toast.error('Security alert detected. Please review your account.');
+        }
+      } else {
+        // Low/medium events: Use local storage for batching (non-critical)
+        const events = JSON.parse(localStorage.getItem('_security_events') || '[]');
+        events.push({
+          type: eventType,
+          severity,
+          timestamp: Date.now()
+        });
 
-      // Keep only last 50 events
-      if (events.length > 50) {
-        events.splice(0, events.length - 50);
-      }
+        // Keep only last 50 events
+        if (events.length > 50) {
+          events.splice(0, events.length - 50);
+        }
 
-      localStorage.setItem('_security_events', JSON.stringify(events));
-
-      // For critical events, immediately notify
-      if (severity === 'critical') {
-        toast.error('Security alert detected. Please review your account.');
+        localStorage.setItem('_security_events', JSON.stringify(events));
       }
     } catch (error) {
-      console.error('Failed to log security event');
+      logger.error('Failed to log security event');
     }
   }, [user]);
 

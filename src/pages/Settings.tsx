@@ -22,6 +22,7 @@ import {
   Mail,
   RefreshCw
 } from "lucide-react"
+import { logger } from "@/lib/logger"
 import { RingCentralSetup } from "@/components/RingCentralSetup"
 import { EmailSetup } from "@/components/EmailSetup"
 import { SystemHealthMonitor } from "@/components/SystemHealthMonitor"
@@ -46,9 +47,7 @@ export default function Settings() {
   const [isChangingPassword, setIsChangingPassword] = useState(false)
   const [activeTab, setActiveTab] = useState("profile")
   useEffect(() => {
-    if (import.meta.env.DEV) {
-      console.info('[Page] Settings mounted');
-    }
+    logger.info('[Page] Settings mounted');
 
     // Sync active tab from query params
     const tabParam = searchParams.get('tab');
@@ -73,7 +72,7 @@ export default function Settings() {
             setUserRole(role)
           }
         } catch (error) {
-          console.error('Error fetching user role:', error)
+          logger.error('Error fetching user role:', error)
         }
       }
     }
@@ -101,7 +100,7 @@ export default function Settings() {
         description: "Your profile has been successfully updated.",
       })
     } catch (error) {
-      console.error("Error updating profile:", error)
+      logger.error("Error updating profile:", error)
       toast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
@@ -122,7 +121,7 @@ export default function Settings() {
         description: "Your notification preferences have been saved.",
       })
     } catch (error) {
-      console.error("Error updating preferences:", error)
+      logger.error("Error updating preferences:", error)
       toast({
         title: "Error",
         description: "Failed to update preferences. Please try again.",
@@ -134,7 +133,7 @@ export default function Settings() {
   }
 
   const handleChangePassword = async () => {
-    console.log('handleChangePassword called', { newPassword: !!newPassword, confirmPassword: !!confirmPassword });
+    logger.secureLog('Password change operation initiated', { userId: user?.id });
     
     if (!newPassword || !confirmPassword) {
       toast({
@@ -164,7 +163,7 @@ export default function Settings() {
     }
 
     setIsChangingPassword(true)
-    console.log('Attempting to update password...');
+    logger.secureLog('Attempting password update', { userId: user?.id });
     
     try {
       const { error } = await supabase.auth.updateUser({
@@ -172,11 +171,11 @@ export default function Settings() {
       })
 
       if (error) {
-        console.error('Supabase password update error:', error);
+        logger.error('Password update failed');
         throw error;
       }
 
-      console.log('Password updated successfully');
+      logger.secureLog('Password updated successfully', { userId: user?.id });
 
       // Clear password fields
       setCurrentPassword("")
@@ -188,7 +187,7 @@ export default function Settings() {
         description: "Your password has been successfully changed.",
       })
     } catch (error) {
-      console.error("Error updating password:", error)
+      logger.error("Error updating password")
       toast({
         title: "Error",
         description: "Failed to update password. Please try again.",
