@@ -874,7 +874,7 @@ export default function Dashboard() {
               size="sm"
               onClick={() => setCustomizeMode(!customizeMode)}
               className={cn(
-                "h-10 px-4 gap-2",
+                "h-10 px-4 gap-2 border-2 border-[#001f3f]",
                 customizeMode && "bg-blue-600 hover:bg-blue-700 text-white"
               )}
             >
