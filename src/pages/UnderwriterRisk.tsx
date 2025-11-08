@@ -1,8 +1,7 @@
-import { StandardPageLayout } from "@/components/StandardPageLayout"
-import { StandardPageHeader } from "@/components/StandardPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
-import { ResponsiveContainer } from "@/components/ResponsiveContainer"
-import { Activity, TrendingUp, AlertTriangle, Shield } from "lucide-react"
+import { Activity, TrendingUp, AlertTriangle, Shield, RefreshCw, BarChart3, FileText } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useEffect, useState } from "react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
@@ -27,6 +26,7 @@ interface RiskMetrics {
 export default function UnderwriterRisk() {
   const { user } = useAuth()
   const { hasRole } = useRoleBasedAccess()
+  const [activeTab, setActiveTab] = useState("overview")
   const [metrics, setMetrics] = useState<RiskMetrics>({
     highRisk: 0,
     mediumRisk: 0,
@@ -200,14 +200,37 @@ export default function UnderwriterRisk() {
     return <Badge variant={variant}>{label}</Badge>
   }
   return (
-    <StandardPageLayout>
-      <StandardPageHeader
-        title="Loan Risk Assessment"
-        description="Comprehensive risk analysis and assessment tools for loan underwriting"
-      />
+    <div className="min-h-screen bg-background">
+      <div className="p-8 space-y-8 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Loan Risk Assessment
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Comprehensive risk analysis and assessment tools for loan underwriting
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              size="sm" 
+              onClick={fetchRiskData}
+              disabled={loading}
+              className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]"
+            >
+              <RefreshCw className={`h-3 w-3 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Refresh Data
+            </Button>
+          </div>
+        </div>
 
-      <ResponsiveContainer>
+        {/* Content Area */}
         <div className="space-y-6">
+          {/* Risk Metrics */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <StandardContentCard>
               <div className="flex items-center justify-between mb-2">
@@ -246,56 +269,143 @@ export default function UnderwriterRisk() {
             </StandardContentCard>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <StandardContentCard title="Risk Factors Analysis">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Credit Score Range</span>
-                  <span className="text-sm font-medium">650-850</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Debt-to-Income Ratio</span>
-                  <span className="text-sm font-medium">&lt; 43%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Employment History</span>
-                  <span className="text-sm font-medium">2+ years</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Down Payment</span>
-                  <span className="text-sm font-medium">≥ 20%</span>
-                </div>
-              </div>
-            </StandardContentCard>
+          {/* Tabs for different risk views */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3 bg-[#0A1628] p-1 gap-2">
+              <TabsTrigger 
+                value="overview" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <BarChart3 className="w-4 h-4" />
+                <span>Overview</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="factors" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Shield className="w-4 h-4" />
+                <span>Risk Factors</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="assessments" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <FileText className="w-4 h-4" />
+                <span>Assessments</span>
+              </TabsTrigger>
+            </TabsList>
 
-            <StandardContentCard title="Recent Risk Assessments">
-              <div className="space-y-4">
-                {loading ? (
-                  <div className="text-sm text-muted-foreground">Loading assessments...</div>
-                ) : metrics.recentAssessments.length === 0 ? (
-                  <div className="text-sm text-muted-foreground text-center py-4">
-                    No risk assessments available yet. Add leads to see risk analysis.
-                  </div>
-                ) : (
-                  metrics.recentAssessments.map((assessment) => (
-                    <div key={assessment.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-medium">{assessment.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {formatCurrency(assessment.amount)}
-                        </p>
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
+                <StandardContentCard title="Risk Distribution">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-600 rounded-full"></div>
+                        <span className="text-sm">High Risk</span>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        {getRiskBadge(assessment.riskLevel, assessment.riskScore)}
-                      </div>
+                      <span className="text-sm font-medium">{metrics.highRisk}</span>
                     </div>
-                  ))
-                )}
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-yellow-600 rounded-full"></div>
+                        <span className="text-sm">Medium Risk</span>
+                      </div>
+                      <span className="text-sm font-medium">{metrics.mediumRisk}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                        <span className="text-sm">Low Risk</span>
+                      </div>
+                      <span className="text-sm font-medium">{metrics.lowRisk}</span>
+                    </div>
+                  </div>
+                </StandardContentCard>
+
+                <StandardContentCard title="Portfolio Health">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Average Risk Score</span>
+                      <span className="text-sm font-medium">{metrics.avgScore}/100</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Total Applications</span>
+                      <span className="text-sm font-medium">{metrics.highRisk + metrics.mediumRisk + metrics.lowRisk}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">High Risk Percentage</span>
+                      <span className="text-sm font-medium">
+                        {((metrics.highRisk / (metrics.highRisk + metrics.mediumRisk + metrics.lowRisk || 1)) * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  </div>
+                </StandardContentCard>
               </div>
-            </StandardContentCard>
-          </div>
+            </TabsContent>
+
+            <TabsContent value="factors" className="space-y-6">
+              <StandardContentCard title="Risk Factors Analysis">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Credit Score Range</span>
+                    <span className="text-sm font-medium">650-850</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Debt-to-Income Ratio</span>
+                    <span className="text-sm font-medium">&lt; 43%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Employment History</span>
+                    <span className="text-sm font-medium">2+ years</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Down Payment</span>
+                    <span className="text-sm font-medium">≥ 20%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Business Age (SBA)</span>
+                    <span className="text-sm font-medium">2+ years</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Annual Revenue</span>
+                    <span className="text-sm font-medium">≥ $100,000</span>
+                  </div>
+                </div>
+              </StandardContentCard>
+            </TabsContent>
+
+            <TabsContent value="assessments" className="space-y-6">
+              <StandardContentCard title="Recent Risk Assessments">
+                <div className="space-y-4">
+                  {loading ? (
+                    <div className="text-sm text-muted-foreground">Loading assessments...</div>
+                  ) : metrics.recentAssessments.length === 0 ? (
+                    <div className="text-sm text-muted-foreground text-center py-8">
+                      <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                      <p>No risk assessments available yet. Add leads to see risk analysis.</p>
+                    </div>
+                  ) : (
+                    metrics.recentAssessments.map((assessment) => (
+                      <div key={assessment.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                        <div>
+                          <p className="font-medium">{assessment.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {formatCurrency(assessment.amount)}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {getRiskBadge(assessment.riskLevel, assessment.riskScore)}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </StandardContentCard>
+            </TabsContent>
+          </Tabs>
         </div>
-      </ResponsiveContainer>
-    </StandardPageLayout>
+      </div>
+    </div>
   )
 }
