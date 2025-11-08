@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -234,24 +235,25 @@ export const LoanCloserDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Loan Closer Dashboard</h1>
-          <p className="text-muted-foreground">Manage funding approvals, scheduled closings, and loan completions</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Export Report
-          </Button>
-          <Button size="sm">
-            <HandCoins className="h-4 w-4 mr-2" />
-            Fund Loans
-          </Button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-background">
+      <IBMPageHeader
+        title="Loan Closer Dashboard"
+        subtitle="Manage funding approvals, scheduled closings, and loan completions"
+        actions={
+          <>
+            <Button variant="outline" size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Export Report
+            </Button>
+            <Button size="sm" className="bg-[#0f62fe] hover:bg-[#0353e9] text-white">
+              <HandCoins className="h-4 w-4 mr-2" />
+              Fund Loans
+            </Button>
+          </>
+        }
+      />
+
+      <div className="p-6 space-y-6">
       {/* Key Metrics Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         <Card>
@@ -509,6 +511,7 @@ export const LoanCloserDashboard = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 };

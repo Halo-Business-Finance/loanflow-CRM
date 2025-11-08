@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { 
   FileCheck, 
   Calendar, 
@@ -120,20 +121,13 @@ export const CloserDashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-card/60 to-card/30 backdrop-blur-sm rounded-xl p-6 border border-border/20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
-            <FileCheck className="w-5 h-5 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Closer Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Manage loan closings and finalizations</p>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-background">
+      <IBMPageHeader
+        title="Closer Dashboard"
+        subtitle="Manage loan closings and finalizations"
+      />
 
+      <div className="p-8 space-y-6">
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <Card>
@@ -305,6 +299,7 @@ export const CloserDashboard = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 };

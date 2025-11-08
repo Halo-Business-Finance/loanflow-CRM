@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { 
   FileText, 
   Clock, 
@@ -186,17 +187,15 @@ export const LoanProcessorDashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-card/60 to-card/30 backdrop-blur-sm rounded-xl p-6 border border-border/20">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Loan Processor Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Manage and process loan applications</p>
-        </div>
-      </div>
+    <div className="min-h-screen bg-background">
+      <IBMPageHeader
+        title="Loan Processor Dashboard"
+        subtitle="Manage and process loan applications"
+      />
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="p-8 space-y-6">
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Applications</CardTitle>
@@ -360,6 +359,7 @@ export const LoanProcessorDashboard = () => {
           <WorkflowAutomation />
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { StandardContentCard } from '@/components/StandardContentCard';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { 
   Shield, 
   Clock, 
@@ -158,32 +159,22 @@ export const UnderwriterDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Underwriter Dashboard
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Review and approve loan applications
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button 
-              size="sm" 
-              onClick={fetchUnderwriterData}
-              className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]"
-            >
-              <RefreshCw className="h-3 w-3 mr-2" />
-              Refresh Data
-            </Button>
-          </div>
-        </div>
+      <IBMPageHeader
+        title="Underwriter Dashboard"
+        subtitle="Review and approve loan applications"
+        actions={
+          <Button 
+            size="sm" 
+            onClick={fetchUnderwriterData}
+            className="h-9 px-4 bg-[#0f62fe] hover:bg-[#0353e9] text-white"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh Data
+          </Button>
+        }
+      />
 
+      <div className="p-8 space-y-8 animate-fade-in">
         {/* Content Area */}
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
