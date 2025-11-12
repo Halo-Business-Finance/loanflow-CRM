@@ -206,7 +206,7 @@ export const LoanProcessorDashboard = () => {
               Loan Documents
             </TabsTrigger>
             <TabsTrigger value="pipeline" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
-              Processing Pipeline
+              Loan Processing Pipeline
             </TabsTrigger>
             <TabsTrigger value="completed" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
               Completed Today
