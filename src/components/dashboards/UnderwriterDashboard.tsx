@@ -26,8 +26,6 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency, formatNumber } from '@/lib/utils';
-import { AdvancedAnalytics } from '@/components/analytics/AdvancedAnalytics';
-import { TeamCollaboration } from '@/components/collaboration/TeamCollaboration';
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer as RechartsResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, Area, AreaChart } from 'recharts';
 import { UnderwriterDocuments } from './UnderwriterDocuments';
 
@@ -297,7 +295,7 @@ export const UnderwriterDashboard = () => {
 
           {/* Main Content */}
           <Tabs defaultValue="documents" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-7 bg-[#0A1628] p-1 gap-2">
+            <TabsList className="grid w-full grid-cols-5 bg-[#0A1628] p-1 gap-2">
               <TabsTrigger
                 value="documents" 
                 className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
@@ -332,20 +330,6 @@ export const UnderwriterDashboard = () => {
               >
                 <PieChart className="w-4 h-4" />
                 <span>Charts</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="advanced-analytics" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-              >
-                <TrendingUp className="w-4 h-4" />
-                <span>Advanced</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="collaboration" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-              >
-                <Users className="w-4 h-4" />
-                <span>Team</span>
               </TabsTrigger>
             </TabsList>
 
@@ -696,14 +680,6 @@ export const UnderwriterDashboard = () => {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
-
-        <TabsContent value="advanced-analytics" className="space-y-4">
-          <AdvancedAnalytics />
-        </TabsContent>
-
-        <TabsContent value="collaboration" className="space-y-4">
-          <TeamCollaboration />
         </TabsContent>
         </Tabs>
         </div>
