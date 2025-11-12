@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users, KeyRound, RefreshCw, TrendingUp } from 'lucide-react';
+import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users, KeyRound, RefreshCw, TrendingUp, Briefcase } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -118,6 +118,11 @@ export default function UserDirectory() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [sendingPasswordReset, setSendingPasswordReset] = useState<string | null>(null);
+  const [isAssignLeadOpen, setIsAssignLeadOpen] = useState(false);
+  const [selectedAssignUser, setSelectedAssignUser] = useState<UserProfile | null>(null);
+  const [unassignedLeads, setUnassignedLeads] = useState<Array<{ id: string; name: string; email: string }>>([]);
+  const [selectedLeadId, setSelectedLeadId] = useState<string>('');
+  const [loadingLeads, setLoadingLeads] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof userEditSchema>>({
@@ -517,6 +522,91 @@ export default function UserDirectory() {
     }
   };
 
+  const fetchUnassignedLeads = async () => {
+    setLoadingLeads(true);
+    try {
+      const { data: leads, error } = await supabase
+        .from('leads')
+        .select(`
+          id,
+          contact_entity_id,
+          contact_entities (
+            first_name,
+            last_name,
+            email
+          )
+        `)
+        .is('loan_originator_id', null)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+
+      const formattedLeads = (leads || []).map(lead => {
+        const contact = lead.contact_entities as any;
+        return {
+          id: lead.id,
+          name: `${contact?.first_name || ''} ${contact?.last_name || ''}`.trim() || 'Unnamed Lead',
+          email: contact?.email || 'No email'
+        };
+      });
+
+      setUnassignedLeads(formattedLeads);
+    } catch (error) {
+      logger.error('Error fetching unassigned leads:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load unassigned leads',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoadingLeads(false);
+    }
+  };
+
+  const handleOpenAssignLead = (user: UserProfile) => {
+    setSelectedAssignUser(user);
+    setSelectedLeadId('');
+    setIsAssignLeadOpen(true);
+    fetchUnassignedLeads();
+  };
+
+  const handleAssignLead = async () => {
+    if (!selectedLeadId || !selectedAssignUser) {
+      toast({
+        title: 'Selection Required',
+        description: 'Please select a lead to assign',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('leads')
+        .update({ loan_originator_id: selectedAssignUser.id })
+        .eq('id', selectedLeadId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Lead Assigned',
+        description: `Lead successfully assigned to ${selectedAssignUser.first_name} ${selectedAssignUser.last_name}`,
+      });
+
+      setIsAssignLeadOpen(false);
+      setSelectedLeadId('');
+      setSelectedAssignUser(null);
+    } catch (error) {
+      logger.error('Error assigning lead:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to assign lead',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const totalUsers = users.length;
   const activeUsers = users.length; // All fetched users are considered active
   const pendingInvites = 0; // Would need a separate invites table
@@ -795,6 +885,14 @@ export default function UserDirectory() {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleOpenAssignLead(user)}
+                            title="Assign lead to this user"
+                          >
+                            <Briefcase className="h-4 w-4" />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -1321,6 +1419,69 @@ export default function UserDirectory() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Assign Lead Dialog */}
+      <Dialog open={isAssignLeadOpen} onOpenChange={setIsAssignLeadOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Assign Lead</DialogTitle>
+            <DialogDescription>
+              Assign an unassigned lead to {selectedAssignUser?.first_name} {selectedAssignUser?.last_name}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            {loadingLeads ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : unassignedLeads.length > 0 ? (
+              <div className="space-y-2">
+                <Label htmlFor="lead-select">Select Lead</Label>
+                <Select value={selectedLeadId} onValueChange={setSelectedLeadId}>
+                  <SelectTrigger id="lead-select">
+                    <SelectValue placeholder="Choose a lead to assign" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {unassignedLeads.map((lead) => (
+                      <SelectItem key={lead.id} value={lead.id}>
+                        {lead.name} ({lead.email})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground">
+                  {unassignedLeads.length} unassigned lead{unassignedLeads.length !== 1 ? 's' : ''} available
+                </p>
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <p className="text-sm">No unassigned leads available</p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-end space-x-2">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setIsAssignLeadOpen(false);
+                setSelectedLeadId('');
+                setSelectedAssignUser(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleAssignLead}
+              disabled={!selectedLeadId || loadingLeads}
+            >
+              <Briefcase className="h-4 w-4 mr-2" />
+              Assign Lead
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
       </div>
       </div>
     </div>
