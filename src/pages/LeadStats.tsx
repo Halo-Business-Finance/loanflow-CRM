@@ -93,8 +93,8 @@ export default function LeadStats() {
   return (
     <div className="flex flex-col h-full bg-background">
       <IBMPageHeader 
-        title="Lead Management"
-        subtitle="Assign leads to team members and view performance statistics"
+        title="Lead Statistics"
+        subtitle="Track lead performance metrics and conversion rates"
       />
       <div className="p-8 space-y-8 animate-fade-in">
         
