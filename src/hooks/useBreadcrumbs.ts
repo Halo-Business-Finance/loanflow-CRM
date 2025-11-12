@@ -10,6 +10,9 @@ export interface BreadcrumbItem {
 const routeLabels: Record<string, string> = {
   '': 'Dashboard',
   'dashboard': 'Dashboard',
+  'dashboards': '', // Skip this segment to avoid duplication
+  'processor': 'Loan Processor',
+  'closer': 'Loan Closer',
   'leads': 'Leads',
   'new-lead': 'New Lead',
   'lead-assignment': 'Lead Assignment',
@@ -91,6 +94,11 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
       } else {
         // Use the route label mapping or format the segment
         const label = routeLabels[segment] || formatSegment(segment);
+        
+        // Skip empty labels (used for segments we want to hide)
+        if (!label) {
+          return;
+        }
         
         // Don't add href for the last item (current page)
         if (index === pathSegments.length - 1) {
