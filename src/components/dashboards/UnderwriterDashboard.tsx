@@ -175,7 +175,7 @@ export const UnderwriterDashboard = () => {
       <div className="p-8 space-y-8 animate-fade-in">
         {/* Main Navigation Tabs */}
         <Tabs defaultValue="risk" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">
+          <TabsList className="grid w-full grid-cols-3 bg-[#0A1628] p-1 gap-2">
             <TabsTrigger 
               value="risk" 
               className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
@@ -196,13 +196,6 @@ export const UnderwriterDashboard = () => {
             >
               <Calculator className="w-4 h-4" />
               <span>Tools</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="charts" 
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-            >
-              <PieChart className="w-4 h-4" />
-              <span>Charts</span>
             </TabsTrigger>
           </TabsList>
 
@@ -352,6 +345,127 @@ export const UnderwriterDashboard = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Data Visualizations */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Risk Distribution Pie Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <PieChart className="h-5 w-5" />
+                  Applications by Risk Level
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RechartsResponsiveContainer width="100%" height={300}>
+                  <RechartsPieChart>
+                    <Pie
+                      data={[
+                        { name: 'Low Risk', value: pendingReviews.filter(app => (app.credit_score || 0) >= 700).length, fill: '#22c55e' },
+                        { name: 'Medium Risk', value: pendingReviews.filter(app => (app.credit_score || 0) >= 600 && (app.credit_score || 0) < 700).length, fill: '#eab308' },
+                        { name: 'High Risk', value: pendingReviews.filter(app => (app.credit_score || 0) < 600).length, fill: '#ef4444' }
+                      ]}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      label={({name, value}) => `${name}: ${value}`}
+                    >
+                      <Cell fill="#22c55e" />
+                      <Cell fill="#eab308" />
+                      <Cell fill="#ef4444" />
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </RechartsPieChart>
+                </RechartsResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Loan Amounts Bar Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Loan Amount Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RechartsResponsiveContainer width="100%" height={300}>
+                  <BarChart data={[
+                    { range: '$0-100K', count: pendingReviews.filter(app => (app.loan_amount || 0) <= 100000).length },
+                    { range: '$100K-250K', count: pendingReviews.filter(app => (app.loan_amount || 0) > 100000 && (app.loan_amount || 0) <= 250000).length },
+                    { range: '$250K-500K', count: pendingReviews.filter(app => (app.loan_amount || 0) > 250000 && (app.loan_amount || 0) <= 500000).length },
+                    { range: '$500K+', count: pendingReviews.filter(app => (app.loan_amount || 0) > 500000).length }
+                  ]}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="range" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#3b82f6" />
+                  </BarChart>
+                </RechartsResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Monthly Approval Trend */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Monthly Approval Trends
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RechartsResponsiveContainer width="100%" height={300}>
+                  <LineChart data={[
+                    { month: 'Jan', approved: 45, rejected: 12 },
+                    { month: 'Feb', approved: 52, rejected: 8 },
+                    { month: 'Mar', approved: 48, rejected: 15 },
+                    { month: 'Apr', approved: 61, rejected: 9 },
+                    { month: 'May', approved: 55, rejected: 11 },
+                    { month: 'Jun', approved: 67, rejected: 7 }
+                  ]}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="approved" stroke="#22c55e" strokeWidth={2} />
+                    <Line type="monotone" dataKey="rejected" stroke="#ef4444" strokeWidth={2} />
+                  </LineChart>
+                </RechartsResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Credit Score Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AreaChart className="h-5 w-5" />
+                  Credit Score Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RechartsResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={[
+                    { score: '300-579', count: pendingReviews.filter(app => (app.credit_score || 0) >= 300 && (app.credit_score || 0) < 580).length },
+                    { score: '580-669', count: pendingReviews.filter(app => (app.credit_score || 0) >= 580 && (app.credit_score || 0) < 670).length },
+                    { score: '670-739', count: pendingReviews.filter(app => (app.credit_score || 0) >= 670 && (app.credit_score || 0) < 740).length },
+                    { score: '740-799', count: pendingReviews.filter(app => (app.credit_score || 0) >= 740 && (app.credit_score || 0) < 800).length },
+                    { score: '800+', count: pendingReviews.filter(app => (app.credit_score || 0) >= 800).length }
+                  ]}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="score" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="count" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                  </AreaChart>
+                </RechartsResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="loan-tools" className="space-y-4">
@@ -506,127 +620,6 @@ export const UnderwriterDashboard = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="charts" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Risk Distribution Pie Chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <PieChart className="h-5 w-5" />
-                  Applications by Risk Level
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RechartsResponsiveContainer width="100%" height={300}>
-                  <RechartsPieChart>
-                    <Pie
-                      data={[
-                        { name: 'Low Risk', value: pendingReviews.filter(app => (app.credit_score || 0) >= 700).length, fill: '#22c55e' },
-                        { name: 'Medium Risk', value: pendingReviews.filter(app => (app.credit_score || 0) >= 600 && (app.credit_score || 0) < 700).length, fill: '#eab308' },
-                        { name: 'High Risk', value: pendingReviews.filter(app => (app.credit_score || 0) < 600).length, fill: '#ef4444' }
-                      ]}
-                      dataKey="value"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      label={({name, value}) => `${name}: ${value}`}
-                    >
-                      <Cell fill="#22c55e" />
-                      <Cell fill="#eab308" />
-                      <Cell fill="#ef4444" />
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </RechartsPieChart>
-                </RechartsResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Loan Amounts Bar Chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
-                  Loan Amount Distribution
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RechartsResponsiveContainer width="100%" height={300}>
-                  <BarChart data={[
-                    { range: '$0-100K', count: pendingReviews.filter(app => (app.loan_amount || 0) <= 100000).length },
-                    { range: '$100K-250K', count: pendingReviews.filter(app => (app.loan_amount || 0) > 100000 && (app.loan_amount || 0) <= 250000).length },
-                    { range: '$250K-500K', count: pendingReviews.filter(app => (app.loan_amount || 0) > 250000 && (app.loan_amount || 0) <= 500000).length },
-                    { range: '$500K+', count: pendingReviews.filter(app => (app.loan_amount || 0) > 500000).length }
-                  ]}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="range" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="#3b82f6" />
-                  </BarChart>
-                </RechartsResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Monthly Approval Trend */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5" />
-                  Monthly Approval Trends
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RechartsResponsiveContainer width="100%" height={300}>
-                  <LineChart data={[
-                    { month: 'Jan', approved: 45, rejected: 12 },
-                    { month: 'Feb', approved: 52, rejected: 8 },
-                    { month: 'Mar', approved: 48, rejected: 15 },
-                    { month: 'Apr', approved: 61, rejected: 9 },
-                    { month: 'May', approved: 55, rejected: 11 },
-                    { month: 'Jun', approved: 67, rejected: 7 }
-                  ]}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="approved" stroke="#22c55e" strokeWidth={2} />
-                    <Line type="monotone" dataKey="rejected" stroke="#ef4444" strokeWidth={2} />
-                  </LineChart>
-                </RechartsResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Credit Score Distribution */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AreaChart className="h-5 w-5" />
-                  Credit Score Distribution
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RechartsResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={[
-                    { score: '300-579', count: pendingReviews.filter(app => (app.credit_score || 0) >= 300 && (app.credit_score || 0) < 580).length },
-                    { score: '580-669', count: pendingReviews.filter(app => (app.credit_score || 0) >= 580 && (app.credit_score || 0) < 670).length },
-                    { score: '670-739', count: pendingReviews.filter(app => (app.credit_score || 0) >= 670 && (app.credit_score || 0) < 740).length },
-                    { score: '740-799', count: pendingReviews.filter(app => (app.credit_score || 0) >= 740 && (app.credit_score || 0) < 800).length },
-                    { score: '800+', count: pendingReviews.filter(app => (app.credit_score || 0) >= 800).length }
-                  ]}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="score" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="count" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-                  </AreaChart>
-                </RechartsResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
         </Tabs>
       </div>
     </div>
