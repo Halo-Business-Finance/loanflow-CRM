@@ -114,6 +114,15 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
       }
     });
 
+    // De-duplicate if the last crumb equals the first (e.g., "Dashboard > Dashboard")
+    if (breadcrumbs.length > 1) {
+      const first = breadcrumbs[0].label.trim().toLowerCase();
+      const last = breadcrumbs[breadcrumbs.length - 1].label.trim().toLowerCase();
+      if (first === last) {
+        breadcrumbs.pop();
+      }
+    }
+
     return breadcrumbs;
   }, [location.pathname]);
 }
