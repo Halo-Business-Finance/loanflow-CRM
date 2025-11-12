@@ -181,7 +181,7 @@ export const UnderwriterDashboard = () => {
               className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
             >
               <Shield className="w-4 h-4" />
-              <span>Risk</span>
+              <span>Tasks</span>
             </TabsTrigger>
             <TabsTrigger 
               value="analytics" 
