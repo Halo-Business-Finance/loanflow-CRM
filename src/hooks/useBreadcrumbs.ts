@@ -66,8 +66,8 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
       { label: 'Dashboard', href: '/' }
     ];
 
-    // If we're on the home page, just return Dashboard
-    if (pathSegments.length === 0) {
+    // If we're on the home page or '/dashboard', just return Dashboard
+    if (pathSegments.length === 0 || (pathSegments.length === 1 && (pathSegments[0] === 'dashboard' || routeLabels[pathSegments[0]] === 'Dashboard'))) {
       return [{ label: 'Dashboard' }];
     }
 
@@ -97,6 +97,11 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
         
         // Skip empty labels (used for segments we want to hide)
         if (!label) {
+          return;
+        }
+        
+        // Avoid duplicate 'Dashboard' crumb when first segment resolves to Dashboard
+        if (index === 0 && label === 'Dashboard') {
           return;
         }
         
