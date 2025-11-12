@@ -2580,6 +2580,7 @@ export type Database = {
       }
       leads: {
         Row: {
+          assigned_at: string | null
           contact_entity_id: string
           converted_at: string | null
           created_at: string
@@ -2594,6 +2595,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          assigned_at?: string | null
           contact_entity_id: string
           converted_at?: string | null
           created_at?: string
@@ -2608,6 +2610,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          assigned_at?: string | null
           contact_entity_id?: string
           converted_at?: string | null
           created_at?: string
@@ -4846,6 +4849,7 @@ export type Database = {
       get_accessible_leads: {
         Args: never
         Returns: {
+          assigned_at: string | null
           contact_entity_id: string
           converted_at: string | null
           created_at: string
