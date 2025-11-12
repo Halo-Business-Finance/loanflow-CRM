@@ -26,7 +26,6 @@ import { logger } from "@/lib/logger"
 import { RingCentralSetup } from "@/components/RingCentralSetup"
 import { EmailSetup } from "@/components/EmailSetup"
 import { SystemHealthMonitor } from "@/components/SystemHealthMonitor"
-import { WebhookManager } from "@/components/webhooks/WebhookManager"
 import { MicrosoftAuthenticatorSetup } from "@/components/auth/MicrosoftAuthenticatorSetup"
 import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardPageLayout } from "@/components/StandardPageLayout"
@@ -216,7 +215,7 @@ export default function Settings() {
         <div className="space-y-6">
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-[#0A1628] p-1 gap-2">
+          <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">
             <TabsTrigger value="profile" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <User className="w-4 h-4" />
               <span>Profile</span>
@@ -232,10 +231,6 @@ export default function Settings() {
             <TabsTrigger value="system" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <RefreshCw className="w-4 h-4" />
               <span>System Health</span>
-            </TabsTrigger>
-            <TabsTrigger value="integrations" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
-              <Lock className="w-4 h-4" />
-              <span>Integrations</span>
             </TabsTrigger>
           </TabsList>
 
@@ -482,10 +477,6 @@ export default function Settings() {
 
           <TabsContent value="system">
             <SystemHealthMonitor />
-          </TabsContent>
-
-          <TabsContent value="integrations">
-            <WebhookManager />
           </TabsContent>
         </Tabs>
         </div>
