@@ -60,6 +60,48 @@ export const LoanProcessorDashboard = () => {
 
   useEffect(() => {
     fetchProcessorData();
+
+    // Set up realtime subscriptions for count updates
+    const contactsChannel = supabase
+      .channel('processor-contacts-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'contact_entities'
+        },
+        () => {
+          console.log('Contact entities changed, refetching data');
+          fetchProcessorData();
+        }
+      )
+      .subscribe();
+
+    const documentsChannel = supabase
+      .channel('processor-documents-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'lead_documents'
+        },
+        async () => {
+          console.log('Documents changed, updating count');
+          const { count } = await supabase
+            .from('lead_documents')
+            .select('id', { count: 'exact' });
+          setDocumentCount(count || 0);
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscriptions on unmount
+    return () => {
+      supabase.removeChannel(contactsChannel);
+      supabase.removeChannel(documentsChannel);
+    };
   }, []);
 
   const fetchProcessorData = async () => {
