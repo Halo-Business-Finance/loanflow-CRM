@@ -14,7 +14,6 @@ import {
   CheckCircle, 
   AlertTriangle,
   TrendingUp,
-  FileCheck,
   Users,
   PieChart,
   BarChart3,
@@ -27,7 +26,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer as RechartsResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, Area, AreaChart } from 'recharts';
-import { UnderwriterDocuments } from './UnderwriterDocuments';
 
 interface UnderwriterMetrics {
   pendingReviews: number;
@@ -294,15 +292,8 @@ export const UnderwriterDashboard = () => {
           </div>
 
           {/* Main Content */}
-          <Tabs defaultValue="documents" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-5 bg-[#0A1628] p-1 gap-2">
-              <TabsTrigger
-                value="documents" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-              >
-                <FileCheck className="w-4 h-4" />
-                <span>Documents</span>
-              </TabsTrigger>
+          <Tabs defaultValue="risk" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">
               <TabsTrigger 
                 value="risk" 
                 className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
@@ -332,10 +323,6 @@ export const UnderwriterDashboard = () => {
                 <span>Charts</span>
               </TabsTrigger>
             </TabsList>
-
-        <TabsContent value="documents" className="space-y-4">
-          <UnderwriterDocuments />
-        </TabsContent>
 
         <TabsContent value="risk" className="space-y-4">
           <Card>
