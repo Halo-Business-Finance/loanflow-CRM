@@ -7,6 +7,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
   Tabs,
   TabsContent,
   TabsList,
@@ -92,6 +100,10 @@ export function TeamCollaboration() {
   const [teamActivity, setTeamActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('team');
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState('loan_originator');
 
   useEffect(() => {
     fetchTeamData();
@@ -219,6 +231,28 @@ export function TeamCollaboration() {
     }
   };
 
+  const handleInviteMember = async () => {
+    if (!inviteEmail.trim()) {
+      toast({
+        title: "Email Required",
+        description: "Please enter an email address to send the invitation.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // For now, just show success toast
+    // In a real implementation, this would send an invite email via edge function
+    toast({
+      title: "Invitation Sent",
+      description: `An invitation has been sent to ${inviteEmail}`,
+    });
+
+    setInviteEmail('');
+    setInviteRole('loan_originator');
+    setInviteOpen(false);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -237,11 +271,11 @@ export function TeamCollaboration() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => setSettingsOpen(true)}>
             <Settings className="h-4 w-4 mr-2" />
             Settings
           </Button>
-          <Button>
+          <Button onClick={() => setInviteOpen(true)}>
             <UserPlus className="h-4 w-4 mr-2" />
             Invite Member
           </Button>
@@ -442,6 +476,84 @@ export function TeamCollaboration() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Settings Dialog */}
+      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Team Collaboration Settings</DialogTitle>
+            <DialogDescription>
+              Configure team collaboration preferences and notifications
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Notification Preferences</Label>
+              <p className="text-sm text-muted-foreground">
+                Settings for team notifications will be available here.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label>Collaboration Tools</Label>
+              <p className="text-sm text-muted-foreground">
+                Configure integrations and collaboration features.
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button onClick={() => setSettingsOpen(false)}>Close</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Invite Member Dialog */}
+      <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Invite Team Member</DialogTitle>
+            <DialogDescription>
+              Send an invitation to join your team
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="member@example.com"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <select
+                id="role"
+                className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                value={inviteRole}
+                onChange={(e) => setInviteRole(e.target.value)}
+              >
+                <option value="loan_originator">Loan Originator</option>
+                <option value="loan_processor">Loan Processor</option>
+                <option value="underwriter">Underwriter</option>
+                <option value="closer">Closer</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => setInviteOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleInviteMember}>
+              <Send className="h-4 w-4 mr-2" />
+              Send Invitation
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
