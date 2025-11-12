@@ -56,6 +56,7 @@ const navItems: NavItemData[] = [
     to: '/loan-originator',
     subItems: [
       { icon: LayoutDashboard, label: 'Loan Originator Dashboard', to: '/loan-originator' },
+      { icon: FileSpreadsheet, label: 'Loan Processor Dashboard', to: '/dashboards/processor' },
     ]
   },
   { 
@@ -109,15 +110,7 @@ const navItems: NavItemData[] = [
     ]
   },
   { 
-    icon: FileSpreadsheet, 
-    label: 'Loan Processor', 
-    to: '/dashboards/processor',
-    subItems: [
-      { icon: LayoutDashboard, label: 'Loan Processor Dashboard', to: '/dashboards/processor' },
-    ]
-  },
-  { 
-    icon: HandCoins, 
+    icon: HandCoins,
     label: 'Loan Closer', 
     to: '/dashboards/closer',
     subItems: [
