@@ -177,6 +177,59 @@ export const UnderwriterDashboard = () => {
       />
 
       <div className="p-8 space-y-8 animate-fade-in">
+        {/* Applications Awaiting Underwriting */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Applications Awaiting Underwriting</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {pendingReviews.map((app) => (
+                <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="space-y-1">
+                    <div className="font-medium">{app.name || 'N/A'}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {formatCurrency(app.loan_amount || 0)} • {app.loan_type || 'N/A'}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={app.stage === 'Pre-approval' ? 'secondary' : 'outline'}>
+                        {app.stage}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">
+                        Credit Score: {app.credit_score || 'N/A'}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        Income: {formatCurrency(app.income || 0)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => handleReject(app.id)}
+                    >
+                      Reject
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      onClick={() => handleApprove(app.id)}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      Approve
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              {pendingReviews.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  No applications pending review
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Content Area */}
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -243,16 +296,9 @@ export const UnderwriterDashboard = () => {
           </div>
 
           {/* Main Content */}
-          <Tabs defaultValue="pending" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-8 bg-[#0A1628] p-1 gap-2">
-              <TabsTrigger 
-                value="pending" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-              >
-                <Clock className="w-4 h-4" />
-                <span>Pending</span>
-              </TabsTrigger>
-              <TabsTrigger 
+          <Tabs defaultValue="documents" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-7 bg-[#0A1628] p-1 gap-2">
+              <TabsTrigger
                 value="documents" 
                 className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
               >
@@ -302,60 +348,6 @@ export const UnderwriterDashboard = () => {
                 <span>Team</span>
               </TabsTrigger>
             </TabsList>
-
-        <TabsContent value="pending" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Applications Awaiting Underwriting</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {pendingReviews.map((app) => (
-                  <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="space-y-1">
-                      <div className="font-medium">{app.name || 'N/A'}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {formatCurrency(app.loan_amount || 0)} • {app.loan_type || 'N/A'}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={app.stage === 'Pre-approval' ? 'secondary' : 'outline'}>
-                          {app.stage}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          Credit Score: {app.credit_score || 'N/A'}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          Income: {formatCurrency(app.income || 0)}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => handleReject(app.id)}
-                      >
-                        Reject
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        onClick={() => handleApprove(app.id)}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        Approve
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                {pendingReviews.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No applications pending review
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="documents" className="space-y-4">
           <UnderwriterDocuments />
