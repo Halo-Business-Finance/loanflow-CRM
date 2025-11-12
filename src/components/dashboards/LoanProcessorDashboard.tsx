@@ -57,6 +57,17 @@ export const LoanProcessorDashboard = () => {
   const [documentCount, setDocumentCount] = useState(0);
   const [pipelineCount, setPipelineCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [updatingBadges, setUpdatingBadges] = useState<{
+    pending: boolean;
+    documents: boolean;
+    pipeline: boolean;
+    completed: boolean;
+  }>({
+    pending: false,
+    documents: false,
+    pipeline: false,
+    completed: false
+  });
 
   useEffect(() => {
     fetchProcessorData();
@@ -73,7 +84,15 @@ export const LoanProcessorDashboard = () => {
         },
         () => {
           console.log('Contact entities changed, refetching data');
+          // Show pulse animation on relevant badges
+          setUpdatingBadges(prev => ({ ...prev, pending: true, pipeline: true, completed: true }));
+          
           fetchProcessorData();
+          
+          // Remove pulse animation after 2 seconds
+          setTimeout(() => {
+            setUpdatingBadges(prev => ({ ...prev, pending: false, pipeline: false, completed: false }));
+          }, 2000);
         }
       )
       .subscribe();
@@ -89,10 +108,18 @@ export const LoanProcessorDashboard = () => {
         },
         async () => {
           console.log('Documents changed, updating count');
+          // Show pulse animation
+          setUpdatingBadges(prev => ({ ...prev, documents: true }));
+          
           const { count } = await supabase
             .from('lead_documents')
             .select('id', { count: 'exact' });
           setDocumentCount(count || 0);
+          
+          // Remove pulse animation after 2 seconds
+          setTimeout(() => {
+            setUpdatingBadges(prev => ({ ...prev, documents: false }));
+          }, 2000);
         }
       )
       .subscribe();
@@ -258,25 +285,37 @@ export const LoanProcessorDashboard = () => {
           <TabsList className="bg-[#0A1628] p-1 gap-2 inline-flex w-auto">
             <TabsTrigger value="pending" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               Pending Applications
-              <Badge variant="secondary" className="ml-1 bg-white/20 text-white hover:bg-white/30">
+              <Badge 
+                variant="secondary" 
+                className={`ml-1 bg-white/20 text-white hover:bg-white/30 transition-all ${updatingBadges.pending ? 'animate-pulse' : ''}`}
+              >
                 {pendingApps.length}
               </Badge>
             </TabsTrigger>
             <TabsTrigger value="documents" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               Loan Documents
-              <Badge variant="secondary" className="ml-1 bg-white/20 text-white hover:bg-white/30">
+              <Badge 
+                variant="secondary" 
+                className={`ml-1 bg-white/20 text-white hover:bg-white/30 transition-all ${updatingBadges.documents ? 'animate-pulse' : ''}`}
+              >
                 {documentCount}
               </Badge>
             </TabsTrigger>
             <TabsTrigger value="pipeline" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               Loan Processing Pipeline
-              <Badge variant="secondary" className="ml-1 bg-white/20 text-white hover:bg-white/30">
+              <Badge 
+                variant="secondary" 
+                className={`ml-1 bg-white/20 text-white hover:bg-white/30 transition-all ${updatingBadges.pipeline ? 'animate-pulse' : ''}`}
+              >
                 {pipelineCount}
               </Badge>
             </TabsTrigger>
             <TabsTrigger value="completed" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               Completed Today
-              <Badge variant="secondary" className="ml-1 bg-white/20 text-white hover:bg-white/30">
+              <Badge 
+                variant="secondary" 
+                className={`ml-1 bg-white/20 text-white hover:bg-white/30 transition-all ${updatingBadges.completed ? 'animate-pulse' : ''}`}
+              >
                 {metrics.processedToday}
               </Badge>
             </TabsTrigger>
