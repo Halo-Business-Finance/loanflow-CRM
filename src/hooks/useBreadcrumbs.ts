@@ -8,9 +8,9 @@ export interface BreadcrumbItem {
 
 // Route mapping for human-readable labels
 const routeLabels: Record<string, string> = {
-  '': 'Loan Originator Dashboard',
-  'loan-originator': 'Loan Originator Dashboard',
-  'dashboard': 'Loan Originator Dashboard',
+  '': 'Dashboard',
+  'loan-originator': 'Dashboard',
+  'dashboard': 'Dashboard',
   'dashboards': '', // Skip this segment to avoid duplication
   'processor': 'Loan Processor',
   'closer': 'Loan Closer',
@@ -64,12 +64,12 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
     
     // Always start with Dashboard
     const breadcrumbs: BreadcrumbItem[] = [
-      { label: 'Loan Originator Dashboard', href: '/' }
+      { label: 'Dashboard', href: '/' }
     ];
 
     // If we're on the home page or '/loan-originator', just return Dashboard
-    if (pathSegments.length === 0 || (pathSegments.length === 1 && (pathSegments[0] === 'loan-originator' || pathSegments[0] === 'dashboard' || routeLabels[pathSegments[0]] === 'Loan Originator Dashboard'))) {
-      return [{ label: 'Loan Originator Dashboard' }];
+    if (pathSegments.length === 0 || (pathSegments.length === 1 && (pathSegments[0] === 'loan-originator' || pathSegments[0] === 'dashboard' || routeLabels[pathSegments[0]] === 'Dashboard'))) {
+      return [{ label: 'Dashboard' }];
     }
 
     // Build breadcrumbs from path segments
@@ -102,7 +102,7 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
         }
         
         // Avoid duplicate 'Dashboard' crumb when first segment resolves to Dashboard
-        if (index === 0 && (label === 'Dashboard' || label === 'Loan Originator Dashboard')) {
+        if (index === 0 && label === 'Dashboard') {
           return;
         }
         
