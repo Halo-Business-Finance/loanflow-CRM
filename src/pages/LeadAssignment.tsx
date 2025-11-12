@@ -29,6 +29,18 @@ interface UnassignedLead {
   lead_id: string
 }
 
+interface RecentlyAssignedLead {
+  id: string
+  name: string
+  email: string
+  stage: string
+  priority: string
+  lead_id: string
+  assigned_to: string
+  assigned_to_name: string
+  assigned_at: string
+}
+
 interface TeamMember {
   id: string
   first_name: string
@@ -40,6 +52,7 @@ export default function LeadAssignmentPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [unassignedLeads, setUnassignedLeads] = useState<UnassignedLead[]>([])
+  const [recentlyAssignedLeads, setRecentlyAssignedLeads] = useState<RecentlyAssignedLead[]>([])
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
   const [loading, setLoading] = useState(true)
   const [assigning, setAssigning] = useState<string | null>(null)
@@ -106,6 +119,78 @@ export default function LeadAssignmentPage() {
     }
   }
 
+  // Fetch recently assigned leads (assigned in the last 24 hours)
+  const fetchRecentlyAssignedLeads = async () => {
+    try {
+      const twentyFourHoursAgo = new Date()
+      twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24)
+
+      // Step 1: Get recently assigned leads
+      const { data: leads, error: leadsError } = await supabase
+        .from('leads')
+        .select(`id, contact_entity_id, user_id, assigned_at, created_at`)
+        .not('user_id', 'is', null)
+        .not('assigned_at', 'is', null)
+        .gte('assigned_at', twentyFourHoursAgo.toISOString())
+        .order('assigned_at', { ascending: false })
+        .limit(50)
+
+      if (leadsError) throw leadsError
+
+      if (!leads || leads.length === 0) {
+        setRecentlyAssignedLeads([])
+        return
+      }
+
+      const contactIds = leads.map(l => l.contact_entity_id).filter(Boolean)
+      const userIds = leads.map(l => l.user_id).filter(Boolean)
+
+      // Step 2: Fetch contact details
+      const { data: contacts, error: contactsError } = await supabase
+        .from('contact_entities')
+        .select('id, name, email, stage, priority')
+        .in('id', contactIds as string[])
+
+      if (contactsError) throw contactsError
+
+      // Step 3: Fetch user profiles
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name')
+        .in('id', userIds as string[])
+
+      if (profilesError) throw profilesError
+
+      const contactsById = new Map((contacts || []).map(c => [c.id, c]))
+      const profilesById = new Map((profiles || []).map(p => [p.id, p]))
+
+      const formattedLeads = (leads || []).map(lead => {
+        const ce: any = contactsById.get(lead.contact_entity_id)
+        const profile: any = profilesById.get(lead.user_id!)
+        return ce && profile ? {
+          id: ce.id,
+          lead_id: lead.id,
+          name: ce.name,
+          email: ce.email,
+          stage: ce.stage || 'New',
+          priority: ce.priority || 'Medium',
+          assigned_to: lead.user_id!,
+          assigned_to_name: `${profile.first_name} ${profile.last_name}`,
+          assigned_at: lead.assigned_at!
+        } : null
+      }).filter(Boolean) as RecentlyAssignedLead[]
+
+      setRecentlyAssignedLeads(formattedLeads)
+    } catch (error: any) {
+      console.error('Error fetching recently assigned leads:', error)
+      toast({
+        title: "Error",
+        description: `Failed to load recently assigned leads${error?.message ? `: ${error.message}` : ''}`,
+        variant: "destructive"
+      })
+    }
+  }
+
   // Fetch team members with lead counts
   const fetchTeamMembers = async () => {
     try {
@@ -146,7 +231,7 @@ export default function LeadAssignmentPage() {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true)
-      await Promise.all([fetchUnassignedLeads(), fetchTeamMembers()])
+      await Promise.all([fetchUnassignedLeads(), fetchRecentlyAssignedLeads(), fetchTeamMembers()])
       setLoading(false)
     }
     loadData()
@@ -157,6 +242,7 @@ export default function LeadAssignmentPage() {
     table: 'leads',
     onChange: () => {
       fetchUnassignedLeads()
+      fetchRecentlyAssignedLeads()
       fetchTeamMembers()
     }
   })
@@ -191,7 +277,7 @@ export default function LeadAssignmentPage() {
       })
 
       // Refresh data
-      await Promise.all([fetchUnassignedLeads(), fetchTeamMembers()])
+      await Promise.all([fetchUnassignedLeads(), fetchRecentlyAssignedLeads(), fetchTeamMembers()])
       
       // Clear selection
       setSelectedAgent(prev => {
@@ -291,7 +377,7 @@ export default function LeadAssignmentPage() {
       })
 
       // Refresh data and clear selections
-      await Promise.all([fetchUnassignedLeads(), fetchTeamMembers()])
+      await Promise.all([fetchUnassignedLeads(), fetchRecentlyAssignedLeads(), fetchTeamMembers()])
       setSelectedLeads(new Set())
       setBulkAssignAgent('')
     } catch (error) {
@@ -404,6 +490,15 @@ export default function LeadAssignmentPage() {
                 </span>
               </TabsTrigger>
               <TabsTrigger 
+                value="/leads/recently-assigned" 
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-none border-0 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white data-[state=inactive]:bg-black/90 data-[state=inactive]:text-white hover:bg-[#0f62fe]/80 transition-colors flex-1"
+              >
+                <span className="font-medium">Recently Assigned</span>
+                <span className="flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-white/20 text-xs font-semibold">
+                  {recentlyAssignedLeads.length}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger 
                 value="/leads/stats" 
                 className="flex items-center justify-center gap-2 px-6 py-3 rounded-none border-0 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white data-[state=inactive]:bg-black/90 data-[state=inactive]:text-white hover:bg-[#0f62fe]/80 transition-colors flex-1"
               >
@@ -476,6 +571,63 @@ export default function LeadAssignmentPage() {
         </div>
         
         <div className="space-y-4 px-8 pb-8">
+        {location.pathname === '/leads/recently-assigned' ? (
+          /* Recently Assigned Leads View */
+          <StandardContentCard
+            title="Recently Assigned Leads (Last 24 Hours)"
+            className="border border-blue-600"
+          >
+            <div className="space-y-3">
+              {loading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="flex items-start justify-between gap-4 py-3 border-b">
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-48" />
+                    </div>
+                    <Skeleton className="h-8 w-32" />
+                  </div>
+                ))
+              ) : recentlyAssignedLeads.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <p className="text-sm">No leads assigned in the last 24 hours</p>
+                </div>
+              ) : (
+                recentlyAssignedLeads.map((lead) => (
+                  <div
+                    key={lead.id}
+                    className="flex items-start justify-between gap-4 py-3 border-b last:border-b-0 hover:bg-muted/50 rounded px-3"
+                  >
+                    <div className="flex items-start gap-3 flex-1">
+                      <Avatar className="h-10 w-10 mt-1">
+                        <AvatarFallback className="bg-blue-100 text-blue-600 text-xs">
+                          {lead.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-medium text-sm truncate">{lead.name}</p>
+                          <Badge variant="outline" className="text-xs">
+                            {lead.priority}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate mb-1">{lead.email}</p>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span className="px-2 py-0.5 bg-muted rounded">{lead.stage}</span>
+                          <span>•</span>
+                          <span>Assigned to: <span className="font-medium text-foreground">{lead.assigned_to_name}</span></span>
+                          <span>•</span>
+                          <span>{new Date(lead.assigned_at).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </StandardContentCard>
+        ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {/* Unassigned Leads */}
           <StandardContentCard
@@ -633,7 +785,8 @@ export default function LeadAssignmentPage() {
               </div>
           </StandardContentCard>
         </div>
-
+        )}
+        
         {/* Assignment Rules */}
         <StandardContentCard title="Assignment Rules" className="border border-blue-600">
             <div className="space-y-4">

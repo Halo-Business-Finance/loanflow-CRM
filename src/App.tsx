@@ -135,6 +135,7 @@ function AuthenticatedApp() {
         <Route path="/leads/new" element={<IBMCloudLayout><NewLead /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/leads/stats" element={<IBMCloudLayout><LeadStats /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/leads/assignment" element={<IBMCloudLayout><LeadAssignment /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/leads/recently-assigned" element={<IBMCloudLayout><LeadAssignment /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/leads/:id" element={<IBMCloudLayout><LeadDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/leads/:leadId/documents" element={<IBMCloudLayout><LeadDocuments /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         
