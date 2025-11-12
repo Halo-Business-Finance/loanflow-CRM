@@ -48,6 +48,7 @@ import Settings from "./pages/Settings";
 import UserDirectory from "./pages/UserDirectory";
 import Resources from "./pages/Resources";
 import Enterprise from "./pages/Enterprise";
+import AdvancedAnalytics from "./pages/AdvancedAnalytics";
 import Integrations from "./pages/Integrations";
 import AITools from "./pages/AITools";
 import APIDocs from "./pages/APIDocs";
@@ -186,6 +187,7 @@ function AuthenticatedApp() {
         {canAccessAdminFeatures && <Route path="/dashboards/data-integrity" element={<IBMCloudLayout><DataIntegrityDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />}
         
         <Route path="/enterprise" element={<IBMCloudLayout><Enterprise /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/analytics/advanced" element={<IBMCloudLayout><AdvancedAnalytics /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/integrations" element={<IBMCloudLayout><Integrations /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/ai-tools" element={<IBMCloudLayout><AITools /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/screenshots" element={<IBMCloudLayout><Screenshots /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />

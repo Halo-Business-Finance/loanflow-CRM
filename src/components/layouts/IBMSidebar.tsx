@@ -135,6 +135,7 @@ const navItems: NavItemData[] = [
     to: '/enterprise',
     subItems: [
       { icon: Building2, label: 'Enterprise Command Center', to: '/enterprise' },
+      { icon: TrendingUp, label: 'Advanced Analytics', to: '/analytics/advanced' },
       { icon: Link2, label: 'Integrations', to: '/integrations' },
       { icon: Sparkles, label: 'AI Tools', to: '/ai-tools' },
       { icon: BookOpen, label: 'Resources', to: '/resources' },

@@ -21,7 +21,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatNumber } from '@/lib/utils';
-import { AdvancedAnalytics } from '@/components/analytics/AdvancedAnalytics';
 import { UnderwriterDocuments } from './UnderwriterDocuments';
 
 interface ProcessorMetrics {
@@ -435,9 +434,6 @@ export const LoanProcessorDashboard = () => {
                 {metrics.processedToday}
               </Badge>
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
-              Advanced Analytics
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending" className="space-y-6">
@@ -632,12 +628,8 @@ export const LoanProcessorDashboard = () => {
                 {metrics.processedToday} applications processed today
               </div>
             </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="analytics" className="space-y-4">
-          <AdvancedAnalytics />
-        </TabsContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
