@@ -14,10 +14,12 @@ import {
   AlertCircle, 
   TrendingUp,
   Users,
-  Calendar
+  Calendar,
+  Filter
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { AdvancedAnalytics } from '@/components/analytics/AdvancedAnalytics';
 import { UnderwriterDocuments } from './UnderwriterDocuments';
@@ -58,6 +60,7 @@ export const LoanProcessorDashboard = () => {
   const [documentCount, setDocumentCount] = useState(0);
   const [pipelineCount, setPipelineCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [priorityFilter, setPriorityFilter] = useState<'all' | 'urgent' | 'high' | 'urgent-high'>('all');
   const [updatingBadges, setUpdatingBadges] = useState<{
     pending: boolean;
     documents: boolean;
@@ -99,6 +102,21 @@ export const LoanProcessorDashboard = () => {
         return 'bg-gray-600 text-white hover:bg-gray-700';
     }
   };
+
+  const getFilteredApps = () => {
+    switch (priorityFilter) {
+      case 'urgent':
+        return pendingApps.filter(app => app.priority === 'urgent');
+      case 'high':
+        return pendingApps.filter(app => app.priority === 'high');
+      case 'urgent-high':
+        return pendingApps.filter(app => app.priority === 'urgent' || app.priority === 'high');
+      default:
+        return pendingApps;
+    }
+  };
+
+  const filteredApps = getFilteredApps();
 
   useEffect(() => {
     fetchProcessorData();
@@ -490,11 +508,42 @@ export const LoanProcessorDashboard = () => {
             {/* Pending Applications Content */}
             <Card>
               <CardHeader>
-                <CardTitle>Applications Requiring Processing</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Applications Requiring Processing</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <Select value={priorityFilter} onValueChange={(value: any) => setPriorityFilter(value)}>
+                      <SelectTrigger className="w-48">
+                        <SelectValue placeholder="Filter by priority" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Applications</SelectItem>
+                        <SelectItem value="urgent-high">
+                          <span className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-red-600"></span>
+                            Urgent & High Only
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="urgent">
+                          <span className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-red-600"></span>
+                            Urgent Only
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="high">
+                          <span className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-orange-600"></span>
+                            High Priority Only
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {pendingApps.map((app) => (
+                  {filteredApps.map((app) => (
                   <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="space-y-1">
                       <div className="font-medium">{app.name || 'N/A'}</div>
@@ -523,9 +572,12 @@ export const LoanProcessorDashboard = () => {
                     </div>
                   </div>
                   ))}
-                  {pendingApps.length === 0 && (
+                  {filteredApps.length === 0 && (
                     <div className="text-center py-8 text-muted-foreground">
-                      No pending applications
+                      {priorityFilter === 'all' 
+                        ? 'No pending applications'
+                        : `No ${priorityFilter === 'urgent-high' ? 'urgent or high priority' : priorityFilter} applications`
+                      }
                     </div>
                   )}
                 </div>
