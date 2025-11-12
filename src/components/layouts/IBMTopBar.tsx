@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, HelpCircle, ToggleLeft, ToggleRight, User, ChevronDown, Mail, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, HelpCircle, ToggleLeft, ToggleRight, User, ChevronDown, Mail, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -132,33 +132,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           </span>
         </button>
         
-        {/* Navigation Controls */}
-        <div className="flex items-center gap-0">
-          <button
-            type="button"
-            onClick={() => window.history.back()}
-            aria-label="Go back"
-            className="group h-24 w-10 rounded-none text-white flex-shrink-0 hover:bg-transparent p-0 outline-none hover:outline-none focus:outline-none focus:ring-0"
-            title="Go back"
-          >
-            <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-              <ChevronLeft className="h-5 w-5" />
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => window.history.forward()}
-            aria-label="Go forward"
-            className="group h-24 w-10 rounded-none text-white flex-shrink-0 hover:bg-transparent p-0 outline-none hover:outline-none focus:outline-none focus:ring-0"
-            title="Go forward"
-          >
-            <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-              <ChevronRight className="h-5 w-5" />
-            </span>
-          </button>
-        </div>
-        
-        <BrandLogo 
+        <BrandLogo
           size={130} 
           showText={false} 
           imageSrc={logoAsset}
