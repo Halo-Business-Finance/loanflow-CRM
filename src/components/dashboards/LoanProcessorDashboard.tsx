@@ -78,12 +78,42 @@ export const LoanProcessorDashboard = () => {
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
+          schema: 'public',
+          table: 'contact_entities',
+          filter: 'stage=in.(Application,Pre-approval)'
+        },
+        (payload) => {
+          console.log('New application received:', payload);
+          
+          // Show toast notification for new application
+          toast({
+            title: "New Application Received",
+            description: `${payload.new.name || 'A new application'} has been added and requires processing.`,
+            duration: 5000,
+          });
+          
+          // Show pulse animation on relevant badges
+          setUpdatingBadges(prev => ({ ...prev, pending: true, pipeline: true }));
+          
+          fetchProcessorData();
+          
+          // Remove pulse animation after 2 seconds
+          setTimeout(() => {
+            setUpdatingBadges(prev => ({ ...prev, pending: false, pipeline: false }));
+          }, 2000);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
           schema: 'public',
           table: 'contact_entities'
         },
-        () => {
-          console.log('Contact entities changed, refetching data');
+        (payload) => {
+          console.log('Application updated:', payload);
+          
           // Show pulse animation on relevant badges
           setUpdatingBadges(prev => ({ ...prev, pending: true, pipeline: true, completed: true }));
           
@@ -102,12 +132,44 @@ export const LoanProcessorDashboard = () => {
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
+          schema: 'public',
+          table: 'lead_documents'
+        },
+        async (payload) => {
+          console.log('New document uploaded:', payload);
+          
+          // Show toast notification for new document
+          toast({
+            title: "New Document Uploaded",
+            description: `${payload.new.document_name || 'A new document'} has been uploaded.`,
+            duration: 4000,
+          });
+          
+          // Show pulse animation
+          setUpdatingBadges(prev => ({ ...prev, documents: true }));
+          
+          const { count } = await supabase
+            .from('lead_documents')
+            .select('id', { count: 'exact' });
+          setDocumentCount(count || 0);
+          
+          // Remove pulse animation after 2 seconds
+          setTimeout(() => {
+            setUpdatingBadges(prev => ({ ...prev, documents: false }));
+          }, 2000);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
           schema: 'public',
           table: 'lead_documents'
         },
         async () => {
-          console.log('Documents changed, updating count');
+          console.log('Document updated');
+          
           // Show pulse animation
           setUpdatingBadges(prev => ({ ...prev, documents: true }));
           
@@ -129,7 +191,7 @@ export const LoanProcessorDashboard = () => {
       supabase.removeChannel(contactsChannel);
       supabase.removeChannel(documentsChannel);
     };
-  }, []);
+  }, [toast]);
 
   const fetchProcessorData = async () => {
     try {
