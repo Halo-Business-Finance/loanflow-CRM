@@ -393,14 +393,24 @@ export default function LeadAssignmentPage() {
       <div className="p-8 space-y-8 animate-fade-in">
         
         <Tabs value={location.pathname} onValueChange={(value) => navigate(value)}>
-            <TabsList className="grid w-full max-w-md grid-cols-2 bg-muted p-1">
-              <TabsTrigger value="/leads/assignment" className="flex items-center gap-2 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">
-                <Users className="h-4 w-4" />
-                Lead Assignment
+            <TabsList className="flex w-full bg-black/90 p-0 h-auto rounded-lg overflow-hidden">
+              <TabsTrigger 
+                value="/leads/assignment" 
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-none border-0 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white data-[state=inactive]:bg-black/90 data-[state=inactive]:text-white hover:bg-[#0f62fe]/80 transition-colors flex-1"
+              >
+                <span className="font-medium">Lead Assignment</span>
+                <span className="flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-white/20 text-xs font-semibold">
+                  {filteredLeads.length}
+                </span>
               </TabsTrigger>
-              <TabsTrigger value="/leads/stats" className="flex items-center gap-2 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">
-                <BarChart3 className="h-4 w-4" />
-                Lead Stats
+              <TabsTrigger 
+                value="/leads/stats" 
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-none border-0 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white data-[state=inactive]:bg-black/90 data-[state=inactive]:text-white hover:bg-[#0f62fe]/80 transition-colors flex-1"
+              >
+                <span className="font-medium">Lead Stats</span>
+                <span className="flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-white/20 text-xs font-semibold">
+                  {teamMembers.length}
+                </span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
