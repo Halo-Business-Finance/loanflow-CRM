@@ -56,7 +56,6 @@ import Screenshots from "./pages/Screenshots";
 import Security from "./pages/Security";
 import EmergencyMaintenance from "./pages/EmergencyMaintenance";
 import NotFound from "./pages/NotFound";
-import UnderwriterDocuments from "./pages/UnderwriterDocuments";
 import DocumentTemplates from "./pages/DocumentTemplates";
 import ActivitiesCalendar from "./pages/ActivitiesCalendar";
 import ActivitiesTasks from "./pages/ActivitiesTasks";
@@ -147,9 +146,6 @@ function AuthenticatedApp() {
         <Route path="/pipeline" element={<IBMCloudLayout><Pipeline /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/pipeline/analytics" element={<IBMCloudLayout><PipelineAnalytics /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/pipeline/stages" element={<IBMCloudLayout><StageManagement /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
-        
-        <Route path="/underwriter" element={<IBMCloudLayout><Underwriter /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
-        <Route path="/underwriter/documents" element={<IBMCloudLayout><UnderwriterDocuments /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         
         {/* Documents routes */}
         <Route path="/documents" element={<IBMCloudLayout><Documents /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />

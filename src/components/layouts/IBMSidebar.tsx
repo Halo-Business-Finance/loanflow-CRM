@@ -102,16 +102,8 @@ const navItems: NavItemData[] = [
     ]
   },
   { 
-    icon: CheckSquare, 
-    label: 'Underwriter', 
-    to: '/underwriter/documents',
-    subItems: [
-      { icon: FileCheck, label: 'Loan Document Review', to: '/underwriter/documents' },
-    ]
-  },
-  { 
     icon: FileText,
-    label: 'Loan Documents', 
+    label: 'Loan Documents',
     to: '/documents',
     subItems: [
       { icon: FileText, label: 'All Loan Documents', to: '/documents' },

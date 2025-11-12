@@ -21,7 +21,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatNumber } from '@/lib/utils';
-import { UnderwriterDocuments } from './UnderwriterDocuments';
 
 interface ProcessorMetrics {
   pendingApplications: number;
@@ -407,15 +406,6 @@ export const LoanProcessorDashboard = () => {
                 {pendingApps.length}
               </Badge>
             </TabsTrigger>
-            <TabsTrigger value="documents" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
-              Loan Documents
-              <Badge 
-                variant="secondary" 
-                className={`ml-1 bg-white/20 text-white hover:bg-white/30 transition-all ${updatingBadges.documents ? 'animate-pulse' : ''}`}
-              >
-                {documentCount}
-              </Badge>
-            </TabsTrigger>
             <TabsTrigger value="pipeline" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               Loan Processing Pipeline
               <Badge 
@@ -579,10 +569,6 @@ export const LoanProcessorDashboard = () => {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="documents" className="space-y-4">
-            <UnderwriterDocuments />
           </TabsContent>
 
           <TabsContent value="pipeline" className="space-y-4">
