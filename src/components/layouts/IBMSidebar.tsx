@@ -50,7 +50,7 @@ interface NavItemProps extends NavItemData {
 }
 
 const navItems: NavItemData[] = [
-  { icon: LayoutDashboard, label: 'Loan Originator Dashboard', to: '/dashboard' },
+  { icon: LayoutDashboard, label: 'Loan Originator Dashboard', to: '/loan-originator' },
   { 
     icon: Users, 
     label: 'Leads', 

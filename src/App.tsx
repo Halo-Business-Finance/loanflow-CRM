@@ -129,8 +129,9 @@ function AuthenticatedApp() {
         <Route path="/auth/callback" element={<CallbackHandler />} errorElement={<RouteErrorBoundary />} />
         
         {/* Protected routes - require authentication */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} errorElement={<RouteErrorBoundary />} />
-        <Route path="/dashboard" element={<MfaEnforcementWrapper><IBMCloudLayout key="dashboard-layout"><Dashboard /></IBMCloudLayout></MfaEnforcementWrapper>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/" element={<Navigate to="/loan-originator" replace />} errorElement={<RouteErrorBoundary />} />
+        <Route path="/loan-originator" element={<MfaEnforcementWrapper><IBMCloudLayout key="dashboard-layout"><Dashboard /></IBMCloudLayout></MfaEnforcementWrapper>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/dashboard" element={<Navigate to="/loan-originator" replace />} errorElement={<RouteErrorBoundary />} />
         
         <Route path="/leads" element={<IBMCloudLayout><Leads /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/leads/new" element={<IBMCloudLayout><NewLead /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
