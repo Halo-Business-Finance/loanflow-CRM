@@ -311,34 +311,28 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button 
-                    onClick={handleSaveProfile} 
-                    disabled={isLoading}
-                    className="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    <Save className="w-4 h-4" />
-                    {isLoading ? "Saving..." : "Save Profile"}
-                  </Button>
-                </div>
-
-                {/* Divider */}
-                <div className="border-t border-[#0A1628]" />
-
-                {/* Communication Settings Section */}
-                <div className="space-y-4">
-                  <h3 className="text-sm font-medium text-[#161616]">Communication Settings</h3>
-                  <div className="flex flex-col items-start gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3 items-start">
+                    <Button 
+                      onClick={handleSaveProfile} 
+                      disabled={isLoading}
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <Save className="w-4 h-4" />
+                      {isLoading ? "Saving..." : "Save Profile"}
+                    </Button>
+                    
                     <RingCentralSetup 
                       trigger={
-                        <Button variant="outline" className="w-[200px] justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors">
+                        <Button variant="outline" className="w-full sm:w-auto justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors">
                           <Phone className="w-4 h-4" />
                           <span>Phone Settings</span>
                         </Button>
                       }
                     />
+                    
                     <EmailSetup 
                       trigger={
-                        <Button variant="outline" className="w-[200px] justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors">
+                        <Button variant="outline" className="w-full sm:w-auto justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors">
                           <Mail className="w-4 h-4" />
                           <span>Email Settings</span>
                         </Button>
