@@ -21,6 +21,7 @@ import { useToast } from '@/hooks/use-toast';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { AdvancedAnalytics } from '@/components/analytics/AdvancedAnalytics';
 import { WorkflowAutomation } from '@/components/operations/WorkflowAutomation';
+import { UnderwriterDocuments } from './UnderwriterDocuments';
 
 interface ProcessorMetrics {
   pendingApplications: number;
@@ -264,6 +265,7 @@ export const LoanProcessorDashboard = () => {
       <Tabs defaultValue="pending" className="space-y-4">
         <TabsList>
           <TabsTrigger value="pending">Pending Applications</TabsTrigger>
+          <TabsTrigger value="documents">Loan Documents</TabsTrigger>
           <TabsTrigger value="pipeline">Processing Pipeline</TabsTrigger>
           <TabsTrigger value="completed">Completed Today</TabsTrigger>
           <TabsTrigger value="analytics">Advanced Analytics</TabsTrigger>
@@ -311,6 +313,10 @@ export const LoanProcessorDashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="documents" className="space-y-4">
+          <UnderwriterDocuments />
         </TabsContent>
 
         <TabsContent value="pipeline" className="space-y-4">
