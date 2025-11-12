@@ -2591,7 +2591,7 @@ export type Database = {
           processor_id: string | null
           underwriter_id: string | null
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           contact_entity_id: string
@@ -2605,7 +2605,7 @@ export type Database = {
           processor_id?: string | null
           underwriter_id?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           contact_entity_id?: string
@@ -2619,7 +2619,7 @@ export type Database = {
           processor_id?: string | null
           underwriter_id?: string | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -4857,7 +4857,7 @@ export type Database = {
           processor_id: string | null
           underwriter_id: string | null
           updated_at: string
-          user_id: string
+          user_id: string | null
         }[]
         SetofOptions: {
           from: "*"

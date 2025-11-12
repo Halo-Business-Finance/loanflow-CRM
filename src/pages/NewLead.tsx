@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,6 +19,8 @@ export default function NewLead() {
   const { toast } = useToast()
   const navigate = useNavigate()
   const { user } = useAuth()
+  const [assignedUserId, setAssignedUserId] = useState<string | null>(null)
+  const [users, setUsers] = useState<Array<{ id: string; first_name: string | null; last_name: string | null; email: string | null }>>([])
   const [formData, setFormData] = useState({
     // Personal Information
     firstName: "",
@@ -102,6 +104,22 @@ export default function NewLead() {
   }
 
   const { validateFormData, sanitizeNumeric } = useSecureForm()
+
+  // Fetch users for assignment dropdown
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, email')
+        .eq('is_active', true)
+        .order('first_name')
+      
+      if (!error && data) {
+        setUsers(data)
+      }
+    }
+    fetchUsers()
+  }, [])
 
   const handleSubmit = async () => {
     if (!formData.firstName || !formData.lastName || !formData.email) {
@@ -237,11 +255,11 @@ export default function NewLead() {
         throw new Error(`Failed to create contact: ${contactError.message}`)
       }
 
-      // Create lead record
+      // Create lead record (assigned to selected user or unassigned)
       const { data: leadData, error: leadError } = await supabase
         .from('leads')
         .insert({
-          user_id: user.id,
+          user_id: assignedUserId,
           contact_entity_id: contactEntity.id
         })
         .select()
@@ -292,6 +310,29 @@ export default function NewLead() {
       />
       <ResponsiveContainer>
         <div className="p-8 space-y-8 animate-fade-in">
+        
+        {/* Lead Assignment */}
+        <StandardContentCard title="Lead Assignment" className="border border-blue-600">
+          <p className="text-sm text-muted-foreground mb-4">
+            Assign this lead to a team member or leave unassigned for later
+          </p>
+          <div className="space-y-2">
+            <Label htmlFor="assignedUser">Assign To</Label>
+            <Select value={assignedUserId || "unassigned"} onValueChange={(value) => setAssignedUserId(value === "unassigned" ? null : value)}>
+              <SelectTrigger id="assignedUser">
+                <SelectValue placeholder="Select user or leave unassigned" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="unassigned">Unassigned (will appear in Lead Assignment)</SelectItem>
+                {users.map((u) => (
+                  <SelectItem key={u.id} value={u.id}>
+                    {u.first_name && u.last_name ? `${u.first_name} ${u.last_name}` : u.email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </StandardContentCard>
         
         {/* Row 1: Personal, Financial, and Business Information */}
         <div className="grid gap-6 md:grid-cols-3">
