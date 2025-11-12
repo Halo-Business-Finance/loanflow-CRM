@@ -196,8 +196,19 @@ export const LoanProcessorDashboard = () => {
       />
 
       <div className="p-8 space-y-6">
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="pending" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="pending">Pending Applications</TabsTrigger>
+            <TabsTrigger value="documents">Loan Documents</TabsTrigger>
+            <TabsTrigger value="pipeline">Processing Pipeline</TabsTrigger>
+            <TabsTrigger value="completed">Completed Today</TabsTrigger>
+            <TabsTrigger value="analytics">Advanced Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="pending" className="space-y-6">
+            {/* Key Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Applications</CardTitle>
@@ -252,72 +263,62 @@ export const LoanProcessorDashboard = () => {
             <p className="text-xs text-muted-foreground">Total applications</p>
           </CardContent>
         </Card>
-      </div>
+            </div>
 
-      {/* Role-Specific Widgets */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TaskTimelineWidget />
-        <DocumentChecklistWidget />
-      </div>
+            {/* Role-Specific Widgets */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <TaskTimelineWidget />
+              <DocumentChecklistWidget />
+            </div>
 
-      {/* Main Content */}
-      <Tabs defaultValue="pending" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="pending">Pending Applications</TabsTrigger>
-          <TabsTrigger value="documents">Loan Documents</TabsTrigger>
-          <TabsTrigger value="pipeline">Processing Pipeline</TabsTrigger>
-          <TabsTrigger value="completed">Completed Today</TabsTrigger>
-          <TabsTrigger value="analytics">Advanced Analytics</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="pending" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Applications Requiring Processing</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {pendingApps.map((app) => (
-                  <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="space-y-1">
-                      <div className="font-medium">{app.name || 'N/A'}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {formatCurrency(app.loan_amount || 0)} • {app.loan_type || 'N/A'}
+            {/* Pending Applications Content */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Applications Requiring Processing</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {pendingApps.map((app) => (
+                    <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="space-y-1">
+                        <div className="font-medium">{app.name || 'N/A'}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {formatCurrency(app.loan_amount || 0)} • {app.loan_type || 'N/A'}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={app.stage === 'Application' ? 'secondary' : 'outline'}>
+                            {app.stage}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            Applied {new Date(app.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={app.stage === 'Application' ? 'secondary' : 'outline'}>
-                          {app.stage}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          Applied {new Date(app.created_at).toLocaleDateString()}
-                        </span>
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          onClick={() => handleProcessApplication(app.id)}
+                        >
+                          Process
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        onClick={() => handleProcessApplication(app.id)}
-                      >
-                        Process
-                      </Button>
+                  ))}
+                  {pendingApps.length === 0 && (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No pending applications
                     </div>
-                  </div>
-                ))}
-                {pendingApps.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No pending applications
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        <TabsContent value="documents" className="space-y-4">
-          <UnderwriterDocuments />
-        </TabsContent>
+          <TabsContent value="documents" className="space-y-4">
+            <UnderwriterDocuments />
+          </TabsContent>
 
-        <TabsContent value="pipeline" className="space-y-4">
+          <TabsContent value="pipeline" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Processing Pipeline Overview</CardTitle>
@@ -366,7 +367,7 @@ export const LoanProcessorDashboard = () => {
         <TabsContent value="analytics" className="space-y-4">
           <AdvancedAnalytics />
         </TabsContent>
-      </Tabs>
+        </Tabs>
       </div>
     </div>
   );
