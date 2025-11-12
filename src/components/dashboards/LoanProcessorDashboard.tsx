@@ -42,6 +42,7 @@ interface LeadWithContact {
   business_name?: string;
   loan_amount?: number;
   loan_type?: string;
+  priority?: 'low' | 'medium' | 'high' | 'urgent';
 }
 
 export const LoanProcessorDashboard = () => {
@@ -69,6 +70,36 @@ export const LoanProcessorDashboard = () => {
     completed: false
   });
 
+  const getPriorityToastStyle = (priority: string = 'medium') => {
+    switch (priority) {
+      case 'urgent':
+        return { variant: 'destructive' as const, title: '🚨 URGENT Application Received' };
+      case 'high':
+        return { variant: 'default' as const, title: '⚠️ High Priority Application Received' };
+      case 'medium':
+        return { variant: 'default' as const, title: '📋 New Application Received' };
+      case 'low':
+        return { variant: 'default' as const, title: '✅ New Application Received' };
+      default:
+        return { variant: 'default' as const, title: '📋 New Application Received' };
+    }
+  };
+
+  const getPriorityBadgeColor = (priority: string = 'medium') => {
+    switch (priority) {
+      case 'urgent':
+        return 'bg-red-600 text-white hover:bg-red-700';
+      case 'high':
+        return 'bg-orange-600 text-white hover:bg-orange-700';
+      case 'medium':
+        return 'bg-blue-600 text-white hover:bg-blue-700';
+      case 'low':
+        return 'bg-green-600 text-white hover:bg-green-700';
+      default:
+        return 'bg-gray-600 text-white hover:bg-gray-700';
+    }
+  };
+
   useEffect(() => {
     fetchProcessorData();
 
@@ -86,11 +117,14 @@ export const LoanProcessorDashboard = () => {
         (payload) => {
           console.log('New application received:', payload);
           
-          // Show toast notification for new application
+          const priority = payload.new.priority || 'medium';
+          const toastStyle = getPriorityToastStyle(priority);
+          
+          // Show toast notification for new application with priority styling
           toast({
-            title: "New Application Received",
-            description: `${payload.new.name || 'A new application'} has been added and requires processing.`,
-            duration: 5000,
+            ...toastStyle,
+            description: `${payload.new.name || 'A new application'} has been added and requires processing. Priority: ${priority.toUpperCase()}`,
+            duration: priority === 'urgent' ? 10000 : priority === 'high' ? 7000 : 5000,
           });
           
           // Show pulse animation on relevant badges
@@ -210,6 +244,7 @@ export const LoanProcessorDashboard = () => {
           loan_amount,
           loan_type,
           stage,
+          priority,
           created_at,
           updated_at
         `)
@@ -251,7 +286,8 @@ export const LoanProcessorDashboard = () => {
           phone: contact.phone,
           business_name: contact.business_name,
           loan_amount: contact.loan_amount,
-          loan_type: contact.loan_type
+          loan_type: contact.loan_type,
+          priority: contact.priority as 'low' | 'medium' | 'high' | 'urgent' || 'medium'
         }));
 
       // Fetch processed applications today - using contact_entities
@@ -459,30 +495,33 @@ export const LoanProcessorDashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   {pendingApps.map((app) => (
-                    <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="space-y-1">
-                        <div className="font-medium">{app.name || 'N/A'}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {formatCurrency(app.loan_amount || 0)} • {app.loan_type || 'N/A'}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={app.stage === 'Application' ? 'secondary' : 'outline'}>
-                            {app.stage}
-                          </Badge>
-                          <span className="text-xs text-muted-foreground">
-                            Applied {new Date(app.created_at).toLocaleDateString()}
-                          </span>
-                        </div>
+                  <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-1">
+                      <div className="font-medium">{app.name || 'N/A'}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {formatCurrency(app.loan_amount || 0)} • {app.loan_type || 'N/A'}
                       </div>
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          onClick={() => handleProcessApplication(app.id)}
-                        >
-                          Process
-                        </Button>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={app.stage === 'Application' ? 'secondary' : 'outline'}>
+                          {app.stage}
+                        </Badge>
+                        <Badge className={getPriorityBadgeColor(app.priority)}>
+                          {app.priority?.toUpperCase() || 'MEDIUM'}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">
+                          Applied {new Date(app.created_at).toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        onClick={() => handleProcessApplication(app.id)}
+                      >
+                        Process
+                      </Button>
+                    </div>
+                  </div>
                   ))}
                   {pendingApps.length === 0 && (
                     <div className="text-center py-8 text-muted-foreground">
