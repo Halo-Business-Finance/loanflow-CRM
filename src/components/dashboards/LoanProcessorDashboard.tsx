@@ -198,12 +198,22 @@ export const LoanProcessorDashboard = () => {
       <div className="p-8 space-y-6">
         {/* Main Content Tabs */}
         <Tabs defaultValue="pending" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="pending">Pending Applications</TabsTrigger>
-            <TabsTrigger value="documents">Loan Documents</TabsTrigger>
-            <TabsTrigger value="pipeline">Processing Pipeline</TabsTrigger>
-            <TabsTrigger value="completed">Completed Today</TabsTrigger>
-            <TabsTrigger value="analytics">Advanced Analytics</TabsTrigger>
+          <TabsList className="bg-[#0A1628] p-1 gap-2 inline-flex w-auto">
+            <TabsTrigger value="pending" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
+              Pending Applications
+            </TabsTrigger>
+            <TabsTrigger value="documents" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
+              Loan Documents
+            </TabsTrigger>
+            <TabsTrigger value="pipeline" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
+              Processing Pipeline
+            </TabsTrigger>
+            <TabsTrigger value="completed" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
+              Completed Today
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md">
+              Advanced Analytics
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending" className="space-y-6">
