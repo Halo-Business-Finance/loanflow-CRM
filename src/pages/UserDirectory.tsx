@@ -50,7 +50,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { SecureRoleManager } from '@/components/security/SecureRoleManager';
 import LeadAssignment from './LeadAssignment';
 import { formatPhoneNumber } from '@/lib/utils';
-import { AdvancedAnalytics } from '@/components/analytics/AdvancedAnalytics';
 import { TeamCollaboration } from '@/components/collaboration/TeamCollaboration';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -656,10 +655,6 @@ export default function UserDirectory() {
             <Users className="h-4 w-4" />
             <span>Lead Assignment</span>
           </TabsTrigger>
-          <TabsTrigger value="advanced-analytics" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" />
-            <span>Advanced</span>
-          </TabsTrigger>
           <TabsTrigger value="collaboration" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
             <Users className="h-4 w-4" />
             <span>Team</span>
@@ -839,10 +834,6 @@ export default function UserDirectory() {
 
         <TabsContent value="lead-assignment" className="mt-0">
           <LeadAssignment />
-        </TabsContent>
-
-        <TabsContent value="advanced-analytics" className="mt-0">
-          <AdvancedAnalytics />
         </TabsContent>
 
         <TabsContent value="collaboration" className="mt-0">
