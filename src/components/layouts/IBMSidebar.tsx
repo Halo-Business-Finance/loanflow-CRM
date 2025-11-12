@@ -106,7 +106,7 @@ const navItems: NavItemData[] = [
     label: 'Loan Processor', 
     to: '/dashboards/processor',
     subItems: [
-      { icon: LayoutDashboard, label: 'Processor Dashboard', to: '/dashboards/processor' },
+      { icon: LayoutDashboard, label: 'Loan Processor Dashboard', to: '/dashboards/processor' },
     ]
   },
   { 
