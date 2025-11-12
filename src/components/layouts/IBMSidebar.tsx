@@ -57,6 +57,7 @@ const navItems: NavItemData[] = [
     subItems: [
       { icon: LayoutDashboard, label: 'Loan Originator Dashboard', to: '/loan-originator' },
       { icon: FileSpreadsheet, label: 'Loan Processor Dashboard', to: '/dashboards/processor' },
+      { icon: CheckSquare, label: 'Underwriter Dashboard', to: '/underwriter' },
     ]
   },
   { 
@@ -102,9 +103,8 @@ const navItems: NavItemData[] = [
   { 
     icon: CheckSquare, 
     label: 'Underwriter', 
-    to: '/underwriter',
+    to: '/underwriter/documents',
     subItems: [
-      { icon: LayoutDashboard, label: 'Underwriter Dashboard', to: '/underwriter' },
       { icon: FileCheck, label: 'Loan Document Review', to: '/underwriter/documents' },
       { icon: AlertTriangle, label: 'Loan Risk Assessment', to: '/underwriter/risk' },
     ]
