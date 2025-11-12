@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users, KeyRound, RefreshCw } from 'lucide-react';
+import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users, KeyRound, RefreshCw, TrendingUp } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -50,6 +50,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { SecureRoleManager } from '@/components/security/SecureRoleManager';
 import LeadAssignment from './LeadAssignment';
 import { formatPhoneNumber } from '@/lib/utils';
+import { AdvancedAnalytics } from '@/components/analytics/AdvancedAnalytics';
+import { TeamCollaboration } from '@/components/collaboration/TeamCollaboration';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useForm } from 'react-hook-form';
@@ -654,6 +656,14 @@ export default function UserDirectory() {
             <Users className="h-4 w-4" />
             <span>Lead Assignment</span>
           </TabsTrigger>
+          <TabsTrigger value="advanced-analytics" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" />
+            <span>Advanced</span>
+          </TabsTrigger>
+          <TabsTrigger value="collaboration" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            <span>Team</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="users" className="space-y-6 mt-0">
@@ -829,6 +839,14 @@ export default function UserDirectory() {
 
         <TabsContent value="lead-assignment" className="mt-0">
           <LeadAssignment />
+        </TabsContent>
+
+        <TabsContent value="advanced-analytics" className="mt-0">
+          <AdvancedAnalytics />
+        </TabsContent>
+
+        <TabsContent value="collaboration" className="mt-0">
+          <TeamCollaboration />
         </TabsContent>
       </Tabs>
 
