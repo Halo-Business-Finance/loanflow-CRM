@@ -1,17 +1,24 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-// Badge component removed - using plain text instead
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { UserPlus, Loader2, BarChart3, Users } from "lucide-react"
+import { UserPlus, Loader2, BarChart3, Users, Search, Filter, X, CheckCircle2 } from "lucide-react"
 import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { Skeleton } from "@/components/ui/skeleton"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription"
+import { Badge } from "@/components/ui/badge"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 interface UnassignedLead {
   id: string
@@ -37,6 +44,13 @@ export default function LeadAssignmentPage() {
   const [loading, setLoading] = useState(true)
   const [assigning, setAssigning] = useState<string | null>(null)
   const [selectedAgent, setSelectedAgent] = useState<{ [key: string]: string }>({})
+  const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set())
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterPriority, setFilterPriority] = useState('all')
+  const [filterStage, setFilterStage] = useState('all')
+  const [bulkAssignAgent, setBulkAssignAgent] = useState('')
+  const [isBulkAssigning, setIsBulkAssigning] = useState(false)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
   const { toast } = useToast()
 
   // Fetch unassigned leads (leads without user assignment)
@@ -197,11 +211,184 @@ export default function LeadAssignmentPage() {
     }
   }
 
+  // Toggle individual lead selection
+  const toggleLeadSelection = (leadId: string) => {
+    const newSelection = new Set(selectedLeads)
+    if (newSelection.has(leadId)) {
+      newSelection.delete(leadId)
+    } else {
+      newSelection.add(leadId)
+    }
+    setSelectedLeads(newSelection)
+  }
+
+  // Toggle select all filtered leads
+  const toggleSelectAll = () => {
+    if (selectedLeads.size === filteredLeads.length) {
+      setSelectedLeads(new Set())
+    } else {
+      setSelectedLeads(new Set(filteredLeads.map(l => l.id)))
+    }
+  }
+
+  // Clear filters
+  const clearFilters = () => {
+    setFilterPriority('all')
+    setFilterStage('all')
+    setSearchTerm('')
+  }
+
+  const hasActiveFilters = filterPriority !== 'all' || filterStage !== 'all' || searchTerm !== ''
+
+  // Bulk assign leads
+  const handleBulkAssign = async () => {
+    if (selectedLeads.size === 0) {
+      toast({
+        title: "No leads selected",
+        description: "Please select at least one lead to assign",
+        variant: "destructive"
+      })
+      return
+    }
+
+    if (!bulkAssignAgent) {
+      toast({
+        title: "No agent selected",
+        description: "Please select an agent to assign leads to",
+        variant: "destructive"
+      })
+      return
+    }
+
+    setIsBulkAssigning(true)
+    try {
+      const leadIds = Array.from(selectedLeads).map(contactId => {
+        const lead = unassignedLeads.find(l => l.id === contactId)
+        return lead?.lead_id
+      }).filter(Boolean) as string[]
+
+      let successCount = 0
+      let failCount = 0
+
+      for (const leadId of leadIds) {
+        try {
+          const { error } = await supabase
+            .from('leads')
+            .update({ user_id: bulkAssignAgent })
+            .eq('id', leadId)
+
+          if (error) throw error
+          successCount++
+        } catch (error) {
+          console.error('Error assigning lead:', error)
+          failCount++
+        }
+      }
+
+      toast({
+        title: "Bulk Assignment Complete",
+        description: `Successfully assigned ${successCount} lead${successCount !== 1 ? 's' : ''}${failCount > 0 ? `. Failed: ${failCount}` : ''}`,
+      })
+
+      // Refresh data and clear selections
+      await Promise.all([fetchUnassignedLeads(), fetchTeamMembers()])
+      setSelectedLeads(new Set())
+      setBulkAssignAgent('')
+    } catch (error) {
+      console.error('Error in bulk assignment:', error)
+      toast({
+        title: "Error",
+        description: "Failed to complete bulk assignment",
+        variant: "destructive"
+      })
+    } finally {
+      setIsBulkAssigning(false)
+    }
+  }
+
+  // Filter leads
+  const filteredLeads = unassignedLeads.filter(lead => {
+    const matchesSearch = searchTerm === '' || 
+      lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.email.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    const matchesPriority = filterPriority === 'all' || 
+      lead.priority.toLowerCase() === filterPriority.toLowerCase()
+    
+    const matchesStage = filterStage === 'all' || 
+      lead.stage.toLowerCase() === filterStage.toLowerCase()
+
+    return matchesSearch && matchesPriority && matchesStage
+  })
+
   return (
     <div className="flex flex-col h-full bg-background">
       <IBMPageHeader 
         title="Lead Management"
         subtitle="Assign leads to team members and view performance statistics"
+        actions={
+          <div className="flex items-center gap-2">
+            <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+              <PopoverTrigger asChild>
+                <Button size="sm" variant="outline" className="h-8 text-xs">
+                  <Filter className="h-3 w-3 mr-2" />
+                  Filter
+                  {hasActiveFilters && (
+                    <Badge variant="secondary" className="ml-2 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs">
+                      !
+                    </Badge>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="end">
+                <div className="space-y-4">
+                  <h4 className="font-medium mb-3">Filter Leads</h4>
+                  
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium">Priority</label>
+                    <Select value={filterPriority} onValueChange={setFilterPriority}>
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Priorities</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="low">Low</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium">Stage</label>
+                    <Select value={filterStage} onValueChange={setFilterStage}>
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Stages</SelectItem>
+                        <SelectItem value="new">New</SelectItem>
+                        <SelectItem value="contacted">Contacted</SelectItem>
+                        <SelectItem value="qualified">Qualified</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {hasActiveFilters && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearFilters}
+                      className="w-full"
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+        }
       />
       <div className="p-8 space-y-8 animate-fade-in">
         
@@ -217,18 +404,87 @@ export default function LeadAssignmentPage() {
               </TabsTrigger>
             </TabsList>
           </Tabs>
+
+          {/* Bulk Actions Bar */}
+          {selectedLeads.size > 0 && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-blue-900">
+                  {selectedLeads.size} lead{selectedLeads.size !== 1 ? 's' : ''} selected
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedLeads(new Set())}
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  Clear Selection
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Select value={bulkAssignAgent} onValueChange={setBulkAssignAgent}>
+                  <SelectTrigger className="w-[180px] h-9">
+                    <SelectValue placeholder="Select agent..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {teamMembers.map((member) => (
+                      <SelectItem key={member.id} value={member.id}>
+                        {member.first_name} {member.last_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  size="sm"
+                  onClick={handleBulkAssign}
+                  disabled={isBulkAssigning || !bulkAssignAgent}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  {isBulkAssigning ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                  )}
+                  Assign {selectedLeads.size} Lead{selectedLeads.size !== 1 ? 's' : ''}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Search Bar */}
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search leads by name or email..."
+                className="pl-10"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-4 px-8 pb-8">
         <div className="grid gap-4 md:grid-cols-2">
           {/* Unassigned Leads */}
           <StandardContentCard
             title="Unassigned Leads"
             className="h-fit border border-blue-600"
               headerActions={
-                <span className="text-sm text-muted-foreground">
-                  Leads waiting to be assigned to team members
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    {filteredLeads.length} lead{filteredLeads.length !== 1 ? 's' : ''}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={toggleSelectAll}
+                    className="h-7 text-xs"
+                  >
+                    {selectedLeads.size === filteredLeads.length && filteredLeads.length > 0 ? 'Deselect All' : 'Select All'}
+                  </Button>
+                </div>
               }
             >
               <div className="space-y-3">
@@ -246,24 +502,37 @@ export default function LeadAssignmentPage() {
                       </div>
                     </div>
                   ))
-                ) : unassignedLeads.length === 0 ? (
+                ) : filteredLeads.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
-                    <p className="text-sm">No unassigned leads</p>
-                    <p className="text-xs mt-1">All leads are fully assigned</p>
+                    <p className="text-sm">
+                      {hasActiveFilters ? 'No leads match your filters' : 'No unassigned leads'}
+                    </p>
+                    <p className="text-xs mt-1">
+                      {hasActiveFilters ? 'Try adjusting your filter criteria' : 'All leads are fully assigned'}
+                    </p>
                   </div>
                 ) : (
-                  unassignedLeads.map((lead) => (
+                  filteredLeads.map((lead) => (
                     <div key={lead.id} className="flex items-start justify-between gap-4 py-3 border-b last:border-0">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium text-sm">{lead.name}</span>
-                          <span className="text-xs px-1.5 py-0 font-medium">
-                            {lead.priority}
-                          </span>
-                        </div>
-                        <div className="text-xs text-muted-foreground">{lead.email}</div>
-                        <div className="mt-1">
-                          <span className="text-xs font-medium">{lead.stage}</span>
+                      <div className="flex items-start gap-2 flex-1 min-w-0">
+                        <Checkbox
+                          checked={selectedLeads.has(lead.id)}
+                          onCheckedChange={() => toggleLeadSelection(lead.id)}
+                          className="mt-1"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-medium text-sm">{lead.name}</span>
+                            <Badge variant="outline" className="text-xs">
+                              {lead.priority}
+                            </Badge>
+                          </div>
+                          <div className="text-xs text-muted-foreground truncate">{lead.email}</div>
+                          <div className="mt-1">
+                            <Badge variant="secondary" className="text-xs">
+                              {lead.stage}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
