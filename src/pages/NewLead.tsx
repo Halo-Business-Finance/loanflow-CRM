@@ -237,10 +237,11 @@ export default function NewLead() {
         throw new Error(`Failed to create contact: ${contactError.message}`)
       }
 
-      // Create lead record (unassigned by default)
+      // Create lead record
       const { data: leadData, error: leadError } = await supabase
         .from('leads')
         .insert({
+          user_id: user.id,
           contact_entity_id: contactEntity.id
         })
         .select()
