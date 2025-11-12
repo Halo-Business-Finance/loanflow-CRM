@@ -596,11 +596,43 @@ export default function Leads() {
 
             {/* Tabs Navigation */}
             <Tabs defaultValue="active" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4 bg-muted p-1 gap-1">
-                <TabsTrigger value="active" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Active Leads</TabsTrigger>
-                <TabsTrigger value="qualified" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Pre-Qualified</TabsTrigger>
-                <TabsTrigger value="analytics" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Performance</TabsTrigger>
-                <TabsTrigger value="management" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Lead Tools</TabsTrigger>
+              <TabsList className="flex w-full bg-black/90 p-0 h-auto rounded-lg overflow-hidden">
+                <TabsTrigger 
+                  value="active" 
+                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-none border-0 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white data-[state=inactive]:bg-black/90 data-[state=inactive]:text-white hover:bg-[#0f62fe]/80 transition-colors flex-1"
+                >
+                  Active Leads
+                  <span className="flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-white/20 text-xs font-semibold">
+                    {realtimeLeads.length}
+                  </span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="qualified" 
+                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-none border-0 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white data-[state=inactive]:bg-black/90 data-[state=inactive]:text-white hover:bg-[#0f62fe]/80 transition-colors flex-1"
+                >
+                  Pre-Qualified
+                  <span className="flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-white/20 text-xs font-semibold">
+                    {overview.qualifiedLeads}
+                  </span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="analytics" 
+                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-none border-0 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white data-[state=inactive]:bg-black/90 data-[state=inactive]:text-white hover:bg-[#0f62fe]/80 transition-colors flex-1"
+                >
+                  Performance
+                  <span className="flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-white/20 text-xs font-semibold">
+                    {realtimeLeads.length}
+                  </span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="management" 
+                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-none border-0 data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white data-[state=inactive]:bg-black/90 data-[state=inactive]:text-white hover:bg-[#0f62fe]/80 transition-colors flex-1"
+                >
+                  Lead Tools
+                  <span className="flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-white/20 text-xs font-semibold">
+                    3
+                  </span>
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="active" className="space-y-6 mt-0">
