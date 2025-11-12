@@ -594,8 +594,16 @@ export default function Leads() {
               }
             />
 
-            {/* Content Area */}
-            <div className="space-y-6">
+            {/* Tabs Navigation */}
+            <Tabs defaultValue="active" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-4 bg-muted p-1 gap-1">
+                <TabsTrigger value="active" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Active Leads</TabsTrigger>
+                <TabsTrigger value="qualified" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Pre-Qualified</TabsTrigger>
+                <TabsTrigger value="analytics" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Performance</TabsTrigger>
+                <TabsTrigger value="management" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Lead Tools</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="active" className="space-y-6 mt-0">
               {/* Key Metrics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card 
@@ -682,15 +690,6 @@ export default function Leads() {
               )}
 
 
-        <Tabs defaultValue="active" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-muted p-1 gap-1">
-            <TabsTrigger value="active" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Active Leads</TabsTrigger>
-            <TabsTrigger value="qualified" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Pre-Qualified</TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Performance</TabsTrigger>
-            <TabsTrigger value="management" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white hover:bg-[#0f62fe]/10">Lead Tools</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="active" className="space-y-6">
             {selectedLeads.length > 0 && (
               <div className="flex items-center justify-between p-4 bg-muted rounded-lg border">
                 <div className="flex items-center gap-2">
@@ -918,11 +917,11 @@ export default function Leads() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="analytics" className="space-y-6">
-            <LeadStats leads={realtimeLeads} />
-          </TabsContent>
+        <TabsContent value="analytics" className="space-y-6">
+          <LeadStats leads={realtimeLeads} />
+        </TabsContent>
 
-          <TabsContent value="management" className="space-y-6">
+        <TabsContent value="management" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-3">
               <Card>
                 <CardHeader>
@@ -965,7 +964,6 @@ export default function Leads() {
             </div>
           </TabsContent>
         </Tabs>
-        </div>
 
         <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
