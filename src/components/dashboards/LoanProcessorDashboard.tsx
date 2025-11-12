@@ -329,11 +329,11 @@ export const LoanProcessorDashboard = () => {
           </TabsContent>
 
           <TabsContent value="pipeline" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Processing Pipeline Overview</CardTitle>
-            </CardHeader>
-            <CardContent>
+            <Card>
+              <CardHeader>
+                <CardTitle>Loan Processing Pipeline Overview</CardTitle>
+              </CardHeader>
+              <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span>Application Review</span>
