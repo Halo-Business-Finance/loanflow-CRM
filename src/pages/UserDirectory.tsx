@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users, KeyRound, RefreshCw, TrendingUp, Briefcase } from 'lucide-react';
+import { UserCog, Plus, Search, Filter, Mail, Calendar, Phone, Edit, Trash2, X, UserX, Users, KeyRound, RefreshCw, TrendingUp, Briefcase, UserPlus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -123,6 +123,8 @@ export default function UserDirectory() {
   const [unassignedLeads, setUnassignedLeads] = useState<Array<{ id: string; name: string; email: string }>>([]);
   const [selectedLeadId, setSelectedLeadId] = useState<string>('');
   const [loadingLeads, setLoadingLeads] = useState(false);
+  const [isBulkAssignOpen, setIsBulkAssignOpen] = useState(false);
+  const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof userEditSchema>>({
@@ -607,6 +609,87 @@ export default function UserDirectory() {
     }
   };
 
+  const toggleLeadSelection = (leadId: string) => {
+    const newSelection = new Set(selectedLeads);
+    if (newSelection.has(leadId)) {
+      newSelection.delete(leadId);
+    } else {
+      newSelection.add(leadId);
+    }
+    setSelectedLeads(newSelection);
+  };
+
+  const toggleSelectAllLeads = () => {
+    if (selectedLeads.size === unassignedLeads.length) {
+      setSelectedLeads(new Set());
+    } else {
+      setSelectedLeads(new Set(unassignedLeads.map(l => l.id)));
+    }
+  };
+
+  const handleOpenBulkAssign = () => {
+    if (selectedLeads.size === 0) {
+      toast({
+        title: 'No Leads Selected',
+        description: 'Please select at least one lead to assign',
+        variant: 'destructive',
+      });
+      return;
+    }
+    setIsBulkAssignOpen(true);
+    setSelectedAssignUser(null);
+  };
+
+  const handleBulkAssignLeads = async () => {
+    if (!selectedAssignUser || selectedLeads.size === 0) {
+      toast({
+        title: 'Selection Required',
+        description: 'Please select a user to assign the leads to',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const leadIds = Array.from(selectedLeads);
+      let successCount = 0;
+      let failCount = 0;
+
+      // Assign each lead to the selected user
+      for (const leadId of leadIds) {
+        try {
+          const { error } = await supabase
+            .from('leads')
+            .update({ loan_originator_id: selectedAssignUser.id })
+            .eq('id', leadId);
+
+          if (error) throw error;
+          successCount++;
+        } catch (error) {
+          logger.error('Error assigning lead:', error);
+          failCount++;
+        }
+      }
+
+      toast({
+        title: 'Bulk Assignment Complete',
+        description: `Successfully assigned ${successCount} lead${successCount !== 1 ? 's' : ''} to ${selectedAssignUser.first_name} ${selectedAssignUser.last_name}${failCount > 0 ? `. Failed: ${failCount}` : ''}`,
+      });
+
+      setIsBulkAssignOpen(false);
+      setSelectedLeads(new Set());
+      setSelectedAssignUser(null);
+      fetchUnassignedLeads();
+    } catch (error) {
+      logger.error('Error in bulk assignment:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to complete bulk assignment',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const totalUsers = users.length;
   const activeUsers = users.length; // All fetched users are considered active
   const pendingInvites = 0; // Would need a separate invites table
@@ -696,6 +779,19 @@ export default function UserDirectory() {
             <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]" onClick={() => setIsAddUserOpen(true)}>
               <Plus className="h-3 w-3 mr-2" />
               Add User
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline"
+              className="h-8 text-xs font-medium border-2 border-[#001f3f]" 
+              onClick={() => {
+                fetchUnassignedLeads();
+                setIsBulkAssignOpen(true);
+                setSelectedLeads(new Set());
+              }}
+            >
+              <UserPlus className="h-3 w-3 mr-2" />
+              Bulk Assign Leads
             </Button>
           </div>
         </div>
@@ -1478,6 +1574,111 @@ export default function UserDirectory() {
             >
               <Briefcase className="h-4 w-4 mr-2" />
               Assign Lead
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Assign Leads Dialog */}
+      <Dialog open={isBulkAssignOpen} onOpenChange={setIsBulkAssignOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Bulk Assign Leads</DialogTitle>
+            <DialogDescription>
+              Select unassigned leads and assign them all to one user
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            {loadingLeads ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : unassignedLeads.length > 0 ? (
+              <>
+                {/* Lead Selection List */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>Select Leads to Assign</Label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={toggleSelectAllLeads}
+                      className="text-xs"
+                    >
+                      {selectedLeads.size === unassignedLeads.length ? 'Deselect All' : 'Select All'}
+                    </Button>
+                  </div>
+                  <ScrollArea className="h-[200px] border rounded-md p-2">
+                    <div className="space-y-2">
+                      {unassignedLeads.map((lead) => (
+                        <div key={lead.id} className="flex items-center space-x-2 p-2 hover:bg-muted rounded">
+                          <Checkbox
+                            checked={selectedLeads.has(lead.id)}
+                            onCheckedChange={() => toggleLeadSelection(lead.id)}
+                          />
+                          <div className="flex-1">
+                            <p className="text-sm font-medium">{lead.name}</p>
+                            <p className="text-xs text-muted-foreground">{lead.email}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedLeads.size} of {unassignedLeads.length} lead{unassignedLeads.length !== 1 ? 's' : ''} selected
+                  </p>
+                </div>
+
+                {/* User Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="bulk-user-select">Assign To User</Label>
+                  <Select 
+                    value={selectedAssignUser?.id || ''} 
+                    onValueChange={(userId) => {
+                      const user = users.find(u => u.id === userId);
+                      setSelectedAssignUser(user || null);
+                    }}
+                  >
+                    <SelectTrigger id="bulk-user-select">
+                      <SelectValue placeholder="Choose a user to assign leads to" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {users.filter(u => u.is_active).map((user) => (
+                        <SelectItem key={user.id} value={user.id}>
+                          {user.first_name && user.last_name
+                            ? `${user.first_name} ${user.last_name}`
+                            : user.email || 'Unknown User'} - {user.role}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <p className="text-sm">No unassigned leads available</p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-end space-x-2">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setIsBulkAssignOpen(false);
+                setSelectedLeads(new Set());
+                setSelectedAssignUser(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleBulkAssignLeads}
+              disabled={selectedLeads.size === 0 || !selectedAssignUser || loadingLeads}
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              Assign {selectedLeads.size} Lead{selectedLeads.size !== 1 ? 's' : ''}
             </Button>
           </div>
         </DialogContent>
