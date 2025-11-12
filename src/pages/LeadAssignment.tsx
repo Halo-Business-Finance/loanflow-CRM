@@ -324,7 +324,7 @@ export default function LeadAssignmentPage() {
   return (
     <div className="flex flex-col h-full bg-background">
       <IBMPageHeader 
-        title="Lead Management"
+        title="Lead Assignment"
         subtitle="Assign leads to team members and view performance statistics"
         actions={
           <div className="flex items-center gap-2">
