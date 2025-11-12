@@ -173,6 +173,40 @@ export const UnderwriterDashboard = () => {
       />
 
       <div className="p-8 space-y-8 animate-fade-in">
+        {/* Main Navigation Tabs */}
+        <Tabs defaultValue="risk" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">
+            <TabsTrigger 
+              value="risk" 
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+            >
+              <Shield className="w-4 h-4" />
+              <span>Risk</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="analytics" 
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+            >
+              <BarChart3 className="w-4 h-4" />
+              <span>Analytics</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="loan-tools" 
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+            >
+              <Calculator className="w-4 h-4" />
+              <span>Tools</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="charts" 
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+            >
+              <PieChart className="w-4 h-4" />
+              <span>Charts</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="risk" className="space-y-4">
         {/* Applications Awaiting Underwriting */}
         <Card>
           <CardHeader>
@@ -290,82 +324,7 @@ export const UnderwriterDashboard = () => {
             <ApprovalQueueWidget />
             <RiskAssessmentWidget />
           </div>
-
-          {/* Main Content */}
-          <Tabs defaultValue="risk" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-4 bg-[#0A1628] p-1 gap-2">
-              <TabsTrigger 
-                value="risk" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-              >
-                <Shield className="w-4 h-4" />
-                <span>Risk</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="analytics" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-              >
-                <BarChart3 className="w-4 h-4" />
-                <span>Analytics</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="loan-tools" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-              >
-                <Calculator className="w-4 h-4" />
-                <span>Tools</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="charts" 
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-              >
-                <PieChart className="w-4 h-4" />
-                <span>Charts</span>
-              </TabsTrigger>
-            </TabsList>
-
-        <TabsContent value="risk" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Risk Assessment Overview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="font-medium">Low Risk</span>
-                    </div>
-                    <div className="text-2xl font-bold text-green-600">
-                      {pendingReviews.filter(app => (app.credit_score || 0) >= 700).length}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Applications</div>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                      <span className="font-medium">Medium Risk</span>
-                    </div>
-                    <div className="text-2xl font-bold text-yellow-600">
-                      {pendingReviews.filter(app => (app.credit_score || 0) >= 600 && (app.credit_score || 0) < 700).length}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Applications</div>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <span className="font-medium">High Risk</span>
-                    </div>
-                    <div className="text-2xl font-bold text-red-600">
-                      {pendingReviews.filter(app => (app.credit_score || 0) < 600).length}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Applications</div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-4">
@@ -669,7 +628,6 @@ export const UnderwriterDashboard = () => {
           </div>
         </TabsContent>
         </Tabs>
-        </div>
       </div>
     </div>
   );
