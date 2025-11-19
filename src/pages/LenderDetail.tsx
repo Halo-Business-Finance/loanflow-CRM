@@ -23,6 +23,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
+import { formatPhoneNumber } from '@/lib/utils';
 import {
   Table,
   TableBody,
@@ -309,7 +310,7 @@ export default function LenderDetail() {
               {lender.phone && (
                 <div>
                   <Label className="text-muted-foreground">Phone</Label>
-                  <p className="mt-1">{lender.phone}</p>
+                  <p className="mt-1">{formatPhoneNumber(lender.phone)}</p>
                 </div>
               )}
               {lender.email && (
@@ -381,13 +382,13 @@ export default function LenderDetail() {
                         {contact.phone && (
                           <div className="flex items-center gap-2 text-sm">
                             <Phone className="h-3 w-3 text-muted-foreground" />
-                            <span>{contact.phone}</span>
+                            <span>{formatPhoneNumber(contact.phone)}</span>
                           </div>
                         )}
                         {contact.mobile_phone && (
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Phone className="h-3 w-3" />
-                            <span>{contact.mobile_phone} (Mobile)</span>
+                            <span>{formatPhoneNumber(contact.mobile_phone)} (Mobile)</span>
                           </div>
                         )}
                       </div>
