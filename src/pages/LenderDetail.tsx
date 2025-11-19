@@ -24,6 +24,14 @@ import { useToast } from '@/hooks/use-toast';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -355,38 +363,190 @@ export default function LenderDetail() {
           {contacts.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">No contacts yet</p>
           ) : (
-            <>
-              {activeContacts.length > 0 && (
-                <div className="space-y-4">
-                  <div className="grid gap-4">
-                    {activeContacts.map((contact) => (
-                      <ContactCard
-                        key={contact.id}
-                        contact={contact}
-                        onEdit={openEditContactForm}
-                        onDelete={handleDeleteContact}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {inactiveContacts.length > 0 && (
-                <div className="mt-8 space-y-4">
-                  <h3 className="text-sm font-semibold text-muted-foreground">Inactive Contacts</h3>
-                  <div className="grid gap-4">
-                    {inactiveContacts.map((contact) => (
-                      <ContactCard
-                        key={contact.id}
-                        contact={contact}
-                        onEdit={openEditContactForm}
-                        onDelete={handleDeleteContact}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="uppercase text-xs font-semibold">Contact Name</TableHead>
+                  <TableHead className="uppercase text-xs font-semibold">Title/Position</TableHead>
+                  <TableHead className="uppercase text-xs font-semibold">Contact Information</TableHead>
+                  <TableHead className="uppercase text-xs font-semibold">Roles</TableHead>
+                  <TableHead className="uppercase text-xs font-semibold">Status</TableHead>
+                  <TableHead className="w-24"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {activeContacts.map((contact) => (
+                  <TableRow key={contact.id} className="hover:bg-muted/50">
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-primary/10">
+                          <User className="h-4 w-4 text-primary" />
+                        </div>
+                        <div className="font-medium">{contact.name}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {contact.title && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Briefcase className="h-3 w-3 text-muted-foreground" />
+                          <span>{contact.title}</span>
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        {contact.email && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Mail className="h-3 w-3 text-muted-foreground" />
+                            <span className="truncate max-w-[200px]">{contact.email}</span>
+                          </div>
+                        )}
+                        {contact.phone && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Phone className="h-3 w-3 text-muted-foreground" />
+                            <span>{contact.phone}</span>
+                          </div>
+                        )}
+                        {contact.mobile_phone && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Phone className="h-3 w-3" />
+                            <span>{contact.mobile_phone} (Mobile)</span>
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {contact.is_primary && (
+                          <Badge variant="default" className="gap-1">
+                            <Star className="h-3 w-3" />
+                            Primary
+                          </Badge>
+                        )}
+                        {contact.is_bdo && (
+                          <Badge variant="secondary">BDO</Badge>
+                        )}
+                        {contact.is_closer && (
+                          <Badge variant="outline" className="border-green-500 text-green-700">
+                            Closer
+                          </Badge>
+                        )}
+                        {contact.is_vice_president && (
+                          <Badge variant="outline" className="border-purple-500 text-purple-700">
+                            VP
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                        <span className="text-sm">Active</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => openEditContactForm(contact)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleDeleteContact(contact.id, contact.name)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {inactiveContacts.length > 0 && inactiveContacts.map((contact) => (
+                  <TableRow key={contact.id} className="hover:bg-muted/50 opacity-60">
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-gray-100">
+                          <User className="h-4 w-4 text-gray-400" />
+                        </div>
+                        <div className="font-medium">{contact.name}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {contact.title && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Briefcase className="h-3 w-3 text-muted-foreground" />
+                          <span>{contact.title}</span>
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        {contact.email && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Mail className="h-3 w-3 text-muted-foreground" />
+                            <span className="truncate max-w-[200px]">{contact.email}</span>
+                          </div>
+                        )}
+                        {contact.phone && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Phone className="h-3 w-3 text-muted-foreground" />
+                            <span>{contact.phone}</span>
+                          </div>
+                        )}
+                        {contact.mobile_phone && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Phone className="h-3 w-3" />
+                            <span>{contact.mobile_phone} (Mobile)</span>
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {contact.is_primary && (
+                          <Badge variant="default" className="gap-1">
+                            <Star className="h-3 w-3" />
+                            Primary
+                          </Badge>
+                        )}
+                        {contact.is_bdo && (
+                          <Badge variant="secondary">BDO</Badge>
+                        )}
+                        {contact.is_closer && (
+                          <Badge variant="outline" className="border-green-500 text-green-700">
+                            Closer
+                          </Badge>
+                        )}
+                        {contact.is_vice_president && (
+                          <Badge variant="outline" className="border-purple-500 text-purple-700">
+                            VP
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="h-2 w-2 rounded-full bg-gray-400"></div>
+                        <span className="text-sm">Inactive</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => openEditContactForm(contact)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleDeleteContact(contact.id, contact.name)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           )}
         </CardContent>
       </Card>
@@ -541,99 +701,5 @@ export default function LenderDetail() {
         </DialogContent>
       </Dialog>
     </div>
-  );
-}
-
-// Contact Card Component
-function ContactCard({ 
-  contact, 
-  onEdit, 
-  onDelete 
-}: { 
-  contact: LenderContact;
-  onEdit: (contact: LenderContact) => void;
-  onDelete: (id: string, name: string) => void;
-}) {
-  return (
-    <Card>
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <User className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <CardTitle className="text-lg flex items-center gap-2">
-                {contact.name}
-                {contact.is_primary && (
-                  <Badge variant="default" className="gap-1">
-                    <Star className="h-3 w-3" />
-                    Primary
-                  </Badge>
-                )}
-                {contact.is_bdo && (
-                  <Badge variant="secondary">
-                    BDO
-                  </Badge>
-                )}
-                {contact.is_closer && (
-                  <Badge variant="outline" className="border-green-500 text-green-700">
-                    Closer
-                  </Badge>
-                )}
-                {contact.is_vice_president && (
-                  <Badge variant="outline" className="border-purple-500 text-purple-700">
-                    Vice President
-                  </Badge>
-                )}
-              </CardTitle>
-              {contact.title && (
-                <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                  <Briefcase className="h-3 w-3" />
-                  {contact.title}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => onEdit(contact)}>
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => onDelete(contact.id, contact.name)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        {contact.email && (
-          <p className="flex items-center gap-2 text-sm">
-            <Mail className="h-4 w-4 text-muted-foreground" />
-            {contact.email}
-          </p>
-        )}
-        {contact.phone && (
-          <p className="flex items-center gap-2 text-sm">
-            <Phone className="h-4 w-4 text-muted-foreground" />
-            {contact.phone}
-          </p>
-        )}
-        {contact.mobile_phone && (
-          <p className="flex items-center gap-2 text-sm">
-            <Phone className="h-4 w-4 text-muted-foreground" />
-            {contact.mobile_phone} (Mobile)
-          </p>
-        )}
-        {contact.notes && (
-          <p className="text-sm text-muted-foreground pt-2 border-t">
-            {contact.notes}
-          </p>
-        )}
-      </CardContent>
-    </Card>
   );
 }
