@@ -79,6 +79,7 @@ interface LenderContact {
 interface LenderPerformance {
   total_leads: number;
   total_funded: number;
+  average_days_to_funding: number;
   by_stage: {
     [key: string]: number;
   };
@@ -144,7 +145,7 @@ export default function LenderDetail() {
       // Fetch lender performance metrics
       const { data: performanceData, error: performanceError } = await supabase
         .from('contact_entities')
-        .select('stage, id, loan_amount')
+        .select('stage, id, loan_amount, created_at, updated_at')
         .eq('lender_id', id);
 
       if (performanceError) throw performanceError;
@@ -152,6 +153,8 @@ export default function LenderDetail() {
       // Calculate performance metrics
       const stageCount: { [key: string]: number } = {};
       let totalFunded = 0;
+      let fundedLoans = 0;
+      let totalDaysToFunding = 0;
       
       performanceData?.forEach((contact) => {
         const stage = contact.stage || 'No Stage';
@@ -161,11 +164,23 @@ export default function LenderDetail() {
         if (contact.loan_amount) {
           totalFunded += Number(contact.loan_amount);
         }
+
+        // Calculate days to funding for funded loans
+        if (stage.toLowerCase().includes('funded') || stage.toLowerCase().includes('closed')) {
+          fundedLoans++;
+          const createdDate = new Date(contact.created_at);
+          const updatedDate = new Date(contact.updated_at);
+          const daysToFunding = Math.floor((updatedDate.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+          totalDaysToFunding += daysToFunding;
+        }
       });
+
+      const averageDaysToFunding = fundedLoans > 0 ? Math.round(totalDaysToFunding / fundedLoans) : 0;
 
       setPerformance({
         total_leads: performanceData?.length || 0,
         total_funded: totalFunded,
+        average_days_to_funding: averageDaysToFunding,
         by_stage: stageCount,
       });
     } catch (error) {
@@ -397,6 +412,12 @@ export default function LenderDetail() {
                 <p className="text-sm text-muted-foreground mb-1">Total Funded</p>
                 <p className="text-2xl font-bold text-green-600 dark:text-green-500">
                   ${performance.total_funded.toLocaleString()}
+                </p>
+              </div>
+              <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                <p className="text-sm text-muted-foreground mb-1">Avg. Time to Funding</p>
+                <p className="text-2xl font-bold text-blue-600 dark:text-blue-500">
+                  {performance.average_days_to_funding} days
                 </p>
               </div>
               {Object.entries(performance.by_stage).sort((a, b) => b[1] - a[1]).map(([stage, count]) => (
