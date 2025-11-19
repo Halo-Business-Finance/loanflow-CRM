@@ -371,12 +371,7 @@ export default function LenderDetail() {
                 {activeContacts.map((contact) => (
                   <TableRow key={contact.id} className="hover:bg-muted/50">
                     <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-primary/10">
-                          <User className="h-4 w-4 text-primary" />
-                        </div>
-                        <div className="font-medium">{contact.name}</div>
-                      </div>
+                      <div className="font-medium">{contact.name}</div>
                     </TableCell>
                     <TableCell>
                       {contact.title && (
