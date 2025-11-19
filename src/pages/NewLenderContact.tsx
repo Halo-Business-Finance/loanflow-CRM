@@ -10,10 +10,9 @@ import { StandardContentCard } from "@/components/StandardContentCard"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
-import { User, Briefcase, Phone, Mail, FileText, Star } from "lucide-react"
+import { User, Briefcase, Phone, Mail, FileText } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
-import { Checkbox } from "@/components/ui/checkbox"
 
 export default function NewLenderContact() {
   const { toast } = useToast()
@@ -31,10 +30,6 @@ export default function NewLenderContact() {
     phone: "",
     mobile_phone: "",
     notes: "",
-    is_primary: false,
-    is_bdo: false,
-    is_closer: false,
-    is_vice_president: false,
     is_active: true
   })
 
@@ -102,10 +97,6 @@ export default function NewLenderContact() {
         phone: formData.phone.trim() || null,
         mobile_phone: formData.mobile_phone.trim() || null,
         notes: formData.notes.trim() || null,
-        is_primary: formData.is_primary,
-        is_bdo: formData.is_bdo,
-        is_closer: formData.is_closer,
-        is_vice_president: formData.is_vice_president,
         is_active: formData.is_active,
         user_id: user.id,
       }])
@@ -272,71 +263,6 @@ export default function NewLenderContact() {
               </div>
             </div>
           </StandardContentCard>
-
-          <Separator />
-
-          {/* Role & Responsibilities */}
-          <StandardContentCard
-            title={
-              <div className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-primary" />
-                <span>Role & Responsibilities</span>
-              </div>
-            }
-            className="border-l-4 border-l-primary"
-          >
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground mb-4">
-                Select all roles that apply to this contact
-              </p>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="is_primary"
-                  checked={formData.is_primary}
-                  onCheckedChange={(checked) => handleInputChange("is_primary", checked as boolean)}
-                />
-                <Label htmlFor="is_primary" className="text-sm font-medium cursor-pointer">
-                  Primary Contact
-                </Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="is_bdo"
-                  checked={formData.is_bdo}
-                  onCheckedChange={(checked) => handleInputChange("is_bdo", checked as boolean)}
-                />
-                <Label htmlFor="is_bdo" className="text-sm font-medium cursor-pointer">
-                  Business Development Officer (BDO)
-                </Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="is_closer"
-                  checked={formData.is_closer}
-                  onCheckedChange={(checked) => handleInputChange("is_closer", checked as boolean)}
-                />
-                <Label htmlFor="is_closer" className="text-sm font-medium cursor-pointer">
-                  Loan Closer
-                </Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="is_vice_president"
-                  checked={formData.is_vice_president}
-                  onCheckedChange={(checked) => handleInputChange("is_vice_president", checked as boolean)}
-                />
-                <Label htmlFor="is_vice_president" className="text-sm font-medium cursor-pointer">
-                  Vice President
-                </Label>
-              </div>
-            </div>
-          </StandardContentCard>
-
-          <Separator />
 
           {/* Additional Details */}
           <StandardContentCard
