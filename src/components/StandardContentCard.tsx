@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface StandardContentCardProps {
-  title?: string;
+  title?: string | React.ReactNode;
   children: React.ReactNode;
   className?: string;
   headerActions?: React.ReactNode;
