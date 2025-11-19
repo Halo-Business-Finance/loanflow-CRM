@@ -375,8 +375,7 @@ export default function LenderDetail() {
                     </TableCell>
                     <TableCell>
                       {contact.title && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <Briefcase className="h-3 w-3 text-muted-foreground" />
+                        <div className="text-sm">
                           <span>{contact.title}</span>
                         </div>
                       )}
@@ -406,8 +405,7 @@ export default function LenderDetail() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {contact.is_primary && (
-                          <Badge variant="default" className="gap-1">
-                            <Star className="h-3 w-3" />
+                          <Badge variant="default">
                             Primary
                           </Badge>
                         )}
