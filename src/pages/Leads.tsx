@@ -26,7 +26,8 @@ import {
   List,
   Maximize2,
   Minimize2,
-  Edit2
+  Edit2,
+  UserX
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -86,6 +87,7 @@ export default function Leads() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedStage, setSelectedStage] = useState('All');
   const [selectedPriority, setSelectedPriority] = useState('All');
+  const [showUnassignedOnly, setShowUnassignedOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [sortColumn, setSortColumn] = useState<'name' | 'created_at' | 'loan_amount' | 'stage' | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -496,8 +498,9 @@ export default function Leads() {
     
     const matchesStage = selectedStage === 'All' || lead.stage === selectedStage;
     const matchesPriority = selectedPriority === 'All' || lead.priority === selectedPriority;
+    const matchesAssignment = !showUnassignedOnly || !lead.user_id;
     
-    return matchesSearch && matchesStage && matchesPriority;
+    return matchesSearch && matchesStage && matchesPriority && matchesAssignment;
   });
 
   // Handle column sorting
@@ -636,6 +639,20 @@ export default function Leads() {
               </TabsList>
 
               <TabsContent value="active" className="space-y-6 mt-0">
+              {/* Filter Bar */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold">Active Leads</h3>
+                <Button
+                  variant={showUnassignedOnly ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setShowUnassignedOnly(!showUnassignedOnly)}
+                  className="gap-2"
+                >
+                  <UserX className="h-4 w-4" />
+                  {showUnassignedOnly ? "Show All" : "Unassigned Only"}
+                </Button>
+              </div>
+              
               {/* Key Metrics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card 
