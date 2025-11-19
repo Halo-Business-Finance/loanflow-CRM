@@ -21,6 +21,7 @@ import { useToast } from '@/hooks/use-toast';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { Checkbox } from '@/components/ui/checkbox';
+import { formatPhoneNumber } from '@/lib/utils';
 import {
   Table,
   TableBody,
@@ -261,7 +262,7 @@ export default function Lenders() {
                           {lender.phone && (
                             <div className="flex items-center gap-2 text-sm">
                               <Phone className="h-3 w-3 text-muted-foreground" />
-                              <span>{lender.phone}</span>
+                              <span>{formatPhoneNumber(lender.phone)}</span>
                             </div>
                           )}
                           {lender.email && (
