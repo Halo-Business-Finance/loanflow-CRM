@@ -589,7 +589,7 @@ export default function Leads() {
                       <span className="text-xs">{isCompact ? 'Normal' : 'Compact'}</span>
                     </Button>
                   )}
-                  <Button onClick={() => setShowNewLeadForm(true)} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
+                  <Button onClick={() => navigate('/leads/new')} size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white">
                     <UserPlus className="h-3 w-3 mr-2" />
                     Add Lead
                   </Button>
@@ -836,7 +836,7 @@ export default function Leads() {
                         ? "Try adjusting your search or filters" 
                         : "Start by creating your first lead"}
                     </p>
-                    <Button onClick={() => setShowNewLeadForm(true)} className="gap-2">
+                    <Button onClick={() => navigate('/leads/new')} className="gap-2">
                       <UserPlus className="h-4 w-4" />
                       Create Lead
                     </Button>
