@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   ArrowLeft,
   Building2, 
@@ -263,8 +262,7 @@ export default function LenderDetail() {
     );
   }
 
-  const bdoContacts = contacts.filter(c => c.is_bdo && c.is_active);
-  const otherContacts = contacts.filter(c => !c.is_bdo && c.is_active);
+  const activeContacts = contacts.filter(c => c.is_active);
   const inactiveContacts = contacts.filter(c => !c.is_active);
 
   return (
@@ -354,70 +352,42 @@ export default function LenderDetail() {
           </Button>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="bdo" className="w-full">
-            <TabsList>
-              <TabsTrigger value="bdo">
-                BDOs ({bdoContacts.length})
-              </TabsTrigger>
-              <TabsTrigger value="other">
-                Other Contacts ({otherContacts.length})
-              </TabsTrigger>
+          {contacts.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">No contacts yet</p>
+          ) : (
+            <>
+              {activeContacts.length > 0 && (
+                <div className="space-y-4">
+                  <div className="grid gap-4">
+                    {activeContacts.map((contact) => (
+                      <ContactCard
+                        key={contact.id}
+                        contact={contact}
+                        onEdit={openEditContactForm}
+                        onDelete={handleDeleteContact}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+              
               {inactiveContacts.length > 0 && (
-                <TabsTrigger value="inactive">
-                  Inactive ({inactiveContacts.length})
-                </TabsTrigger>
-              )}
-            </TabsList>
-
-            <TabsContent value="bdo" className="space-y-4">
-              {bdoContacts.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">No BDO contacts yet</p>
-              ) : (
-                <div className="grid gap-4">
-                  {bdoContacts.map((contact) => (
-                    <ContactCard
-                      key={contact.id}
-                      contact={contact}
-                      onEdit={openEditContactForm}
-                      onDelete={handleDeleteContact}
-                    />
-                  ))}
+                <div className="mt-8 space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground">Inactive Contacts</h3>
+                  <div className="grid gap-4">
+                    {inactiveContacts.map((contact) => (
+                      <ContactCard
+                        key={contact.id}
+                        contact={contact}
+                        onEdit={openEditContactForm}
+                        onDelete={handleDeleteContact}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
-            </TabsContent>
-
-            <TabsContent value="other" className="space-y-4">
-              {otherContacts.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">No other contacts yet</p>
-              ) : (
-                <div className="grid gap-4">
-                  {otherContacts.map((contact) => (
-                    <ContactCard
-                      key={contact.id}
-                      contact={contact}
-                      onEdit={openEditContactForm}
-                      onDelete={handleDeleteContact}
-                    />
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-
-            {inactiveContacts.length > 0 && (
-              <TabsContent value="inactive" className="space-y-4">
-                <div className="grid gap-4">
-                  {inactiveContacts.map((contact) => (
-                    <ContactCard
-                      key={contact.id}
-                      contact={contact}
-                      onEdit={openEditContactForm}
-                      onDelete={handleDeleteContact}
-                    />
-                  ))}
-                </div>
-              </TabsContent>
-            )}
-          </Tabs>
+            </>
+          )}
         </CardContent>
       </Card>
 
