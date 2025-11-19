@@ -61,6 +61,7 @@ interface LenderContact {
   is_primary: boolean;
   is_bdo: boolean;
   is_closer: boolean;
+  is_vice_president: boolean;
   notes?: string;
   is_active: boolean;
   created_at: string;
@@ -85,6 +86,7 @@ export default function LenderDetail() {
     is_primary: false,
     is_bdo: false,
     is_closer: false,
+    is_vice_president: false,
     notes: '',
     is_active: true,
   });
@@ -218,6 +220,7 @@ export default function LenderDetail() {
       is_primary: false,
       is_bdo: false,
       is_closer: false,
+      is_vice_president: false,
       notes: '',
       is_active: true,
     });
@@ -234,6 +237,7 @@ export default function LenderDetail() {
       is_primary: contact.is_primary,
       is_bdo: contact.is_bdo,
       is_closer: contact.is_closer,
+      is_vice_president: contact.is_vice_president,
       notes: contact.notes || '',
       is_active: contact.is_active,
     });
@@ -519,6 +523,19 @@ export default function LenderDetail() {
 
                 <div className="flex items-center space-x-2">
                   <Checkbox
+                    id="is_vice_president"
+                    checked={contactFormData.is_vice_president}
+                    onCheckedChange={(checked) => 
+                      setContactFormData({ ...contactFormData, is_vice_president: checked as boolean })
+                    }
+                  />
+                  <Label htmlFor="is_vice_president" className="cursor-pointer">
+                    Vice President
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
                     id="is_active_contact"
                     checked={contactFormData.is_active}
                     onCheckedChange={(checked) => 
@@ -592,6 +609,11 @@ function ContactCard({
                 {contact.is_closer && (
                   <Badge variant="outline" className="border-green-500 text-green-700">
                     Closer
+                  </Badge>
+                )}
+                {contact.is_vice_president && (
+                  <Badge variant="outline" className="border-purple-500 text-purple-700">
+                    Vice President
                   </Badge>
                 )}
               </CardTitle>
