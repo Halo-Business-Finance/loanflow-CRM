@@ -381,7 +381,7 @@ export default function LenderDetail() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
-                <p className="text-sm text-muted-foreground mb-1">Total Leads</p>
+                <p className="text-sm text-muted-foreground mb-1">Assigned Loans</p>
                 <p className="text-2xl font-bold text-primary">{performance.total_leads}</p>
               </div>
               {Object.entries(performance.by_stage).sort((a, b) => b[1] - a[1]).map(([stage, count]) => (
