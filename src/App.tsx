@@ -67,6 +67,8 @@ import SettingsUsers from "./pages/SettingsUsers";
 import SettingsSystem from "./pages/SettingsSystem";
 import Messages from "./pages/Messages";
 import LeadAccessDiagnostics from "./pages/LeadAccessDiagnostics";
+import Lenders from "./pages/Lenders";
+import LenderDetail from "./pages/LenderDetail";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useEnhancedSecurity } from "@/hooks/useEnhancedSecurity";
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess";
@@ -162,6 +164,10 @@ function AuthenticatedApp() {
         <Route path="/reports" element={<IBMCloudLayout><Reports /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/support" element={<IBMCloudLayout><Support /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/user-directory" element={<IBMCloudLayout><UserDirectory /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        
+        {/* Lenders routes */}
+        <Route path="/lenders" element={<IBMCloudLayout><Lenders /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/lenders/:id" element={<IBMCloudLayout><LenderDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         
         <Route path="/settings" element={<IBMCloudLayout key="settings-layout"><Settings /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/settings/users" element={<IBMCloudLayout><SettingsUsers /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />

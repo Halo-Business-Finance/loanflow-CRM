@@ -1035,6 +1035,7 @@ export type Database = {
           last_activity: string | null
           last_name: string | null
           lead_score: number | null
+          lender_id: string | null
           loan_amount: number | null
           loan_type: string | null
           location: string | null
@@ -1106,6 +1107,7 @@ export type Database = {
           last_activity?: string | null
           last_name?: string | null
           lead_score?: number | null
+          lender_id?: string | null
           loan_amount?: number | null
           loan_type?: string | null
           location?: string | null
@@ -1177,6 +1179,7 @@ export type Database = {
           last_activity?: string | null
           last_name?: string | null
           lead_score?: number | null
+          lender_id?: string | null
           loan_amount?: number | null
           loan_type?: string | null
           location?: string | null
@@ -1212,7 +1215,15 @@ export type Database = {
           year_established?: number | null
           years_in_business?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "contact_entities_lender_id_fkey"
+            columns: ["lender_id"]
+            isOneToOne: false
+            referencedRelation: "lenders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       custom_fields: {
         Row: {
@@ -2661,6 +2672,119 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      lender_contacts: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_active: boolean
+          is_bdo: boolean
+          is_primary: boolean
+          lender_id: string
+          mobile_phone: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          is_bdo?: boolean
+          is_primary?: boolean
+          lender_id: string
+          mobile_phone?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          is_bdo?: boolean
+          is_primary?: boolean
+          lender_id?: string
+          mobile_phone?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lender_contacts_lender_id_fkey"
+            columns: ["lender_id"]
+            isOneToOne: false
+            referencedRelation: "lenders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lenders: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string | null
+          id: string
+          is_active: boolean
+          lender_type: string
+          name: string
+          notes: string | null
+          phone: string | null
+          state: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          lender_type?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          lender_type?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
       }
       loan_requests: {
         Row: {

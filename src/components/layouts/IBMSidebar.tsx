@@ -30,6 +30,7 @@ import {
   Mail,
   FileSpreadsheet,
   HandCoins,
+  Landmark,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -113,6 +114,7 @@ const navItems: NavItemData[] = [
   { icon: BarChart3, label: 'Reports', to: '/reports' },
   { icon: Headset, label: 'Support', to: '/support' },
   { icon: UserCog, label: 'User Directory', to: '/user-directory' },
+  { icon: Landmark, label: 'Banks & Lenders', to: '/lenders' },
   { 
     icon: Building2, 
     label: 'Enterprise', 
