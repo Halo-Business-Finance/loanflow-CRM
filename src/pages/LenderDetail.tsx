@@ -362,7 +362,6 @@ export default function LenderDetail() {
                   <TableHead className="uppercase text-xs font-semibold">Contact Name</TableHead>
                   <TableHead className="uppercase text-xs font-semibold">Title/Position</TableHead>
                   <TableHead className="uppercase text-xs font-semibold">Contact Information</TableHead>
-                  <TableHead className="uppercase text-xs font-semibold">Roles</TableHead>
                   <TableHead className="uppercase text-xs font-semibold">Status</TableHead>
                   <TableHead className="w-24"></TableHead>
                 </TableRow>
@@ -399,28 +398,6 @@ export default function LenderDetail() {
                             <Phone className="h-3 w-3" />
                             <span>{contact.mobile_phone} (Mobile)</span>
                           </div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {contact.is_primary && (
-                          <Badge variant="default">
-                            Primary
-                          </Badge>
-                        )}
-                        {contact.is_bdo && (
-                          <Badge variant="secondary">BDO</Badge>
-                        )}
-                        {contact.is_closer && (
-                          <Badge variant="outline" className="border-green-500 text-green-700">
-                            Closer
-                          </Badge>
-                        )}
-                        {contact.is_vice_president && (
-                          <Badge variant="outline" className="border-purple-500 text-purple-700">
-                            VP
-                          </Badge>
                         )}
                       </div>
                     </TableCell>
