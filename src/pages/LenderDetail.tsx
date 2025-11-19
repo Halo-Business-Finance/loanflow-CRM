@@ -348,7 +348,7 @@ export default function LenderDetail() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Lender Contacts</CardTitle>
-          <Button onClick={() => { resetContactForm(); setShowContactForm(true); }}>
+          <Button onClick={() => navigate(`/lenders/${id}/contacts/new`)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Contact
           </Button>
