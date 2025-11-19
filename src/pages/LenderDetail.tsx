@@ -78,6 +78,7 @@ interface LenderContact {
 
 interface LenderPerformance {
   total_leads: number;
+  total_funded: number;
   by_stage: {
     [key: string]: number;
   };
@@ -143,20 +144,28 @@ export default function LenderDetail() {
       // Fetch lender performance metrics
       const { data: performanceData, error: performanceError } = await supabase
         .from('contact_entities')
-        .select('stage, id')
+        .select('stage, id, loan_amount')
         .eq('lender_id', id);
 
       if (performanceError) throw performanceError;
 
       // Calculate performance metrics
       const stageCount: { [key: string]: number } = {};
+      let totalFunded = 0;
+      
       performanceData?.forEach((contact) => {
         const stage = contact.stage || 'No Stage';
         stageCount[stage] = (stageCount[stage] || 0) + 1;
+        
+        // Sum up loan amounts
+        if (contact.loan_amount) {
+          totalFunded += Number(contact.loan_amount);
+        }
       });
 
       setPerformance({
         total_leads: performanceData?.length || 0,
+        total_funded: totalFunded,
         by_stage: stageCount,
       });
     } catch (error) {
@@ -383,6 +392,12 @@ export default function LenderDetail() {
               <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
                 <p className="text-sm text-muted-foreground mb-1">Assigned Loans</p>
                 <p className="text-2xl font-bold text-primary">{performance.total_leads}</p>
+              </div>
+              <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
+                <p className="text-sm text-muted-foreground mb-1">Total Funded</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-500">
+                  ${performance.total_funded.toLocaleString()}
+                </p>
               </div>
               {Object.entries(performance.by_stage).sort((a, b) => b[1] - a[1]).map(([stage, count]) => (
                 <div key={stage} className="p-4 bg-muted/50 rounded-lg">
