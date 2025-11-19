@@ -60,6 +60,7 @@ interface LenderContact {
   mobile_phone?: string;
   is_primary: boolean;
   is_bdo: boolean;
+  is_closer: boolean;
   notes?: string;
   is_active: boolean;
   created_at: string;
@@ -83,6 +84,7 @@ export default function LenderDetail() {
     mobile_phone: '',
     is_primary: false,
     is_bdo: false,
+    is_closer: false,
     notes: '',
     is_active: true,
   });
@@ -215,6 +217,7 @@ export default function LenderDetail() {
       mobile_phone: '',
       is_primary: false,
       is_bdo: false,
+      is_closer: false,
       notes: '',
       is_active: true,
     });
@@ -230,6 +233,7 @@ export default function LenderDetail() {
       mobile_phone: contact.mobile_phone || '',
       is_primary: contact.is_primary,
       is_bdo: contact.is_bdo,
+      is_closer: contact.is_closer,
       notes: contact.notes || '',
       is_active: contact.is_active,
     });
@@ -502,6 +506,19 @@ export default function LenderDetail() {
 
                 <div className="flex items-center space-x-2">
                   <Checkbox
+                    id="is_closer"
+                    checked={contactFormData.is_closer}
+                    onCheckedChange={(checked) => 
+                      setContactFormData({ ...contactFormData, is_closer: checked as boolean })
+                    }
+                  />
+                  <Label htmlFor="is_closer" className="cursor-pointer">
+                    Closer
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
                     id="is_active_contact"
                     checked={contactFormData.is_active}
                     onCheckedChange={(checked) => 
@@ -570,6 +587,11 @@ function ContactCard({
                 {contact.is_bdo && (
                   <Badge variant="secondary">
                     BDO
+                  </Badge>
+                )}
+                {contact.is_closer && (
+                  <Badge variant="outline" className="border-green-500 text-green-700">
+                    Closer
                   </Badge>
                 )}
               </CardTitle>
