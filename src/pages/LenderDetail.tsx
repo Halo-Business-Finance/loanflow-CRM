@@ -16,7 +16,8 @@ import {
   Trash2,
   User,
   Briefcase,
-  Star
+  Star,
+  TrendingUp
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -75,6 +76,13 @@ interface LenderContact {
   created_at: string;
 }
 
+interface LenderPerformance {
+  total_leads: number;
+  by_stage: {
+    [key: string]: number;
+  };
+}
+
 export default function LenderDetail() {
   const { id } = useParams();
   const { user } = useAuth();
@@ -82,6 +90,7 @@ export default function LenderDetail() {
   const navigate = useNavigate();
   const [lender, setLender] = useState<Lender | null>(null);
   const [contacts, setContacts] = useState<LenderContact[]>([]);
+  const [performance, setPerformance] = useState<LenderPerformance | null>(null);
   const [loading, setLoading] = useState(true);
   const [showContactForm, setShowContactForm] = useState(false);
   const [editingContact, setEditingContact] = useState<LenderContact | null>(null);
@@ -130,6 +139,26 @@ export default function LenderDetail() {
 
       if (contactsError) throw contactsError;
       setContacts(contactsData || []);
+
+      // Fetch lender performance metrics
+      const { data: performanceData, error: performanceError } = await supabase
+        .from('contact_entities')
+        .select('stage, id')
+        .eq('lender_id', id);
+
+      if (performanceError) throw performanceError;
+
+      // Calculate performance metrics
+      const stageCount: { [key: string]: number } = {};
+      performanceData?.forEach((contact) => {
+        const stage = contact.stage || 'No Stage';
+        stageCount[stage] = (stageCount[stage] || 0) + 1;
+      });
+
+      setPerformance({
+        total_leads: performanceData?.length || 0,
+        by_stage: stageCount,
+      });
     } catch (error) {
       console.error('Error fetching lender details:', error);
       toast({
@@ -342,6 +371,31 @@ export default function LenderDetail() {
             Add Contact
           </Button>
         </CardHeader>
+        
+        {/* Lender Performance Section */}
+        {performance && (
+          <CardContent className="pt-6 border-t">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold">Lender Performance</h3>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+                <p className="text-sm text-muted-foreground mb-1">Total Leads</p>
+                <p className="text-2xl font-bold text-primary">{performance.total_leads}</p>
+              </div>
+              {Object.entries(performance.by_stage).sort((a, b) => b[1] - a[1]).map(([stage, count]) => (
+                <div key={stage} className="p-4 bg-muted/50 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">{stage}</p>
+                  <p className="text-2xl font-bold">{count}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {performance.total_leads > 0 ? Math.round((count / performance.total_leads) * 100) : 0}%
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        )}
         
         <CardContent className="pt-6 border-t">
           <h3 className="text-lg font-semibold mb-4">Lender Contacts</h3>
