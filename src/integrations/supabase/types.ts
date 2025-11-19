@@ -2682,6 +2682,7 @@ export type Database = {
           is_bdo: boolean
           is_closer: boolean
           is_primary: boolean
+          is_vice_president: boolean
           lender_id: string
           mobile_phone: string | null
           name: string
@@ -2699,6 +2700,7 @@ export type Database = {
           is_bdo?: boolean
           is_closer?: boolean
           is_primary?: boolean
+          is_vice_president?: boolean
           lender_id: string
           mobile_phone?: string | null
           name: string
@@ -2716,6 +2718,7 @@ export type Database = {
           is_bdo?: boolean
           is_closer?: boolean
           is_primary?: boolean
+          is_vice_president?: boolean
           lender_id?: string
           mobile_phone?: string | null
           name?: string
