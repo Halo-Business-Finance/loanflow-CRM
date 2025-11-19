@@ -289,71 +289,61 @@ export default function LenderDetail() {
         subtitle={lender.lender_type.replace('_', ' ').toUpperCase()}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Lender Details Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              Lender Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 gap-6">
-            {lender.address && (
-              <div>
-                <Label className="text-muted-foreground">Address</Label>
-                <p className="mt-1">
-                  {lender.address}
-                  {lender.city && `, ${lender.city}`}
-                  {lender.state && `, ${lender.state}`}
-                  {lender.zip_code && ` ${lender.zip_code}`}
-                </p>
-              </div>
-            )}
-            {lender.phone && (
-              <div>
-                <Label className="text-muted-foreground">Phone</Label>
-                <p className="mt-1">
-                  {lender.phone}
-                </p>
-              </div>
-            )}
-            {lender.email && (
-              <div>
-                <Label className="text-muted-foreground">Email</Label>
-                <p className="mt-1">
-                  {lender.email}
-                </p>
-              </div>
-            )}
-            {lender.website && (
-              <div>
-                <Label className="text-muted-foreground">Website</Label>
-                <p className="mt-1">
-                  <a href={lender.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                    {lender.website}
-                  </a>
-                </p>
-              </div>
-            )}
-            {lender.notes && (
-              <div>
-                <Label className="text-muted-foreground">Notes</Label>
-                <p className="mt-1">{lender.notes}</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Contacts Section */}
-        <Card>
+      {/* Combined Lender & Contacts Card */}
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Lender Contacts</CardTitle>
+          <div>
+            <CardTitle className="text-2xl mb-4">{lender.name}</CardTitle>
+            <div className="space-y-3 text-sm">
+              {lender.address && (
+                <div>
+                  <Label className="text-muted-foreground">Address</Label>
+                  <p className="mt-1">
+                    {lender.address}
+                    {lender.city && `, ${lender.city}`}
+                    {lender.state && `, ${lender.state}`}
+                    {lender.zip_code && ` ${lender.zip_code}`}
+                  </p>
+                </div>
+              )}
+              {lender.phone && (
+                <div>
+                  <Label className="text-muted-foreground">Phone</Label>
+                  <p className="mt-1">{lender.phone}</p>
+                </div>
+              )}
+              {lender.email && (
+                <div>
+                  <Label className="text-muted-foreground">Email</Label>
+                  <p className="mt-1">{lender.email}</p>
+                </div>
+              )}
+              {lender.website && (
+                <div>
+                  <Label className="text-muted-foreground">Website</Label>
+                  <p className="mt-1">
+                    <a href={lender.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                      {lender.website}
+                    </a>
+                  </p>
+                </div>
+              )}
+              {lender.notes && (
+                <div>
+                  <Label className="text-muted-foreground">Notes</Label>
+                  <p className="mt-1">{lender.notes}</p>
+                </div>
+              )}
+            </div>
+          </div>
           <Button onClick={() => navigate(`/lenders/${id}/contacts/new`)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Contact
           </Button>
         </CardHeader>
-        <CardContent>
+        
+        <CardContent className="pt-6 border-t">
+          <h3 className="text-lg font-semibold mb-4">Lender Contacts</h3>
           {contacts.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">No contacts yet</p>
           ) : (
@@ -514,7 +504,6 @@ export default function LenderDetail() {
           )}
         </CardContent>
       </Card>
-      </div>
 
       {/* Contact Form Dialog */}
       <Dialog open={showContactForm} onOpenChange={setShowContactForm}>
