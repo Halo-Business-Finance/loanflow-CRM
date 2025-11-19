@@ -429,9 +429,9 @@ export default function LenderDetail() {
               {editingContact ? 'Edit Contact' : 'Add New Contact'}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleContactSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2 sm:col-span-2">
+          <form onSubmit={handleContactSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
                 <Label htmlFor="contact_name">Full Name *</Label>
                 <Input
                   id="contact_name"
@@ -441,7 +441,7 @@ export default function LenderDetail() {
                 />
               </div>
 
-              <div className="space-y-2 sm:col-span-2">
+              <div className="col-span-2">
                 <Label htmlFor="title">Title</Label>
                 <Input
                   id="title"
@@ -451,7 +451,7 @@ export default function LenderDetail() {
                 />
               </div>
 
-              <div className="space-y-2">
+              <div>
                 <Label htmlFor="contact_email">Email</Label>
                 <Input
                   id="contact_email"
@@ -461,7 +461,7 @@ export default function LenderDetail() {
                 />
               </div>
 
-              <div className="space-y-2">
+              <div>
                 <Label htmlFor="contact_phone">Office Phone</Label>
                 <Input
                   id="contact_phone"
@@ -471,7 +471,7 @@ export default function LenderDetail() {
                 />
               </div>
 
-              <div className="space-y-2 sm:col-span-2">
+              <div className="col-span-2">
                 <Label htmlFor="mobile_phone">Mobile Phone</Label>
                 <Input
                   id="mobile_phone"
@@ -481,77 +481,74 @@ export default function LenderDetail() {
                 />
               </div>
 
-              <div className="space-y-2 sm:col-span-2">
-                <Label>Contact Roles</Label>
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="is_primary"
-                      checked={contactFormData.is_primary}
-                      onCheckedChange={(checked) => 
-                        setContactFormData({ ...contactFormData, is_primary: checked as boolean })
-                      }
-                    />
-                    <Label htmlFor="is_primary" className="cursor-pointer font-normal">
-                      Primary Contact
-                    </Label>
-                  </div>
+              <div className="col-span-2 space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="is_primary"
+                    checked={contactFormData.is_primary}
+                    onCheckedChange={(checked) => 
+                      setContactFormData({ ...contactFormData, is_primary: checked as boolean })
+                    }
+                  />
+                  <Label htmlFor="is_primary" className="cursor-pointer">
+                    Primary Contact
+                  </Label>
+                </div>
 
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="is_bdo"
-                      checked={contactFormData.is_bdo}
-                      onCheckedChange={(checked) => 
-                        setContactFormData({ ...contactFormData, is_bdo: checked as boolean })
-                      }
-                    />
-                    <Label htmlFor="is_bdo" className="cursor-pointer font-normal">
-                      Business Development Officer (BDO)
-                    </Label>
-                  </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="is_bdo"
+                    checked={contactFormData.is_bdo}
+                    onCheckedChange={(checked) => 
+                      setContactFormData({ ...contactFormData, is_bdo: checked as boolean })
+                    }
+                  />
+                  <Label htmlFor="is_bdo" className="cursor-pointer">
+                    Business Development Officer (BDO)
+                  </Label>
+                </div>
 
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="is_closer"
-                      checked={contactFormData.is_closer}
-                      onCheckedChange={(checked) => 
-                        setContactFormData({ ...contactFormData, is_closer: checked as boolean })
-                      }
-                    />
-                    <Label htmlFor="is_closer" className="cursor-pointer font-normal">
-                      Closer
-                    </Label>
-                  </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="is_closer"
+                    checked={contactFormData.is_closer}
+                    onCheckedChange={(checked) => 
+                      setContactFormData({ ...contactFormData, is_closer: checked as boolean })
+                    }
+                  />
+                  <Label htmlFor="is_closer" className="cursor-pointer">
+                    Closer
+                  </Label>
+                </div>
 
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="is_vice_president"
-                      checked={contactFormData.is_vice_president}
-                      onCheckedChange={(checked) => 
-                        setContactFormData({ ...contactFormData, is_vice_president: checked as boolean })
-                      }
-                    />
-                    <Label htmlFor="is_vice_president" className="cursor-pointer font-normal">
-                      Vice President
-                    </Label>
-                  </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="is_vice_president"
+                    checked={contactFormData.is_vice_president}
+                    onCheckedChange={(checked) => 
+                      setContactFormData({ ...contactFormData, is_vice_president: checked as boolean })
+                    }
+                  />
+                  <Label htmlFor="is_vice_president" className="cursor-pointer">
+                    Vice President
+                  </Label>
+                </div>
 
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="is_active_contact"
-                      checked={contactFormData.is_active}
-                      onCheckedChange={(checked) => 
-                        setContactFormData({ ...contactFormData, is_active: checked as boolean })
-                      }
-                    />
-                    <Label htmlFor="is_active_contact" className="cursor-pointer font-normal">
-                      Active
-                    </Label>
-                  </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="is_active_contact"
+                    checked={contactFormData.is_active}
+                    onCheckedChange={(checked) => 
+                      setContactFormData({ ...contactFormData, is_active: checked as boolean })
+                    }
+                  />
+                  <Label htmlFor="is_active_contact" className="cursor-pointer">
+                    Active
+                  </Label>
                 </div>
               </div>
 
-              <div className="space-y-2 sm:col-span-2">
+              <div className="col-span-2">
                 <Label htmlFor="contact_notes">Notes</Label>
                 <Textarea
                   id="contact_notes"
