@@ -68,6 +68,7 @@ import SettingsSystem from "./pages/SettingsSystem";
 import Messages from "./pages/Messages";
 import LeadAccessDiagnostics from "./pages/LeadAccessDiagnostics";
 import Lenders from "./pages/Lenders";
+import NewLender from "./pages/NewLender";
 import LenderDetail from "./pages/LenderDetail";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useEnhancedSecurity } from "@/hooks/useEnhancedSecurity";
@@ -167,6 +168,7 @@ function AuthenticatedApp() {
         
         {/* Lenders routes */}
         <Route path="/lenders" element={<IBMCloudLayout><Lenders /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/lenders/new" element={<IBMCloudLayout><NewLender /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/lenders/:id" element={<IBMCloudLayout><LenderDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         
         <Route path="/settings" element={<IBMCloudLayout key="settings-layout"><Settings /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
