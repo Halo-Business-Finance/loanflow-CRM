@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { useToast } from "@/hooks/use-toast"
@@ -169,13 +170,33 @@ export default function NewLenderContact() {
                     <Briefcase className="h-4 w-4" />
                     Title / Position
                   </Label>
-                  <Input
-                    id="title"
+                  <Select
                     value={formData.title}
-                    onChange={(e) => handleInputChange("title", e.target.value)}
-                    placeholder="Business Development Officer, Loan Officer, etc."
-                    className="h-11"
-                  />
+                    onValueChange={(value) => handleInputChange("title", value)}
+                  >
+                    <SelectTrigger className="h-11">
+                      <SelectValue placeholder="Select position" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-50">
+                      <SelectItem value="Business Development Officer">Business Development Officer</SelectItem>
+                      <SelectItem value="Loan Officer">Loan Officer</SelectItem>
+                      <SelectItem value="Senior Loan Officer">Senior Loan Officer</SelectItem>
+                      <SelectItem value="Branch Manager">Branch Manager</SelectItem>
+                      <SelectItem value="Vice President">Vice President</SelectItem>
+                      <SelectItem value="Senior Vice President">Senior Vice President</SelectItem>
+                      <SelectItem value="President">President</SelectItem>
+                      <SelectItem value="Underwriter">Underwriter</SelectItem>
+                      <SelectItem value="Loan Processor">Loan Processor</SelectItem>
+                      <SelectItem value="Loan Closer">Loan Closer</SelectItem>
+                      <SelectItem value="Portfolio Manager">Portfolio Manager</SelectItem>
+                      <SelectItem value="Credit Analyst">Credit Analyst</SelectItem>
+                      <SelectItem value="Relationship Manager">Relationship Manager</SelectItem>
+                      <SelectItem value="Commercial Lender">Commercial Lender</SelectItem>
+                      <SelectItem value="SBA Specialist">SBA Specialist</SelectItem>
+                      <SelectItem value="Operations Manager">Operations Manager</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
