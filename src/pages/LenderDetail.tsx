@@ -292,8 +292,7 @@ export default function LenderDetail() {
       {/* Lender Details Card */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Building2 className="h-5 w-5" />
+          <CardTitle>
             Lender Information
           </CardTitle>
         </CardHeader>
@@ -301,22 +300,18 @@ export default function LenderDetail() {
           {lender.address && (
             <div>
               <Label className="text-muted-foreground">Address</Label>
-              <p className="flex items-start gap-2 mt-1">
-                <MapPin className="h-4 w-4 mt-0.5" />
-                <span>
-                  {lender.address}
-                  {lender.city && `, ${lender.city}`}
-                  {lender.state && `, ${lender.state}`}
-                  {lender.zip_code && ` ${lender.zip_code}`}
-                </span>
+              <p className="mt-1">
+                {lender.address}
+                {lender.city && `, ${lender.city}`}
+                {lender.state && `, ${lender.state}`}
+                {lender.zip_code && ` ${lender.zip_code}`}
               </p>
             </div>
           )}
           {lender.phone && (
             <div>
               <Label className="text-muted-foreground">Phone</Label>
-              <p className="flex items-center gap-2 mt-1">
-                <Phone className="h-4 w-4" />
+              <p className="mt-1">
                 {lender.phone}
               </p>
             </div>
@@ -324,8 +319,7 @@ export default function LenderDetail() {
           {lender.email && (
             <div>
               <Label className="text-muted-foreground">Email</Label>
-              <p className="flex items-center gap-2 mt-1">
-                <Mail className="h-4 w-4" />
+              <p className="mt-1">
                 {lender.email}
               </p>
             </div>
@@ -333,8 +327,7 @@ export default function LenderDetail() {
           {lender.website && (
             <div>
               <Label className="text-muted-foreground">Website</Label>
-              <p className="flex items-center gap-2 mt-1">
-                <Globe className="h-4 w-4" />
+              <p className="mt-1">
                 <a href={lender.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                   {lender.website}
                 </a>
