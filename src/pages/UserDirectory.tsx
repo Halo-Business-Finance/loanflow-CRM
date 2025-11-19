@@ -55,6 +55,7 @@ import { Switch } from '@/components/ui/switch';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import {
   Form,
   FormControl,
@@ -523,20 +524,10 @@ export default function UserDirectory() {
   const uniqueRoles = new Set(users.map(u => u.role)).size;
   return (
     <div className="min-h-screen bg-background">
-      <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                User Directory Management
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage users, roles, and permissions across your organization
-              </p>
-            </div>
-          </div>
-          
+      <IBMPageHeader
+        title="User Directory"
+        subtitle="Manage users, roles, and permissions across your organization"
+        actions={
           <div className="flex items-center gap-2">
             <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
               <PopoverTrigger asChild>
@@ -608,7 +599,10 @@ export default function UserDirectory() {
               Add User
             </Button>
           </div>
-        </div>
+        }
+      />
+      
+      <div className="p-8 space-y-8 animate-fade-in">
 
         {/* Content Area */}
         <div className="space-y-6">
