@@ -598,12 +598,23 @@ export default function NewLead() {
                   </Label>
                 </div>
               </div>
-            </StandardContentCard>
+            </div>
+          </StandardContentCard>
 
-            <StandardContentCard title="Business Information" className="border border-blue-600">
-              <p className="text-sm text-muted-foreground mb-4">
+          <StandardContentCard 
+            title={
+              <div className="flex items-center gap-2">
+                <Building2 className="h-5 w-5 text-primary" />
+                <span>Business Information</span>
+              </div>
+            }
+            className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
                 Details about the borrower's business
               </p>
+              <Separator className="my-4" />
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="businessName">Business Name</Label>
@@ -707,15 +718,26 @@ export default function NewLead() {
                   </div>
                 </div>
               </div>
-            </StandardContentCard>
-          </div>
+            </div>
+          </StandardContentCard>
+        </div>
 
-          {/* Row 2: Loan, Merchant Processing, and Banking/BDO Information */}
-          <div className="grid gap-6 md:grid-cols-3">
-            <StandardContentCard title="Loan Information" className="border border-blue-600">
-              <p className="text-sm text-muted-foreground mb-4">
+        {/* Row 2: Loan, Merchant Processing, and Banking/BDO Information */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          <StandardContentCard 
+            title={
+              <div className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5 text-primary" />
+                <span>Loan Information</span>
+              </div>
+            }
+            className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
                 Loan requirements and financial details
               </p>
+              <Separator className="my-4" />
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -784,12 +806,23 @@ export default function NewLead() {
                   </div>
                 </div>
               </div>
-            </StandardContentCard>
+            </div>
+          </StandardContentCard>
 
-            <StandardContentCard title="Merchant Processing" className="border border-blue-600">
-              <p className="text-sm text-muted-foreground mb-4">
+          <StandardContentCard 
+            title={
+              <div className="flex items-center gap-2">
+                <Landmark className="h-5 w-5 text-primary" />
+                <span>Merchant Processing</span>
+              </div>
+            }
+            className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
                 Point of sale and processing information
               </p>
+              <Separator className="my-4" />
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="posSystem">POS System</Label>
@@ -846,12 +879,23 @@ export default function NewLead() {
                   </div>
                 </div>
               </div>
-            </StandardContentCard>
+            </div>
+          </StandardContentCard>
 
-            <StandardContentCard title="Banking & BDO Information" className="border border-blue-600">
-              <p className="text-sm text-muted-foreground mb-4">
+          <StandardContentCard 
+            title={
+              <div className="flex items-center gap-2">
+                <Building2 className="h-5 w-5 text-primary" />
+                <span>Banking & BDO Information</span>
+              </div>
+            }
+            className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
                 Banking relationship and business development officer details
               </p>
+              <Separator className="my-4" />
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="bankLenderName">Bank / Lender Name</Label>
@@ -895,56 +939,71 @@ export default function NewLead() {
                   </div>
                 </div>
               </div>
-            </StandardContentCard>
-          </div>
+            </div>
+          </StandardContentCard>
+        </div>
 
-          {/* Row 4: Notes Section - Full Width */}
-          <StandardContentCard title="Additional Notes" className="border border-blue-600">
-            <p className="text-sm text-muted-foreground mb-4">
+        {/* Row 4: Notes Section - Full Width */}
+        <StandardContentCard 
+          title={
+            <div className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-primary" />
+              <span>Additional Notes</span>
+            </div>
+          }
+          className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow"
+        >
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
               Any additional information or comments
             </p>
+            <Separator className="my-4" />
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="notes">General Notes</Label>
+                <Label htmlFor="notes" className="text-sm font-semibold">General Notes</Label>
                 <Textarea 
                   id="notes" 
                   placeholder="Enter any additional notes"
                   value={formData.notes}
                   onChange={(e) => handleInputChange("notes", e.target.value)}
                   rows={4}
+                  className="resize-none"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="callNotes">Call Notes</Label>
+                <Label htmlFor="callNotes" className="text-sm font-semibold">Call Notes</Label>
                 <Textarea 
                   id="callNotes" 
                   placeholder="Notes from phone conversations"
                   value={formData.callNotes}
                   onChange={(e) => handleInputChange("callNotes", e.target.value)}
                   rows={3}
+                  className="resize-none"
                 />
               </div>
             </div>
-          </StandardContentCard>
-
-          {/* Actions */}
-          <div className="flex gap-4 justify-end pb-8">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/leads')}
-            >
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleSubmit}
-              className="px-8"
-            >
-              Create Lead
-            </Button>
           </div>
+        </StandardContentCard>
+
+        {/* Actions */}
+        <div className="flex gap-4 justify-end pb-6">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/leads')}
+            className="min-w-[120px]"
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSubmit}
+            className="min-w-[120px] bg-primary hover:bg-primary/90"
+          >
+            Create Lead
+          </Button>
         </div>
-      </ResponsiveContainer>
-    </StandardPageLayout>
+      </div>
+    </ResponsiveContainer>
+  </StandardPageLayout>
   )
 }
