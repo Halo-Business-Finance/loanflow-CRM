@@ -242,7 +242,7 @@ export default function Lenders() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background">
       <IBMPageHeader
         title="Banks & Lenders"
         subtitle="Manage your lending partners and their contacts"
@@ -253,9 +253,10 @@ export default function Lenders() {
           </Button>
         }
       />
-
-      {/* Search Bar */}
-      <Card className="mb-6">
+      
+      <div className="p-8 space-y-8">
+        {/* Search Bar */}
+        <Card className="mb-6">
         <CardContent className="pt-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -491,6 +492,7 @@ export default function Lenders() {
           </form>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }
