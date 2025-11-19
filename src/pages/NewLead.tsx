@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { useSecureForm } from "@/hooks/useSecureForm"
+import { User, Building2, DollarSign, CreditCard, Landmark, FileText, UserPlus } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
 
 export default function NewLead() {
   const { toast } = useToast()
@@ -309,148 +311,190 @@ export default function NewLead() {
         subtitle="Add a new lead to your SBA & Commercial Loan pipeline"
       />
       <ResponsiveContainer>
-        <div className="p-8 space-y-8 animate-fade-in">
+        <div className="p-6 lg:p-8 space-y-6 animate-fade-in max-w-[1600px] mx-auto">
         
         {/* Lead Assignment */}
-        <StandardContentCard title="Lead Assignment" className="border border-blue-600">
-          <p className="text-sm text-muted-foreground mb-4">
-            Assign this lead to a team member or leave unassigned for later
-          </p>
-          <div className="space-y-2">
-            <Label htmlFor="assignedUser">Assign To</Label>
-            <Select value={assignedUserId || "unassigned"} onValueChange={(value) => setAssignedUserId(value === "unassigned" ? null : value)}>
-              <SelectTrigger id="assignedUser">
-                <SelectValue placeholder="Select user or leave unassigned" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="unassigned">Unassigned (will appear in Lead Assignment)</SelectItem>
-                {users.map((u) => (
-                  <SelectItem key={u.id} value={u.id}>
-                    {u.first_name && u.last_name ? `${u.first_name} ${u.last_name}` : u.email}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <StandardContentCard 
+          title={
+            <div className="flex items-center gap-2">
+              <UserPlus className="h-5 w-5 text-primary" />
+              <span>Lead Assignment</span>
+            </div>
+          }
+          className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow"
+        >
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Assign this lead to a team member or leave unassigned for later assignment
+            </p>
+            <Separator className="my-4" />
+            <div className="space-y-2">
+              <Label htmlFor="assignedUser" className="text-sm font-semibold">Assign To</Label>
+              <Select value={assignedUserId || "unassigned"} onValueChange={(value) => setAssignedUserId(value === "unassigned" ? null : value)}>
+                <SelectTrigger id="assignedUser" className="h-11">
+                  <SelectValue placeholder="Select user or leave unassigned" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="unassigned">Unassigned (will appear in Lead Assignment)</SelectItem>
+                  {users.map((u) => (
+                    <SelectItem key={u.id} value={u.id}>
+                      {u.first_name && u.last_name ? `${u.first_name} ${u.last_name}` : u.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </StandardContentCard>
         
         {/* Row 1: Personal, Financial, and Business Information */}
-        <div className="grid gap-6 md:grid-cols-3">
-          <StandardContentCard title="Personal Information" className="border border-blue-600">
-              <p className="text-sm text-muted-foreground mb-4">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <StandardContentCard 
+            title={
+              <div className="flex items-center gap-2">
+                <User className="h-5 w-5 text-primary" />
+                <span>Personal Information</span>
+              </div>
+            }
+            className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
                 Basic borrower details and contact information
               </p>
+              <Separator className="my-4" />
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name *</Label>
+                    <Label htmlFor="firstName" className="text-sm font-semibold">First Name *</Label>
                     <Input 
                       id="firstName" 
                       placeholder="Enter first name"
                       value={formData.firstName}
                       onChange={(e) => handleInputChange("firstName", e.target.value)}
+                      className="h-11"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name *</Label>
+                    <Label htmlFor="lastName" className="text-sm font-semibold">Last Name *</Label>
                     <Input 
                       id="lastName" 
                       placeholder="Enter last name"
                       value={formData.lastName}
                       onChange={(e) => handleInputChange("lastName", e.target.value)}
+                      className="h-11"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address *</Label>
+                  <Label htmlFor="email" className="text-sm font-semibold">Email Address *</Label>
                   <Input 
                     id="email" 
                     type="email" 
                     placeholder="Enter email address"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
+                    className="h-11"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
+                    <Label htmlFor="phone" className="text-sm font-semibold">Phone Number</Label>
                     <Input 
                       id="phone" 
                       placeholder="(555) 123-4567"
                       value={formData.phone}
                       onChange={(e) => handleInputChange("phone", e.target.value)}
+                      className="h-11"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="mobilePhone">Mobile Phone</Label>
+                    <Label htmlFor="mobilePhone" className="text-sm font-semibold">Mobile Phone</Label>
                     <Input 
                       id="mobilePhone" 
                       placeholder="(555) 987-6543"
                       value={formData.mobilePhone}
                       onChange={(e) => handleInputChange("mobilePhone", e.target.value)}
+                      className="h-11"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="personalEmail">Personal Email</Label>
+                  <Label htmlFor="personalEmail" className="text-sm font-semibold">Personal Email</Label>
                   <Input 
                     id="personalEmail" 
                     type="email" 
                     placeholder="Personal email address"
                     value={formData.personalEmail}
                     onChange={(e) => handleInputChange("personalEmail", e.target.value)}
+                    className="h-11"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="homeAddress">Home Address</Label>
+                  <Label htmlFor="homeAddress" className="text-sm font-semibold">Home Address</Label>
                   <Input 
                     id="homeAddress" 
                     placeholder="123 Main St"
                     value={formData.homeAddress}
                     onChange={(e) => handleInputChange("homeAddress", e.target.value)}
+                    className="h-11"
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-2">
-                    <Label htmlFor="homeCity">City</Label>
+                    <Label htmlFor="homeCity" className="text-sm font-semibold">City</Label>
                     <Input 
                       id="homeCity" 
                       placeholder="City"
                       value={formData.homeCity}
                       onChange={(e) => handleInputChange("homeCity", e.target.value)}
+                      className="h-11"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="homeState">State</Label>
+                    <Label htmlFor="homeState" className="text-sm font-semibold">State</Label>
                     <Input 
                       id="homeState" 
                       placeholder="State"
                       value={formData.homeState}
                       onChange={(e) => handleInputChange("homeState", e.target.value)}
+                      className="h-11"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="homeZipCode">Zip Code</Label>
+                    <Label htmlFor="homeZipCode" className="text-sm font-semibold">Zip Code</Label>
                     <Input 
                       id="homeZipCode" 
                       placeholder="ZIP"
                       value={formData.homeZipCode}
                       onChange={(e) => handleInputChange("homeZipCode", e.target.value)}
+                      className="h-11"
                     />
                   </div>
                 </div>
               </div>
-            </StandardContentCard>
+            </div>
+          </StandardContentCard>
 
-            <StandardContentCard title="Financial Information" className="border border-blue-600">
-              <p className="text-sm text-muted-foreground mb-4">
+          <StandardContentCard 
+            title={
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5 text-primary" />
+                <span>Financial Information</span>
+              </div>
+            }
+            className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
                 Income, employment, and financial details
               </p>
+              <Separator className="my-4" />
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
