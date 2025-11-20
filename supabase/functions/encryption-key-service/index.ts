@@ -1,4 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.52.1'
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('encryption-key-service')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -125,7 +128,7 @@ Deno.serve(async (req) => {
     throw new Error('Invalid action')
 
   } catch (error) {
-    console.error('Encryption key service error:', error)
+    logger.error('Encryption key service error', error)
     
     return new Response(
       JSON.stringify({

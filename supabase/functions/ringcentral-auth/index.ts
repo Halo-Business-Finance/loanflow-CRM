@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { getSecurityHeaders, handleSecureOptions, validatePhoneNumber, sanitizeString } from "../_shared/security-headers.ts";
+import { SecureLogger } from "../_shared/secure-logger.ts";
+
+const logger = new SecureLogger('ringcentral-auth');
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -70,12 +73,12 @@ serve(async (req) => {
 
     if (!authResponse.ok) {
       const error = await authResponse.text()
-      console.error('RingCentral auth error:', error)
+      logger.error('RingCentral auth error', new Error(error))
       throw new Error('Failed to authenticate with RingCentral')
     }
 
     const authData = await authResponse.json()
-    console.log('RingCentral authenticated successfully')
+    logger.info('RingCentral authenticated successfully')
 
     let result = {}
 
@@ -99,12 +102,12 @@ serve(async (req) => {
 
       if (!callResponse.ok) {
         const error = await callResponse.text()
-        console.error('RingCentral call error:', error)
+        logger.error('RingCentral call error', new Error(error))
         throw new Error('Failed to initiate call')
       }
 
       result = await callResponse.json()
-      console.log('Call initiated:', result)
+      logger.info('Call initiated')
 
     } else if (action === 'status') {
       // Get extension info
@@ -119,7 +122,7 @@ serve(async (req) => {
       }
 
       result = await extensionResponse.json()
-      console.log('Extension status:', result)
+      logger.info('Extension status retrieved')
     }
 
     return new Response(JSON.stringify(result), {
@@ -127,8 +130,8 @@ serve(async (req) => {
     })
 
   } catch (error) {
-    console.error('Error in ringcentral-auth function:', error)
-    return new Response(JSON.stringify({ 
+    logger.error('Error in ringcentral-auth function', error)
+    return new Response(JSON.stringify({
       error: error instanceof Error ? error.message : 'Internal server error' 
     }), {
       status: 500,

@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { getSecurityHeaders, handleSecureOptions } from '../_shared/security-headers.ts'
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('security-enhanced')
 
 const corsHeaders = getSecurityHeaders()
 
@@ -35,7 +38,7 @@ serve(async (req) => {
     )
 
     const { action, ...requestData } = await req.json()
-    console.log(`🔐 Security Enhanced Action: ${action}`)
+    logger.logAction(action);
 
     switch (action) {
       case 'comprehensive_scan':
@@ -60,7 +63,7 @@ serve(async (req) => {
         )
     }
   } catch (error) {
-    console.error('Security Enhanced Error:', error)
+    logger.error('Security Enhanced Error', error)
     
     const message = error instanceof Error ? error.message : 'Unknown error'
     return new Response(
@@ -77,7 +80,7 @@ serve(async (req) => {
 })
 
 async function handleComprehensiveScan(supabase: any, data: any) {
-  console.log('🔍 Starting comprehensive security scan...')
+  logger.info('Starting comprehensive security scan')
   
   const scanResult: SecurityScanResult = {
     score: 100,
@@ -122,7 +125,7 @@ async function handleComprehensiveScan(supabase: any, data: any) {
       user_id: data.user_id
     })
 
-    console.log(`✅ Security scan complete. Score: ${scanResult.score}/100`)
+    logger.info('Security scan complete', { score: scanResult.score, threatsFound: scanResult.threats.length })
 
     return new Response(
       JSON.stringify({ 
@@ -135,7 +138,7 @@ async function handleComprehensiveScan(supabase: any, data: any) {
       }
     )
   } catch (error) {
-    console.error('Security scan error:', error)
+    logger.error('Security scan error', error)
     throw error
   }
 }
@@ -170,7 +173,7 @@ async function scanDatabaseSecurity(supabase: any) {
     }
 
   } catch (error) {
-    console.error('Database security scan error:', error)
+    logger.error('Database security scan error', error)
     threats.push({
       type: 'system_error',
       severity: 'medium' as const,
@@ -225,7 +228,7 @@ async function scanSessionSecurity(supabase: any, userId: string) {
     }
 
   } catch (error) {
-    console.error('Session security scan error:', error)
+    logger.error('Session security scan error', error)
   }
 
   return { threats, penaltyPoints }
@@ -255,7 +258,7 @@ async function scanInputValidation(supabase: any) {
     }
 
   } catch (error) {
-    console.error('Input validation scan error:', error)
+    logger.error('Input validation scan error', error)
   }
 
   return { threats, penaltyPoints }
@@ -284,7 +287,7 @@ async function scanAccessControls(supabase: any, userId: string) {
     }
 
   } catch (error) {
-    console.error('Access control scan error:', error)
+    logger.error('Access control scan error', error)
   }
 
   return { threats, penaltyPoints }
@@ -318,7 +321,7 @@ function generateSecurityRecommendations(threats: any[]): string[] {
 }
 
 async function handleThreatAnalysis(supabase: any, data: any) {
-  console.log('🎯 Performing threat analysis...')
+  logger.info('Performing threat analysis')
 
   const threatSignatures: ThreatSignature[] = [
     {
@@ -388,7 +391,7 @@ async function handleThreatAnalysis(supabase: any, data: any) {
 }
 
 async function handleSecurityValidation(supabase: any, data: any) {
-  console.log('✅ Performing security validation...')
+  logger.info('Performing security validation')
 
   const validation = {
     valid: true,
@@ -481,7 +484,7 @@ async function checkRateLimit(supabase: any, userId: string, action: string): Pr
 }
 
 async function handleIncidentResponse(supabase: any, data: any) {
-  console.log('🚨 Handling security incident response...')
+  logger.info('Handling security incident response')
 
   const incident = {
     type: data.incident_type || 'unknown',

@@ -3,6 +3,9 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 import { validateText, validateUUID } from "../_shared/validation.ts";
 import { createErrorResponse, createSuccessResponse } from "../_shared/error-handler.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
+import { SecureLogger } from "../_shared/secure-logger.ts";
+
+const logger = new SecureLogger('audit-log');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -76,7 +79,7 @@ serve(async (req) => {
     const clientIP = rawIP.includes(',') ? rawIP.split(',')[0].trim() : rawIP;
     const userAgent = req.headers.get('user-agent') || 'unknown';
 
-    console.log(`Audit log: ${action} by user ${user.id}`);
+    logger.logAction(action, { userId: user.id });
 
     // Insert audit log
     const { data, error } = await supabase
@@ -95,7 +98,7 @@ serve(async (req) => {
       .single();
 
     if (error) {
-      console.error('Database error:', error);
+      logger.error('Database error', error);
       throw error;
     }
 

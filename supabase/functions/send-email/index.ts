@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@4.0.0";
 import { getSecurityHeaders, handleSecureOptions, escapeHtml, validateEmail, sanitizeString } from "../_shared/security-headers.ts";
+import { SecureLogger } from "../_shared/secure-logger.ts";
+
+const logger = new SecureLogger('send-email');
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -101,7 +104,7 @@ const handler = async (req: Request): Promise<Response> => {
       replyTo: replyTo || undefined,
     });
 
-    console.log("Email sent successfully:", emailResponse);
+    logger.info("Email sent successfully", { emailId: emailResponse.data?.id });
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -113,7 +116,7 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
   } catch (error: any) {
-    console.error("Error in send-email function:", error);
+    logger.error("Error in send-email function", error);
     return new Response(
       JSON.stringify({ 
         error: "Internal server error",

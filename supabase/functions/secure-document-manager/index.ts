@@ -1,4 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('secure-document-manager')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -32,7 +35,7 @@ Deno.serve(async (req) => {
       throw new Error('Invalid authentication')
     }
 
-    console.log(`Secure document operation: ${action} by user ${user.id}`)
+    logger.logAuth(user.id, { action });
 
     switch (action) {
       case 'validate_upload_access':
@@ -54,7 +57,7 @@ Deno.serve(async (req) => {
         )
     }
   } catch (error: unknown) {
-    console.error('Secure document operation error:', error)
+    logger.error('Secure document operation error', error)
     const message = error instanceof Error ? error.message : 'Unknown error'
     return new Response(
       JSON.stringify({ error: message }),
@@ -114,7 +117,7 @@ async function validateUploadAccess(leadId: string, userId: string) {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
-    console.error('Error validating upload access:', error)
+    logger.error('Error validating upload access', error)
     throw error
   }
 }
@@ -160,7 +163,7 @@ async function validateDocumentAccess(documentId: string, action: string, userId
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
-    console.error('Error validating document access:', error)
+    logger.error('Error validating document access', error)
     throw error
   }
 }
@@ -217,7 +220,7 @@ async function secureFileCleanup(filePath: string, userId: string) {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
-    console.error('Error during secure file cleanup:', error)
+    logger.error('Error during secure file cleanup', error)
     throw error
   }
 }
@@ -275,7 +278,7 @@ async function getSecureDocuments(leadId: string, userId: string) {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
-    console.error('Error getting secure documents:', error)
+    logger.error('Error getting secure documents', error)
     throw error
   }
 }

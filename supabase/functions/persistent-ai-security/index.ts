@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('persistent-ai-security')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -44,12 +47,12 @@ class AISecurityEngine {
       .eq('status', 'active')
 
     if (error) {
-      console.error('Failed to load AI bots:', error)
+      logger.error('Failed to load AI bots', error)
       return
     }
 
     this.bots = bots || []
-    console.log(`Initialized ${this.bots.length} AI security bots`)
+    logger.info(`Initialized ${this.bots.length} AI security bots`)
   }
 
   async runThreatDetection(): Promise<ThreatIndicator[]> {
@@ -58,7 +61,7 @@ class AISecurityEngine {
     const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000).toISOString()
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000).toISOString()
 
-    console.log('🤖 ThreatHunter-Alpha: Starting high-sensitivity threat scan...')
+    logger.info('ThreatHunter-Alpha: Starting high-sensitivity threat scan')
 
     // 1. CRITICAL: Monitor failed login attempts with extreme sensitivity
     const { data: failedLogins } = await this.supabase
@@ -150,7 +153,7 @@ class AISecurityEngine {
     const now = new Date()
     const tenMinutesAgo = new Date(now.getTime() - 10 * 60 * 1000).toISOString()
 
-    console.log('🤖 BehaviorWatch-Beta: Analyzing user behavior patterns...')
+    logger.info('BehaviorWatch-Beta: Analyzing user behavior patterns')
 
     // Analyze unusual login times
     const { data: loginTimes } = await this.supabase
@@ -214,7 +217,7 @@ class AISecurityEngine {
     const now = new Date()
     const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000).toISOString()
 
-    console.log('🤖 NetworkGuard-Gamma: Monitoring network traffic patterns...')
+    logger.info('NetworkGuard-Gamma: Monitoring network traffic patterns')
 
     // Check for rate limit violations
     const { data: rateLimits } = await this.supabase
@@ -264,7 +267,7 @@ class AISecurityEngine {
     const now = new Date()
     const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000).toISOString()
 
-    console.log('🤖 DataProtector-Delta: Scanning for data protection violations...')
+    logger.info('DataProtector-Delta: Scanning for data protection violations')
 
     // Monitor encrypted field access
     const { data: encryptedAccess } = await this.supabase
@@ -348,7 +351,7 @@ class AISecurityEngine {
         .single()
 
       if (error) {
-        console.error('Failed to create alert:', error)
+        logger.error('Failed to create alert', error)
         continue
       }
 
@@ -405,7 +408,7 @@ class AISecurityEngine {
   }
 
   private async executeAutoResponse(threat: ThreatIndicator, alertId: string) {
-    console.log(`🤖 EXECUTING AUTO-RESPONSE for ${threat.type}`)
+    logger.info('Executing auto-response', { threatType: threat.type })
 
     // Log emergency security event
     await this.supabase
@@ -486,7 +489,7 @@ serve(async (req) => {
     const url = new URL(req.url);
     const action = url.searchParams.get('action') || 'run_scan';
     
-    console.log('🤖 AI Security Engine Starting:', action);
+    logger.info('AI Security Engine starting', { action });
 
     const aiEngine = new AISecurityEngine(supabase)
     await aiEngine.initializeBots()
@@ -496,7 +499,7 @@ serve(async (req) => {
 
     switch (action) {
       case 'run_scan':
-        console.log('🤖 Running comprehensive AI security scan...')
+        logger.info('Running comprehensive AI security scan')
         
         const [threatDetection, behaviorAnalysis, networkMonitoring, dataProtection] = await Promise.all([
           aiEngine.runThreatDetection(),
@@ -517,7 +520,7 @@ serve(async (req) => {
 
         const executionTime = Date.now() - startTime
         
-        console.log(`🤖 AI Security Scan Complete: ${allThreats.length} threats detected in ${executionTime}ms`)
+        logger.info('AI Security Scan complete', { threatsDetected: allThreats.length, executionTimeMs: executionTime })
 
         return new Response(
           JSON.stringify({
@@ -567,7 +570,7 @@ serve(async (req) => {
     }
 
   } catch (error: unknown) {
-    console.error('AI Security Engine error:', error);
+    logger.error('AI Security Engine error', error);
     const message = error instanceof Error ? error.message : 'Unknown error'
     return new Response(
       JSON.stringify({ 

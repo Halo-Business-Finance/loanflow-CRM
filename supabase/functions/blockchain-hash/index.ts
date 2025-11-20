@@ -3,6 +3,9 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { validateText, validateUUID } from "../_shared/validation.ts";
 import { createErrorResponse, createSuccessResponse } from "../_shared/error-handler.ts";
 import { checkRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
+import { SecureLogger } from "../_shared/secure-logger.ts";
+
+const logger = new SecureLogger('blockchain-hash');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -92,7 +95,7 @@ serve(async (req) => {
       })
 
     if (createError) {
-      console.error('Error creating blockchain record:', createError)
+      logger.error('Error creating blockchain record', createError)
       return new Response(
         JSON.stringify({ error: 'Failed to create blockchain record' }),
         { 
@@ -122,7 +125,7 @@ serve(async (req) => {
       .eq('id', blockchainRecord)
 
     if (updateError) {
-      console.error('Error updating blockchain record:', updateError)
+      logger.error('Error updating blockchain record', updateError)
       return new Response(
         JSON.stringify({ error: 'Failed to update blockchain record' }),
         { 

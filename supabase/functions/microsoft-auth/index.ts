@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { SecureLogger } from '../_shared/secure-logger.ts';
+
+const logger = new SecureLogger('microsoft-auth');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -80,7 +83,7 @@ serve(async (req) => {
 
       if (!tokenResponse.ok) {
         const errorText = await tokenResponse.text();
-        console.error('Token exchange error:', errorText);
+        logger.error('Token exchange error', new Error(errorText));
         return new Response(`
           <html>
             <body>
@@ -140,7 +143,7 @@ serve(async (req) => {
         });
 
       if (dbError) {
-        console.error('Database error:', dbError);
+        logger.error('Database error', dbError);
         return new Response(`
           <html>
             <body>
@@ -191,7 +194,7 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    console.log(`Microsoft Auth action: ${action} for user: ${user.id}`);
+    logger.logAction(action, { userId: user.id });
 
     switch (action) {
       case 'get_auth_url': {
@@ -237,7 +240,7 @@ serve(async (req) => {
 
         if (!tokenResponse.ok) {
           const errorText = await tokenResponse.text();
-          console.error('Token exchange error:', errorText);
+          logger.error('Token exchange error', new Error(errorText));
           throw new Error('Failed to exchange code for tokens');
         }
 
@@ -275,7 +278,7 @@ serve(async (req) => {
           });
 
         if (dbError) {
-          console.error('Database error:', dbError);
+          logger.error('Database error', dbError);
           throw dbError;
         }
 
@@ -351,7 +354,7 @@ serve(async (req) => {
 
         if (!sendResponse.ok) {
           const errorText = await sendResponse.text();
-          console.error('Send email error:', errorText);
+          logger.error('Send email error', new Error(errorText));
           throw new Error('Failed to send email');
         }
 
@@ -392,7 +395,7 @@ serve(async (req) => {
         });
 
         if (resetError || !resetData.properties?.action_link) {
-          console.error('Error generating reset link:', resetError);
+          logger.error('Error generating reset link', resetError);
           throw new Error('Failed to generate password reset link');
         }
 
@@ -466,7 +469,7 @@ serve(async (req) => {
 
         if (!sendResponse.ok) {
           const errorText = await sendResponse.text();
-          console.error('Send password reset email error:', errorText);
+          logger.error('Send password reset email error', new Error(errorText));
           throw new Error('Failed to send password reset email');
         }
 
@@ -480,7 +483,7 @@ serve(async (req) => {
     }
 
   } catch (error: any) {
-    console.error('Error in microsoft-auth function:', error);
+    logger.error('Error in microsoft-auth function', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 

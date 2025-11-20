@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { SecureLogger } from '../_shared/secure-logger.ts';
+
+const logger = new SecureLogger('enhanced-auth');
 
 const enhancedSecurityHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -30,7 +33,7 @@ serve(async (req) => {
   try {
     const { action, email, password, ip_address, user_agent, device_fingerprint, location, identifier, action_type } = await req.json();
     
-    console.log(`Enhanced auth request: ${action} for ${email}`);
+    logger.logAction(action, { identifier });
 
     switch (action) {
       case 'validate_password':
@@ -50,7 +53,7 @@ serve(async (req) => {
     }
 
   } catch (error: any) {
-    console.error('Error in enhanced-auth function:', error);
+    logger.error('Error in enhanced-auth function', error);
     return new Response(
       JSON.stringify({ error: 'An unexpected error occurred. Please try again.' }),
       { 
