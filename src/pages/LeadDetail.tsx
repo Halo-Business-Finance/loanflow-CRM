@@ -23,6 +23,8 @@ import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { BorrowerDocumentsWidget } from "@/components/BorrowerDocumentsWidget"
 import { LenderSelect } from "@/components/LenderSelect"
 import { LenderInfoWidget } from "@/components/LenderInfoWidget"
+import { ServiceProviderSelect } from "@/components/ServiceProviderSelect"
+import { ServiceProviderInfoWidget } from "@/components/ServiceProviderInfoWidget"
 
 import { formatNumber, formatCurrency, formatPhoneNumber, cn } from "@/lib/utils"
 import { useNotifications } from "@/hooks/useNotifications"
@@ -97,6 +99,8 @@ export default function LeadDetail() {
   const [showAddBorrowerDialog, setShowAddBorrowerDialog] = useState(false)
   const [companyLoans, setCompanyLoans] = useState<any[]>([])
   const [selectedLenderId, setSelectedLenderId] = useState<string | null>(null)
+  const [selectedTitleCompanyId, setSelectedTitleCompanyId] = useState<string | null>(null)
+  const [selectedEscrowCompanyId, setSelectedEscrowCompanyId] = useState<string | null>(null)
   const [newBorrower, setNewBorrower] = useState({
     first_name: "",
     last_name: "",
@@ -492,6 +496,8 @@ export default function LeadDetail() {
       
       // Set selected lender ID
       setSelectedLenderId(mergedLead.lender_id || null)
+      setSelectedTitleCompanyId(mergedLead.title_company_id || null)
+      setSelectedEscrowCompanyId(mergedLead.escrow_company_id || null)
       
       setEditableFields({
         name: mergedLead.name || "",
@@ -636,6 +642,8 @@ export default function LeadDetail() {
         net_operating_income: editableFields.net_operating_income ? parseFloat(editableFields.net_operating_income) : null,
         bank_lender_name: editableFields.bank_lender_name,
         lender_id: selectedLenderId,
+        title_company_id: selectedTitleCompanyId,
+        escrow_company_id: selectedEscrowCompanyId,
         annual_revenue: editableFields.annual_revenue ? parseFloat(editableFields.annual_revenue) : null,
         interest_rate: editableFields.interest_rate ? parseFloat(editableFields.interest_rate) : null,
         maturity_date: editableFields.maturity_date || null,
@@ -2093,6 +2101,64 @@ export default function LeadDetail() {
                   </div>
                 </div>
 
+                {/* Title and Escrow Companies */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Title Company</Label>
+                    {isEditing ? (
+                      <div className="mt-1">
+                        <ServiceProviderSelect
+                          value={selectedTitleCompanyId}
+                          onChange={setSelectedTitleCompanyId}
+                          providerType="title"
+                          placeholder="Select title company..."
+                        />
+                      </div>
+                    ) : (
+                      <div className="field-display mt-1">
+                        {selectedTitleCompanyId ? (
+                          <Button
+                            variant="link"
+                            className="h-auto p-0 text-left font-normal"
+                            onClick={() => navigate(`/service-providers/${selectedTitleCompanyId}`)}
+                          >
+                            View Title Company
+                          </Button>
+                        ) : (
+                          <span>Not assigned</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Escrow Company</Label>
+                    {isEditing ? (
+                      <div className="mt-1">
+                        <ServiceProviderSelect
+                          value={selectedEscrowCompanyId}
+                          onChange={setSelectedEscrowCompanyId}
+                          providerType="escrow"
+                          placeholder="Select escrow company..."
+                        />
+                      </div>
+                    ) : (
+                      <div className="field-display mt-1">
+                        {selectedEscrowCompanyId ? (
+                          <Button
+                            variant="link"
+                            className="h-auto p-0 text-left font-normal"
+                            onClick={() => navigate(`/service-providers/${selectedEscrowCompanyId}`)}
+                          >
+                            View Escrow Company
+                          </Button>
+                        ) : (
+                          <span>Not assigned</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground">BDO Name</Label>
@@ -2154,6 +2220,28 @@ export default function LeadDetail() {
             {selectedLenderId && (
               <div className="lg:col-span-2">
                 <LenderInfoWidget lenderId={selectedLenderId} />
+              </div>
+            )}
+
+            {/* Title Company Widget */}
+            {selectedTitleCompanyId && (
+              <div className="lg:col-span-2">
+                <ServiceProviderInfoWidget 
+                  providerId={selectedTitleCompanyId} 
+                  providerType="title"
+                  leadId={id!}
+                />
+              </div>
+            )}
+
+            {/* Escrow Company Widget */}
+            {selectedEscrowCompanyId && (
+              <div className="lg:col-span-2">
+                <ServiceProviderInfoWidget 
+                  providerId={selectedEscrowCompanyId} 
+                  providerType="escrow"
+                  leadId={id!}
+                />
               </div>
             )}
 
