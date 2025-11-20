@@ -31,44 +31,32 @@ export const SecurityProvider: React.FC<SecurityProviderProps> = ({ children }) 
   const { validateSession, trackActivity } = useSessionSecurity();
   const [isSecurityMonitoring, setIsSecurityMonitoring] = useState(true);
   const [securityLevel, setSecurityLevel] = useState<'low' | 'medium' | 'high' | 'critical'>('medium');
+  const [activityBuffer, setActivityBuffer] = useState<number[]>([]);
 
-  // Monitor for security events (disabled aggressive session checking)
-  useEffect(() => {
-    if (!user || !isSecurityMonitoring) return;
-
-    // Removed the aggressive 30-second session validation that was causing popup spam
-    // Session validation is already handled in useSessionSecurity hook every 5 minutes
-    // This was causing false positives and user experience issues
-    
-    return () => {
-      // No interval to clear
-    };
-  }, [user, isSecurityMonitoring]);
-
-  // Monitor for suspicious activities
+  // Monitor for suspicious activities using in-memory state instead of localStorage
   useEffect(() => {
     if (!isSecurityMonitoring) return;
 
     const handleSuspiciousActivity = (event: Event) => {
-      // Skip security monitoring during OAuth flow
-      if (localStorage.getItem('oauth_in_progress') === 'true') {
-        trackActivity();
-        return;
-      }
-      
-      // Monitor for rapid clicks, unusual patterns
-      const now = Date.now();
-      const lastActivity = parseInt(localStorage.getItem('lastActivity') || '0');
-      
-      if (now - lastActivity < 100) { // Less than 100ms between actions
-        reportSecurityEvent('rapid_user_actions', 'medium', {
-          interval: now - lastActivity,
-          event_type: event.type
-        });
-      }
-      
-      localStorage.setItem('lastActivity', now.toString());
+      // Track activity using session security hook (server-side validation)
       trackActivity();
+      
+      // Monitor for rapid clicks using in-memory buffer
+      const now = Date.now();
+      
+      setActivityBuffer(prev => {
+        const recent = [...prev, now].filter(time => now - time < 1000); // Keep last second
+        
+        // Check for suspicious rapid activity (more than 10 actions per second)
+        if (recent.length > 10) {
+          reportSecurityEvent('rapid_user_actions', 'medium', {
+            actions_per_second: recent.length,
+            event_type: event.type
+          });
+        }
+        
+        return recent;
+      });
     };
 
     const events = ['click', 'keydown', 'submit'];
