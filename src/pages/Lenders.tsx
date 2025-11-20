@@ -22,7 +22,7 @@ import { useToast } from '@/hooks/use-toast';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { Checkbox } from '@/components/ui/checkbox';
-import { formatPhoneNumber } from '@/lib/utils';
+import { formatPhoneNumber, formatCurrency, formatNumber } from '@/lib/utils';
 import {
   Table,
   TableBody,
@@ -31,6 +31,20 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts';
+import { useLenderAnalytics } from '@/hooks/useLenderAnalytics';
 
 interface Lender {
   id: string;
@@ -51,6 +65,13 @@ interface Lender {
   contact_count?: number;
 }
 
+const PERFORMANCE_COLORS = {
+  excellent: 'hsl(var(--chart-1))',
+  good: 'hsl(var(--chart-2))',
+  average: 'hsl(var(--chart-3))',
+  poor: 'hsl(var(--chart-4))',
+};
+
 export default function Lenders() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -59,6 +80,7 @@ export default function Lenders() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLenders, setSelectedLenders] = useState<string[]>([]);
+  const { loading: analyticsLoading, lenderPerformance, monthlyTrends } = useLenderAnalytics();
 
   useEffect(() => {
     if (user) {
@@ -132,6 +154,23 @@ export default function Lenders() {
   const inactiveLenders = lenders.filter(l => !l.is_active).length;
   const totalContacts = lenders.reduce((sum, l) => sum + (l.contact_count || 0), 0);
 
+  // Prepare chart data
+  const topFiveFunded = [...lenderPerformance]
+    .sort((a, b) => b.total_funded - a.total_funded)
+    .slice(0, 5);
+
+  const topFiveSpeed = [...lenderPerformance]
+    .filter(l => l.avg_days_to_funding > 0)
+    .sort((a, b) => a.avg_days_to_funding - b.avg_days_to_funding)
+    .slice(0, 5);
+
+  const getSpeedColor = (days: number) => {
+    if (days < 30) return PERFORMANCE_COLORS.excellent;
+    if (days < 60) return PERFORMANCE_COLORS.good;
+    if (days < 90) return PERFORMANCE_COLORS.average;
+    return PERFORMANCE_COLORS.poor;
+  };
+
   if (loading) {
     return <LoadingSkeleton />;
   }
@@ -183,6 +222,108 @@ export default function Lenders() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Performance Charts */}
+        {!analyticsLoading && lenderPerformance.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Top Lenders by Funding Amount */}
+            <Card>
+              <CardContent className="pt-6">
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-foreground">Top 5 Lenders by Funding</h3>
+                  <p className="text-sm text-muted-foreground">Total amount funded per lender</p>
+                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={topFiveFunded} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis type="number" tickFormatter={(value) => formatCurrency(value)} />
+                    <YAxis dataKey="name" type="category" width={120} />
+                    <Tooltip
+                      formatter={(value: number) => formatCurrency(value)}
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px',
+                      }}
+                    />
+                    <Bar dataKey="total_funded" fill="hsl(var(--chart-1))" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Time to Funding */}
+            <Card>
+              <CardContent className="pt-6">
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-foreground">Fastest Time to Funding</h3>
+                  <p className="text-sm text-muted-foreground">Average days to fund per lender</p>
+                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={topFiveSpeed} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis type="number" label={{ value: 'Days', position: 'insideBottom', offset: -5 }} />
+                    <YAxis dataKey="name" type="category" width={120} />
+                    <Tooltip
+                      formatter={(value: number) => `${value.toFixed(1)} days`}
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px',
+                      }}
+                    />
+                    <Bar dataKey="avg_days_to_funding" radius={[0, 4, 4, 0]}>
+                      {topFiveSpeed.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={getSpeedColor(entry.avg_days_to_funding)} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Monthly Funding Trends */}
+        {!analyticsLoading && monthlyTrends.length > 0 && (
+          <Card>
+            <CardContent className="pt-6">
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold text-foreground">Monthly Funding Trends</h3>
+                <p className="text-sm text-muted-foreground">Top 5 lenders performance over time</p>
+              </div>
+              <ResponsiveContainer width="100%" height={350}>
+                <LineChart data={monthlyTrends}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="month" />
+                  <YAxis tickFormatter={(value) => formatCurrency(value)} />
+                  <Tooltip
+                    formatter={(value: number) => formatCurrency(value)}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                    }}
+                  />
+                  <Legend />
+                  {Object.keys(monthlyTrends[0] || {})
+                    .filter(key => key !== 'month')
+                    .map((lenderName, index) => (
+                      <Line
+                        key={lenderName}
+                        type="monotone"
+                        dataKey={lenderName}
+                        stroke={`hsl(var(--chart-${(index % 5) + 1}))`}
+                        strokeWidth={2}
+                        dot={{ r: 4 }}
+                        activeDot={{ r: 6 }}
+                      />
+                    ))}
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Search Bar with Filter */}
         <Card>
