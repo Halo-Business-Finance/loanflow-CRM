@@ -21,6 +21,8 @@ import { EmailComposer } from "@/components/EmailComposer"
 import { ClickablePhone } from "@/components/ui/clickable-phone"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { BorrowerDocumentsWidget } from "@/components/BorrowerDocumentsWidget"
+import { LenderSelect } from "@/components/LenderSelect"
+import { LenderInfoWidget } from "@/components/LenderInfoWidget"
 
 import { formatNumber, formatCurrency, formatPhoneNumber, cn } from "@/lib/utils"
 import { useNotifications } from "@/hooks/useNotifications"
@@ -94,6 +96,7 @@ export default function LeadDetail() {
   const [isFlipping, setIsFlipping] = useState(false)
   const [showAddBorrowerDialog, setShowAddBorrowerDialog] = useState(false)
   const [companyLoans, setCompanyLoans] = useState<any[]>([])
+  const [selectedLenderId, setSelectedLenderId] = useState<string | null>(null)
   const [newBorrower, setNewBorrower] = useState({
     first_name: "",
     last_name: "",
@@ -487,6 +490,9 @@ export default function LeadDetail() {
         underwriter_id: (leadRow as any).underwriter_id || ""
       })
       
+      // Set selected lender ID
+      setSelectedLenderId(mergedLead.lender_id || null)
+      
       setEditableFields({
         name: mergedLead.name || "",
         email: mergedLead.email || "",
@@ -629,6 +635,7 @@ export default function LeadDetail() {
         credit_score: editableFields.credit_score ? parseInt(editableFields.credit_score) : null,
         net_operating_income: editableFields.net_operating_income ? parseFloat(editableFields.net_operating_income) : null,
         bank_lender_name: editableFields.bank_lender_name,
+        lender_id: selectedLenderId,
         annual_revenue: editableFields.annual_revenue ? parseFloat(editableFields.annual_revenue) : null,
         interest_rate: editableFields.interest_rate ? parseFloat(editableFields.interest_rate) : null,
         maturity_date: editableFields.maturity_date || null,
@@ -2032,16 +2039,40 @@ export default function LeadDetail() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-xs font-medium text-muted-foreground">Bank/Lender Name</Label>
+                    <Label className="text-xs font-medium text-muted-foreground">Bank/Lender</Label>
                     {isEditing ? (
-                      <Input
-                        value={editableFields.bank_lender_name}
-                        onChange={(e) => setEditableFields({...editableFields, bank_lender_name: e.target.value})}
-                        className="mt-1 h-8 text-sm"
-                      />
+                      <div className="mt-1">
+                        <LenderSelect
+                          value={selectedLenderId}
+                          onChange={(lenderId) => {
+                            setSelectedLenderId(lenderId)
+                            // Also fetch lender name to update the text field
+                            supabase
+                              .from('lenders')
+                              .select('name')
+                              .eq('id', lenderId)
+                              .single()
+                              .then(({ data }) => {
+                                if (data) {
+                                  setEditableFields({...editableFields, bank_lender_name: data.name})
+                                }
+                              })
+                          }}
+                        />
+                      </div>
                     ) : (
                       <div className="field-display mt-1">
-                        {editableFields.bank_lender_name || 'N/A'}
+                        {selectedLenderId && editableFields.bank_lender_name ? (
+                          <Button
+                            variant="link"
+                            className="h-auto p-0 text-left font-normal"
+                            onClick={() => navigate(`/lenders/${selectedLenderId}`)}
+                          >
+                            {editableFields.bank_lender_name}
+                          </Button>
+                        ) : (
+                          <span>N/A</span>
+                        )}
                       </div>
                     )}
                   </div>
@@ -2116,6 +2147,13 @@ export default function LeadDetail() {
                   leadId={lead.id} 
                   contactEntityId={lead.contact_entity_id || lead.id}
                 />
+              </div>
+            )}
+
+            {/* Lender Information Widget */}
+            {selectedLenderId && (
+              <div className="lg:col-span-2">
+                <LenderInfoWidget lenderId={selectedLenderId} />
               </div>
             )}
 

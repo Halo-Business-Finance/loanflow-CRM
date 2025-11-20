@@ -2805,6 +2805,7 @@ export type Database = {
           id: string
           interest_rate: number | null
           lead_id: string | null
+          lender_id: string | null
           loan_amount: number
           loan_term_months: number | null
           loan_type: string
@@ -2825,6 +2826,7 @@ export type Database = {
           id?: string
           interest_rate?: number | null
           lead_id?: string | null
+          lender_id?: string | null
           loan_amount: number
           loan_term_months?: number | null
           loan_type?: string
@@ -2845,6 +2847,7 @@ export type Database = {
           id?: string
           interest_rate?: number | null
           lead_id?: string | null
+          lender_id?: string | null
           loan_amount?: number
           loan_term_months?: number | null
           loan_type?: string
@@ -2883,6 +2886,13 @@ export type Database = {
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_requests_lender_id_fkey"
+            columns: ["lender_id"]
+            isOneToOne: false
+            referencedRelation: "lenders"
             referencedColumns: ["id"]
           },
         ]
