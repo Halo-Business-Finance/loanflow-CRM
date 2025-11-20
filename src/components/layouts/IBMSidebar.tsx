@@ -276,16 +276,16 @@ export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
           onClick={onToggle}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className={cn(
-            'group flex items-center h-10 text-[#525252] hover:text-[#161616] transition-colors rounded mx-1',
+            'group flex items-center h-12 text-[#525252] hover:text-[#161616] transition-colors rounded mx-1',
             collapsed ? 'justify-center w-12 px-0' : 'pl-0 pr-4'
           )}
         >
           <div className="w-12 flex items-center justify-center">
             <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
               {collapsed ? (
-                <ToggleLeft className="h-5 w-5 text-[#003f88]" />
+                <ToggleLeft className="h-6 w-6 text-[#003f88]" />
               ) : (
-                <ToggleRight className="h-5 w-5 text-[#003f88]" />
+                <ToggleRight className="h-6 w-6 text-[#003f88]" />
               )}
             </span>
           </div>
