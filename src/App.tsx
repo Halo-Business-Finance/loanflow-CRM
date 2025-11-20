@@ -47,6 +47,11 @@ import Support from "./pages/Support";
 import Settings from "./pages/Settings";
 import UserDirectory from "./pages/UserDirectory";
 import Resources from "./pages/Resources";
+import Lenders from './pages/Lenders';
+import LenderAnalytics from './pages/LenderAnalytics';
+import LenderDetail from './pages/LenderDetail';
+import NewLender from './pages/NewLender';
+import NewLenderContact from './pages/NewLenderContact';
 import Enterprise from "./pages/Enterprise";
 import AdvancedAnalytics from "./pages/AdvancedAnalytics";
 import Integrations from "./pages/Integrations";
@@ -67,10 +72,6 @@ import SettingsUsers from "./pages/SettingsUsers";
 import SettingsSystem from "./pages/SettingsSystem";
 import Messages from "./pages/Messages";
 import LeadAccessDiagnostics from "./pages/LeadAccessDiagnostics";
-import Lenders from "./pages/Lenders";
-import NewLender from "./pages/NewLender";
-import NewLenderContact from "./pages/NewLenderContact";
-import LenderDetail from "./pages/LenderDetail";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useEnhancedSecurity } from "@/hooks/useEnhancedSecurity";
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess";
@@ -169,6 +170,7 @@ function AuthenticatedApp() {
         
         {/* Lenders routes */}
         <Route path="/lenders" element={<IBMCloudLayout><Lenders /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/lenders/analytics" element={<IBMCloudLayout><LenderAnalytics /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/lenders/new" element={<IBMCloudLayout><NewLender /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/lenders/:id" element={<IBMCloudLayout><LenderDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/lenders/:id/contacts/new" element={<IBMCloudLayout><NewLenderContact /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
