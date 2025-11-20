@@ -115,28 +115,13 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
 
   return (
     <header className="h-24 bg-[#161616] border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full px-4">
-      {/* Left section with hamburger and brand */}
-      <div className="flex items-center h-full flex-1" style={{ minWidth: sidebarCollapsed ? '48px' : '240px' }}>
-        <button
-          type="button"
-          onClick={onMenuClick}
-          aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="group h-24 w-12 rounded-none text-white flex-shrink-0 flex items-center justify-center p-0 hover:bg-transparent outline-none hover:outline-none focus:outline-none focus:ring-0"
-        >
-          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-            {sidebarCollapsed ? (
-              <ToggleLeft className="h-6 w-6" />
-            ) : (
-              <ToggleRight className="h-6 w-6" />
-            )}
-          </span>
-        </button>
-        
+      {/* Left section with brand */}
+      <div className="flex items-center h-full flex-1">
         <BrandLogo
           size={130} 
           showText={false} 
           imageSrc={logoAsset}
-          className="ml-24"
+          className="ml-6"
         />
       </div>
 
@@ -180,6 +165,21 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
 
       {/* Right section with actions */}
       <div className="flex items-center gap-1 px-6 flex-1 justify-end">
+        <button
+          type="button"
+          onClick={onMenuClick}
+          aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className="group h-9 w-9 rounded text-white flex items-center justify-center hover:bg-transparent"
+        >
+          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
+            {sidebarCollapsed ? (
+              <ToggleLeft className="h-6 w-6" />
+            ) : (
+              <ToggleRight className="h-6 w-6" />
+            )}
+          </span>
+        </button>
+
         <LoanCalculator />
 
         <Button
