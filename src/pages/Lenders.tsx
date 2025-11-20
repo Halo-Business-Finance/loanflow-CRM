@@ -69,18 +69,25 @@ export default function Lenders() {
       setLoading(true);
       const { data, error } = await supabase
         .from('lenders')
-        .select(`
-          *,
-          lender_contacts(count)
-        `)
+        .select('*')
         .order('name');
 
       if (error) throw error;
 
-      const lendersWithCount = data.map(lender => ({
-        ...lender,
-        contact_count: lender.lender_contacts?.[0]?.count || 0
-      }));
+      // Fetch contact counts separately
+      const lendersWithCount = await Promise.all(
+        (data || []).map(async (lender) => {
+          const { count } = await supabase
+            .from('lender_contacts')
+            .select('*', { count: 'exact', head: true })
+            .eq('lender_id', lender.id);
+          
+          return {
+            ...lender,
+            contact_count: count || 0
+          };
+        })
+      );
 
       setLenders(lendersWithCount);
     } catch (error) {
