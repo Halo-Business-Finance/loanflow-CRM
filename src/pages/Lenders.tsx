@@ -13,7 +13,8 @@ import {
   MapPin,
   Users,
   Filter,
-  ArrowUpDown
+  ArrowUpDown,
+  BarChart3
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -141,10 +142,16 @@ export default function Lenders() {
         title="Banks & Lenders"
         subtitle="Manage your lending partners and their contacts"
         actions={
-          <Button onClick={() => navigate('/lenders/new')} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Add Lender
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate('/lenders/analytics')}>
+              <BarChart3 className="mr-2 h-4 w-4" />
+              Analytics
+            </Button>
+            <Button onClick={() => navigate('/lenders/new')} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Lender
+            </Button>
+          </div>
         }
       />
       
