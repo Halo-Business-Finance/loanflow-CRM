@@ -1,5 +1,8 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('encrypt-data')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -150,7 +153,7 @@ serve(async (req) => {
         })
 
       if (insertError) {
-        console.error('Error storing encrypted field:', insertError)
+        logger.error('Error storing encrypted field', insertError)
         return new Response(
           JSON.stringify({ error: 'Failed to store encrypted field' }),
           { 
@@ -292,7 +295,7 @@ serve(async (req) => {
     )
 
   } catch (error: unknown) {
-    console.error('Encryption function error:', error)
+    logger.error('Encryption function error', error)
     const message = error instanceof Error ? error.message : 'Unknown error'
     return new Response(
       JSON.stringify({ 

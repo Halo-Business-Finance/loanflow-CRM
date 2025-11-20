@@ -1,4 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('get-adobe-config')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -6,25 +9,20 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  console.log('🔧 Adobe Config Function Called - Method:', req.method);
+  logger.logRequest(req);
   
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    console.log('✅ Handling CORS preflight request');
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    console.log('🔍 Getting Adobe credentials from environment...');
+    logger.info('Getting Adobe credentials from environment');
     
     // Get Adobe credentials from Supabase secrets
     const adobeClientId = Deno.env.get('ADOBE_CLIENT_ID') || 'dc-pdf-embed-demo'
     const adobeApiKey = Deno.env.get('ADOBE_API_KEY') || null
     const isDemo = adobeClientId === 'dc-pdf-embed-demo'
-    
-    console.log('📋 Adobe Client ID found:', adobeClientId ? '✅ Yes' : '❌ No');
-    console.log('🔑 Adobe API Key found:', adobeApiKey ? '✅ Yes' : '❌ No');
-    console.log('🎭 Is Demo mode:', isDemo);
     
     const configResponse = { 
       clientId: adobeClientId,
@@ -39,7 +37,7 @@ serve(async (req) => {
       }
     };
     
-    console.log('✅ Returning Adobe config:', configResponse);
+    logger.info('Returning Adobe config', { isDemo });
     
     return new Response(
       JSON.stringify(configResponse),
@@ -51,7 +49,7 @@ serve(async (req) => {
       }
     )
   } catch (error) {
-    console.error('❌ Error getting Adobe config:', error)
+    logger.error('Error getting Adobe config', error)
     return new Response(
       JSON.stringify({ 
         error: 'Failed to get Adobe configuration',

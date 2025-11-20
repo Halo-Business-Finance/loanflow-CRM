@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.52.1'
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('secure-external-api')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -70,7 +73,7 @@ serve(async (req) => {
         });
     }
   } catch (error: unknown) {
-    console.error('Error in secure-external-api function:', error);
+    logger.error('Error in secure-external-api function', error);
     const message = error instanceof Error ? error.message : 'Unknown error'
     return new Response(JSON.stringify({ error: message }), {
       status: 500,

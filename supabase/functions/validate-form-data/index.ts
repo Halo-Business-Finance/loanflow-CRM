@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('validate-form-data')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -177,7 +180,7 @@ serve(async (req) => {
     // Rate limiting check for high-risk patterns
     if (securityFlags.includes('xss_attempt') || securityFlags.includes('sql_injection_attempt')) {
       // Additional security measures could be implemented here
-      console.log('High-risk security pattern detected, implementing additional measures');
+      logger.warn('High-risk security pattern detected')
     }
     
     return new Response(
@@ -191,7 +194,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Form validation error:', error);
+    logger.error('Form validation error', error);
     
     return new Response(
       JSON.stringify({ 

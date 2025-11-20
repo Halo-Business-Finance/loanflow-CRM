@@ -1,4 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('session-security')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -32,7 +35,7 @@ Deno.serve(async (req) => {
         )
     }
   } catch (error) {
-    console.error('Session security error:', error)
+    logger.error('Session security error', error)
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
@@ -80,7 +83,7 @@ async function validateSessionSecurity(req: Request, userId: string, sessionToke
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
-    console.error('Session validation error:', error)
+    logger.error('Session validation error', error)
     return new Response(
       JSON.stringify({ valid: false, reason: 'Validation failed' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
@@ -108,7 +111,7 @@ async function trackUserActivity(req: Request, userId: string, sessionToken: str
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
-    console.error('Activity tracking error:', error)
+    logger.error('Activity tracking error', error)
     return new Response(
       JSON.stringify({ error: 'Failed to track activity' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
@@ -133,7 +136,7 @@ async function cleanupExpiredSessions() {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
-    console.error('Session cleanup error:', error)
+    logger.error('Session cleanup error', error)
     return new Response(
       JSON.stringify({ error: 'Cleanup failed' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }

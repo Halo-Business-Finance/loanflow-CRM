@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('enhanced-geo-security')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,13 +28,13 @@ serve(async (req) => {
 
     const userAgent = req.headers.get('user-agent') || ''
     
-    console.log('Enhanced geo-security check for IP:', clientIP)
+    logger.info('Enhanced geo-security check', { ip: clientIP })
 
     // Enhanced IP validation
     const isValidIP = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(clientIP)
     
     if (!isValidIP && clientIP !== '127.0.0.1') {
-      console.log('Invalid IP format:', clientIP)
+      logger.warn('Invalid IP format detected', { ip: clientIP })
       return new Response(
         JSON.stringify({
           allowed: false,
@@ -166,7 +169,7 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Enhanced geo-security error:', error)
+    logger.error('Enhanced geo-security error', error)
     return new Response(
       JSON.stringify({
         allowed: false,
