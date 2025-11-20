@@ -1,4 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.52.1'
+import { SecureLogger } from '../_shared/secure-logger.ts'
+
+const logger = new SecureLogger('admin-get-users')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -30,10 +33,9 @@ Deno.serve(async (req) => {
   try {
     // Get the authorization header
     const authHeader = req.headers.get('authorization')
-    console.log('Authorization header received:', authHeader ? 'Present' : 'Missing')
     
     if (!authHeader) {
-      console.error('No authorization header provided')
+      logger.error('No authorization header provided')
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
         { 
@@ -65,9 +67,9 @@ Deno.serve(async (req) => {
     // Verify the user exists and get their info
     const { data: { user }, error: userError } = await supabaseUser.auth.getUser(authHeader.replace('Bearer ', ''))
     if (userError || !user) {
-      console.error('Failed to get user:', userError)
+      logger.error('Failed to authenticate user', userError)
       return new Response(
-        JSON.stringify({ error: 'Invalid token', details: userError?.message }),
+        JSON.stringify({ error: 'Invalid token' }),
         { 
           status: 401, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -75,7 +77,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    console.log('User authenticated:', user.id, user.email)
+    logger.logAuth(user.id)
 
     // Check user role using admin client (bypasses RLS)
     const { data: userRoles, error: roleError } = await supabaseAdmin
@@ -84,11 +86,9 @@ Deno.serve(async (req) => {
       .eq('user_id', user.id)
       .eq('is_active', true)
 
-    console.log('User roles query result:', userRoles, roleError)
-
     const hasAdminRole = userRoles?.some(r => r.role === 'admin' || r.role === 'super_admin')
     if (!hasAdminRole) {
-      console.error('User does not have admin role:', user.email, 'roles:', userRoles)
+      logger.warn('Insufficient privileges for user')
       return new Response(
         JSON.stringify({ error: 'Insufficient privileges' }),
         { 
@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    console.log('Admin access verified, fetching users...')
+    logger.info('Admin access verified, fetching users')
 
     // Fetch all profiles using admin client (bypasses RLS)
     const { data: profiles, error: profilesError } = await supabaseAdmin
@@ -107,11 +107,11 @@ Deno.serve(async (req) => {
       .order('created_at', { ascending: false })
 
     if (profilesError) {
-      console.error('Error fetching profiles:', profilesError)
+      logger.error('Error fetching profiles', profilesError)
       throw profilesError
     }
 
-    console.log(`Fetched ${profiles?.length || 0} profiles`)
+    logger.info('Profiles fetched', { count: profiles?.length || 0 })
 
     // Fetch all user roles using admin client
     const { data: allUserRoles, error: allRolesError } = await supabaseAdmin
@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
       .select('user_id, role, is_active')
 
     if (allRolesError) {
-      console.error('Error fetching user roles:', allRolesError)
+      logger.error('Error fetching user roles', allRolesError)
     }
 
     // Create a map of user roles with priority for highest role
@@ -168,21 +168,17 @@ Deno.serve(async (req) => {
       user_number: profile.user_number
     })) || []
 
-    console.log(`Returning ${transformedUsers.length} transformed users with roles`)
-    
-    // Log each user's role for debugging
-    transformedUsers.forEach(user => {
-      console.log(`User ${user.email}: role=${user.role}, is_active=${user.is_active}`)
-    })
-    
-    // Log role distribution for debugging
+    // Log role distribution for debugging (no PII)
     const roleDistribution: Record<string, number> = {}
     transformedUsers.forEach(user => {
       if (user.role) {
         roleDistribution[user.role] = (roleDistribution[user.role] || 0) + 1
       }
     })
-    console.log('Role distribution:', roleDistribution)
+    logger.info('Users prepared for response', { 
+      count: transformedUsers.length,
+      roleDistribution 
+    })
 
     return new Response(
       JSON.stringify({ users: transformedUsers }),
@@ -192,7 +188,7 @@ Deno.serve(async (req) => {
     )
 
   } catch (error: unknown) {
-    console.error('Edge function error:', error)
+    logger.error('Edge function error', error)
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
     return new Response(
       JSON.stringify({ 
