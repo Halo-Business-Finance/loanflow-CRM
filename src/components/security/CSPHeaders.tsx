@@ -52,10 +52,21 @@ export const CSPHeaders: React.FC = () => {
       }
     };
 
-    applyDynamicSecurityHeaders();
+    // Defer security headers fetch to not block initial render (move off critical path)
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => applyDynamicSecurityHeaders());
+    } else {
+      setTimeout(() => applyDynamicSecurityHeaders(), 1);
+    }
 
-    // Refresh dynamic headers every 10 seconds to catch updates
-    const interval = setInterval(applyDynamicSecurityHeaders, 10000);
+    // Refresh dynamic headers every 10 seconds (also deferred)
+    const interval = setInterval(() => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => applyDynamicSecurityHeaders());
+      } else {
+        applyDynamicSecurityHeaders();
+      }
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
