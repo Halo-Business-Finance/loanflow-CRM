@@ -43,6 +43,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
+import { RelatedLeadsTable } from '@/components/RelatedLeadsTable';
 
 interface Lender {
   id: string;
@@ -603,6 +604,19 @@ export default function LenderDetail() {
               </TableBody>
             </Table>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Related Leads Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Briefcase className="h-5 w-5" />
+            Related Leads
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <RelatedLeadsTable lenderId={id || ''} />
         </CardContent>
       </Card>
 
