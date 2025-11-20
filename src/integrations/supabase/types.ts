@@ -1022,6 +1022,7 @@ export type Database = {
           debt_to_income_ratio: number | null
           email: string
           employees: number | null
+          escrow_company_id: string | null
           existing_loan_amount: number | null
           first_name: string | null
           home_address: string | null
@@ -1065,6 +1066,7 @@ export type Database = {
           stage: string | null
           tax_id: string | null
           time_in_business: string | null
+          title_company_id: string | null
           updated_at: string
           user_id: string
           website: string | null
@@ -1094,6 +1096,7 @@ export type Database = {
           debt_to_income_ratio?: number | null
           email: string
           employees?: number | null
+          escrow_company_id?: string | null
           existing_loan_amount?: number | null
           first_name?: string | null
           home_address?: string | null
@@ -1137,6 +1140,7 @@ export type Database = {
           stage?: string | null
           tax_id?: string | null
           time_in_business?: string | null
+          title_company_id?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -1166,6 +1170,7 @@ export type Database = {
           debt_to_income_ratio?: number | null
           email?: string
           employees?: number | null
+          escrow_company_id?: string | null
           existing_loan_amount?: number | null
           first_name?: string | null
           home_address?: string | null
@@ -1209,6 +1214,7 @@ export type Database = {
           stage?: string | null
           tax_id?: string | null
           time_in_business?: string | null
+          title_company_id?: string | null
           updated_at?: string
           user_id?: string
           website?: string | null
@@ -1217,10 +1223,24 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "contact_entities_escrow_company_id_fkey"
+            columns: ["escrow_company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "contact_entities_lender_id_fkey"
             columns: ["lender_id"]
             isOneToOne: false
             referencedRelation: "lenders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_entities_title_company_id_fkey"
+            columns: ["title_company_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
         ]
@@ -4052,6 +4072,84 @@ export type Database = {
           revoked_by?: string | null
           target_user_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      service_providers: {
+        Row: {
+          address: string | null
+          average_closing_days: number | null
+          certifications: Json | null
+          city: string | null
+          contact_person: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          insurance_info: Json | null
+          is_active: boolean | null
+          license_numbers: Json | null
+          logo_url: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          provider_type: string
+          service_areas: Json | null
+          state: string | null
+          success_rate: number | null
+          total_closings: number | null
+          updated_at: string | null
+          website: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          average_closing_days?: number | null
+          certifications?: Json | null
+          city?: string | null
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          insurance_info?: Json | null
+          is_active?: boolean | null
+          license_numbers?: Json | null
+          logo_url?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          provider_type: string
+          service_areas?: Json | null
+          state?: string | null
+          success_rate?: number | null
+          total_closings?: number | null
+          updated_at?: string | null
+          website?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          average_closing_days?: number | null
+          certifications?: Json | null
+          city?: string | null
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          insurance_info?: Json | null
+          is_active?: boolean | null
+          license_numbers?: Json | null
+          logo_url?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          provider_type?: string
+          service_areas?: Json | null
+          state?: string | null
+          success_rate?: number | null
+          total_closings?: number | null
+          updated_at?: string | null
+          website?: string | null
+          zip_code?: string | null
         }
         Relationships: []
       }
