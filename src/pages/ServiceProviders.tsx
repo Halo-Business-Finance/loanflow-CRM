@@ -76,10 +76,16 @@ export default function ServiceProviders() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
-        title="Title & Escrow Companies"
-        description="Manage your title and escrow service providers"
-      />
+      <div className="flex items-center justify-between">
+        <StandardPageHeader
+          title="Title & Escrow Companies"
+          description="Manage your title and escrow service providers"
+        />
+        <Button onClick={() => navigate('/service-providers/new')}>
+          <Plus className="h-4 w-4 mr-2" />
+          New Service Provider
+        </Button>
+      </div>
 
       <div className="space-y-6">
         {/* Filters */}
