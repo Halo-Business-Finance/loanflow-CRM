@@ -2747,6 +2747,7 @@ export type Database = {
           id: string
           is_active: boolean
           lender_type: string
+          logo_url: string | null
           name: string
           notes: string | null
           phone: string | null
@@ -2764,6 +2765,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           lender_type?: string
+          logo_url?: string | null
           name: string
           notes?: string | null
           phone?: string | null
@@ -2781,6 +2783,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           lender_type?: string
+          logo_url?: string | null
           name?: string
           notes?: string | null
           phone?: string | null

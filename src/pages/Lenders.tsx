@@ -35,6 +35,7 @@ interface Lender {
   id: string;
   name: string;
   lender_type: string;
+  logo_url?: string;
   address?: string;
   city?: string;
   state?: string;
@@ -256,11 +257,20 @@ export default function Lenders() {
                         />
                       </TableCell>
                       <TableCell>
-                        <div>
-                          <div className="font-medium">{lender.name}</div>
-                          <div className="text-sm text-muted-foreground flex items-center gap-1">
-                            <Users className="h-3 w-3" />
-                            {lender.contact_count || 0} contacts
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded bg-primary/10 flex items-center justify-center overflow-hidden">
+                            {lender.logo_url ? (
+                              <img src={lender.logo_url} alt={`${lender.name} logo`} className="h-full w-full object-cover" />
+                            ) : (
+                              <Building2 className="h-5 w-5 text-primary" />
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-medium">{lender.name}</div>
+                            <div className="text-sm text-muted-foreground flex items-center gap-1">
+                              <Users className="h-3 w-3" />
+                              {lender.contact_count || 0} contacts
+                            </div>
                           </div>
                         </div>
                       </TableCell>

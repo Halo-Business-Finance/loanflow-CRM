@@ -48,6 +48,7 @@ interface Lender {
   id: string;
   name: string;
   lender_type: string;
+  logo_url?: string;
   address?: string;
   city?: string;
   state?: string;
@@ -346,9 +347,17 @@ export default function LenderDetail() {
       {/* Combined Lender & Contacts Card */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle className="text-2xl mb-4">{lender.name}</CardTitle>
-            <div className="space-y-3 text-sm">
+          <div className="flex items-center gap-4">
+            <div className="h-20 w-20 rounded bg-primary/10 flex items-center justify-center overflow-hidden">
+              {lender.logo_url ? (
+                <img src={lender.logo_url} alt={`${lender.name} logo`} className="h-full w-full object-cover" />
+              ) : (
+                <Building2 className="h-10 w-10 text-primary" />
+              )}
+            </div>
+            <div>
+              <CardTitle className="text-2xl mb-4">{lender.name}</CardTitle>
+              <div className="space-y-3 text-sm">
               {lender.address && (
                 <div>
                   <Label className="text-muted-foreground">Address</Label>
@@ -389,6 +398,7 @@ export default function LenderDetail() {
                 </div>
               )}
             </div>
+          </div>
           </div>
           <Button onClick={() => navigate(`/lenders/${id}/contacts/new`)}>
             <Plus className="h-4 w-4 mr-2" />

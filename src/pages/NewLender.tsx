@@ -42,6 +42,7 @@ export default function NewLender() {
   const [formData, setFormData] = useState({
     name: "",
     lender_type: "",
+    logo_url: "",
     phone: "",
     email: "",
     website: "",
@@ -93,6 +94,7 @@ export default function NewLender() {
       const { error } = await supabase.from('lenders').insert([{
         name: formData.name.trim(),
         lender_type: formData.lender_type,
+        logo_url: formData.logo_url.trim() || null,
         phone: formData.phone.trim() || null,
         email: formData.email.trim() || null,
         website: formData.website.trim() || null,
@@ -180,6 +182,21 @@ export default function NewLender() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="logo_url" className="text-sm font-medium">
+                  Logo URL
+                </Label>
+                <Input
+                  id="logo_url"
+                  type="url"
+                  value={formData.logo_url}
+                  onChange={(e) => handleInputChange("logo_url", e.target.value)}
+                  placeholder="https://example.com/logo.png"
+                  className="h-11"
+                />
+                <p className="text-xs text-muted-foreground">Enter the URL of the lender's logo image</p>
               </div>
 
               <div className="flex items-center space-x-2">
