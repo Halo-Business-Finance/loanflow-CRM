@@ -33,7 +33,37 @@
       #root{min-height:100vh;display:flex;flex-direction:column}
       .loading-spinner{display:inline-block;width:2rem;height:2rem;border:3px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:#fff;animation:spin 0.6s linear infinite}
       @keyframes spin{to{transform:rotate(360deg)}}
+      button,input,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}
+      button{text-transform:none;cursor:pointer}
+      h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}
+      a{color:inherit;text-decoration:inherit}
+      img,svg,video,canvas{display:block;max-width:100%}
     </style>
+    <script>
+      (function() {
+        var links = document.getElementsByTagName('link');
+        var cssLink = null;
+        
+        function loadCSS() {
+          for (var i = 0; i < links.length; i++) {
+            if (links[i].href && links[i].href.indexOf('.css') > -1 && links[i].rel === 'stylesheet') {
+              cssLink = links[i];
+              cssLink.media = 'print';
+              cssLink.onload = function() {
+                this.media = 'all';
+              };
+              break;
+            }
+          }
+        }
+        
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', loadCSS);
+        } else {
+          setTimeout(loadCSS, 0);
+        }
+      })();
+    </script>
     
     <title>Halo Business Finance - Loan Originator Management System</title>
     <meta name="description" content="Professional CRM system for loan originators to manage leads, track applications, and optimize the lending pipeline" />
