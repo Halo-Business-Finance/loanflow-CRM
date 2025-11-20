@@ -31,6 +31,8 @@ import {
   FileSpreadsheet,
   HandCoins,
   Landmark,
+  ToggleLeft,
+  ToggleRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -260,7 +262,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
   );
 }
 
-export function IBMSidebar({ collapsed }: IBMSidebarProps) {
+export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
   return (
     <aside
       className={cn(
@@ -268,7 +270,27 @@ export function IBMSidebar({ collapsed }: IBMSidebarProps) {
         collapsed ? 'w-16 px-2' : 'w-60 pl-4'
       )}
     >
-      <nav className="space-y-0.5 pt-8">
+      <div className="pt-4 pb-2">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className={cn(
+            'group flex items-center justify-center h-10 text-[#525252] hover:text-[#161616] transition-colors rounded mx-1',
+            collapsed ? 'w-12' : 'w-full'
+          )}
+        >
+          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
+            {collapsed ? (
+              <ToggleLeft className="h-5 w-5 text-[#003f88]" />
+            ) : (
+              <ToggleRight className="h-5 w-5 text-[#003f88]" />
+            )}
+          </span>
+          {!collapsed && <span className="ml-2 text-xs">Collapse Menu</span>}
+        </button>
+      </div>
+      <nav className="space-y-0.5 pt-2">
         {navItems.map((item) => (
           <NavItem key={item.to || item.label} {...item} collapsed={collapsed} />
         ))}
