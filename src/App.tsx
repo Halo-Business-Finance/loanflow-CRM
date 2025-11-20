@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "next-themes";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -23,61 +23,62 @@ import { IBMCloudLayout } from "@/components/layouts/IBMCloudLayout";
 import { SecurityEnhancementProvider } from "@/components/security/SecurityEnhancementProvider";
 import { SecurityProvider as EnhancedSecurityProvider } from "@/components/security/SecurityProvider";
 import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
-import Dashboard from "./pages/Dashboard";
-
-import Leads from "./pages/Leads";
-import NewLead from "./pages/NewLead";
-import LeadStats from "./pages/LeadStats";
-import LeadAssignment from "./pages/LeadAssignment";
-import LeadDetail from "./pages/LeadDetail";
-import LeadDocuments from "./pages/LeadDocuments";
-import Pipeline from "./pages/Pipeline";
-import PipelineAnalytics from "./pages/PipelineAnalytics";
-import StageManagement from "./pages/StageManagement";
-import Underwriter from "./pages/Underwriter";
-import Clients from "./pages/Clients";
-import BorrowerDetails from "./pages/BorrowerDetails";
-import LoanHistory from "./pages/LoanHistory";
-import ClientDetail from "./pages/ClientDetail";
-import Documents from "./pages/Documents";
-import LoanDocumentsFolder from "./pages/LoanDocumentsFolder";
-import Activities from "./pages/Activities";
-import Reports from "./pages/Reports";
-import Support from "./pages/Support";
-import Settings from "./pages/Settings";
-import UserDirectory from "./pages/UserDirectory";
-import Resources from "./pages/Resources";
-import Lenders from './pages/Lenders';
-import LenderAnalytics from './pages/LenderAnalytics';
-import LenderDetail from './pages/LenderDetail';
-import NewLender from './pages/NewLender';
-import NewLenderContact from './pages/NewLenderContact';
-import ServiceProviderDetail from './pages/ServiceProviderDetail';
-import ServiceProviders from './pages/ServiceProviders';
-import NewServiceProvider from './pages/NewServiceProvider';
-import Enterprise from "./pages/Enterprise";
-import AdvancedAnalytics from "./pages/AdvancedAnalytics";
-import Integrations from "./pages/Integrations";
-import AITools from "./pages/AITools";
-import APIDocs from "./pages/APIDocs";
-import Screenshots from "./pages/Screenshots";
-import Security from "./pages/Security";
-import EmergencyMaintenance from "./pages/EmergencyMaintenance";
-import NotFound from "./pages/NotFound";
-import DocumentTemplates from "./pages/DocumentTemplates";
-import ActivitiesCalendar from "./pages/ActivitiesCalendar";
-import ActivitiesTasks from "./pages/ActivitiesTasks";
-import SecurityAccess from "./pages/SecurityAccess";
-import SecurityAudit from "./pages/SecurityAudit";
-import SecurityThreats from "./pages/SecurityThreats";
-import SecurityCompliance from "./pages/SecurityCompliance";
-import SettingsUsers from "./pages/SettingsUsers";
-import SettingsSystem from "./pages/SettingsSystem";
-import Messages from "./pages/Messages";
-import LeadAccessDiagnostics from "./pages/LeadAccessDiagnostics";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useEnhancedSecurity } from "@/hooks/useEnhancedSecurity";
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess";
+
+// Lazy load page components for code splitting
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Leads = lazy(() => import("./pages/Leads"));
+const NewLead = lazy(() => import("./pages/NewLead"));
+const LeadStats = lazy(() => import("./pages/LeadStats"));
+const LeadAssignment = lazy(() => import("./pages/LeadAssignment"));
+const LeadDetail = lazy(() => import("./pages/LeadDetail"));
+const LeadDocuments = lazy(() => import("./pages/LeadDocuments"));
+const Pipeline = lazy(() => import("./pages/Pipeline"));
+const PipelineAnalytics = lazy(() => import("./pages/PipelineAnalytics"));
+const StageManagement = lazy(() => import("./pages/StageManagement"));
+const Underwriter = lazy(() => import("./pages/Underwriter"));
+const Clients = lazy(() => import("./pages/Clients"));
+const BorrowerDetails = lazy(() => import("./pages/BorrowerDetails"));
+const LoanHistory = lazy(() => import("./pages/LoanHistory"));
+const ClientDetail = lazy(() => import("./pages/ClientDetail"));
+const Documents = lazy(() => import("./pages/Documents"));
+const LoanDocumentsFolder = lazy(() => import("./pages/LoanDocumentsFolder"));
+const Activities = lazy(() => import("./pages/Activities"));
+const Reports = lazy(() => import("./pages/Reports"));
+const Support = lazy(() => import("./pages/Support"));
+const Settings = lazy(() => import("./pages/Settings"));
+const UserDirectory = lazy(() => import("./pages/UserDirectory"));
+const Resources = lazy(() => import("./pages/Resources"));
+const Lenders = lazy(() => import('./pages/Lenders'));
+const LenderAnalytics = lazy(() => import('./pages/LenderAnalytics'));
+const LenderDetail = lazy(() => import('./pages/LenderDetail'));
+const NewLender = lazy(() => import('./pages/NewLender'));
+const NewLenderContact = lazy(() => import('./pages/NewLenderContact'));
+const ServiceProviderDetail = lazy(() => import('./pages/ServiceProviderDetail'));
+const ServiceProviders = lazy(() => import('./pages/ServiceProviders'));
+const NewServiceProvider = lazy(() => import('./pages/NewServiceProvider'));
+const Enterprise = lazy(() => import("./pages/Enterprise"));
+const AdvancedAnalytics = lazy(() => import("./pages/AdvancedAnalytics"));
+const Integrations = lazy(() => import("./pages/Integrations"));
+const AITools = lazy(() => import("./pages/AITools"));
+const APIDocs = lazy(() => import("./pages/APIDocs"));
+const Screenshots = lazy(() => import("./pages/Screenshots"));
+const Security = lazy(() => import("./pages/Security"));
+const EmergencyMaintenance = lazy(() => import("./pages/EmergencyMaintenance"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const DocumentTemplates = lazy(() => import("./pages/DocumentTemplates"));
+const ActivitiesCalendar = lazy(() => import("./pages/ActivitiesCalendar"));
+const ActivitiesTasks = lazy(() => import("./pages/ActivitiesTasks"));
+const SecurityAccess = lazy(() => import("./pages/SecurityAccess"));
+const SecurityAudit = lazy(() => import("./pages/SecurityAudit"));
+const SecurityThreats = lazy(() => import("./pages/SecurityThreats"));
+const SecurityCompliance = lazy(() => import("./pages/SecurityCompliance"));
+const SettingsUsers = lazy(() => import("./pages/SettingsUsers"));
+const SettingsSystem = lazy(() => import("./pages/SettingsSystem"));
+const Messages = lazy(() => import("./pages/Messages"));
+const LeadAccessDiagnostics = lazy(() => import("./pages/LeadAccessDiagnostics"));
 
 const queryClient = new QueryClient();
 
@@ -129,7 +130,12 @@ function AuthenticatedApp() {
     <BrowserRouter>
       <KeyboardShortcutsProvider />
       <SecurityProvider />
-      <Routes>
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      }>
+        <Routes>
         {/* Public routes - always accessible */}
         <Route path="/auth" element={<AuthPage />} errorElement={<RouteErrorBoundary />} />
         <Route path="/auth/callback" element={<CallbackHandler />} errorElement={<RouteErrorBoundary />} />
@@ -211,7 +217,8 @@ function AuthenticatedApp() {
         <Route path="/resources" element={<IBMCloudLayout><Resources /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/emergency-maintenance" element={<IBMCloudLayout><EmergencyMaintenance /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="*" element={<IBMCloudLayout><NotFound /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
-      </Routes>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
