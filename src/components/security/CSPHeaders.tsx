@@ -52,21 +52,24 @@ export const CSPHeaders: React.FC = () => {
       }
     };
 
-    // Defer security headers fetch to not block initial render (move off critical path)
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => applyDynamicSecurityHeaders());
-    } else {
-      setTimeout(() => applyDynamicSecurityHeaders(), 1);
-    }
-
-    // Refresh dynamic headers every 10 seconds (also deferred)
-    const interval = setInterval(() => {
+    // Significantly defer security headers fetch to avoid blocking FCP/LCP
+    // Wait until page is fully loaded and idle before fetching
+    setTimeout(() => {
       if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => applyDynamicSecurityHeaders());
+        requestIdleCallback(() => applyDynamicSecurityHeaders(), { timeout: 5000 });
       } else {
         applyDynamicSecurityHeaders();
       }
-    }, 10000);
+    }, 3000);
+
+    // Refresh dynamic headers every 60 seconds (reduced frequency, also deferred)
+    const interval = setInterval(() => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => applyDynamicSecurityHeaders(), { timeout: 5000 });
+      } else {
+        applyDynamicSecurityHeaders();
+      }
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
