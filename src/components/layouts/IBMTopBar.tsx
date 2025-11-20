@@ -118,10 +118,12 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
       {/* Left section with brand */}
       <div className="flex items-center h-full flex-1">
         <BrandLogo
-          size={130} 
-          showText={false} 
+          size={40} 
+          showText={true} 
           imageSrc={logoAsset}
           className="ml-6"
+          textClassName="text-white"
+          imageClassName="brightness-0 invert"
         />
       </div>
 
