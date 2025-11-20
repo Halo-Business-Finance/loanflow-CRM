@@ -166,6 +166,8 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
 
       {/* Right section with actions */}
       <div className="flex items-center gap-1 px-6 flex-1 justify-end">
+        <NotificationBell />
+        
         <LoanCalculator />
 
         <Button
@@ -191,8 +193,6 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             <Phone className="h-6 w-6" />
           </span>
         </Button>
-
-        <NotificationBell />
 
         <Button
           variant="ghost"
