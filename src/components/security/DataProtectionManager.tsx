@@ -51,11 +51,21 @@ export const DataProtectionManager: React.FC = () => {
 
   const loadDataProtectionSettings = async () => {
     try {
-      // Since user_settings table doesn't exist in types yet, we'll use a different approach
-      // Store settings in localStorage for now
-      const savedSettings = localStorage.getItem('dataProtectionSettings');
-      if (savedSettings) {
-        setSettings(JSON.parse(savedSettings));
+      // Load settings from server-side storage (using any to bypass type checking until types regenerate)
+      const { data, error } = await (supabase as any)
+        .from('user_settings')
+        .select('*')
+        .eq('user_id', user?.id)
+        .eq('setting_category', 'data_protection')
+        .eq('setting_key', 'preferences')
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      if (data?.setting_value) {
+        setSettings(data.setting_value as DataProtectionSettings);
       }
     } catch (error) {
       console.error('Failed to load data protection settings:', error);
@@ -66,11 +76,30 @@ export const DataProtectionManager: React.FC = () => {
     try {
       setIsLoading(true);
       
-      // Store settings in localStorage for now
-      localStorage.setItem('dataProtectionSettings', JSON.stringify(newSettings));
+      // Save settings to server-side storage with upsert (using any to bypass type checking)
+      const { error } = await (supabase as any)
+        .from('user_settings')
+        .upsert({
+          user_id: user?.id,
+          setting_category: 'data_protection',
+          setting_key: 'preferences',
+          setting_value: newSettings
+        }, {
+          onConflict: 'user_id,setting_category,setting_key'
+        });
+
+      if (error) throw error;
       
       setSettings(newSettings);
       toast.success('Data protection settings saved');
+      
+      // Log security event for settings change
+      await (supabase as any).from('security_events').insert({
+        user_id: user?.id,
+        event_type: 'data_protection_settings_changed',
+        severity: 'low',
+        details: { settings: newSettings }
+      });
     } catch (error) {
       console.error('Failed to save settings:', error);
       toast.error('Failed to save settings');

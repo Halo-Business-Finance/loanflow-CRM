@@ -130,7 +130,7 @@ export const useEnhancedSecurity = () => {
     }
   }, []);
 
-  // Monitor suspicious activity - Server-side for critical events
+  // Monitor suspicious activity - ALL events sent to server immediately
   const logSecurityEvent = useCallback(async (
     eventType: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
@@ -139,37 +139,20 @@ export const useEnhancedSecurity = () => {
     try {
       if (!user) return;
 
-      // For high/critical events, log to server immediately
-      if (severity === 'high' || severity === 'critical') {
-        await supabase.from('security_events').insert({
-          event_type: eventType,
-          severity,
-          user_id: user.id,
-          details: {
-            ...details,
-            timestamp: new Date().toISOString()
-          }
-        });
-
-        // Immediately notify for critical events
-        if (severity === 'critical') {
-          toast.error('Security alert detected. Please review your account.');
+      // Send ALL security events to server immediately - no localStorage batching
+      await supabase.from('security_events').insert({
+        event_type: eventType,
+        severity,
+        user_id: user.id,
+        details: {
+          ...details,
+          timestamp: new Date().toISOString()
         }
-      } else {
-        // Low/medium events: Use local storage for batching (non-critical)
-        const events = JSON.parse(localStorage.getItem('_security_events') || '[]');
-        events.push({
-          type: eventType,
-          severity,
-          timestamp: Date.now()
-        });
+      });
 
-        // Keep only last 50 events
-        if (events.length > 50) {
-          events.splice(0, events.length - 50);
-        }
-
-        localStorage.setItem('_security_events', JSON.stringify(events));
+      // Notify for critical events
+      if (severity === 'critical') {
+        toast.error('Security alert detected. Please review your account.');
       }
     } catch (error) {
       logger.error('Failed to log security event');
