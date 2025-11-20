@@ -85,9 +85,8 @@ serve(async (req) => {
       default:
         logger.warn('Unknown webhook event type', { type: payload.type });
     }
-    }
 
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       status: 'success', 
       message: 'Webhook processed successfully' 
     }), {
