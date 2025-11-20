@@ -54,6 +54,7 @@ import NewLender from './pages/NewLender';
 import NewLenderContact from './pages/NewLenderContact';
 import ServiceProviderDetail from './pages/ServiceProviderDetail';
 import ServiceProviders from './pages/ServiceProviders';
+import NewServiceProvider from './pages/NewServiceProvider';
 import Enterprise from "./pages/Enterprise";
 import AdvancedAnalytics from "./pages/AdvancedAnalytics";
 import Integrations from "./pages/Integrations";
@@ -179,6 +180,7 @@ function AuthenticatedApp() {
         
         {/* Service Providers routes (Title & Escrow) */}
         <Route path="/service-providers" element={<IBMCloudLayout><ServiceProviders /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/service-providers/new" element={<IBMCloudLayout><NewServiceProvider /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/service-providers/:id" element={<IBMCloudLayout><ServiceProviderDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         
         <Route path="/settings" element={<IBMCloudLayout key="settings-layout"><Settings /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
