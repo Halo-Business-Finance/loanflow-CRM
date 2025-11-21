@@ -1300,7 +1300,7 @@ export default function LeadDetail() {
                         )}
                       </div>
                       <div>
-                        <Label className="text-xs font-medium text-muted-foreground">Underwriter</Label>
+                        <Label className="text-xs font-medium text-muted-foreground">Loan Underwriter</Label>
                         {isEditing ? (
                           <Select
                             value={assignments.underwriter_id || "unassigned"}
