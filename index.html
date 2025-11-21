@@ -25,6 +25,10 @@
     <link rel="preconnect" href="https://gshxxsniwytjgcnthyfq.supabase.co" crossorigin>
     <link rel="dns-prefetch" href="https://gshxxsniwytjgcnthyfq.supabase.co">
     
+    <!-- Preload CSS to eliminate render blocking while maintaining load order -->
+    <link rel="preload" as="style" href="/src/index.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/src/index.css"></noscript>
+    
     <!-- Critical CSS for above-the-fold content -->
     <style>
       *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}
