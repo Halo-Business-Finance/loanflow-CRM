@@ -243,7 +243,7 @@ async function calculateRiskScore(userId: string, ipAddress: string, userAgent: 
     }
 
   } catch (error) {
-    console.error('Error calculating risk score:', error);
+    logger.error('Error calculating risk score', error);
     // Default to medium risk if calculation fails
     riskScore = 25;
   }
