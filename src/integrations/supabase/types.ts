@@ -4956,7 +4956,23 @@ export type Database = {
       cleanup_expired_session_data: { Args: never; Returns: undefined }
       cleanup_expired_sessions: { Args: never; Returns: undefined }
       cleanup_expired_sessions_optimized: { Args: never; Returns: Json }
+      cleanup_test_users: {
+        Args: never
+        Returns: {
+          deleted_count: number
+          message: string
+        }[]
+      }
       clear_secure_session_data: { Args: never; Returns: undefined }
+      create_all_test_users: {
+        Args: never
+        Returns: {
+          email: string
+          full_name: string
+          role: string
+          user_id: string
+        }[]
+      }
       create_audit_log: {
         Args: {
           p_action: string
@@ -5006,6 +5022,15 @@ export type Database = {
             }
             Returns: undefined
           }
+      create_test_user: {
+        Args: { p_email: string; p_full_name?: string; p_role: string }
+        Returns: {
+          email: string
+          instructions: string
+          role: string
+          user_id: string
+        }[]
+      }
       decrypt_token: { Args: { p_encrypted_token: string }; Returns: string }
       detect_ai_behavior: {
         Args: {
@@ -5608,6 +5633,16 @@ export type Database = {
         Returns: Json
       }
       verify_role_change_mfa: { Args: { p_token: string }; Returns: boolean }
+      verify_test_user_roles: {
+        Args: never
+        Returns: {
+          assigned_roles: string[]
+          auth_user_exists: boolean
+          email: string
+          profile_exists: boolean
+          status: string
+        }[]
+      }
     }
     Enums: {
       user_role:
