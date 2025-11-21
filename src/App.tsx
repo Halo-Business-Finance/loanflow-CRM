@@ -13,11 +13,6 @@ import { SecurityManager } from "@/components/security/SecurityManager";
 import { GeoSecurityCheck } from "@/components/GeoSecurityCheck";
 import { AsyncErrorBoundary } from "@/components/AsyncErrorBoundary";
 import { CSPHeaders } from "@/components/security/CSPHeaders";
-import { EnterpriseSecurityDashboard } from "@/components/security/EnterpriseSecurityDashboard";
-import { LoanCloserDashboard } from "@/components/dashboards/LoanCloserDashboard";
-import { LoanProcessorDashboard } from "@/components/dashboards/LoanProcessorDashboard";
-import { UnderwriterDashboard } from "@/components/dashboards/UnderwriterDashboard";
-import { DataIntegrityDashboard } from "@/components/DataIntegrityDashboard";
 
 import { IBMCloudLayout } from "@/components/layouts/IBMCloudLayout";
 import { SecurityEnhancementProvider } from "@/components/security/SecurityEnhancementProvider";
@@ -79,6 +74,13 @@ const SettingsUsers = lazy(() => import("./pages/SettingsUsers"));
 const SettingsSystem = lazy(() => import("./pages/SettingsSystem"));
 const Messages = lazy(() => import("./pages/Messages"));
 const LeadAccessDiagnostics = lazy(() => import("./pages/LeadAccessDiagnostics"));
+
+// Lazy load dashboard components for code splitting (with named export handling)
+const EnterpriseSecurityDashboard = lazy(() => import("@/components/security/EnterpriseSecurityDashboard").then(m => ({ default: m.EnterpriseSecurityDashboard })));
+const LoanCloserDashboard = lazy(() => import("@/components/dashboards/LoanCloserDashboard").then(m => ({ default: m.LoanCloserDashboard })));
+const LoanProcessorDashboard = lazy(() => import("@/components/dashboards/LoanProcessorDashboard").then(m => ({ default: m.LoanProcessorDashboard })));
+const UnderwriterDashboard = lazy(() => import("@/components/dashboards/UnderwriterDashboard").then(m => ({ default: m.UnderwriterDashboard })));
+const DataIntegrityDashboard = lazy(() => import("@/components/DataIntegrityDashboard").then(m => ({ default: m.DataIntegrityDashboard })));
 
 const queryClient = new QueryClient();
 
