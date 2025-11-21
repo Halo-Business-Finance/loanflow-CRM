@@ -113,7 +113,6 @@ const navItems: NavItemData[] = [
       { icon: FileText, label: 'Document Templates', to: '/documents/templates' },
     ]
   },
-  { icon: BarChart3, label: 'Reports', to: '/reports' },
   { icon: Headset, label: 'Support', to: '/support' },
   { icon: UserCog, label: 'User Directory', to: '/user-directory' },
   { icon: Landmark, label: 'Banks & Lenders', to: '/lenders' },
@@ -123,6 +122,7 @@ const navItems: NavItemData[] = [
     label: 'Enterprise', 
     to: '/enterprise',
     subItems: [
+      { icon: BarChart3, label: 'Reports', to: '/reports' },
       { icon: Building2, label: 'Enterprise Command Center', to: '/enterprise' },
       { icon: TrendingUp, label: 'Advanced Analytics', to: '/analytics/advanced' },
       { icon: Link2, label: 'Integrations', to: '/integrations' },
