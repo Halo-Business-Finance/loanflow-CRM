@@ -270,7 +270,7 @@ export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
         collapsed ? 'w-16 px-2' : 'w-60 pl-4'
       )}
     >
-      <div className="pt-4 pb-2">
+      <div className="pt-2 pb-1">
         <button
           type="button"
           onClick={onToggle}
@@ -292,7 +292,7 @@ export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
           {!collapsed && <span className="text-xs truncate">Collapse Menu</span>}
         </button>
       </div>
-      <nav className="space-y-0.5 pt-2">
+      <nav className="space-y-0.5 pt-1">
         {navItems.map((item) => (
           <NavItem key={item.to || item.label} {...item} collapsed={collapsed} />
         ))}
