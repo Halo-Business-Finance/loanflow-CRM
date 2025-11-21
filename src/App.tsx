@@ -238,7 +238,7 @@ const App = () => {
       })
     }}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="loanflow-theme-v2">
           <CSPHeaders />
           {/* Security enhancement providers temporarily disabled */}
           <AuthProvider>

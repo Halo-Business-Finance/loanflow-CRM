@@ -1,32 +1,17 @@
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
-import { useEffect, useState } from "react"
+import { Sun } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return <Button variant="ghost" size="icon" className="w-9 h-9" />
-  }
-
+  // Dark mode is temporarily disabled to keep the CRM layout stable and consistent
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className="h-9 w-9 text-white hover:bg-transparent rounded group"
-      aria-label="Toggle theme"
+      className="h-9 w-9 text-foreground hover:bg-transparent rounded"
+      aria-label="Theme toggle (light mode only)"
+      type="button"
     >
-      <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-        <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" strokeWidth={1.75} />
-        <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" strokeWidth={1.75} />
-      </span>
+      <Sun className="h-6 w-6" strokeWidth={1.75} />
     </Button>
-  )
+  );
 }
