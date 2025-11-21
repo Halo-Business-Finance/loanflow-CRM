@@ -238,7 +238,7 @@ const App = () => {
       })
     }}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <CSPHeaders />
           {/* Security enhancement providers temporarily disabled */}
           <AuthProvider>
