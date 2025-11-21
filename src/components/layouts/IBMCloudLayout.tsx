@@ -21,7 +21,7 @@ export function IBMCloudLayout({ children }: IBMCloudLayoutProps) {
           collapsed={sidebarCollapsed} 
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
         />
-        <main className="flex-1 overflow-auto bg-white no-scrollbar">
+        <main className="flex-1 overflow-auto bg-background no-scrollbar">
           <AuthDebugBanner />
           {children}
         </main>
