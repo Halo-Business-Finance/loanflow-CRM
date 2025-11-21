@@ -8,6 +8,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { FundingQueueWidget } from '@/components/widgets/FundingQueueWidget';
 import { ClosingCalendarWidget } from '@/components/widgets/ClosingCalendarWidget';
+import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
+import { CompactCalendarWidget } from '@/components/CompactCalendarWidget';
+import { TodaysScheduleWidget } from '@/components/widgets/TodaysScheduleWidget';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -256,6 +259,13 @@ export const LoanCloserDashboard = () => {
       />
 
       <div className="p-6 space-y-6">
+      {/* Top Widgets Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <CompactMessagesWidget />
+        <CompactCalendarWidget />
+        <TodaysScheduleWidget />
+      </div>
+
       {/* Key Metrics Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         <Card>
