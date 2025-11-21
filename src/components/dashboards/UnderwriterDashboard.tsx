@@ -10,6 +10,9 @@ import { ApprovalQueueWidget } from '@/components/widgets/ApprovalQueueWidget';
 import { RiskAssessmentWidget } from '@/components/widgets/RiskAssessmentWidget';
 import { TaskTimelineWidget } from '@/components/widgets/TaskTimelineWidget';
 import { DocumentChecklistWidget } from '@/components/widgets/DocumentChecklistWidget';
+import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
+import { CompactCalendarWidget } from '@/components/CompactCalendarWidget';
+import { TodaysScheduleWidget } from '@/components/widgets/TodaysScheduleWidget';
 import {
   Shield, 
   Clock, 
@@ -479,6 +482,13 @@ export const UnderwriterDashboard = () => {
       />
 
       <div className="p-8 space-y-8 animate-fade-in">
+        {/* Top Widgets Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <CompactMessagesWidget />
+          <CompactCalendarWidget />
+          <TodaysScheduleWidget />
+        </div>
+
         {/* Main Navigation Tabs */}
         <Tabs defaultValue="tasks" className="space-y-4">
           <TabsList className="bg-[#0A1628] p-1 gap-2 inline-flex w-auto flex-wrap">

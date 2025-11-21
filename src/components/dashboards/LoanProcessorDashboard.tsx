@@ -7,6 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { TaskTimelineWidget } from '@/components/widgets/TaskTimelineWidget';
 import { DocumentChecklistWidget } from '@/components/widgets/DocumentChecklistWidget';
+import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
+import { CompactCalendarWidget } from '@/components/CompactCalendarWidget';
+import { TodaysScheduleWidget } from '@/components/widgets/TodaysScheduleWidget';
 import { 
   FileText, 
   Clock, 
@@ -394,6 +397,13 @@ export const LoanProcessorDashboard = () => {
       />
 
       <div className="p-8 space-y-6">
+        {/* Top Widgets Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <CompactMessagesWidget />
+          <CompactCalendarWidget />
+          <TodaysScheduleWidget />
+        </div>
+
         {/* Main Content Tabs */}
         <Tabs defaultValue="pending" className="space-y-4">
           <TabsList className="bg-[#0A1628] p-1 gap-2 inline-flex w-auto">
