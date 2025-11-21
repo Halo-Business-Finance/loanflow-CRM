@@ -16,12 +16,12 @@ export function IBMCloudLayout({ children }: IBMCloudLayoutProps) {
         onMenuClick={() => setSidebarCollapsed(!sidebarCollapsed)}
         sidebarCollapsed={sidebarCollapsed}
       />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden bg-background">
         <IBMSidebar 
           collapsed={sidebarCollapsed} 
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
         />
-        <main className="flex-1 overflow-auto bg-background no-scrollbar">
+        <main className="flex-1 overflow-auto bg-background text-foreground no-scrollbar" style={{ backgroundColor: 'hsl(var(--background))', color: 'hsl(var(--foreground))' }}>
           <AuthDebugBanner />
           {children}
         </main>
