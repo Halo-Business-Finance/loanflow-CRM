@@ -60,7 +60,7 @@ const navItems: NavItemData[] = [
     subItems: [
       { icon: LayoutDashboard, label: 'Loan Originator Dashboard', to: '/loan-originator' },
       { icon: FileSpreadsheet, label: 'Loan Processor Dashboard', to: '/dashboards/processor' },
-      { icon: CheckSquare, label: 'Loan Underwriter Dashboard', to: '/underwriter' },
+      { icon: CheckSquare, label: 'Loan Underwriter Dashboard', to: '/dashboards/underwriter' },
       { icon: HandCoins, label: 'Loan Closer Dashboard', to: '/dashboards/closer' },
     ]
   },
