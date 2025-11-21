@@ -91,7 +91,8 @@ export default function LeadDetail() {
   const [assignments, setAssignments] = useState({
     loan_originator_id: "",
     processor_id: "",
-    underwriter_id: ""
+    underwriter_id: "",
+    closer_id: ""
   })
   const [additionalBorrowers, setAdditionalBorrowers] = useState<any[]>([])
   const [currentBorrowerIndex, setCurrentBorrowerIndex] = useState(0)
@@ -491,7 +492,8 @@ export default function LeadDetail() {
       setAssignments({
         loan_originator_id: (leadRow as any).loan_originator_id || "",
         processor_id: (leadRow as any).processor_id || "",
-        underwriter_id: (leadRow as any).underwriter_id || ""
+        underwriter_id: (leadRow as any).underwriter_id || "",
+        closer_id: (leadRow as any).closer_id || ""
       })
       
       // Set selected lender ID
@@ -676,7 +678,8 @@ export default function LeadDetail() {
         updated_at: new Date().toISOString(),
         loan_originator_id: updatedAssignments.loan_originator_id || null,
         processor_id: updatedAssignments.processor_id || null,
-        underwriter_id: updatedAssignments.underwriter_id || null
+        underwriter_id: updatedAssignments.underwriter_id || null,
+        closer_id: updatedAssignments.closer_id || null
       }
 
       const { error: leadError } = await supabase
@@ -1248,7 +1251,7 @@ export default function LeadDetail() {
                 {editableFields.stage && editableFields.stage !== "New Lead" && (
                   <div className="border-t pt-4 mt-4">
                     <h3 className="text-sm font-medium text-foreground mb-3">Team Assignments</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div>
                         <Label className="text-xs font-medium text-muted-foreground">Loan Originator</Label>
                         {isEditing ? (
@@ -1259,7 +1262,7 @@ export default function LeadDetail() {
                             <SelectTrigger className="mt-1 h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-0">
                               <SelectValue placeholder="Select originator" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-popover z-50">
                               <SelectItem value="unassigned">Unassigned</SelectItem>
                               {teamMembers.map(member => (
                                 <SelectItem key={member.id} value={member.id}>
@@ -1284,7 +1287,7 @@ export default function LeadDetail() {
                             <SelectTrigger className="mt-1 h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-0">
                               <SelectValue placeholder="Select processor" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-popover z-50">
                               <SelectItem value="unassigned">Unassigned</SelectItem>
                               {teamMembers.map(member => (
                                 <SelectItem key={member.id} value={member.id}>
@@ -1309,7 +1312,7 @@ export default function LeadDetail() {
                             <SelectTrigger className="mt-1 h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-0">
                               <SelectValue placeholder="Select underwriter" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-popover z-50">
                               <SelectItem value="unassigned">Unassigned</SelectItem>
                               {teamMembers.map(member => (
                                 <SelectItem key={member.id} value={member.id}>
@@ -1321,6 +1324,31 @@ export default function LeadDetail() {
                         ) : (
                           <div className="mt-1 h-8 px-3 flex items-center text-xs font-medium bg-blue-600 text-white rounded-md">
                             {teamMembers.find(m => m.id === assignments.underwriter_id)?.name || 'Unassigned'}
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <Label className="text-xs font-medium text-muted-foreground">Loan Closer</Label>
+                        {isEditing ? (
+                          <Select
+                            value={assignments.closer_id || "unassigned"}
+                            onValueChange={(value) => setAssignments({...assignments, closer_id: value === "unassigned" ? "" : value})}
+                          >
+                            <SelectTrigger className="mt-1 h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-0">
+                              <SelectValue placeholder="Select closer" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-popover z-50">
+                              <SelectItem value="unassigned">Unassigned</SelectItem>
+                              {teamMembers.map(member => (
+                                <SelectItem key={member.id} value={member.id}>
+                                  {member.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="mt-1 h-8 px-3 flex items-center text-xs font-medium bg-blue-600 text-white rounded-md">
+                            {teamMembers.find(m => m.id === assignments.closer_id)?.name || 'Unassigned'}
                           </div>
                         )}
                       </div>
