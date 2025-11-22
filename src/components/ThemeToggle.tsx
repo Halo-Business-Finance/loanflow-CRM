@@ -6,7 +6,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 transition-colors"
+      className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
       aria-label="Theme toggle"
       type="button"
     >
