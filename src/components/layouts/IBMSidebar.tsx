@@ -11,7 +11,6 @@ import {
   Database,
   Server,
   Briefcase,
-  ChevronRight,
   ChevronDown,
   BarChart3,
   Building2,
@@ -212,7 +211,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
               {isOpen ? (
                 <ChevronDown className="h-3 w-3 ml-auto" />
               ) : (
-                <ChevronRight className="h-3 w-3 ml-auto" />
+                <ChevronDown className="h-3 w-3 ml-auto" />
               )}
             </>
           )}
