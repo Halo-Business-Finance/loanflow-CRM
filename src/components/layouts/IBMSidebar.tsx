@@ -174,7 +174,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
         <NavLink
           to={to}
           className={cn(
-            'flex items-center h-12 text-xs transition-all duration-300 relative group rounded mx-1',
+            'flex items-center h-10 text-xs transition-all duration-300 relative group rounded mx-1',
             'justify-center w-12 px-0',
             (isActive || hasActiveSubItem)
               ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-[#161616] font-medium'
@@ -193,7 +193,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
         <div
           onClick={handleClick}
           className={cn(
-            'flex items-center h-12 text-xs transition-all duration-300 relative group cursor-pointer rounded mx-1',
+            'flex items-center h-10 text-xs transition-all duration-300 relative group cursor-pointer rounded mx-1',
             collapsed ? 'justify-center w-12 px-0' : 'pl-0 pr-4',
             (isActive || hasActiveSubItem)
               ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-[#161616] font-medium'
@@ -243,7 +243,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
     <NavLink
       to={to!}
       className={cn(
-        'flex items-center h-12 text-xs transition-all duration-300 relative group rounded mx-1',
+        'flex items-center h-10 text-xs transition-all duration-300 relative group rounded mx-1',
         collapsed ? 'justify-center w-12 px-0' : 'pl-0 pr-4',
         isActive
           ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-[#161616] font-medium'
@@ -275,7 +275,7 @@ export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
           onClick={onToggle}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className={cn(
-            'group flex items-center h-12 text-[#525252] hover:text-[#161616] transition-colors rounded mx-1',
+            'group flex items-center h-10 text-[#525252] hover:text-[#161616] transition-colors rounded mx-1',
             collapsed ? 'justify-center w-12 px-0' : 'pl-0 pr-4'
           )}
         >
