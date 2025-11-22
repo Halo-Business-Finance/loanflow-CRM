@@ -176,10 +176,12 @@ export function LoanCalculator() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:text-white hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all duration-300 rounded"
+          className="h-9 w-9 text-white hover:bg-transparent rounded group"
           title="Loan Calculator"
         >
-          <Calculator className="h-6 w-6" />
+          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
+            <Calculator className="h-6 w-6" />
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-gradient-to-br from-background via-background to-primary/5 border-border">
