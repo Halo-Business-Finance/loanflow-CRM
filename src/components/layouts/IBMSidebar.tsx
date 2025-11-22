@@ -3,7 +3,6 @@ import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
-  GitBranch,
   Activity,
   FileText,
   Shield,
@@ -29,6 +28,7 @@ import {
   HandCoins,
   Landmark,
   Menu,
+  Workflow,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -82,11 +82,11 @@ const navItems: NavItemData[] = [
   },
   { icon: Mail, label: 'Messages', to: '/messages' },
   { 
-    icon: GitBranch, 
+    icon: Workflow, 
     label: 'Loan Pipeline', 
     to: '/pipeline',
     subItems: [
-      { icon: GitBranch, label: 'Pipeline Management', to: '/pipeline' },
+      { icon: Workflow, label: 'Pipeline Management', to: '/pipeline' },
       { icon: TrendingUp, label: 'Pipeline Analytics', to: '/pipeline/analytics' },
     ]
   },
