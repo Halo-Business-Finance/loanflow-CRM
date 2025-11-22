@@ -29,8 +29,7 @@ import {
   FileSpreadsheet,
   HandCoins,
   Landmark,
-  ToggleLeft,
-  ToggleRight,
+  Menu,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -280,11 +279,7 @@ export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
         >
           <div className="w-12 flex items-center justify-center">
             <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-              {collapsed ? (
-                <ToggleLeft className="h-6 w-6 text-[#003f88]" />
-              ) : (
-                <ToggleRight className="h-6 w-6 text-[#003f88]" />
-              )}
+              <Menu className="h-5 w-5 text-[#003f88]" />
             </span>
           </div>
         </button>
