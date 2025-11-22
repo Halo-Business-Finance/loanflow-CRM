@@ -268,16 +268,14 @@ export function NotificationBell() {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 transition-colors relative"
         >
-          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200 relative">
-            <Bell className="w-6 h-6" fill="rgb(234, 179, 8)" stroke="rgb(234, 179, 8)" />
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground">
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </span>
-            )}
-          </span>
+          <Bell className="w-6 h-6" fill="rgb(234, 179, 8)" stroke="rgb(234, 179, 8)" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full flex items-center justify-center text-xs bg-primary text-primary-foreground">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
