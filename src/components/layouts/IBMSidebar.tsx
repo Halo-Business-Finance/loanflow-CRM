@@ -178,7 +178,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
           )}
         >
           <div className="w-12 flex items-center justify-center">
-            <Icon className="h-4 w-4 flex-shrink-0 text-[#003f88]" />
+            <Icon className="h-4 w-4 flex-shrink-0 text-[#161616]" />
           </div>
         </NavLink>
       );
@@ -200,7 +200,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
             <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
           )}
           <div className="w-12 flex items-center justify-center">
-            <Icon className="h-4 w-4 flex-shrink-0 text-[#003f88]" />
+            <Icon className="h-4 w-4 flex-shrink-0 text-[#161616]" />
           </div>
           {!collapsed && (
             <>
@@ -250,7 +250,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
         <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#0f62fe]" />
       )}
       <div className="w-12 flex items-center justify-center">
-        <Icon className="h-4 w-4 flex-shrink-0 text-[#003f88]" />
+        <Icon className="h-4 w-4 flex-shrink-0 text-[#161616]" />
       </div>
       {!collapsed && <span className="truncate">{label}</span>}
     </NavLink>
@@ -277,7 +277,7 @@ export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
         >
           <div className="w-12 flex items-center justify-center">
             <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-              <Menu className="h-5 w-5 text-[#003f88]" />
+              <Menu className="h-5 w-5 text-[#161616]" />
             </span>
           </div>
         </button>
