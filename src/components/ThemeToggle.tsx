@@ -7,7 +7,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      className="h-9 w-9 text-white hover:bg-transparent rounded group"
+      className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
       aria-label="Theme toggle (light mode only)"
       type="button"
     >
