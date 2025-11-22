@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, HelpCircle, ToggleLeft, ToggleRight, User, ChevronDown, Mail, Phone } from 'lucide-react';
+import { Search, LifeBuoy, ToggleLeft, ToggleRight, User, ChevronDown, Mail, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -202,7 +202,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           title="Support Center"
         >
           <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-            <HelpCircle className="h-6 w-6" />
+            <LifeBuoy className="h-6 w-6" />
           </span>
         </Button>
 
