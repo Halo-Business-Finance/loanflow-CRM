@@ -176,7 +176,7 @@ export function LoanCalculator() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent rounded group"
+          className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
           title="Loan Calculator"
         >
           <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">

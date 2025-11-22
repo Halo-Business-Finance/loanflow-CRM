@@ -173,7 +173,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent rounded group"
+          className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
           onClick={() => window.open('https://outlook.office.com', '_blank')}
           title="Open Microsoft 365 Email"
         >
@@ -185,7 +185,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent rounded group"
+          className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
           onClick={() => window.open('https://app.ringcentral.com', '_blank')}
           title="Open RingCentral Dial Pad"
         >
@@ -197,7 +197,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent rounded group"
+          className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
           onClick={() => navigate('/support')}
           title="Support Center"
         >
@@ -213,7 +213,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-white hover:bg-transparent rounded group"
+              className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
             >
               <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
                 <User className="h-6 w-6" />
