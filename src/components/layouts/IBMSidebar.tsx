@@ -29,6 +29,7 @@ import {
   Landmark,
   Menu,
   Workflow,
+  Castle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -111,7 +112,7 @@ const navItems: NavItemData[] = [
   },
   { icon: UserCog, label: 'User Directory', to: '/user-directory' },
   { icon: Landmark, label: 'Banks & Lenders', to: '/lenders' },
-  { icon: Building2, label: 'Title & Escrow', to: '/service-providers' },
+  { icon: Castle, label: 'Title & Escrow', to: '/service-providers' },
   { 
     icon: Building2, 
     label: 'Enterprise', 
