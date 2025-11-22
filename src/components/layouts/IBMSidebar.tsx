@@ -26,7 +26,6 @@ import {
   TrendingUp,
   FileCheck,
   AlertTriangle,
-  Headset,
   Mail,
   FileSpreadsheet,
   HandCoins,
@@ -113,7 +112,6 @@ const navItems: NavItemData[] = [
       { icon: FileText, label: 'Document Templates', to: '/documents/templates' },
     ]
   },
-  { icon: Headset, label: 'Support', to: '/support' },
   { icon: UserCog, label: 'User Directory', to: '/user-directory' },
   { icon: Landmark, label: 'Banks & Lenders', to: '/lenders' },
   { icon: Building2, label: 'Title & Escrow', to: '/service-providers' },
