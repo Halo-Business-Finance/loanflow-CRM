@@ -287,7 +287,6 @@ export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
               )}
             </span>
           </div>
-          {!collapsed && <span className="text-xs truncate">Collapse Menu</span>}
         </button>
       </div>
       <nav className="space-y-0 pt-1">
