@@ -165,7 +165,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
       </div>
 
       {/* Right section with actions */}
-      <div className="flex items-center gap-1 px-6 flex-1 justify-end">
+      <div className="flex items-center gap-0.5 px-6 flex-1 justify-end">
         <NotificationBell />
         
         <LoanCalculator />
