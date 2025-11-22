@@ -173,37 +173,31 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 transition-colors"
           onClick={() => window.open('https://outlook.office.com', '_blank')}
           title="Open Microsoft 365 Email"
         >
-          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-            <Mail className="h-6 w-6" />
-          </span>
+          <Mail className="h-6 w-6" />
         </Button>
 
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 transition-colors"
           onClick={() => window.open('https://app.ringcentral.com', '_blank')}
           title="Open RingCentral Dial Pad"
         >
-          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-            <Phone className="h-6 w-6" />
-          </span>
+          <Phone className="h-6 w-6" />
         </Button>
 
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 transition-colors"
           onClick={() => navigate('/support')}
           title="Support Center"
         >
-          <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-            <Headphones className="h-6 w-6" />
-          </span>
+          <Headphones className="h-6 w-6" />
         </Button>
 
         <ThemeToggle />
@@ -213,11 +207,9 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-white hover:bg-transparent rounded group focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 transition-colors"
             >
-              <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-                <User className="h-6 w-6" />
-              </span>
+              <User className="h-6 w-6" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
