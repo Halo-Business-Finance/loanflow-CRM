@@ -6,7 +6,6 @@ import {
   GitBranch,
   Activity,
   FileText,
-  Settings,
   Shield,
   Database,
   Server,
@@ -146,7 +145,6 @@ const navItems: NavItemData[] = [
       { icon: CheckSquare, label: 'Role Diagnostics', to: '/security/role-diagnostics' },
     ]
   },
-  { icon: Settings, label: 'Settings', to: '/settings' },
 ];
 
 function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
