@@ -46,7 +46,7 @@ export function IBMPageHeader({
   };
 
   return (
-    <div className={cn('bg-card px-6 py-4 border-b border-border', className)}>
+    <div className={cn('bg-card px-8 py-6 border-b border-border', className)}>
       {showBreadcrumbs && breadcrumbs.length > 1 && (
         <div className="flex items-center gap-2 mb-3">
           <div className="flex items-center gap-1">
@@ -100,11 +100,11 @@ export function IBMPageHeader({
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-normal text-[#161616]">{title}</h1>
+            <h1 className="text-2xl font-semibold text-[#161616]">{title}</h1>
             {hasDropdown && <ChevronDown className="h-4 w-4 text-[#525252]" />}
           </div>
           {subtitle && (
-            <p className="text-sm text-[#525252] mt-1">{subtitle}</p>
+            <p className="text-base text-[#525252] mt-1.5">{subtitle}</p>
           )}
         </div>
         {actions && (
