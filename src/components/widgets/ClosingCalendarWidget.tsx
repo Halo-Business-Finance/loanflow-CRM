@@ -69,7 +69,7 @@ export function ClosingCalendarWidget() {
   const datesWithEvents = events.map(e => e.closingDate);
 
   return (
-    <Card className="bg-white border border-[#e0e0e0]">
+    <Card className="bg-card border border-border">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
