@@ -276,7 +276,7 @@ function Dashboard() {
   return (
     <div className="bg-background min-h-screen">
       {/* Microsoft-style Dashboard Header */}
-      <div className="bg-white border-b border-border pl-0 pr-6 py-4">
+      <div className="bg-card border-b border-border pl-0 pr-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex-1 pl-6 flex flex-col gap-2">
             <div className="self-start">
@@ -288,7 +288,7 @@ function Dashboard() {
               />
             </div>
             <div className="flex items-center gap-4">
-              <p className="text-base text-black mt-1 text-left">Welcome {user?.user_metadata?.first_name || getUserDisplayName()}</p>
+              <p className="text-base text-foreground mt-1 text-left">Welcome {user?.user_metadata?.first_name || getUserDisplayName()}</p>
             
               {/* Navigation Controls */}
               <div className="flex items-center gap-2 pl-4">
@@ -422,8 +422,9 @@ function Dashboard() {
                           <Tooltip 
                             formatter={(value, name) => [value, name === 'count' ? 'Leads' : 'Value']}
                             contentStyle={{
-                              backgroundColor: 'white',
-                              border: '1px solid #e5e7eb',
+                              backgroundColor: 'hsl(var(--card))',
+                              color: 'hsl(var(--card-foreground))',
+                              border: '1px solid hsl(var(--border))',
                               borderRadius: '8px',
                               fontSize: '12px'
                             }}
@@ -464,8 +465,9 @@ function Dashboard() {
                               name === 'count' ? 'Count' : 'Total Amount'
                             ]}
                             contentStyle={{
-                              backgroundColor: 'white',
-                              border: '1px solid #e5e7eb',
+                              backgroundColor: 'hsl(var(--card))',
+                              color: 'hsl(var(--card-foreground))',
+                              border: '1px solid hsl(var(--border))',
                               borderRadius: '8px',
                               fontSize: '12px'
                             }}
