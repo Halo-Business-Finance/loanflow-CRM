@@ -26,7 +26,7 @@ export function IBMContentCard({
     <div
       onClick={onClick}
       className={cn(
-        'bg-white border border-[#e0e0e0] transition-shadow',
+        'bg-card border border-border transition-shadow',
         onClick && 'cursor-pointer hover:shadow-lg',
         !onClick && 'hover:shadow-md',
         featured

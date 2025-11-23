@@ -79,7 +79,7 @@ export function RiskAssessmentWidget() {
   };
 
   return (
-    <Card className="bg-white border border-[#e0e0e0]">
+    <Card className="bg-card border border-border">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
           <AlertTriangle className="h-4 w-4 text-[#161616]" />
