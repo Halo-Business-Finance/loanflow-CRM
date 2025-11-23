@@ -114,7 +114,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
   };
 
   return (
-    <header className="h-24 bg-[#161616] border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full px-4">
+    <header className="h-24 bg-black border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full px-4">
       {/* Left section with brand */}
       <div className="flex items-center h-full flex-1">
         <BrandLogo
