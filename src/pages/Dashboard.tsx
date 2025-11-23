@@ -888,7 +888,7 @@ export default function Dashboard() {
         }
       />
 
-      <div className="p-8 space-y-8 animate-fade-in">
+      <div className="p-10 space-y-8 animate-fade-in">
 
         {customizeMode && (
           <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
