@@ -151,7 +151,7 @@ export class DataIntegrity {
     return { valid: errors.length === 0, errors };
   }
 
-  // Create audit trail for data modifications
+  // Create audit trail for data modifications - server-side only
   static async createAuditEntry(action: string, data: any, userId?: string): Promise<{
     id: string;
     action: string;
@@ -173,7 +173,7 @@ export class DataIntegrity {
       }
     };
     
-    // Store audit entry to server for critical operations
+    // Store audit entry to server only - no localStorage fallback for security
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       await supabase.from('audit_logs').insert({
@@ -185,22 +185,14 @@ export class DataIntegrity {
         }
       });
     } catch (error) {
-      // Fallback to localStorage only if server logging fails
-      const auditLog = JSON.parse(localStorage.getItem('_audit_log') || '[]');
-      auditLog.push(entry);
-      
-      // Keep only last 100 entries to prevent storage overflow
-      if (auditLog.length > 100) {
-        auditLog.splice(0, auditLog.length - 100);
-      }
-      
-      localStorage.setItem('_audit_log', JSON.stringify(auditLog));
+      // Log error but do not store in localStorage for security reasons
+      console.error('Failed to create audit entry:', error);
     }
     
     return entry;
   }
 
-  // Retrieve audit trail - prefer server-side
+  // Retrieve audit trail - server-side only
   static async getAuditTrail(limit: number = 100): Promise<any[]> {
     try {
       const { supabase } = await import('@/integrations/supabase/client');
@@ -214,11 +206,10 @@ export class DataIntegrity {
         return data;
       }
     } catch (error) {
-      // Fallback to localStorage if server query fails
+      console.error('Failed to retrieve audit trail:', error);
     }
     
-    const auditLog = JSON.parse(localStorage.getItem('_audit_log') || '[]');
-    return auditLog.slice(-limit).reverse(); // Most recent first
+    return [];
   }
 
   // Secure comparison for sensitive data (timing attack resistant)
@@ -240,50 +231,8 @@ export class DataIntegrity {
     return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
   }
 
-  // Data backup with integrity protection
-  static async createSecureBackup(data: any, label: string): Promise<string> {
-    const backup = await this.createSecurePackage({
-      label,
-      version: '1.0',
-      data,
-      created: new Date().toISOString()
-    });
-    
-    const backupId = this.generateSecureToken(16);
-    const backups = JSON.parse(localStorage.getItem('_secure_backups') || '{}');
-    backups[backupId] = backup;
-    
-    // Limit to 10 backups
-    const backupKeys = Object.keys(backups);
-    if (backupKeys.length > 10) {
-      const oldestKey = backupKeys.sort()[0];
-      delete backups[oldestKey];
-    }
-    
-    localStorage.setItem('_secure_backups', JSON.stringify(backups));
-    return backupId;
-  }
-
-  // Restore data from secure backup
-  static async restoreSecureBackup(backupId: string): Promise<{ success: boolean; data?: any; errors: string[] }> {
-    const backups = JSON.parse(localStorage.getItem('_secure_backups') || '{}');
-    const backup = backups[backupId];
-    
-    if (!backup) {
-      return { success: false, errors: ['Backup not found'] };
-    }
-    
-    const verification = await this.verifySecurePackage(backup);
-    if (!verification.valid) {
-      return { success: false, errors: verification.errors };
-    }
-    
-    return { 
-      success: true, 
-      data: verification.data?.data,
-      errors: [] 
-    };
-  }
+  // Note: Secure backups removed for security - use server-side database backups instead
+  // If backup functionality is needed, implement server-side with proper encryption and access controls
 }
 
 // Validation rules for Lead data

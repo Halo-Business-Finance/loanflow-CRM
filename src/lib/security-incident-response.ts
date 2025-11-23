@@ -201,9 +201,15 @@ class SecurityIncidentResponseSystem {
 
   private async enhanceMonitoring(): Promise<'success' | 'failure'> {
     try {
-      // Enable enhanced monitoring mode
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('enhanced_monitoring', 'true');
+      // Enable enhanced monitoring mode - server-side only
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        await supabase.rpc('store_secure_session_data', {
+          p_key: `enhanced_monitoring_${user.id}`,
+          p_value: 'true'
+        });
       }
       return 'success';
     } catch {
@@ -213,15 +219,23 @@ class SecurityIncidentResponseSystem {
 
   private async enableRateLimiting(source: string): Promise<'success' | 'failure'> {
     try {
-      // Implement dynamic rate limiting
-      const rateLimitKey = `rate_limit_${source}`;
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(rateLimitKey, JSON.stringify({
+      // Implement dynamic rate limiting - server-side
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const rateLimitData = JSON.stringify({
           enabled: true,
           limit: 10,
           window: 60000,
-          timestamp: Date.now()
-        }));
+          timestamp: Date.now(),
+          source
+        });
+        
+        await supabase.rpc('store_secure_session_data', {
+          p_key: `rate_limit_${source}`,
+          p_value: rateLimitData
+        });
       }
       return 'success';
     } catch {
@@ -231,12 +245,21 @@ class SecurityIncidentResponseSystem {
 
   private async temporaryIPBlock(source: string, duration: number): Promise<'success' | 'failure'> {
     try {
-      const blockKey = `temp_block_${source}`;
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(blockKey, JSON.stringify({
+      // Temporary IP block - server-side
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const blockData = JSON.stringify({
           blocked: true,
-          until: Date.now() + duration
-        }));
+          until: Date.now() + duration,
+          source
+        });
+        
+        await supabase.rpc('store_secure_session_data', {
+          p_key: `temp_block_${source}`,
+          p_value: blockData
+        });
       }
       return 'success';
     } catch {
@@ -246,8 +269,15 @@ class SecurityIncidentResponseSystem {
 
   private async enableCaptcha(): Promise<'success' | 'failure'> {
     try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('captcha_required', 'true');
+      // Enable CAPTCHA requirement - server-side
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        await supabase.rpc('store_secure_session_data', {
+          p_key: `captcha_required_${user.id}`,
+          p_value: 'true'
+        });
       }
       return 'success';
     } catch {
@@ -328,27 +358,29 @@ class SecurityIncidentResponseSystem {
     }, 300000); // Check every 5 minutes
   }
 
-  private checkForAnomalousActivity(): void {
-    // Check for rapid requests
-    if (typeof localStorage !== 'undefined') {
-      const requestLog = localStorage.getItem('request_log');
-      if (requestLog) {
-        try {
-          const requests = JSON.parse(requestLog);
-          const recentRequests = requests.filter((r: any) => 
-            Date.now() - r.timestamp < 60000
-          ).length;
-          
-          if (recentRequests > 100) {
-            this.detectIncident('rate_limit_abuse', 'high', 'automated_detection', {
-              request_count: recentRequests,
-              time_window: '1_minute'
-            });
-          }
-        } catch {
-          // Invalid request log, ignore
-        }
+  private async checkForAnomalousActivity(): Promise<void> {
+    // Check for rapid requests - use server-side API analytics instead
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) return;
+      
+      // Query recent API request analytics from database
+      const { data: recentRequests } = await supabase
+        .from('api_request_analytics')
+        .select('id')
+        .eq('user_id', user.id)
+        .gte('created_at', new Date(Date.now() - 60000).toISOString());
+      
+      if (recentRequests && recentRequests.length > 100) {
+        this.detectIncident('rate_limit_abuse', 'high', 'automated_detection', {
+          request_count: recentRequests.length,
+          time_window: '1_minute'
+        });
       }
+    } catch (error) {
+      // Silently fail - don't compromise security monitoring
     }
   }
 
