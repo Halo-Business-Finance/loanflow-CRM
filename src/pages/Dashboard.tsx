@@ -627,15 +627,15 @@ export default function Dashboard() {
     'performance-charts': (
       <div key="performance-charts" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Revenue Performance */}
-        <Card className="bg-white border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/reports')}>
+        <Card className="bg-card border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/reports')}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-normal text-[#161616]">Revenue Performance</CardTitle>
+              <CardTitle className="text-base font-normal text-card-foreground">Revenue Performance</CardTitle>
               <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/reports'); }}>
                 View reports
               </Button>
             </div>
-            <CardDescription className="text-[#525252]">Revenue vs Pipeline (6 months)</CardDescription>
+            <CardDescription className="text-muted-foreground">Revenue vs Pipeline (6 months)</CardDescription>
           </CardHeader>
           <CardContent>
             {revenuePerformance.length > 0 && revenuePerformance.some(d => d.revenue > 0 || d.pipeline > 0) ? (
@@ -651,7 +651,7 @@ export default function Dashboard() {
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-[250px] flex items-center justify-center text-[#525252]">
+              <div className="h-[250px] flex items-center justify-center text-muted-foreground">
                 <p>No revenue data available</p>
               </div>
             )}
@@ -659,15 +659,15 @@ export default function Dashboard() {
         </Card>
 
         {/* Pipeline Distribution */}
-        <Card className="bg-white border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/pipeline')}>
+        <Card className="bg-card border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/pipeline')}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-normal text-[#161616]">Pipeline Distribution</CardTitle>
+              <CardTitle className="text-base font-normal text-card-foreground">Pipeline Distribution</CardTitle>
               <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/pipeline'); }}>
                 View pipeline
               </Button>
             </div>
-            <CardDescription className="text-[#525252]">Deals by stage</CardDescription>
+            <CardDescription className="text-muted-foreground">Deals by stage</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-4">
@@ -696,9 +696,9 @@ export default function Dashboard() {
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: stage.color }} />
-                      <span className="text-sm text-[#161616]">{stage.name}</span>
+                      <span className="text-sm text-card-foreground">{stage.name}</span>
                     </div>
-                    <span className="text-sm font-medium text-[#161616]">{stage.value}</span>
+                    <span className="text-sm font-medium text-card-foreground">{stage.value}</span>
                   </div>
                 ))}
               </div>
@@ -707,15 +707,15 @@ export default function Dashboard() {
         </Card>
 
         {/* Activity Trends - Lead Creation */}
-        <Card className="bg-white border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/leads')}>
+        <Card className="bg-card border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/leads')}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-normal text-[#161616]">Lead Activity</CardTitle>
+              <CardTitle className="text-base font-normal text-card-foreground">Lead Activity</CardTitle>
               <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/leads'); }}>
                 View leads
               </Button>
             </div>
-            <CardDescription className="text-[#525252]">Leads created this week</CardDescription>
+            <CardDescription className="text-muted-foreground">Leads created this week</CardDescription>
           </CardHeader>
           <CardContent>
             {activityTrend.length > 0 && activityTrend.some(d => d.leads > 0) ? (
@@ -730,7 +730,7 @@ export default function Dashboard() {
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-[250px] flex items-center justify-center text-[#525252]">
+              <div className="h-[250px] flex items-center justify-center text-muted-foreground">
                 <p>No lead activity in the past 7 days</p>
               </div>
             )}
