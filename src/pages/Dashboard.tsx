@@ -741,29 +741,29 @@ export default function Dashboard() {
     'bottom-section': (
       <div key="bottom-section" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Active tasks */}
-        <Card className="bg-white border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/activities/tasks')}>
+        <Card className="bg-card border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/activities/tasks')}>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-normal text-[#161616]">Active tasks</CardTitle>
+              <CardTitle className="text-base font-normal text-card-foreground">Active tasks</CardTitle>
               <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/activities/tasks'); }}>
                 View all
               </Button>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-light text-[#161616] mb-4">{stats.pendingTasks}</div>
+            <div className="text-3xl font-light text-card-foreground mb-4">{stats.pendingTasks}</div>
             {stats.pendingTasks > 0 ? (
               <div className="space-y-3">
-                <div className="flex items-start gap-2 text-sm pb-2 border-b border-[#e0e0e0]">
+                <div className="flex items-start gap-2 text-sm pb-2 border-b border-border">
                   <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
-                    <span className="text-[#161616]">Follow up with {stats.pendingTasks} lead{stats.pendingTasks > 1 ? 's' : ''}</span>
-                    <p className="text-xs text-[#525252] mt-0.5">Initial contact and waiting for documentation stages</p>
+                    <span className="text-card-foreground">Follow up with {stats.pendingTasks} lead{stats.pendingTasks > 1 ? 's' : ''}</span>
+                    <p className="text-xs text-muted-foreground mt-0.5">Initial contact and waiting for documentation stages</p>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-2 text-sm text-[#525252]">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CheckCircle className="h-4 w-4 text-green-600" />
                 <span>All caught up!</span>
               </div>
@@ -772,10 +772,10 @@ export default function Dashboard() {
         </Card>
 
         {/* Recent activity */}
-        <Card className="bg-white border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/activities')}>
+        <Card className="bg-card border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/activities')}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-normal text-[#161616]">Recent activity</CardTitle>
+              <CardTitle className="text-base font-normal text-card-foreground">Recent activity</CardTitle>
               <Button variant="link" size="sm" className="text-[#0f62fe] h-auto p-0" onClick={(e) => { e.stopPropagation(); navigate('/activities'); }}>
                 View all
               </Button>
@@ -785,19 +785,19 @@ export default function Dashboard() {
             {recentActivityList.length > 0 ? (
               <div className="space-y-3">
                 {recentActivityList.map((activity, index) => (
-                  <div key={index} className={`flex items-start gap-3 ${index < recentActivityList.length - 1 ? 'pb-2 border-b border-[#e0e0e0]' : ''}`}>
+                  <div key={index} className={`flex items-start gap-3 ${index < recentActivityList.length - 1 ? 'pb-2 border-b border-border' : ''}`}>
                     {activity.type === 'converted' && <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />}
                     {activity.type === 'created' && <UserPlus className="h-4 w-4 text-[#0f62fe] mt-0.5 flex-shrink-0" />}
                     {activity.type === 'updated' && <Activity className="h-4 w-4 text-[#8a3ffc] mt-0.5 flex-shrink-0" />}
                     <div className="flex-1">
-                      <p className="text-sm text-[#161616]">{activity.message}</p>
-                      <p className="text-xs text-[#525252] mt-0.5">{activity.time}</p>
+                      <p className="text-sm text-card-foreground">{activity.message}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{activity.time}</p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="flex items-center justify-center h-24 text-[#525252] text-sm">
+              <div className="flex items-center justify-center h-24 text-muted-foreground text-sm">
                 No recent activity
               </div>
             )}
@@ -805,9 +805,9 @@ export default function Dashboard() {
         </Card>
 
         {/* Quick actions */}
-        <Card className="bg-white border border-blue-600">
+        <Card className="bg-card border border-blue-600">
           <CardHeader>
-            <CardTitle className="text-base font-normal text-[#161616]">Quick actions</CardTitle>
+            <CardTitle className="text-base font-normal text-card-foreground">Quick actions</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
