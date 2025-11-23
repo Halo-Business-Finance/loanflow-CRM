@@ -16,15 +16,7 @@ export const ProfileSecurityAlert: React.FC = () => {
   React.useEffect(() => {
     const checkMigrationStatus = async () => {
       try {
-        // Check localStorage first for quick response
-        const storedStatus = localStorage.getItem('profile_migration_status');
-        if (storedStatus === 'completed') {
-          setMigrationStatus('completed');
-          setIsCheckingStatus(false);
-          return;
-        }
-
-        // Check if there are any security events indicating migration completion
+        // Check server-side for migration status
         const { data, error } = await supabase
           .from('security_events')
           .select('id')
@@ -33,7 +25,6 @@ export const ProfileSecurityAlert: React.FC = () => {
         
         if (!error && data && data.length > 0) {
           setMigrationStatus('completed');
-          localStorage.setItem('profile_migration_status', 'completed');
         }
       } catch (error) {
         console.warn('Could not check migration status:', error);
@@ -54,7 +45,7 @@ export const ProfileSecurityAlert: React.FC = () => {
       const success = await migrateExistingData();
       if (success) {
         setMigrationStatus('completed');
-        localStorage.setItem('profile_migration_status', 'completed');
+        // Migration completion is tracked via security_events table, no localStorage needed
       } else {
         setMigrationStatus('error');
       }

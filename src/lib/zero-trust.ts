@@ -353,12 +353,20 @@ export class ZeroTrustManager {
     );
     riskScore += recentAnomalies.length * 10;
     
-    // Risk from security events
-    const securityEvents = JSON.parse(localStorage.getItem('_security_incidents') || '[]');
-    const recentSecurityEvents = securityEvents.filter((event: any) => 
-      Date.now() - event.timestamp < 3600000 // Last hour
-    );
-    riskScore += recentSecurityEvents.length * 15;
+    // Risk from security events - query server-side
+    try {
+      const { data: recentSecurityEvents } = await supabase
+        .from('security_events')
+        .select('id')
+        .eq('user_id', userId)
+        .gte('created_at', new Date(Date.now() - 3600000).toISOString());
+      
+      if (recentSecurityEvents) {
+        riskScore += recentSecurityEvents.length * 15;
+      }
+    } catch {
+      // Silently fail if unable to fetch security events
+    }
     
     // Risk from location/device changes
     const deviceFingerprint = SecurityManager.generateDeviceFingerprint();
