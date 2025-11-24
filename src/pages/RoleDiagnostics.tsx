@@ -210,7 +210,7 @@ export default function RoleDiagnostics() {
               <RefreshCw className="h-4 w-4 mr-2" />
               Refresh
             </Button>
-            <Button onClick={() => navigate('/settings/users')} variant="default" size="sm">
+            <Button onClick={() => navigate('/user-directory')} variant="default" size="sm">
               <Users className="h-4 w-4 mr-2" />
               Manage Users
             </Button>
@@ -230,7 +230,7 @@ export default function RoleDiagnostics() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => navigate('/settings/users')}
+                onClick={() => navigate('/user-directory')}
                 className="ml-4 border-blue-300 text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:text-blue-300"
               >
                 <SettingsIcon className="h-3 w-3 mr-1" />
