@@ -70,7 +70,6 @@ const SecurityAccess = lazy(() => import("./pages/SecurityAccess"));
 const SecurityAudit = lazy(() => import("./pages/SecurityAudit"));
 const SecurityThreats = lazy(() => import("./pages/SecurityThreats"));
 const SecurityCompliance = lazy(() => import("./pages/SecurityCompliance"));
-const SettingsUsers = lazy(() => import("./pages/SettingsUsers"));
 const SettingsSystem = lazy(() => import("./pages/SettingsSystem"));
 const Messages = lazy(() => import("./pages/Messages"));
 const LeadAccessDiagnostics = lazy(() => import("./pages/LeadAccessDiagnostics"));
@@ -193,7 +192,6 @@ function AuthenticatedApp() {
         <Route path="/service-providers/:id" element={<IBMCloudLayout><ServiceProviderDetail /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         
         <Route path="/settings" element={<IBMCloudLayout key="settings-layout"><Settings /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
-        <Route path="/settings/users" element={<IBMCloudLayout><SettingsUsers /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/settings/system" element={<IBMCloudLayout><SettingsSystem /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         
         <Route path="/security" element={<IBMCloudLayout><Security /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
