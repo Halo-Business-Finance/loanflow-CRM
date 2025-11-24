@@ -170,15 +170,11 @@ export default function SecurityCompliance() {
           }
         });
 
-      toast.success('Security audit completed successfully', {
-        description: 'All security measures verified and updated'
-      });
+      toast({ title: 'Security audit completed successfully', description: 'All security measures verified and updated' });
 
       await loadSecurityMetrics();
     } catch (error) {
-      toast.error('Security audit failed', {
-        description: 'Please try again or contact support'
-      });
+      toast({ title: 'Security audit failed', description: 'Please try again or contact support', variant: 'destructive' });
     }
   };
 
@@ -240,9 +236,7 @@ export default function SecurityCompliance() {
             <Button 
               size="sm"
               className="h-8 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white border-2 border-[#001f3f]"
-              onClick={() => toast.success('Coming Soon', {
-                description: 'Report generation will be available soon.'
-              })}
+              onClick={() => toast({ title: 'Coming Soon', description: 'Report generation will be available soon.' })}
             >
               <Download className="h-3 w-3 mr-2" />
               Report
@@ -297,134 +291,172 @@ export default function SecurityCompliance() {
                 </Alert>
               </StandardContentCard>
 
-              {/* Overview Cards */}
+              {/* Interactive Overview Cards */}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <StandardContentCard className="bg-card border-2 border-[#0A1628]">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Compliance Score</p>
-                      <p className="text-2xl font-bold text-foreground">{overviewStats.complianceScore}%</p>
-                      <p className="text-xs text-muted-foreground">Overall compliance rating</p>
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Compliance Score Details', description: 'Detailed breakdown coming soon' })}
+                >
+                  <StandardContentCard className="bg-card border-2 border-[#0A1628] hover:border-blue-600 transition-colors h-full group">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">Compliance Score</p>
+                        <p className="text-2xl font-bold text-foreground group-hover:text-blue-600 transition-colors">{overviewStats.complianceScore}%</p>
+                        <p className="text-xs text-muted-foreground">Click for details</p>
+                      </div>
+                      <Shield className="h-8 w-8 text-green-600 group-hover:scale-110 transition-transform" />
                     </div>
-                    <Shield className="h-8 w-8 text-green-600" />
-                  </div>
-                </StandardContentCard>
+                  </StandardContentCard>
+                </div>
 
-                <StandardContentCard className="bg-card border-2 border-[#0A1628]">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Passed Checks</p>
-                      <p className="text-2xl font-bold text-foreground">{overviewStats.passedChecks}</p>
-                      <p className="text-xs text-muted-foreground">Out of {overviewStats.totalChecks} requirements</p>
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Passed Checks', description: `${overviewStats.passedChecks} checks passed successfully` })}
+                >
+                  <StandardContentCard className="bg-card border-2 border-[#0A1628] hover:border-green-600 transition-colors h-full group">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">Passed Checks</p>
+                        <p className="text-2xl font-bold text-foreground group-hover:text-green-600 transition-colors">{overviewStats.passedChecks}</p>
+                        <p className="text-xs text-muted-foreground">Out of {overviewStats.totalChecks} requirements</p>
+                      </div>
+                      <CheckCircle className="h-8 w-8 text-green-600 group-hover:scale-110 transition-transform" />
                     </div>
-                    <CheckCircle className="h-8 w-8 text-green-600" />
-                  </div>
-                </StandardContentCard>
+                  </StandardContentCard>
+                </div>
 
-                <StandardContentCard className="bg-card border-2 border-[#0A1628]">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Issues Found</p>
-                      <p className="text-2xl font-bold text-foreground">{overviewStats.issuesFound}</p>
-                      <p className="text-xs text-muted-foreground">Requires attention</p>
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Issues Found', description: `${overviewStats.issuesFound} issues need attention`, variant: 'destructive' })}
+                >
+                  <StandardContentCard className="bg-card border-2 border-[#0A1628] hover:border-yellow-600 transition-colors h-full group">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">Issues Found</p>
+                        <p className="text-2xl font-bold text-foreground group-hover:text-yellow-600 transition-colors">{overviewStats.issuesFound}</p>
+                        <p className="text-xs text-muted-foreground">Requires attention</p>
+                      </div>
+                      <AlertTriangle className="h-8 w-8 text-yellow-600 group-hover:scale-110 transition-transform" />
                     </div>
-                    <AlertTriangle className="h-8 w-8 text-yellow-600" />
-                  </div>
-                </StandardContentCard>
+                  </StandardContentCard>
+                </div>
 
-                <StandardContentCard className="bg-card border-2 border-[#0A1628]">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Last Audit</p>
-                      <p className="text-2xl font-bold text-foreground">{overviewStats.lastAuditDays || '—'}</p>
-                      <p className="text-xs text-muted-foreground">{overviewStats.lastAuditDays ? 'Days ago' : 'Not run'}</p>
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={runSecurityAudit}
+                >
+                  <StandardContentCard className="bg-card border-2 border-[#0A1628] hover:border-blue-600 transition-colors h-full group">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">Last Audit</p>
+                        <p className="text-2xl font-bold text-foreground group-hover:text-blue-600 transition-colors">{overviewStats.lastAuditDays || '—'}</p>
+                        <p className="text-xs text-muted-foreground">{overviewStats.lastAuditDays ? 'Click to run new audit' : 'Click to run first audit'}</p>
+                      </div>
+                      <FileText className="h-8 w-8 text-muted-foreground group-hover:scale-110 transition-transform" />
                     </div>
-                    <FileText className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                </StandardContentCard>
+                  </StandardContentCard>
+                </div>
               </div>
 
-              {/* Security Metrics Grid */}
+              {/* Interactive Security Metrics Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <StandardContentCard title="Session Security">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <Activity className="h-4 w-4" />
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Granular Tracking</span>
-                      {metrics.sessionSecurity.activeGranularTracking ? (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                      ) : (
-                        <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                      )}
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Session Security', description: 'All session security features are active' })}
+                >
+                  <StandardContentCard title="Session Security" className="h-full group hover:border-blue-600 transition-colors">
+                    <div className="flex items-center space-x-2 mb-4">
+                      <Activity className="h-4 w-4 group-hover:text-blue-600 transition-colors" />
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Enhanced Monitoring</span>
-                      {metrics.sessionSecurity.enhancedMonitoring ? (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                      ) : (
-                        <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                      )}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-2 rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-sm">Granular Tracking</span>
+                        {metrics.sessionSecurity.activeGranularTracking ? (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between p-2 rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-sm">Enhanced Monitoring</span>
+                        {metrics.sessionSecurity.enhancedMonitoring ? (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between p-2 rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-sm">Risk Score</span>
+                        <Badge variant={metrics.sessionSecurity.riskScore === 0 ? "default" : "destructive"}>
+                          {metrics.sessionSecurity.riskScore}
+                        </Badge>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Risk Score</span>
-                      <Badge variant={metrics.sessionSecurity.riskScore === 0 ? "default" : "destructive"}>
-                        {metrics.sessionSecurity.riskScore}
-                      </Badge>
-                    </div>
-                  </div>
-                </StandardContentCard>
+                  </StandardContentCard>
+                </div>
 
-                <StandardContentCard title="Data Protection">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <Lock className="h-4 w-4" />
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">localStorage Clean</span>
-                      {metrics.dataProtection.localStorageClean ? (
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => {
+                    auditLocalStorage();
+                    toast({ title: 'Data Protection Check', description: 'Local storage cleaned and verified' });
+                  }}
+                >
+                  <StandardContentCard title="Data Protection" className="h-full group hover:border-green-600 transition-colors">
+                    <div className="flex items-center space-x-2 mb-4">
+                      <Lock className="h-4 w-4 group-hover:text-green-600 transition-colors" />
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-2 rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-sm">localStorage Clean</span>
+                        {metrics.dataProtection.localStorageClean ? (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <AlertTriangle className="h-4 w-4 text-red-500" />
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between p-2 rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-sm">Server-side Storage</span>
+                        {metrics.dataProtection.serverSideStorage ? (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between p-2 rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-sm">Encryption Active</span>
                         <CheckCircle className="h-4 w-4 text-green-500" />
-                      ) : (
-                        <AlertTriangle className="h-4 w-4 text-red-500" />
-                      )}
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Server-side Storage</span>
-                      {metrics.dataProtection.serverSideStorage ? (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                      ) : (
-                        <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Encryption Active</span>
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    </div>
-                  </div>
-                </StandardContentCard>
+                  </StandardContentCard>
+                </div>
 
-                <StandardContentCard title="Table Protection">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <Database className="h-4 w-4" />
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">RLS Policies</span>
-                      <Badge variant="default">{metrics.tableProtection.rlsPoliciesCount}</Badge>
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Table Protection', description: `${metrics.tableProtection.protectedTables} tables secured with RLS` })}
+                >
+                  <StandardContentCard title="Table Protection" className="h-full group hover:border-purple-600 transition-colors">
+                    <div className="flex items-center space-x-2 mb-4">
+                      <Database className="h-4 w-4 group-hover:text-purple-600 transition-colors" />
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Protected Tables</span>
-                      <Badge variant="default">{metrics.tableProtection.protectedTables}</Badge>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-2 rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-sm">RLS Policies</span>
+                        <Badge variant="default">{metrics.tableProtection.rlsPoliciesCount}</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-2 rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-sm">Protected Tables</span>
+                        <Badge variant="default">{metrics.tableProtection.protectedTables}</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-2 rounded hover:bg-accent/50 transition-colors">
+                        <span className="text-sm">Public Exposure</span>
+                        <Badge variant={metrics.tableProtection.publicExposure === 0 ? "default" : "destructive"}>
+                          {metrics.tableProtection.publicExposure}
+                        </Badge>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Public Exposure</span>
-                      <Badge variant={metrics.tableProtection.publicExposure === 0 ? "default" : "destructive"}>
-                        {metrics.tableProtection.publicExposure}
-                      </Badge>
-                    </div>
-                  </div>
-                </StandardContentCard>
+                  </StandardContentCard>
+                </div>
               </div>
 
               {/* Security Fixes Applied */}

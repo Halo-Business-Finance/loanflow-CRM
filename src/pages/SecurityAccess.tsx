@@ -268,51 +268,76 @@ export default function SecurityAccess() {
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
+              {/* Interactive Stats Grid */}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <StandardKPICard 
-                  title="Active Users"
-                  value={loading ? "..." : activeUsers.toString()}
-                  trend={{
-                    value: "Currently logged in",
-                    direction: "neutral"
-                  }}
-                />
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Active Users', description: `${activeUsers} users currently logged in` })}
+                >
+                  <StandardKPICard 
+                    title="Active Users"
+                    value={loading ? "..." : activeUsers.toString()}
+                    trend={{
+                      value: "Currently logged in",
+                      direction: "neutral"
+                    }}
+                  />
+                </div>
 
-                <StandardKPICard 
-                  title="Admin Users"
-                  value={loading ? "..." : adminUsers.toString()}
-                  trend={{
-                    value: "With admin privileges",
-                    direction: "neutral"
-                  }}
-                />
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Admin Users', description: `${adminUsers} users with admin privileges` })}
+                >
+                  <StandardKPICard 
+                    title="Admin Users"
+                    value={loading ? "..." : adminUsers.toString()}
+                    trend={{
+                      value: "With admin privileges",
+                      direction: "neutral"
+                    }}
+                  />
+                </div>
 
-                <StandardKPICard 
-                  title="API Keys"
-                  value="—"
-                  trend={{
-                    value: "Active integrations",
-                    direction: "neutral"
-                  }}
-                />
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'API Keys', description: 'API key management coming soon' })}
+                >
+                  <StandardKPICard 
+                    title="API Keys"
+                    value="—"
+                    trend={{
+                      value: "Active integrations",
+                      direction: "neutral"
+                    }}
+                  />
+                </div>
 
-                <StandardKPICard 
-                  title="Failed Logins"
-                  value={loading ? "..." : failedLogins.toString()}
-                  trend={{
-                    value: "Last 24 hours",
-                    direction: "neutral"
-                  }}
-                />
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Failed Logins', description: `${failedLogins} failed login attempts in last 24 hours`, variant: "destructive" })}
+                >
+                  <StandardKPICard 
+                    title="Failed Logins"
+                    value={loading ? "..." : failedLogins.toString()}
+                    trend={{
+                      value: "Last 24 hours",
+                      direction: "neutral"
+                    }}
+                  />
+                </div>
               </div>
 
+              {/* Interactive Security Summary and Quick Actions */}
               <div className="grid gap-6 md:grid-cols-2">
-                <StandardContentCard title="Security Summary">
+                <StandardContentCard title="Security Summary" className="hover:shadow-lg transition-shadow">
                   <p className="text-sm text-muted-foreground mb-4">
                     Quick overview of system security status
                   </p>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg">
+                    <div 
+                      className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg cursor-pointer hover:bg-accent/50 hover:border-green-600 transition-all"
+                      onClick={() => toast({ title: 'RLS Policies', description: 'All database tables are protected with Row Level Security' })}
+                    >
                       <div className="flex items-center gap-3">
                         <Shield className="h-5 w-5 text-green-600" />
                         <div>
@@ -322,7 +347,10 @@ export default function SecurityAccess() {
                       </div>
                       <span className="text-sm text-green-600">Active</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg">
+                    <div 
+                      className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg cursor-pointer hover:bg-accent/50 hover:border-green-600 transition-all"
+                      onClick={() => toast({ title: 'MFA Status', description: 'Multi-factor authentication is enforced for all users' })}
+                    >
                       <div className="flex items-center gap-3">
                         <Lock className="h-5 w-5 text-green-600" />
                         <div>
@@ -332,7 +360,10 @@ export default function SecurityAccess() {
                       </div>
                       <span className="text-sm text-green-600">Enforced</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg">
+                    <div 
+                      className="flex items-center justify-between p-3 border border-[#0A1628] rounded-lg cursor-pointer hover:bg-accent/50 hover:border-blue-600 transition-all"
+                      onClick={() => toast({ title: 'Session Security', description: '30 minute timeout configured for inactive sessions' })}
+                    >
                       <div className="flex items-center gap-3">
                         <Key className="h-5 w-5 text-blue-600" />
                         <div>
@@ -345,14 +376,14 @@ export default function SecurityAccess() {
                   </div>
                 </StandardContentCard>
 
-                <StandardContentCard title="Quick Actions">
+                <StandardContentCard title="Quick Actions" className="hover:shadow-lg transition-shadow">
                   <p className="text-sm text-muted-foreground mb-4">
                     Common security management tasks
                   </p>
                   <div className="space-y-3">
                     <Button 
                       variant="outline" 
-                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-all hover:scale-105"
                       onClick={() => navigate('/settings/system')}
                     >
                       <Database className="h-4 w-4" />
@@ -360,7 +391,7 @@ export default function SecurityAccess() {
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-all hover:scale-105"
                       onClick={() => toast({
                         title: "Coming Soon",
                         description: "Policy configuration will be available soon."
@@ -371,7 +402,7 @@ export default function SecurityAccess() {
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-all hover:scale-105"
                       onClick={() => toast({
                         title: "Coming Soon",
                         description: "API key management will be available soon."
@@ -382,7 +413,7 @@ export default function SecurityAccess() {
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-colors"
+                      className="w-full justify-start gap-2 !border-[#0A1628] !text-[#161616] hover:!bg-[#0A1628] hover:!text-white transition-all hover:scale-105"
                       onClick={() => navigate('/settings')}
                     >
                       <Lock className="h-4 w-4" />

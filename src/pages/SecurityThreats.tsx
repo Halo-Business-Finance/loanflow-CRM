@@ -276,131 +276,167 @@ export default function SecurityThreats() {
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
-              {/* Stats Grid */}
+              {/* Interactive Stats Grid */}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <StandardKPICard 
-                  title="Active Threats"
-                  value={stats.activeThreats}
-                  trend={{
-                    value: "Requires immediate attention",
-                    direction: stats.activeThreats > 0 ? "down" : "neutral"
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => {
+                    setActiveTab("active");
+                    toast({ title: 'Active Threats', description: `${stats.activeThreats} threats require immediate attention`, variant: "destructive" });
                   }}
-                />
+                >
+                  <StandardKPICard 
+                    title="Active Threats"
+                    value={stats.activeThreats}
+                    trend={{
+                      value: "Requires immediate attention",
+                      direction: stats.activeThreats > 0 ? "down" : "neutral"
+                    }}
+                  />
+                </div>
 
-                <StandardKPICard 
-                  title="Blocked Attempts"
-                  value={stats.blockedAttempts}
-                  trend={{
-                    value: "Last 24 hours",
-                    direction: "neutral"
-                  }}
-                />
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Blocked Attempts', description: `${stats.blockedAttempts} malicious attempts blocked` })}
+                >
+                  <StandardKPICard 
+                    title="Blocked Attempts"
+                    value={stats.blockedAttempts}
+                    trend={{
+                      value: "Last 24 hours",
+                      direction: "neutral"
+                    }}
+                  />
+                </div>
 
-                <StandardKPICard 
-                  title="Security Score"
-                  value={`${stats.securityScore}%`}
-                  trend={{
-                    value: "System security rating",
-                    direction: stats.securityScore >= 95 ? "up" : "neutral"
-                  }}
-                />
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Security Score', description: `System security rating: ${stats.securityScore}%` })}
+                >
+                  <StandardKPICard 
+                    title="Security Score"
+                    value={`${stats.securityScore}%`}
+                    trend={{
+                      value: "System security rating",
+                      direction: stats.securityScore >= 95 ? "up" : "neutral"
+                    }}
+                  />
+                </div>
 
-                <StandardKPICard 
-                  title="Anomalies"
-                  value={stats.anomalies}
-                  trend={{
-                    value: "Under investigation",
-                    direction: "neutral"
-                  }}
-                />
+                <div 
+                  className="cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => toast({ title: 'Anomalies', description: `${stats.anomalies} anomalies under investigation` })}
+                >
+                  <StandardKPICard 
+                    title="Anomalies"
+                    value={stats.anomalies}
+                    trend={{
+                      value: "Under investigation",
+                      direction: "neutral"
+                    }}
+                  />
+                </div>
               </div>
 
-              {/* Active Threats and Categories Grid */}
-              <div className="grid gap-6 md:grid-cols-2">
-                <StandardContentCard title="Active Threats">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Current security incidents requiring attention
-                  </p>
-                  {loading ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      Loading threats...
-                    </div>
-                  ) : activeThreatsData.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Shield className="h-12 w-12 mx-auto mb-2 text-green-600" />
-                      <p>No active threats detected</p>
-                      <p className="text-xs">All systems secure</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {activeThreatsData.map((threat) => (
-                        <div 
-                          key={threat.id}
-                          className={`flex items-center justify-between p-4 border-2 border-[#0A1628] rounded-lg ${
-                            threat.severity === 'critical' 
-                              ? 'bg-red-50 dark:bg-red-950/20' 
-                              : 'bg-orange-50 dark:bg-orange-950/20'
-                          }`}
-                        >
-                          <div className="flex items-center space-x-3 flex-1">
-                            <AlertTriangle className={`h-6 w-6 ${getSeverityColor(threat.severity)}`} />
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium truncate">
-                                {threat.event_type.replace(/_/g, ' ').toUpperCase()}
-                              </p>
-                              <p className="text-sm text-muted-foreground truncate">
-                                {formatDistanceToNow(new Date(threat.created_at), { addSuffix: true })}
-                              </p>
+                {/* Interactive Active Threats and Categories Grid */}
+                <div className="grid gap-6 md:grid-cols-2">
+                  <StandardContentCard title="Active Threats" className="hover:shadow-lg transition-shadow">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Current security incidents requiring attention
+                    </p>
+                    {loading ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        Loading threats...
+                      </div>
+                    ) : activeThreatsData.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Shield className="h-12 w-12 mx-auto mb-2 text-green-600" />
+                        <p>No active threats detected</p>
+                        <p className="text-xs">All systems secure</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {activeThreatsData.map((threat) => (
+                          <div 
+                            key={threat.id}
+                            className={`flex items-center justify-between p-4 border-2 border-[#0A1628] rounded-lg cursor-pointer hover:scale-105 transition-transform ${
+                              threat.severity === 'critical' 
+                                ? 'bg-red-50 dark:bg-red-950/20 hover:border-red-600' 
+                                : 'bg-orange-50 dark:bg-orange-950/20 hover:border-orange-600'
+                            }`}
+                            onClick={() => toast({ title: 'Threat Details', description: `${threat.event_type.replace(/_/g, ' ').toUpperCase()} - ${threat.severity} severity`, variant: "destructive" })}
+                          >
+                            <div className="flex items-center space-x-3 flex-1">
+                              <AlertTriangle className={`h-6 w-6 ${getSeverityColor(threat.severity)}`} />
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium truncate">
+                                  {threat.event_type.replace(/_/g, ' ').toUpperCase()}
+                                </p>
+                                <p className="text-sm text-muted-foreground truncate">
+                                  {formatDistanceToNow(new Date(threat.created_at), { addSuffix: true })}
+                                </p>
+                              </div>
                             </div>
+                            <Button size="sm" className="bg-[#0f62fe] hover:bg-[#0353e9] text-white">
+                              Investigate
+                            </Button>
                           </div>
-                          <Button size="sm" className="bg-[#0f62fe] hover:bg-[#0353e9] text-white">
-                            Investigate
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </StandardContentCard>
+                        ))}
+                      </div>
+                    )}
+                  </StandardContentCard>
 
-                <StandardContentCard title="Threat Categories">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Breakdown of detected threats by type
-                  </p>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg">
-                      <div>
-                        <p className="font-medium">Brute Force Attacks</p>
-                        <p className="text-sm text-muted-foreground">Login attempts</p>
+                  <StandardContentCard title="Threat Categories" className="hover:shadow-lg transition-shadow">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Breakdown of detected threats by type
+                    </p>
+                    <div className="space-y-4">
+                      <div 
+                        className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg cursor-pointer hover:bg-accent/50 hover:border-red-600 transition-all"
+                        onClick={() => toast({ title: 'Brute Force Attacks', description: `${threatCategories.bruteForce} login attempts detected` })}
+                      >
+                        <div>
+                          <p className="font-medium">Brute Force Attacks</p>
+                          <p className="text-sm text-muted-foreground">Login attempts</p>
+                        </div>
+                        <span className="text-lg font-semibold">{threatCategories.bruteForce}</span>
                       </div>
-                      <span className="text-lg font-semibold">{threatCategories.bruteForce}</span>
-                    </div>
-                    
-                    <div className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg">
-                      <div>
-                        <p className="font-medium">Suspicious Activity</p>
-                        <p className="text-sm text-muted-foreground">Anomalous behavior</p>
+                      
+                      <div 
+                        className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg cursor-pointer hover:bg-accent/50 hover:border-yellow-600 transition-all"
+                        onClick={() => toast({ title: 'Suspicious Activity', description: `${threatCategories.suspicious} anomalous behaviors detected`, variant: "destructive" })}
+                      >
+                        <div>
+                          <p className="font-medium">Suspicious Activity</p>
+                          <p className="text-sm text-muted-foreground">Anomalous behavior</p>
+                        </div>
+                        <span className="text-lg font-semibold">{threatCategories.suspicious}</span>
                       </div>
-                      <span className="text-lg font-semibold">{threatCategories.suspicious}</span>
-                    </div>
-                    
-                    <div className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg">
-                      <div>
-                        <p className="font-medium">Malware Detection</p>
-                        <p className="text-sm text-muted-foreground">File uploads</p>
+                      
+                      <div 
+                        className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg cursor-pointer hover:bg-accent/50 hover:border-purple-600 transition-all"
+                        onClick={() => toast({ title: 'Malware Detection', description: `${threatCategories.malware} malicious files detected`, variant: "destructive" })}
+                      >
+                        <div>
+                          <p className="font-medium">Malware Detection</p>
+                          <p className="text-sm text-muted-foreground">File uploads</p>
+                        </div>
+                        <span className="text-lg font-semibold">{threatCategories.malware}</span>
                       </div>
-                      <span className="text-lg font-semibold">{threatCategories.malware}</span>
-                    </div>
-                    
-                    <div className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg">
-                      <div>
-                        <p className="font-medium">Data Exfiltration</p>
-                        <p className="text-sm text-muted-foreground">Unusual downloads</p>
+                      
+                      <div 
+                        className="flex justify-between items-center p-3 border border-[#0A1628] rounded-lg cursor-pointer hover:bg-accent/50 hover:border-blue-600 transition-all"
+                        onClick={() => toast({ title: 'Data Exfiltration', description: `${threatCategories.dataExfiltration} unusual download attempts`, variant: "destructive" })}
+                      >
+                        <div>
+                          <p className="font-medium">Data Exfiltration</p>
+                          <p className="text-sm text-muted-foreground">Unusual downloads</p>
+                        </div>
+                        <span className="text-lg font-semibold">{threatCategories.dataExfiltration}</span>
                       </div>
-                      <span className="text-lg font-semibold">{threatCategories.dataExfiltration}</span>
                     </div>
-                  </div>
-                </StandardContentCard>
-              </div>
+                  </StandardContentCard>
+                </div>
 
               {/* Recent Security Events */}
               <StandardContentCard title="Recent Security Events">
