@@ -36,6 +36,7 @@ export default function RoleDiagnostics() {
   const {
     userRole,
     hasMinimumRole,
+    canOriginateLoans,
     canProcessLoans,
     canFundLoans,
     canUnderwriteLoans,
@@ -57,6 +58,12 @@ export default function RoleDiagnostics() {
   const performDiagnostics = () => {
     const diagnostics: RoleCheck[] = [
       // Permission checks
+      {
+        name: 'Originate Loans',
+        description: 'Can create and manage new loan applications',
+        hasAccess: canOriginateLoans(),
+        type: 'permission',
+      },
       {
         name: 'Process Loans',
         description: 'Can access loan processing features',
