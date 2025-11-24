@@ -1,5 +1,4 @@
 import React from 'react';
-// import HybridLayout from '@/components/HybridLayout';
 import { CollaborativeCRM as CollaborativeCRMComponent } from '@/components/collaboration/CollaborativeCRM';
 
 export default function CollaborativeCRM() {
