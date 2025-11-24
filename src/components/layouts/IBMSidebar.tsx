@@ -142,7 +142,6 @@ const navItems: NavItemData[] = [
       { icon: Database, label: 'System Configuration', to: '/settings/system' },
       { icon: FileCheck, label: 'Data Integrity', to: '/dashboards/data-integrity' },
       { icon: AlertTriangle, label: 'Emergency Maintenance', to: '/emergency-maintenance' },
-      { icon: Server, label: 'Enterprise Command', to: '/security/enterprise' },
       { icon: CheckSquare, label: 'Role Diagnostics', to: '/security/role-diagnostics' },
     ]
   },

@@ -76,7 +76,6 @@ const LeadAccessDiagnostics = lazy(() => import("./pages/LeadAccessDiagnostics")
 const RoleDiagnostics = lazy(() => import("./pages/RoleDiagnostics"));
 
 // Lazy load dashboard components for code splitting (with named export handling)
-const EnterpriseSecurityDashboard = lazy(() => import("@/components/security/EnterpriseSecurityDashboard").then(m => ({ default: m.EnterpriseSecurityDashboard })));
 const LoanCloserDashboard = lazy(() => import("@/components/dashboards/LoanCloserDashboard").then(m => ({ default: m.LoanCloserDashboard })));
 const LoanProcessorDashboard = lazy(() => import("@/components/dashboards/LoanProcessorDashboard").then(m => ({ default: m.LoanProcessorDashboard })));
 const UnderwriterDashboard = lazy(() => import("@/components/dashboards/UnderwriterDashboard").then(m => ({ default: m.UnderwriterDashboard })));
@@ -199,7 +198,6 @@ function AuthenticatedApp() {
         <Route path="/security/audit" element={<IBMCloudLayout><SecurityAudit /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/security/threats" element={<IBMCloudLayout><SecurityThreats /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/security/compliance" element={<IBMCloudLayout><SecurityCompliance /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
-        <Route path="/security/enterprise" element={<IBMCloudLayout><EnterpriseSecurityDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/security/lead-diagnostics" element={<IBMCloudLayout><LeadAccessDiagnostics /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/security/role-diagnostics" element={<IBMCloudLayout><RoleDiagnostics /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
 
