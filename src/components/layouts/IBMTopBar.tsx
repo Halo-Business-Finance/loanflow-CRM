@@ -114,14 +114,14 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
   };
 
   return (
-    <header className="h-24 bg-black border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full px-4">
+    <header className="h-16 md:h-20 lg:h-24 bg-black border-b border-[#393939] flex items-center justify-between flex-shrink-0 w-full px-2 md:px-4">
       {/* Left section with brand */}
       <div className="flex items-center h-full flex-1">
         <BrandLogo
-          size={120} 
+          size={100} 
           showText={false} 
           imageSrc={logoAsset}
-          className="ml-2 mt-2"
+          className="ml-1 md:ml-2 mt-2"
           imageClassName="brightness-0 invert"
         />
       </div>
@@ -132,8 +132,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <Input
             placeholder="Search by the borrower or company name..."
-            className="pl-10 h-9 bg-[#262626] border-[#393939] text-white placeholder:text-gray-400 focus:bg-[#393939] rounded-none"
-            style={{ width: '420px' }}
+            className="pl-10 h-9 bg-[#262626] border-[#393939] text-white placeholder:text-gray-400 focus:bg-[#393939] rounded-none w-[280px] md:w-[360px] lg:w-[420px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => searchQuery.length >= 2 && setShowResults(true)}
@@ -165,7 +164,7 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
       </div>
 
       {/* Right section with actions */}
-      <div className="flex items-center gap-0 px-4 flex-1 justify-end">
+      <div className="flex items-center gap-0 px-2 md:px-4 flex-1 justify-end">
         <NotificationBell />
         
         <LoanCalculator />
@@ -173,31 +172,31 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
+          className="h-8 w-8 md:h-9 md:w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
           onClick={() => window.open('https://outlook.office.com', '_blank')}
           title="Open Microsoft 365 Email"
         >
-          <Mail className="h-6 w-6" />
+          <Mail className="h-5 w-5 md:h-6 md:w-6" />
         </Button>
 
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
+          className="h-8 w-8 md:h-9 md:w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
           onClick={() => window.open('https://app.ringcentral.com', '_blank')}
           title="Open RingCentral Dial Pad"
         >
-          <Phone className="h-6 w-6" />
+          <Phone className="h-5 w-5 md:h-6 md:w-6" />
         </Button>
 
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
+          className="h-8 w-8 md:h-9 md:w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
           onClick={() => navigate('/support')}
           title="Support Center"
         >
-          <Headphones className="h-6 w-6" />
+          <Headphones className="h-5 w-5 md:h-6 md:w-6" />
         </Button>
 
         <ThemeToggle />
@@ -207,9 +206,9 @@ export function IBMTopBar({ onMenuClick, sidebarCollapsed }: IBMTopBarProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 transition-colors"
+              className="h-8 w-8 md:h-9 md:w-9 text-white hover:bg-transparent border border-transparent hover:border-blue-500 transition-colors"
             >
-              <User className="h-6 w-6" />
+              <User className="h-5 w-5 md:h-6 md:w-6" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
