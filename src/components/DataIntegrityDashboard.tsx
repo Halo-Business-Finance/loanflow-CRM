@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, AlertTriangle, X, RefreshCw, Database, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
+import { StandardPageLayout } from "@/components/StandardPageLayout";
 import { DataFieldValidator } from "@/lib/data-validator";
 import { DataIntegrityFixer } from "@/lib/data-integrity-fixer";
 
@@ -238,22 +239,12 @@ export function DataIntegrityDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Data Integrity Dashboard
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Audit and fix data quality issues across your database
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
+    <StandardPageLayout>
+      <IBMPageHeader
+        title="Data Integrity Dashboard"
+        subtitle="Audit and fix data quality issues across your database"
+        actions={
+          <>
             <Button 
               onClick={() => {
                 console.log('Run Data Audit button clicked!');
@@ -283,8 +274,11 @@ export function DataIntegrityDashboard() {
               <Check className="h-3 w-3 mr-2" />
               Auto-Fix Issues
             </Button>
-          </div>
-        </div>
+          </>
+        }
+      />
+      
+      <div className="p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 animate-fade-in">
 
         {/* Summary Alert */}
         {auditResults && (
@@ -447,7 +441,7 @@ export function DataIntegrityDashboard() {
           </div>
         )}
       </div>
-    </div>
+    </StandardPageLayout>
   );
 }
 
