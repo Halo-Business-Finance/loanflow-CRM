@@ -226,44 +226,70 @@ export default function SecurityAudit() {
             </TabsList>
 
             <TabsContent value="all" className="space-y-6">
-              {/* Stats Grid */}
-              <div className="grid gap-4 md:grid-cols-4">
-                <StandardKPICard 
-                  title="Total Events"
-                  value={stats.totalEvents}
-                  trend={{
-                    value: "Last 24 hours",
-                    direction: "neutral"
-                  }}
-                />
+               {/* Interactive Stats Grid */}
+               <div className="grid gap-4 md:grid-cols-4">
+                 <div 
+                   className="cursor-pointer hover:scale-105 transition-transform"
+                   onClick={() => toast({ title: 'Total Events', description: `${stats.totalEvents} events in last 24 hours` })}
+                 >
+                   <StandardKPICard 
+                     title="Total Events"
+                     value={stats.totalEvents}
+                     trend={{
+                       value: "Last 24 hours",
+                       direction: "neutral"
+                     }}
+                   />
+                 </div>
 
-                <StandardKPICard 
-                  title="Login Events"
-                  value={stats.loginEvents}
-                  trend={{
-                    value: "Authentication activities",
-                    direction: "neutral"
-                  }}
-                />
+                 <div 
+                   className="cursor-pointer hover:scale-105 transition-transform"
+                   onClick={() => {
+                     setActiveTab("auth");
+                     toast({ title: 'Login Events', description: `Viewing ${stats.loginEvents} authentication activities` });
+                   }}
+                 >
+                   <StandardKPICard 
+                     title="Login Events"
+                     value={stats.loginEvents}
+                     trend={{
+                       value: "Authentication activities",
+                       direction: "neutral"
+                     }}
+                   />
+                 </div>
 
-                <StandardKPICard 
-                  title="Data Access"
-                  value={stats.dataAccess}
-                  trend={{
-                    value: "Records accessed",
-                    direction: "neutral"
-                  }}
-                />
+                 <div 
+                   className="cursor-pointer hover:scale-105 transition-transform"
+                   onClick={() => {
+                     setActiveTab("data");
+                     toast({ title: 'Data Access', description: `Viewing ${stats.dataAccess} data access events` });
+                   }}
+                 >
+                   <StandardKPICard 
+                     title="Data Access"
+                     value={stats.dataAccess}
+                     trend={{
+                       value: "Records accessed",
+                       direction: "neutral"
+                     }}
+                   />
+                 </div>
 
-                <StandardKPICard 
-                  title="System Changes"
-                  value={stats.systemChanges}
-                  trend={{
-                    value: "Configuration updates",
-                    direction: "neutral"
-                  }}
-                />
-              </div>
+                 <div 
+                   className="cursor-pointer hover:scale-105 transition-transform"
+                   onClick={() => toast({ title: 'System Changes', description: `${stats.systemChanges} configuration updates recorded` })}
+                 >
+                   <StandardKPICard 
+                     title="System Changes"
+                     value={stats.systemChanges}
+                     trend={{
+                       value: "Configuration updates",
+                       direction: "neutral"
+                     }}
+                   />
+                 </div>
+               </div>
 
               {/* Audit Logs Table */}
               <StandardContentCard title="All Audit Events">
