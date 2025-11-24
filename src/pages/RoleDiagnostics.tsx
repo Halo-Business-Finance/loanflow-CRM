@@ -103,6 +103,13 @@ export default function RoleDiagnostics() {
 
       // Route checks
       {
+        name: 'Loan Originator Dashboard',
+        description: '/loan-originator',
+        hasAccess: canOriginateLoans(),
+        route: '/loan-originator',
+        type: 'route',
+      },
+      {
         name: 'Processor Dashboard',
         description: '/dashboards/processor',
         hasAccess: canProcessLoans(),
