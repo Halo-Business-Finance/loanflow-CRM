@@ -34,68 +34,80 @@ export function useLenderAnalytics(dateRange?: { start: Date; end: Date }) {
     try {
       setLoading(true);
 
-      // Fetch all lenders
-      const { data: lenders, error: lendersError } = await supabase
-        .from('lenders')
-        .select('id, name, logo_url, lender_type, is_active')
-        .eq('is_active', true)
-        .order('name');
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
-      if (lendersError) throw lendersError;
+      // Fetch everything in parallel - 2 queries instead of N+1
+      const [lendersResult, contactsResult] = await Promise.all([
+        supabase
+          .from('lenders')
+          .select('id, name, logo_url, lender_type, is_active')
+          .eq('is_active', true)
+          .order('name'),
+        supabase
+          .from('contact_entities')
+          .select('id, stage, loan_amount, created_at, updated_at, lender_id')
+          .not('lender_id', 'is', null)
+      ]);
 
-      // Fetch contacts associated with each lender
-      const performanceData = await Promise.all(
-        (lenders || []).map(async (lender) => {
-          // Get all contacts for this lender
-          const { data: contacts, error: contactsError } = await supabase
-            .from('contact_entities')
-            .select('id, stage, loan_amount, created_at, updated_at')
-            .eq('lender_id', lender.id);
+      if (lendersResult.error) throw lendersResult.error;
+      if (contactsResult.error) throw contactsResult.error;
 
-          if (contactsError) throw contactsError;
+      const lenders = lendersResult.data || [];
+      const allContacts = contactsResult.data || [];
 
-          const totalLoans = contacts?.length || 0;
-          const fundedContacts = contacts?.filter(c => 
-            c.stage === 'funded' || c.stage === 'closed'
-          ) || [];
-          
-          const totalFunded = fundedContacts.reduce((sum, c) => 
-            sum + (Number(c.loan_amount) || 0), 0
-          );
+      // Group contacts by lender_id for fast lookup
+      const contactsByLender = allContacts.reduce((acc, contact) => {
+        if (!contact.lender_id) return acc;
+        if (!acc[contact.lender_id]) acc[contact.lender_id] = [];
+        acc[contact.lender_id].push(contact);
+        return acc;
+      }, {} as Record<string, typeof allContacts>);
 
-          // Calculate average days to funding
-          const fundingTimes = fundedContacts
-            .map(c => {
-              const created = new Date(c.created_at).getTime();
-              const updated = new Date(c.updated_at).getTime();
-              return Math.floor((updated - created) / (1000 * 60 * 60 * 24));
-            })
-            .filter(days => days > 0);
+      // Calculate performance data for all lenders
+      const performanceData = lenders.map(lender => {
+        const contacts = contactsByLender[lender.id] || [];
+        const totalLoans = contacts.length;
+        const fundedContacts = contacts.filter(c => 
+          c.stage === 'funded' || c.stage === 'closed'
+        );
+        
+        const totalFunded = fundedContacts.reduce((sum, c) => 
+          sum + (Number(c.loan_amount) || 0), 0
+        );
 
-          const avgDaysToFunding = fundingTimes.length > 0
-            ? fundingTimes.reduce((sum, days) => sum + days, 0) / fundingTimes.length
-            : 0;
+        // Calculate average days to funding
+        const fundingTimes = fundedContacts
+          .map(c => {
+            const created = new Date(c.created_at).getTime();
+            const updated = new Date(c.updated_at).getTime();
+            return Math.floor((updated - created) / (1000 * 60 * 60 * 24));
+          })
+          .filter(days => days > 0);
 
-          const fundedCount = fundedContacts.filter(c => c.stage === 'funded').length;
-          const closedCount = fundedContacts.filter(c => c.stage === 'closed').length;
-          const conversionRate = totalLoans > 0 
-            ? (fundedContacts.length / totalLoans) * 100 
-            : 0;
+        const avgDaysToFunding = fundingTimes.length > 0
+          ? fundingTimes.reduce((sum, days) => sum + days, 0) / fundingTimes.length
+          : 0;
 
-          return {
-            id: lender.id,
-            name: lender.name,
-            logo_url: lender.logo_url,
-            lender_type: lender.lender_type,
-            total_loans: totalLoans,
-            total_funded: totalFunded,
-            avg_days_to_funding: avgDaysToFunding,
-            funded_count: fundedCount,
-            closed_count: closedCount,
-            conversion_rate: conversionRate,
-          };
-        })
-      );
+        const fundedCount = fundedContacts.filter(c => c.stage === 'funded').length;
+        const closedCount = fundedContacts.filter(c => c.stage === 'closed').length;
+        const conversionRate = totalLoans > 0 
+          ? (fundedContacts.length / totalLoans) * 100 
+          : 0;
+
+        return {
+          id: lender.id,
+          name: lender.name,
+          logo_url: lender.logo_url,
+          lender_type: lender.lender_type,
+          total_loans: totalLoans,
+          total_funded: totalFunded,
+          avg_days_to_funding: avgDaysToFunding,
+          funded_count: fundedCount,
+          closed_count: closedCount,
+          conversion_rate: conversionRate,
+        };
+      });
 
       setLenderPerformance(performanceData);
 
@@ -104,20 +116,21 @@ export function useLenderAnalytics(dateRange?: { start: Date; end: Date }) {
         .sort((a, b) => b.total_funded - a.total_funded)
         .slice(0, 5);
 
-      // Get monthly data for last 6 months
+      const topLenderIds = new Set(topLenders.map(l => l.id));
       const monthsData: { [key: string]: any } = {};
-      const sixMonthsAgo = new Date();
-      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
-      for (const lender of topLenders) {
-        const { data: monthlyContacts } = await supabase
-          .from('contact_entities')
-          .select('loan_amount, updated_at, stage')
-          .eq('lender_id', lender.id)
-          .gte('updated_at', sixMonthsAgo.toISOString())
-          .in('stage', ['funded', 'closed']);
+      // Process monthly data from already-fetched contacts
+      allContacts
+        .filter(c => 
+          c.lender_id && 
+          topLenderIds.has(c.lender_id) &&
+          (c.stage === 'funded' || c.stage === 'closed') &&
+          new Date(c.updated_at) >= sixMonthsAgo
+        )
+        .forEach(contact => {
+          const lender = topLenders.find(l => l.id === contact.lender_id);
+          if (!lender) return;
 
-        (monthlyContacts || []).forEach(contact => {
           const month = new Date(contact.updated_at).toLocaleDateString('en-US', { 
             year: 'numeric', 
             month: 'short' 
@@ -133,7 +146,6 @@ export function useLenderAnalytics(dateRange?: { start: Date; end: Date }) {
           
           monthsData[month][lender.name] += Number(contact.loan_amount) || 0;
         });
-      }
 
       const monthlyArray = Object.values(monthsData).sort((a: any, b: any) => {
         return new Date(a.month).getTime() - new Date(b.month).getTime();

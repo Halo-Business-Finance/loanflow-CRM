@@ -91,27 +91,25 @@ export default function Lenders() {
   const fetchLenders = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('lenders')
-        .select('*')
-        .order('name');
+      
+      // Fetch lenders and contact counts in parallel
+      const [lendersResult, contactCountsResult] = await Promise.all([
+        supabase.from('lenders').select('*').order('name'),
+        supabase.from('lender_contacts').select('lender_id')
+      ]);
 
-      if (error) throw error;
+      if (lendersResult.error) throw lendersResult.error;
 
-      // Fetch contact counts separately
-      const lendersWithCount = await Promise.all(
-        (data || []).map(async (lender) => {
-          const { count } = await supabase
-            .from('lender_contacts')
-            .select('*', { count: 'exact', head: true })
-            .eq('lender_id', lender.id);
-          
-          return {
-            ...lender,
-            contact_count: count || 0
-          };
-        })
-      );
+      // Aggregate contact counts on client side (more efficient than N queries)
+      const contactCounts = (contactCountsResult.data || []).reduce((acc, contact) => {
+        acc[contact.lender_id] = (acc[contact.lender_id] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      const lendersWithCount = (lendersResult.data || []).map(lender => ({
+        ...lender,
+        contact_count: contactCounts[lender.id] || 0
+      }));
 
       setLenders(lendersWithCount);
     } catch (error) {
