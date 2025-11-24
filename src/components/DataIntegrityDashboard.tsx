@@ -284,7 +284,7 @@ export function DataIntegrityDashboard() {
         {auditResults && (
           <Alert>
             <AlertDescription>
-              <div className="grid grid-cols-3 gap-4 mt-2">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-2">
                 <div>
                   <span className="font-medium">Field Issues:</span> {fieldIssues.length}
                 </div>
@@ -293,6 +293,12 @@ export function DataIntegrityDashboard() {
                 </div>
                 <div>
                   <span className="font-medium">Warnings:</span> {auditResults.summary?.warningIssues || 0}
+                </div>
+                <div>
+                  <span className="font-medium">Duplicate Leads:</span> {auditResults.summary?.duplicateLeadsCount || 0}
+                </div>
+                <div>
+                  <span className="font-medium">Duplicate Loans:</span> {auditResults.summary?.duplicateLoansCount || 0}
                 </div>
               </div>
             </AlertDescription>
@@ -303,13 +309,20 @@ export function DataIntegrityDashboard() {
         {auditResults && (
           <div className="space-y-6">
             <Tabs defaultValue="issues" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3 bg-[#0A1628] p-1 gap-2">
+              <TabsList className="grid w-full grid-cols-5 bg-[#0A1628] p-1 gap-2">
                 <TabsTrigger 
                   value="issues" 
                   className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
                 >
                   <AlertTriangle className="w-4 h-4" />
                   <span>Field Issues</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="duplicates" 
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+                >
+                  <X className="w-4 h-4" />
+                  <span>Duplicates</span>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="summary" 
@@ -323,7 +336,7 @@ export function DataIntegrityDashboard() {
                   className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
                 >
                   <Check className="w-4 h-4" />
-                  <span>Auto-Fix Results</span>
+                  <span>Auto-Fix</span>
                 </TabsTrigger>
               </TabsList>
 
@@ -366,8 +379,87 @@ export function DataIntegrityDashboard() {
                 </div>
               </TabsContent>
 
+              <TabsContent value="duplicates" className="space-y-4">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3">Duplicate Leads</h3>
+                    {auditResults.duplicateLeads && auditResults.duplicateLeads.length > 0 ? (
+                      <div className="space-y-2">
+                        {auditResults.duplicateLeads.map((dup: any) => (
+                          <Card key={dup.id}>
+                            <CardContent className="p-4">
+                              <div className="flex justify-between items-start">
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2">
+                                    <X className="h-4 w-4 text-red-600" />
+                                    <span className="font-medium">{dup.name}</span>
+                                    <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
+                                      {dup.matchType}
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-muted-foreground">
+                                    Duplicate of lead: {dup.duplicateOf}
+                                  </p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      <Card>
+                        <CardContent className="p-8 text-center">
+                          <Check className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                          <h3 className="text-lg font-medium">No Duplicate Leads Found</h3>
+                          <p className="text-muted-foreground">All leads are unique.</p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3">Duplicate Loans</h3>
+                    {auditResults.duplicateLoans && auditResults.duplicateLoans.length > 0 ? (
+                      <div className="space-y-2">
+                        {auditResults.duplicateLoans.map((dup: any) => (
+                          <Card key={dup.id}>
+                            <CardContent className="p-4">
+                              <div className="flex justify-between items-start">
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2">
+                                    <X className="h-4 w-4 text-orange-600" />
+                                    <span className="font-medium">{dup.leadName}</span>
+                                    <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">
+                                      Loan Duplicate
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-muted-foreground">
+                                    Match details: {dup.matchDetails}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    Duplicate of: {dup.duplicateOf}
+                                  </p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      <Card>
+                        <CardContent className="p-8 text-center">
+                          <Check className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                          <h3 className="text-lg font-medium">No Duplicate Loans Found</h3>
+                          <p className="text-muted-foreground">All loan applications are unique.</p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+
               <TabsContent value="summary" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Lead Issues</CardTitle>
@@ -395,6 +487,26 @@ export function DataIntegrityDashboard() {
                     <CardContent>
                       <div className="text-2xl font-bold">{auditResults.pipelineIssues?.length || 0}</div>
                       <p className="text-sm text-muted-foreground">Records with issues</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Duplicate Leads</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-red-600">{auditResults.summary?.duplicateLeadsCount || 0}</div>
+                      <p className="text-sm text-muted-foreground">Potential duplicates</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Duplicate Loans</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-orange-600">{auditResults.summary?.duplicateLoansCount || 0}</div>
+                      <p className="text-sm text-muted-foreground">Potential duplicates</p>
                     </CardContent>
                   </Card>
                 </div>
