@@ -106,16 +106,16 @@ function AuthenticatedApp() {
     canAccessAdminFeatures
   } = useRoleBasedAccess();
   
-  // Only show loading state during initial auth check
-  if (loading) {
+  // Only block UI while determining auth state for unauthenticated users
+  if (loading && !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
-
-  // If no user, only allow auth routes
+ 
+  // If no user after auth check, only allow auth routes
   if (!user) {
     return (
       <BrowserRouter>
