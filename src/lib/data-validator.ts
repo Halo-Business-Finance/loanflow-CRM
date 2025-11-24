@@ -450,6 +450,8 @@ export class DataFieldValidator {
     leadIssues: Array<{ id: string; name: string; validation: DataValidationResult }>
     clientIssues: Array<{ id: string; name: string; validation: DataValidationResult }>
     pipelineIssues: Array<{ id: string; stage: string; validation: DataValidationResult }>
+    duplicateLeads: Array<{ id: string; name: string; duplicateOf: string; matchType: string }>
+    duplicateLoans: Array<{ id: string; leadName: string; duplicateOf: string; matchDetails: string }>
     summary: {
       totalLeads: number
       leadsWithIssues: number
@@ -457,6 +459,8 @@ export class DataFieldValidator {
       clientsWithIssues: number
       totalPipelineEntries: number
       pipelineEntriesWithIssues: number
+      duplicateLeadsCount: number
+      duplicateLoansCount: number
       totalIssues: number
       criticalIssues: number
       warningIssues: number
@@ -466,6 +470,8 @@ export class DataFieldValidator {
     const leadIssues: Array<{ id: string; name: string; validation: DataValidationResult }> = []
     const clientIssues: Array<{ id: string; name: string; validation: DataValidationResult }> = []
     const pipelineIssues: Array<{ id: string; stage: string; validation: DataValidationResult }> = []
+    const duplicateLeads: Array<{ id: string; name: string; duplicateOf: string; matchType: string }> = []
+    const duplicateLoans: Array<{ id: string; leadName: string; duplicateOf: string; matchDetails: string }> = []
 
     try {
       // First check if user is authenticated
@@ -517,6 +523,178 @@ export class DataFieldValidator {
       }
       
       if (leads) {
+        // === DUPLICATE DETECTION FOR LEADS ===
+        console.log('🔎 Checking for duplicate leads...');
+        const emailMap = new Map<string, string[]>();
+        const phoneMap = new Map<string, string[]>();
+        const businessMap = new Map<string, string[]>();
+        
+        // Build maps for duplicate detection
+        for (const lead of leads) {
+          const contactEntity = lead.contact_entities;
+          if (!contactEntity) continue;
+          
+          // Email duplicates (skip encrypted emails)
+          if (contactEntity.email && contactEntity.email !== '[SECURED]') {
+            const normalizedEmail = contactEntity.email.toLowerCase().trim();
+            if (!emailMap.has(normalizedEmail)) {
+              emailMap.set(normalizedEmail, []);
+            }
+            emailMap.get(normalizedEmail)!.push(lead.id);
+          }
+          
+          // Phone duplicates (skip encrypted phones)
+          if (contactEntity.phone && contactEntity.phone !== '[SECURED]') {
+            const normalizedPhone = contactEntity.phone.replace(/\D/g, '');
+            if (normalizedPhone.length >= 10) {
+              if (!phoneMap.has(normalizedPhone)) {
+                phoneMap.set(normalizedPhone, []);
+              }
+              phoneMap.get(normalizedPhone)!.push(lead.id);
+            }
+          }
+          
+          // Business name duplicates
+          if (contactEntity.business_name && contactEntity.business_name.trim() !== '') {
+            const normalizedBusiness = contactEntity.business_name.toLowerCase().trim();
+            if (!businessMap.has(normalizedBusiness)) {
+              businessMap.set(normalizedBusiness, []);
+            }
+            businessMap.get(normalizedBusiness)!.push(lead.id);
+          }
+        }
+        
+        // Find duplicates
+        const processedDuplicates = new Set<string>();
+        
+        for (const lead of leads) {
+          if (processedDuplicates.has(lead.id)) continue;
+          
+          const contactEntity = lead.contact_entities;
+          if (!contactEntity) continue;
+          
+          // Check email duplicates
+          if (contactEntity.email && contactEntity.email !== '[SECURED]') {
+            const normalizedEmail = contactEntity.email.toLowerCase().trim();
+            const emailDuplicates = emailMap.get(normalizedEmail) || [];
+            if (emailDuplicates.length > 1) {
+              const otherLeads = emailDuplicates.filter(id => id !== lead.id && !processedDuplicates.has(id));
+              if (otherLeads.length > 0) {
+                duplicateLeads.push({
+                  id: lead.id,
+                  name: contactEntity.name || 'Unknown',
+                  duplicateOf: otherLeads[0],
+                  matchType: 'Email match'
+                });
+                processedDuplicates.add(lead.id);
+              }
+            }
+          }
+          
+          // Check phone duplicates
+          if (!processedDuplicates.has(lead.id) && contactEntity.phone && contactEntity.phone !== '[SECURED]') {
+            const normalizedPhone = contactEntity.phone.replace(/\D/g, '');
+            if (normalizedPhone.length >= 10) {
+              const phoneDuplicates = phoneMap.get(normalizedPhone) || [];
+              if (phoneDuplicates.length > 1) {
+                const otherLeads = phoneDuplicates.filter(id => id !== lead.id && !processedDuplicates.has(id));
+                if (otherLeads.length > 0) {
+                  duplicateLeads.push({
+                    id: lead.id,
+                    name: contactEntity.name || 'Unknown',
+                    duplicateOf: otherLeads[0],
+                    matchType: 'Phone match'
+                  });
+                  processedDuplicates.add(lead.id);
+                }
+              }
+            }
+          }
+          
+          // Check business name duplicates
+          if (!processedDuplicates.has(lead.id) && contactEntity.business_name && contactEntity.business_name.trim() !== '') {
+            const normalizedBusiness = contactEntity.business_name.toLowerCase().trim();
+            const businessDuplicates = businessMap.get(normalizedBusiness) || [];
+            if (businessDuplicates.length > 1) {
+              const otherLeads = businessDuplicates.filter(id => id !== lead.id && !processedDuplicates.has(id));
+              if (otherLeads.length > 0) {
+                duplicateLeads.push({
+                  id: lead.id,
+                  name: contactEntity.name || 'Unknown',
+                  duplicateOf: otherLeads[0],
+                  matchType: 'Business name match'
+                });
+                processedDuplicates.add(lead.id);
+              }
+            }
+          }
+        }
+        
+        console.log('🔎 Found', duplicateLeads.length, 'duplicate leads');
+        
+        // === DUPLICATE LOAN DETECTION ===
+        console.log('🔎 Checking for duplicate loans...');
+        const loanMap = new Map<string, string[]>();
+        
+        for (const lead of leads) {
+          const contactEntity = lead.contact_entities;
+          if (!contactEntity || !contactEntity.loan_amount || contactEntity.loan_amount <= 0) continue;
+          
+          // Create a loan signature based on multiple fields
+          const loanSignature = [
+            contactEntity.loan_amount?.toString() || '',
+            contactEntity.loan_type || '',
+            contactEntity.business_name?.toLowerCase().trim() || '',
+            contactEntity.email?.toLowerCase().trim() || ''
+          ].filter(s => s && s !== '[SECURED]').join('|');
+          
+          if (loanSignature.includes('|')) { // At least 2 fields present
+            if (!loanMap.has(loanSignature)) {
+              loanMap.set(loanSignature, []);
+            }
+            loanMap.get(loanSignature)!.push(lead.id);
+          }
+        }
+        
+        // Find loan duplicates
+        const processedLoanDuplicates = new Set<string>();
+        
+        for (const lead of leads) {
+          if (processedLoanDuplicates.has(lead.id)) continue;
+          
+          const contactEntity = lead.contact_entities;
+          if (!contactEntity || !contactEntity.loan_amount || contactEntity.loan_amount <= 0) continue;
+          
+          const loanSignature = [
+            contactEntity.loan_amount?.toString() || '',
+            contactEntity.loan_type || '',
+            contactEntity.business_name?.toLowerCase().trim() || '',
+            contactEntity.email?.toLowerCase().trim() || ''
+          ].filter(s => s && s !== '[SECURED]').join('|');
+          
+          const loanDuplicates = loanMap.get(loanSignature) || [];
+          if (loanDuplicates.length > 1) {
+            const otherLoans = loanDuplicates.filter(id => id !== lead.id && !processedLoanDuplicates.has(id));
+            if (otherLoans.length > 0) {
+              const matchDetails = [];
+              if (contactEntity.loan_amount) matchDetails.push(`$${contactEntity.loan_amount}`);
+              if (contactEntity.loan_type) matchDetails.push(contactEntity.loan_type);
+              if (contactEntity.business_name) matchDetails.push(contactEntity.business_name);
+              
+              duplicateLoans.push({
+                id: lead.id,
+                leadName: contactEntity.name || 'Unknown',
+                duplicateOf: otherLoans[0],
+                matchDetails: matchDetails.join(' - ')
+              });
+              processedLoanDuplicates.add(lead.id);
+            }
+          }
+        }
+        
+        console.log('🔎 Found', duplicateLoans.length, 'duplicate loans');
+        
+        // === EXISTING VALIDATION ===
         for (const lead of leads) {
           try {
             console.log('Lead data structure:', lead);
@@ -655,11 +833,15 @@ export class DataFieldValidator {
       console.log('- Lead issues:', leadIssues.length);
       console.log('- Client issues:', clientIssues.length);
       console.log('- Pipeline issues:', pipelineIssues.length);
+      console.log('- Duplicate leads:', duplicateLeads.length);
+      console.log('- Duplicate loans:', duplicateLoans.length);
 
       const auditResults = {
         leadIssues,
         clientIssues,
         pipelineIssues,
+        duplicateLeads,
+        duplicateLoans,
         summary: {
           totalLeads: leads?.length || 0,
           leadsWithIssues: leadIssues.length,
@@ -667,7 +849,9 @@ export class DataFieldValidator {
           clientsWithIssues: clientIssues.length,
           totalPipelineEntries: pipelineEntries?.length || 0,
           pipelineEntriesWithIssues: pipelineIssues.length,
-          totalIssues: leadIssues.length + clientIssues.length + pipelineIssues.length,
+          duplicateLeadsCount: duplicateLeads.length,
+          duplicateLoansCount: duplicateLoans.length,
+          totalIssues: leadIssues.length + clientIssues.length + pipelineIssues.length + duplicateLeads.length + duplicateLoans.length,
           criticalIssues: [...leadIssues, ...clientIssues, ...pipelineIssues].filter(issue => 
             issue.validation.errors.length > 0
           ).length,
@@ -687,6 +871,8 @@ export class DataFieldValidator {
         leadIssues: [],
         clientIssues: [],
         pipelineIssues: [],
+        duplicateLeads: [],
+        duplicateLoans: [],
         summary: {
           totalLeads: 0,
           leadsWithIssues: 0,
@@ -694,6 +880,8 @@ export class DataFieldValidator {
           clientsWithIssues: 0,
           totalPipelineEntries: 0,
           pipelineEntriesWithIssues: 0,
+          duplicateLeadsCount: 0,
+          duplicateLoansCount: 0,
           totalIssues: 0,
           criticalIssues: 0,
           warningIssues: 0
