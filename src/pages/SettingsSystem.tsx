@@ -1,5 +1,6 @@
 import { StandardContentCard } from "@/components/StandardContentCard"
 import { StandardKPICard } from "@/components/StandardKPICard"
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { Settings, Database, Server, Monitor, Shield, Activity, MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -16,21 +17,11 @@ import {
 export default function SettingsSystem() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="p-8 space-y-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                System Configuration
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage system-wide settings and configurations
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
+      <IBMPageHeader
+        title="System Configuration"
+        subtitle="Manage system-wide settings and configurations"
+        actions={
+          <>
             <Button size="sm" className="h-8 text-xs font-medium bg-[#0f62fe] hover:bg-[#0353e9] text-white border-2 border-[#001f3f]">
               <Settings className="h-3 w-3 mr-2" />
               Save Changes
@@ -68,10 +59,11 @@ export default function SettingsSystem() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
-        </div>
-
-        {/* Content Area */}
+          </>
+        }
+      />
+      
+      <div className="p-8 space-y-8 animate-fade-in">
         <div className="space-y-6">
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid w-full grid-cols-5 bg-[#0A1628] p-1 gap-2">
