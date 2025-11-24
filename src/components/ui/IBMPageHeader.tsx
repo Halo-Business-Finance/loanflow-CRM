@@ -55,7 +55,7 @@ export function IBMPageHeader({
                 variant="ghost"
                 size="sm"
                 onClick={handleBack}
-                className="h-8 px-2 text-[#525252] hover:text-[#161616] hover:bg-[#f4f4f4]"
+                className="h-8 px-2 text-muted-foreground dark:text-foreground hover:text-foreground hover:bg-accent/40"
                 aria-label="Go back"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -66,7 +66,7 @@ export function IBMPageHeader({
                 variant="ghost"
                 size="sm"
                 onClick={handleForward}
-                className="h-8 px-2 text-[#525252] hover:text-[#161616] hover:bg-[#f4f4f4]"
+                className="h-8 px-2 text-muted-foreground dark:text-foreground hover:text-foreground hover:bg-accent/40"
                 aria-label="Go forward"
               >
                 <ArrowRight className="h-4 w-4" />
@@ -81,12 +81,12 @@ export function IBMPageHeader({
                   <BreadcrumbItem>
                     {breadcrumb.href ? (
                       <BreadcrumbLink asChild>
-                        <Link to={breadcrumb.href} className="text-[#525252] hover:text-[#161616]">
+                        <Link to={breadcrumb.href} className="text-muted-foreground dark:text-foreground hover:text-foreground">
                           {breadcrumb.label}
                         </Link>
                       </BreadcrumbLink>
                     ) : (
-                      <BreadcrumbPage className="text-[#161616]">
+                      <BreadcrumbPage className="text-foreground">
                         {breadcrumb.label}
                       </BreadcrumbPage>
                     )}
