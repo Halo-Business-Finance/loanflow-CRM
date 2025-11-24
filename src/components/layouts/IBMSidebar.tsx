@@ -215,7 +215,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
           )}
         </div>
         {!collapsed && isOpen && (
-          <div className="ml-4 border-l border-[#404040]">
+          <div className="ml-4 border-l border-[#404040] pb-4">
             {subItems.map((subItem) => (
               <NavLink
                 key={subItem.to}
