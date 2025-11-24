@@ -64,6 +64,10 @@ export const useRoleBasedAccess = () => {
   }, [hasMinimumRole]);
 
   // Loan-specific role permissions
+  const canOriginateLoans = useCallback((): boolean => {
+    return hasRole('loan_originator') || hasMinimumRole('manager');
+  }, [hasRole, hasMinimumRole]);
+
   const canProcessLoans = useCallback((): boolean => {
     return hasRole('loan_processor') || hasMinimumRole('manager');
   }, [hasRole, hasMinimumRole]);
@@ -91,6 +95,7 @@ export const useRoleBasedAccess = () => {
     canDeleteLeads,
     canViewReports,
     canManageClients,
+    canOriginateLoans,
     canProcessLoans,
     canFundLoans,
     canUnderwriteLoans,
