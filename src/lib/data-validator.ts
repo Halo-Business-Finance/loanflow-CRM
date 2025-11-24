@@ -59,9 +59,9 @@ export class DataFieldValidator {
       return result
     }
     
-    // Check required fields from contact entity
-    if (!contactEntity?.name) {
-      result.errors.push('Name is required')
+    // === REQUIRED FIELDS VALIDATION ===
+    if (!contactEntity?.name || contactEntity.name.trim() === '') {
+      result.errors.push('Name is required and cannot be empty')
       result.isValid = false
     }
 
@@ -78,19 +78,166 @@ export class DataFieldValidator {
     }
 
     // Validate phone format - skip if encrypted/secured
-    if (contactEntity?.phone && contactEntity.phone !== '[SECURED]' && !this.isValidPhoneNumber(contactEntity.phone)) {
-      result.warnings.push('Phone number format may be invalid')
+    if (contactEntity?.phone && contactEntity.phone !== '[SECURED]') {
+      if (!this.isValidPhoneNumber(contactEntity.phone)) {
+        result.warnings.push('Phone number format may be invalid')
+      }
     }
 
-    // Check for missing important business fields - should no longer trigger warnings after the migration
-    if (contactEntity?.loan_amount && contactEntity.loan_amount > 100000 && (!contactEntity.business_name || contactEntity.business_name.trim() === '')) {
-      result.warnings.push('Large loan amount without business name specified')
+    // === FINANCIAL DATA VALIDATION ===
+    
+    // Loan amount validation
+    if (contactEntity?.loan_amount !== null && contactEntity?.loan_amount !== undefined) {
+      if (contactEntity.loan_amount < 0) {
+        result.errors.push('Loan amount cannot be negative')
+        result.isValid = false
+      }
+      if (contactEntity.loan_amount > 100000000) {
+        result.warnings.push('Loan amount exceeds $100M - verify if correct')
+      }
+      if (contactEntity.loan_amount > 0 && contactEntity.loan_amount < 1000) {
+        result.warnings.push('Loan amount is unusually low (under $1,000)')
+      }
     }
 
-    // Validate loan amount consistency
-    if (contactEntity?.loan_amount && contactEntity.loan_amount < 0) {
-      result.errors.push('Loan amount cannot be negative')
-      result.isValid = false
+    // Credit score validation
+    if (contactEntity?.credit_score !== null && contactEntity?.credit_score !== undefined) {
+      if (contactEntity.credit_score < 300 || contactEntity.credit_score > 850) {
+        result.errors.push('Credit score must be between 300 and 850')
+        result.isValid = false
+      }
+      if (contactEntity.credit_score < 580) {
+        result.warnings.push('Poor credit score may affect loan approval')
+      }
+    }
+
+    // Annual revenue validation
+    if (contactEntity?.annual_revenue !== null && contactEntity?.annual_revenue !== undefined) {
+      if (contactEntity.annual_revenue < 0) {
+        result.errors.push('Annual revenue cannot be negative')
+        result.isValid = false
+      }
+      if (contactEntity.loan_amount && contactEntity.annual_revenue > 0) {
+        const loanToRevenueRatio = contactEntity.loan_amount / contactEntity.annual_revenue
+        if (loanToRevenueRatio > 5) {
+          result.warnings.push('Loan amount is more than 5x annual revenue - high risk')
+        }
+      }
+    }
+
+    // Monthly revenue validation
+    if (contactEntity?.monthly_revenue !== null && contactEntity?.monthly_revenue !== undefined) {
+      if (contactEntity.monthly_revenue < 0) {
+        result.errors.push('Monthly revenue cannot be negative')
+        result.isValid = false
+      }
+      if (contactEntity.annual_revenue && contactEntity.monthly_revenue) {
+        const projectedAnnual = contactEntity.monthly_revenue * 12
+        const variance = Math.abs(projectedAnnual - contactEntity.annual_revenue) / contactEntity.annual_revenue
+        if (variance > 0.2) {
+          result.warnings.push('Monthly and annual revenue numbers show >20% variance')
+        }
+      }
+    }
+
+    // Interest rate validation
+    if (contactEntity?.interest_rate !== null && contactEntity?.interest_rate !== undefined) {
+      if (contactEntity.interest_rate < 0) {
+        result.errors.push('Interest rate cannot be negative')
+        result.isValid = false
+      }
+      if (contactEntity.interest_rate > 50) {
+        result.warnings.push('Interest rate exceeds 50% - verify if correct')
+      }
+    }
+
+    // === BUSINESS DATA VALIDATION ===
+    
+    // Business name for commercial loans
+    if (contactEntity?.loan_amount && contactEntity.loan_amount > 100000) {
+      if (!contactEntity.business_name || contactEntity.business_name.trim() === '') {
+        result.warnings.push('Large loan amount without business name specified')
+      }
+    }
+
+    // Year established validation
+    if (contactEntity?.year_established !== null && contactEntity?.year_established !== undefined) {
+      const currentYear = new Date().getFullYear()
+      if (contactEntity.year_established < 1800 || contactEntity.year_established > currentYear) {
+        result.errors.push(`Year established must be between 1800 and ${currentYear}`)
+        result.isValid = false
+      }
+      const yearsInBusiness = currentYear - contactEntity.year_established
+      if (yearsInBusiness < 2 && contactEntity.loan_amount > 500000) {
+        result.warnings.push('Business less than 2 years old requesting large loan')
+      }
+    }
+
+    // Years in business validation
+    if (contactEntity?.years_in_business !== null && contactEntity?.years_in_business !== undefined) {
+      if (contactEntity.years_in_business < 0) {
+        result.errors.push('Years in business cannot be negative')
+        result.isValid = false
+      }
+      if (contactEntity.year_established) {
+        const calculatedYears = new Date().getFullYear() - contactEntity.year_established
+        if (Math.abs(calculatedYears - contactEntity.years_in_business) > 1) {
+          result.warnings.push('Years in business does not match year established')
+        }
+      }
+    }
+
+    // Employee count validation
+    if (contactEntity?.employees !== null && contactEntity?.employees !== undefined) {
+      if (contactEntity.employees < 0) {
+        result.errors.push('Number of employees cannot be negative')
+        result.isValid = false
+      }
+    }
+
+    // === STAGE AND PRIORITY VALIDATION ===
+    
+    const validStages = ['New Lead', 'Lead', 'Qualified', 'Application', 'Loan Approved', 'Documentation', 'Closing', 'Funded', 'Rejected']
+    if (contactEntity?.stage && !validStages.includes(contactEntity.stage)) {
+      result.warnings.push(`Stage '${contactEntity.stage}' is not a standard pipeline stage`)
+    }
+
+    const validPriorities = ['Low', 'Medium', 'High', 'Urgent']
+    if (contactEntity?.priority && !validPriorities.includes(contactEntity.priority)) {
+      result.warnings.push(`Priority '${contactEntity.priority}' is not a standard priority level`)
+    }
+
+    // === DATE CONSISTENCY VALIDATION ===
+    
+    // Check lead timestamps
+    if (leadData?.created_at && leadData?.updated_at) {
+      const created = new Date(leadData.created_at)
+      const updated = new Date(leadData.updated_at)
+      if (updated < created) {
+        result.errors.push('Updated date is before created date')
+        result.isValid = false
+      }
+    }
+
+    // Check last contact date
+    if (leadData?.last_contact) {
+      const lastContact = new Date(leadData.last_contact)
+      const now = new Date()
+      if (lastContact > now) {
+        result.errors.push('Last contact date is in the future')
+        result.isValid = false
+      }
+    }
+
+    // === CONVERSION STATUS VALIDATION ===
+    
+    if (leadData?.is_converted_to_client) {
+      if (!leadData.converted_at) {
+        result.warnings.push('Lead marked as converted but missing conversion date')
+      }
+      if (contactEntity.stage !== 'Funded' && contactEntity.stage !== 'Closed') {
+        result.warnings.push('Lead converted to client but not in Funded/Closed stage')
+      }
     }
 
     return result
@@ -107,18 +254,81 @@ export class DataFieldValidator {
     const leadContactEntity = leadData.contact_entities || leadData.contact_entity || leadData
     const clientContactEntity = clientData.contact_entities || clientData.contact_entity || clientData
 
+    // === CRITICAL DATA INTEGRITY CHECKS ===
+    
     // Check that essential data transferred from lead to client
     if (leadContactEntity?.name !== clientContactEntity?.name) {
-      result.warnings.push('Name differs between lead and client')
+      result.errors.push('Name differs between lead and client - data integrity issue')
+      result.isValid = false
     }
 
     if (leadContactEntity?.email !== clientContactEntity?.email) {
       result.warnings.push('Email differs between lead and client')
     }
 
-    // Business logic checks
+    // Verify contact entity ID matches
+    if (leadData?.contact_entity_id !== clientData?.contact_entity_id) {
+      result.errors.push('Contact entity ID mismatch between lead and client')
+      result.isValid = false
+    }
+
+    // === BUSINESS LOGIC VALIDATION ===
+    
+    // Stage appropriateness for conversion
     if (leadContactEntity?.stage !== 'Funded' && leadContactEntity?.stage !== 'Closed') {
       result.warnings.push('Converting lead that is not in Funded or Closed stage')
+    }
+
+    // Client status validation
+    const validClientStatuses = ['Active', 'Inactive', 'At Risk', 'VIP']
+    if (clientData?.status && !validClientStatuses.includes(clientData.status)) {
+      result.warnings.push(`Client status '${clientData.status}' is not standard`)
+    }
+
+    // === FINANCIAL DATA CONSISTENCY ===
+    
+    // Check if loan amount is consistent
+    if (leadContactEntity?.loan_amount && clientContactEntity?.loan_amount) {
+      if (leadContactEntity.loan_amount !== clientContactEntity.loan_amount) {
+        result.warnings.push('Loan amount changed during lead-to-client conversion')
+      }
+    }
+
+    // Validate total loan tracking
+    if (clientData?.total_loans !== null && clientData?.total_loans !== undefined) {
+      if (clientData.total_loans < 0) {
+        result.errors.push('Total loans count cannot be negative')
+        result.isValid = false
+      }
+    }
+
+    if (clientData?.total_loan_value !== null && clientData?.total_loan_value !== undefined) {
+      if (clientData.total_loan_value < 0) {
+        result.errors.push('Total loan value cannot be negative')
+        result.isValid = false
+      }
+    }
+
+    // === DATE VALIDATION ===
+    
+    // Join date should be after lead creation
+    if (clientData?.join_date && leadData?.created_at) {
+      const joinDate = new Date(clientData.join_date)
+      const leadCreated = new Date(leadData.created_at)
+      if (joinDate < leadCreated) {
+        result.errors.push('Client join date is before lead was created')
+        result.isValid = false
+      }
+    }
+
+    // Last activity validation
+    if (clientData?.last_activity) {
+      const lastActivity = new Date(clientData.last_activity)
+      const now = new Date()
+      if (lastActivity > now) {
+        result.errors.push('Client last activity date is in the future')
+        result.isValid = false
+      }
     }
 
     return result
@@ -131,7 +341,8 @@ export class DataFieldValidator {
       warnings: []
     }
 
-    // Check required fields - after migration, these should all be present
+    // === REQUIRED FIELDS VALIDATION ===
+    
     if (!entryData.stage || entryData.stage.trim() === '') {
       result.errors.push('Stage is required for pipeline entry')
       result.isValid = false
@@ -142,10 +353,94 @@ export class DataFieldValidator {
       result.isValid = false
     }
 
-    // Validate stage
+    // === STAGE VALIDATION ===
+    
     const validStages = ['New Lead', 'Lead', 'Qualified', 'Application', 'Loan Approved', 'Documentation', 'Closing', 'Funded', 'Rejected']
     if (entryData.stage && !validStages.includes(entryData.stage)) {
       result.warnings.push(`Stage '${entryData.stage}' is not a standard pipeline stage`)
+    }
+
+    // === FINANCIAL VALIDATION ===
+    
+    if (entryData.amount !== null && entryData.amount !== undefined) {
+      if (entryData.amount < 0) {
+        result.errors.push('Pipeline amount cannot be negative')
+        result.isValid = false
+      }
+      if (entryData.amount > 100000000) {
+        result.warnings.push('Pipeline amount exceeds $100M - verify if correct')
+      }
+      if (entryData.amount < 1000 && entryData.stage !== 'New Lead') {
+        result.warnings.push('Pipeline amount is unusually low for this stage')
+      }
+    }
+
+    // === PROBABILITY VALIDATION ===
+    
+    if (entryData.probability !== null && entryData.probability !== undefined) {
+      if (entryData.probability < 0 || entryData.probability > 100) {
+        result.errors.push('Probability must be between 0 and 100')
+        result.isValid = false
+      }
+      
+      // Stage-appropriate probability checks
+      const stageMinProbabilities: Record<string, number> = {
+        'New Lead': 0,
+        'Lead': 10,
+        'Qualified': 25,
+        'Application': 40,
+        'Loan Approved': 60,
+        'Documentation': 75,
+        'Closing': 85,
+        'Funded': 100,
+        'Rejected': 0
+      }
+      
+      if (entryData.stage && stageMinProbabilities[entryData.stage] !== undefined) {
+        const minProb = stageMinProbabilities[entryData.stage]
+        if (entryData.probability < minProb - 10) {
+          result.warnings.push(`Probability seems low for ${entryData.stage} stage (expected >${minProb}%)`)
+        }
+      }
+    }
+
+    // === DATE VALIDATION ===
+    
+    if (entryData.close_date) {
+      const closeDate = new Date(entryData.close_date)
+      const now = new Date()
+      
+      // Past close dates for non-closed deals
+      if (closeDate < now && entryData.stage !== 'Funded' && entryData.stage !== 'Closed' && entryData.stage !== 'Rejected') {
+        result.warnings.push('Close date has passed but deal not yet closed')
+      }
+    }
+
+    if (entryData.created_at && entryData.updated_at) {
+      const created = new Date(entryData.created_at)
+      const updated = new Date(entryData.updated_at)
+      if (updated < created) {
+        result.errors.push('Updated date is before created date')
+        result.isValid = false
+      }
+    }
+
+    // === RELATIONSHIP VALIDATION ===
+    
+    if (!entryData.lead_id) {
+      result.warnings.push('Pipeline entry not linked to a lead')
+    }
+
+    // === WEIGHTED VALUE VALIDATION ===
+    
+    if (entryData.weighted_value !== null && entryData.weighted_value !== undefined) {
+      if (entryData.amount && entryData.probability) {
+        const expectedWeighted = (entryData.amount * entryData.probability) / 100
+        const variance = Math.abs(expectedWeighted - entryData.weighted_value) / expectedWeighted
+        if (variance > 0.01) {
+          result.warnings.push('Weighted value does not match amount × probability calculation')
+        }
+      }
     }
 
     return result
