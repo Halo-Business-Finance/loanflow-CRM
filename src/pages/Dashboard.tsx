@@ -80,7 +80,7 @@ export default function Dashboard() {
   const [draggedWidget, setDraggedWidget] = useState<string | null>(null);
   
   const [loading, setLoading] = useState(false);
-  const [userName, setUserName] = useState('');
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [stats, setStats] = useState({
     totalLeads: 0,
     activeDeals: 0,
