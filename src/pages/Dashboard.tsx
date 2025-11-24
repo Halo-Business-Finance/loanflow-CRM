@@ -438,7 +438,7 @@ export default function Dashboard() {
 
   const widgets: Record<string, JSX.Element> = {
     'calendar-row': (
-      <div key="calendar-row" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div key="calendar-row" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Messages Widget */}
         <CompactMessagesWidget />
 
@@ -546,7 +546,7 @@ export default function Dashboard() {
       </div>
     ),
     'kpi-cards': (
-      <div key="kpi-cards" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div key="kpi-cards" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <Card 
           className="bg-card border border-blue-600 cursor-pointer group transition-all hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px]"
           onClick={() => navigate('/reports')}
@@ -625,7 +625,7 @@ export default function Dashboard() {
       </div>
     ),
     'performance-charts': (
-      <div key="performance-charts" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div key="performance-charts" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Revenue Performance */}
         <Card className="bg-card border border-blue-600 cursor-pointer hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] transition-all" onClick={() => navigate('/reports')}>
           <CardHeader>
@@ -888,7 +888,7 @@ export default function Dashboard() {
         }
       />
 
-      <div className="p-10 space-y-8 animate-fade-in">
+      <div className="p-4 md:p-6 lg:p-10 space-y-6 md:space-y-8 animate-fade-in">
 
         {customizeMode && (
           <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
