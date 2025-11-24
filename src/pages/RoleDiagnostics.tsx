@@ -8,6 +8,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 
 interface RoleCheck {
   name: string;
@@ -184,17 +185,19 @@ export default function RoleDiagnostics() {
   const totalChecks = checks.length;
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Role-Based Access Diagnostics</h1>
-          <p className="text-muted-foreground">Test permissions, routes, and UI visibility</p>
-        </div>
-        <Button onClick={() => performDiagnostics()} variant="outline">
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh Tests
-        </Button>
-      </div>
+    <div className="min-h-screen bg-background">
+      <IBMPageHeader
+        title="Role-Based Access Diagnostics"
+        subtitle="Test permissions, routes, and UI visibility"
+        actions={
+          <Button onClick={() => performDiagnostics()} variant="outline">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh Tests
+          </Button>
+        }
+      />
+      
+      <div className="container mx-auto p-8 space-y-6">
 
       {/* User Info Card */}
       <Card>
@@ -441,6 +444,7 @@ export default function RoleDiagnostics() {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
