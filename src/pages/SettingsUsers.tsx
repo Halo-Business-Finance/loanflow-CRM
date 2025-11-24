@@ -689,7 +689,7 @@ export default function SettingsUsers() {
                         <div className="space-y-1">
                           <div className="font-semibold text-slate-900 dark:text-slate-100">{formatUserName(user)}</div>
                           <div className="text-xs text-slate-500 dark:text-slate-400">
-                            User ID: {user.user_number ? String(user.user_number).padStart(3, '0') : user.user_id.slice(0, 8) + '...'}
+                            User ID: {user.user_number ? String(user.user_number).padStart(3, '0') : (user.user_id ? user.user_id.slice(0, 8) + '...' : 'N/A')}
                           </div>
                           <div className="flex items-center gap-3 mt-1">
                             <div className="text-xs text-slate-500 dark:text-slate-400">
