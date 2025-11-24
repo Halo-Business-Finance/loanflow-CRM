@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, XCircle, AlertCircle, RefreshCw, Shield, Eye, EyeOff } from 'lucide-react';
+import { CheckCircle2, XCircle, AlertCircle, RefreshCw, Shield, Eye, EyeOff, Users, Settings as SettingsIcon, AlertTriangle } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface RoleCheck {
   name: string;
@@ -190,14 +191,40 @@ export default function RoleDiagnostics() {
         title="Role-Based Access Diagnostics"
         subtitle="Test permissions, routes, and UI visibility"
         actions={
-          <Button onClick={() => performDiagnostics()} variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh Tests
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => performDiagnostics()} variant="outline" size="sm">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+            <Button onClick={() => navigate('/settings/users')} variant="default" size="sm">
+              <Users className="h-4 w-4 mr-2" />
+              Manage Users
+            </Button>
+          </div>
         }
       />
       
       <div className="container mx-auto p-8 space-y-6">
+        {/* Info Alert */}
+        <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-900">
+          <AlertTriangle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          <AlertDescription className="text-blue-800 dark:text-blue-200">
+            <div className="flex items-center justify-between">
+              <span>
+                This page shows <strong>your current permissions</strong>. To assign roles or manage users, use the User Management page.
+              </span>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate('/settings/users')}
+                className="ml-4 border-blue-300 text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:text-blue-300"
+              >
+                <SettingsIcon className="h-3 w-3 mr-1" />
+                Go to User Management
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
 
       {/* User Info Card */}
       <Card>
