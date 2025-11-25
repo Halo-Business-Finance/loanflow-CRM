@@ -8,7 +8,7 @@ import { StandardContentCard } from "@/components/StandardContentCard"
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useZeroLocalStorage } from '@/lib/zero-localStorage-security';
-import { toast } from 'sonner';
+import { toast } from '@/hooks/use-toast';
 import { IBMPageHeader } from "@/components/ui/IBMPageHeader"
 import { StandardPageLayout } from "@/components/StandardPageLayout"
 
