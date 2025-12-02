@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload, FileText, Check, X, AlertTriangle, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Upload, FileText, Check, X, AlertTriangle, Loader2, FileSpreadsheet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import * as XLSX from "xlsx";
 
 interface CSVImporterProps {
   onImportComplete?: () => void;
@@ -47,10 +49,13 @@ const CONTACT_FIELDS = [
   { value: "skip", label: "-- Skip this column --" },
 ];
 
+const SUPPORTED_EXTENSIONS = [".csv", ".xlsx", ".xls"];
+
 export function CSVImporter({ onImportComplete }: CSVImporterProps) {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [fileType, setFileType] = useState<"csv" | "excel" | null>(null);
   const [csvData, setCsvData] = useState<ParsedRow[]>([]);
   const [headers, setHeaders] = useState<string[]>([]);
   const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>([]);
@@ -61,11 +66,9 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
     const lines = text.split(/\r?\n/).filter(line => line.trim());
     if (lines.length === 0) return { headers: [], rows: [] };
 
-    // Parse headers
     const headerLine = lines[0];
     const parsedHeaders = parseCSVLine(headerLine);
 
-    // Parse data rows
     const rows: ParsedRow[] = [];
     for (let i = 1; i < lines.length; i++) {
       const values = parseCSVLine(lines[i]);
@@ -101,50 +104,92 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
     return result;
   };
 
+  const parseExcel = (buffer: ArrayBuffer): { headers: string[]; rows: ParsedRow[] } => {
+    const workbook = XLSX.read(buffer, { type: "array" });
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+    
+    const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1 });
+    if (jsonData.length === 0) return { headers: [], rows: [] };
+
+    const parsedHeaders = (jsonData[0] as string[]).map(h => String(h || "").trim());
+    const rows: ParsedRow[] = [];
+
+    for (let i = 1; i < jsonData.length; i++) {
+      const rowData = jsonData[i] as string[];
+      if (rowData && rowData.length > 0) {
+        const row: ParsedRow = {};
+        parsedHeaders.forEach((header, index) => {
+          row[header] = String(rowData[index] ?? "").trim();
+        });
+        rows.push(row);
+      }
+    }
+
+    return { headers: parsedHeaders, rows };
+  };
+
+  const processFile = (parsedHeaders: string[], rows: ParsedRow[]) => {
+    setHeaders(parsedHeaders);
+    setCsvData(rows);
+    
+    const mappings: FieldMapping[] = parsedHeaders.map(header => {
+      const normalizedHeader = header.toLowerCase().replace(/[_\s-]/g, "");
+      const matchedField = CONTACT_FIELDS.find(f => {
+        const normalizedField = f.value.toLowerCase().replace(/[_\s-]/g, "");
+        return normalizedHeader.includes(normalizedField) || normalizedField.includes(normalizedHeader);
+      });
+      return {
+        csvColumn: header,
+        dbField: matchedField?.value || "skip",
+      };
+    });
+    setFieldMappings(mappings);
+
+    toast({
+      title: "File Loaded",
+      description: `Found ${rows.length} rows with ${parsedHeaders.length} columns.`,
+    });
+  };
+
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (!selectedFile) return;
 
-    if (!selectedFile.name.endsWith(".csv")) {
+    const fileName = selectedFile.name.toLowerCase();
+    const isCSV = fileName.endsWith(".csv");
+    const isExcel = fileName.endsWith(".xlsx") || fileName.endsWith(".xls");
+
+    if (!isCSV && !isExcel) {
       toast({
         title: "Invalid File",
-        description: "Please select a CSV file.",
+        description: "Please select a CSV or Excel file (.csv, .xlsx, .xls).",
         variant: "destructive",
       });
       return;
     }
 
     setFile(selectedFile);
+    setFileType(isCSV ? "csv" : "excel");
     setImportResults(null);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target?.result as string;
-      const { headers: parsedHeaders, rows } = parseCSV(text);
-      
-      setHeaders(parsedHeaders);
-      setCsvData(rows);
-      
-      // Auto-map fields based on header names
-      const mappings: FieldMapping[] = parsedHeaders.map(header => {
-        const normalizedHeader = header.toLowerCase().replace(/[_\s-]/g, "");
-        const matchedField = CONTACT_FIELDS.find(f => {
-          const normalizedField = f.value.toLowerCase().replace(/[_\s-]/g, "");
-          return normalizedHeader.includes(normalizedField) || normalizedField.includes(normalizedHeader);
-        });
-        return {
-          csvColumn: header,
-          dbField: matchedField?.value || "skip",
-        };
-      });
-      setFieldMappings(mappings);
-
-      toast({
-        title: "File Loaded",
-        description: `Found ${rows.length} rows with ${parsedHeaders.length} columns.`,
-      });
-    };
-    reader.readAsText(selectedFile);
+    if (isCSV) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        const { headers: parsedHeaders, rows } = parseCSV(text);
+        processFile(parsedHeaders, rows);
+      };
+      reader.readAsText(selectedFile);
+    } else {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const buffer = e.target?.result as ArrayBuffer;
+        const { headers: parsedHeaders, rows } = parseExcel(buffer);
+        processFile(parsedHeaders, rows);
+      };
+      reader.readAsArrayBuffer(selectedFile);
+    }
   };
 
   const updateFieldMapping = (csvColumn: string, dbField: string) => {
@@ -257,6 +302,7 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
 
   const resetImporter = () => {
     setFile(null);
+    setFileType(null);
     setCsvData([]);
     setHeaders([]);
     setFieldMappings([]);
@@ -273,26 +319,37 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Upload className="h-5 w-5" />
-            Upload CSV File
+            Import Data
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <span>Supported formats:</span>
+            <Badge variant="outline" className="gap-1">
+              <FileText className="h-3 w-3" />
+              CSV
+            </Badge>
+            <Badge variant="outline" className="gap-1">
+              <FileSpreadsheet className="h-3 w-3" />
+              Excel (.xlsx, .xls)
+            </Badge>
+          </div>
           <div className="flex items-center gap-4">
             <input
               ref={fileInputRef}
               type="file"
-              accept=".csv"
+              accept=".csv,.xlsx,.xls"
               onChange={handleFileSelect}
               className="hidden"
-              id="csv-upload"
+              id="data-upload"
             />
             <Button
               variant="outline"
               onClick={() => fileInputRef.current?.click()}
               className="flex items-center gap-2"
             >
-              <FileText className="h-4 w-4" />
-              Select CSV File
+              <Upload className="h-4 w-4" />
+              Select File
             </Button>
             {file && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -313,7 +370,7 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
       {headers.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Map CSV Columns to Database Fields</CardTitle>
+            <CardTitle>Map Columns to Database Fields</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
