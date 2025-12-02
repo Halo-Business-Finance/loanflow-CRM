@@ -391,10 +391,19 @@ export function DataIntegrityDashboard() {
               </TabsContent>
 
               <TabsContent value="duplicates" className="space-y-4">
+                {!auditResults ? (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <Database className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-medium">No Audit Data</h3>
+                      <p className="text-muted-foreground">Run a data audit to check for duplicates.</p>
+                    </CardContent>
+                  </Card>
+                ) : (
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-lg font-semibold mb-3">Duplicate Leads</h3>
-                    {auditResults.duplicateLeads && auditResults.duplicateLeads.length > 0 ? (
+                    {auditResults?.duplicateLeads && auditResults.duplicateLeads.length > 0 ? (
                       <div className="space-y-2">
                         {auditResults.duplicateLeads.map((dup: any) => (
                           <Card key={dup.id}>
@@ -430,7 +439,7 @@ export function DataIntegrityDashboard() {
 
                   <div>
                     <h3 className="text-lg font-semibold mb-3">Duplicate Loans</h3>
-                    {auditResults.duplicateLoans && auditResults.duplicateLoans.length > 0 ? (
+                    {auditResults?.duplicateLoans && auditResults.duplicateLoans.length > 0 ? (
                       <div className="space-y-2">
                         {auditResults.duplicateLoans.map((dup: any) => (
                           <Card key={dup.id}>
@@ -467,16 +476,26 @@ export function DataIntegrityDashboard() {
                     )}
                   </div>
                 </div>
+                )}
               </TabsContent>
 
               <TabsContent value="summary" className="space-y-4">
+                {!auditResults ? (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <Database className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-medium">No Audit Data</h3>
+                      <p className="text-muted-foreground">Run a data audit to see the summary.</p>
+                    </CardContent>
+                  </Card>
+                ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Lead Issues</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{auditResults.leadIssues?.length || 0}</div>
+                      <div className="text-2xl font-bold">{auditResults?.leadIssues?.length || 0}</div>
                       <p className="text-sm text-muted-foreground">Records with issues</p>
                     </CardContent>
                   </Card>
@@ -486,7 +505,7 @@ export function DataIntegrityDashboard() {
                       <CardTitle className="text-sm">Client Issues</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{auditResults.clientIssues?.length || 0}</div>
+                      <div className="text-2xl font-bold">{auditResults?.clientIssues?.length || 0}</div>
                       <p className="text-sm text-muted-foreground">Records with issues</p>
                     </CardContent>
                   </Card>
@@ -496,7 +515,7 @@ export function DataIntegrityDashboard() {
                       <CardTitle className="text-sm">Pipeline Issues</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{auditResults.pipelineIssues?.length || 0}</div>
+                      <div className="text-2xl font-bold">{auditResults?.pipelineIssues?.length || 0}</div>
                       <p className="text-sm text-muted-foreground">Records with issues</p>
                     </CardContent>
                   </Card>
@@ -506,7 +525,7 @@ export function DataIntegrityDashboard() {
                       <CardTitle className="text-sm">Duplicate Leads</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-red-600">{auditResults.summary?.duplicateLeadsCount || 0}</div>
+                      <div className="text-2xl font-bold text-red-600">{auditResults?.summary?.duplicateLeadsCount || 0}</div>
                       <p className="text-sm text-muted-foreground">Potential duplicates</p>
                     </CardContent>
                   </Card>
@@ -516,11 +535,12 @@ export function DataIntegrityDashboard() {
                       <CardTitle className="text-sm">Duplicate Loans</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-orange-600">{auditResults.summary?.duplicateLoansCount || 0}</div>
+                      <div className="text-2xl font-bold text-orange-600">{auditResults?.summary?.duplicateLoansCount || 0}</div>
                       <p className="text-sm text-muted-foreground">Potential duplicates</p>
                     </CardContent>
                   </Card>
                 </div>
+                )}
               </TabsContent>
 
               <TabsContent value="autofix" className="space-y-4">
