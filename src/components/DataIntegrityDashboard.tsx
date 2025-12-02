@@ -3,12 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, AlertTriangle, X, RefreshCw, Database, FileText } from "lucide-react";
+import { Check, AlertTriangle, X, RefreshCw, Database, FileText, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
 import { DataFieldValidator } from "@/lib/data-validator";
 import { DataIntegrityFixer } from "@/lib/data-integrity-fixer";
+import { CSVImporter } from "@/components/CSVImporter";
 
 interface FieldIssue {
   fieldName: string;
@@ -306,41 +307,51 @@ export function DataIntegrityDashboard() {
         )}
 
         {/* Content Area */}
-        {auditResults && (
-          <div className="space-y-6">
-            <Tabs defaultValue="issues" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-5 bg-[#0A1628] p-1 gap-2">
-                <TabsTrigger 
-                  value="issues" 
-                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-                >
-                  <AlertTriangle className="w-4 h-4" />
-                  <span>Field Issues</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="duplicates" 
-                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-                >
-                  <X className="w-4 h-4" />
-                  <span>Duplicates</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="summary" 
-                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-                >
-                  <Database className="w-4 h-4" />
-                  <span>Summary</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="autofix" 
-                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
-                >
-                  <Check className="w-4 h-4" />
-                  <span>Auto-Fix</span>
-                </TabsTrigger>
-              </TabsList>
+        <div className="space-y-6">
+          <Tabs defaultValue="import" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-5 bg-[#0A1628] p-1 gap-2">
+              <TabsTrigger 
+                value="import" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Upload className="w-4 h-4" />
+                <span>Import CSV</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="issues" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <AlertTriangle className="w-4 h-4" />
+                <span>Field Issues</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="duplicates" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <X className="w-4 h-4" />
+                <span>Duplicates</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="summary" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Database className="w-4 h-4" />
+                <span>Summary</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="autofix" 
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2"
+              >
+                <Check className="w-4 h-4" />
+                <span>Auto-Fix</span>
+              </TabsTrigger>
+            </TabsList>
 
-              <TabsContent value="issues" className="space-y-4">
+            <TabsContent value="import" className="space-y-4">
+              <CSVImporter onImportComplete={runDataAudit} />
+            </TabsContent>
+
+            <TabsContent value="issues" className="space-y-4">
                 <div className="space-y-2">
                   {fieldIssues.map((issue) => (
                     <Card key={`${issue.recordId}-${issue.fieldName}-${issue.issueType}`}>
@@ -551,7 +562,6 @@ export function DataIntegrityDashboard() {
               </TabsContent>
             </Tabs>
           </div>
-        )}
       </div>
     </StandardPageLayout>
   );
