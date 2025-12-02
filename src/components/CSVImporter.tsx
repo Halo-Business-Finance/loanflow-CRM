@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Upload, FileText, Check, X, AlertTriangle, Loader2, FileSpreadsheet } from "lucide-react";
+import { Upload, FileText, Check, X, AlertTriangle, Loader2, FileSpreadsheet, Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import * as XLSX from "xlsx";
@@ -23,37 +23,104 @@ interface FieldMapping {
   dbField: string;
 }
 
-const CONTACT_FIELDS = [
-  { value: "name", label: "Name" },
-  { value: "first_name", label: "First Name" },
-  { value: "last_name", label: "Last Name" },
-  { value: "email", label: "Email" },
-  { value: "phone", label: "Phone" },
-  { value: "mobile_phone", label: "Mobile Phone" },
-  { value: "business_name", label: "Business Name" },
-  { value: "business_type", label: "Business Type" },
-  { value: "business_address", label: "Business Address" },
-  { value: "business_city", label: "Business City" },
-  { value: "business_state", label: "Business State" },
-  { value: "business_zip_code", label: "Business Zip Code" },
-  { value: "loan_amount", label: "Loan Amount" },
-  { value: "loan_type", label: "Loan Type" },
-  { value: "annual_revenue", label: "Annual Revenue" },
-  { value: "credit_score", label: "Credit Score" },
-  { value: "years_in_business", label: "Years in Business" },
-  { value: "industry", label: "Industry" },
-  { value: "notes", label: "Notes" },
-  { value: "source", label: "Source" },
-  { value: "stage", label: "Stage" },
-  { value: "priority", label: "Priority" },
-  { value: "skip", label: "-- Skip this column --" },
-];
+type ImportDestination = "leads" | "lenders" | "service_providers";
 
-const SUPPORTED_EXTENSIONS = [".csv", ".xlsx", ".xls"];
+interface DestinationConfig {
+  label: string;
+  description: string;
+  table: string;
+  fields: { value: string; label: string }[];
+  requiredFields: string[];
+}
+
+const DESTINATION_CONFIGS: Record<ImportDestination, DestinationConfig> = {
+  leads: {
+    label: "New Leads / Contacts",
+    description: "Import leads, borrowers, or contact information",
+    table: "contact_entities",
+    requiredFields: ["name", "email"],
+    fields: [
+      { value: "name", label: "Name" },
+      { value: "first_name", label: "First Name" },
+      { value: "last_name", label: "Last Name" },
+      { value: "email", label: "Email" },
+      { value: "phone", label: "Phone" },
+      { value: "mobile_phone", label: "Mobile Phone" },
+      { value: "business_name", label: "Business Name" },
+      { value: "business_type", label: "Business Type" },
+      { value: "business_address", label: "Business Address" },
+      { value: "business_city", label: "Business City" },
+      { value: "business_state", label: "Business State" },
+      { value: "business_zip_code", label: "Business Zip Code" },
+      { value: "loan_amount", label: "Loan Amount" },
+      { value: "loan_type", label: "Loan Type" },
+      { value: "annual_revenue", label: "Annual Revenue" },
+      { value: "credit_score", label: "Credit Score" },
+      { value: "years_in_business", label: "Years in Business" },
+      { value: "industry", label: "Industry" },
+      { value: "notes", label: "Notes" },
+      { value: "source", label: "Source" },
+      { value: "stage", label: "Stage" },
+      { value: "priority", label: "Priority" },
+      { value: "skip", label: "-- Skip this column --" },
+    ],
+  },
+  lenders: {
+    label: "Banks & Lenders",
+    description: "Import bank and lender information",
+    table: "lenders",
+    requiredFields: ["name"],
+    fields: [
+      { value: "name", label: "Lender Name" },
+      { value: "lender_type", label: "Lender Type" },
+      { value: "contact_name", label: "Contact Name" },
+      { value: "email", label: "Email" },
+      { value: "phone", label: "Phone" },
+      { value: "address", label: "Address" },
+      { value: "city", label: "City" },
+      { value: "state", label: "State" },
+      { value: "zip_code", label: "Zip Code" },
+      { value: "website", label: "Website" },
+      { value: "min_loan_amount", label: "Min Loan Amount" },
+      { value: "max_loan_amount", label: "Max Loan Amount" },
+      { value: "interest_rate_min", label: "Min Interest Rate" },
+      { value: "interest_rate_max", label: "Max Interest Rate" },
+      { value: "loan_types", label: "Loan Types" },
+      { value: "specialty", label: "Specialty" },
+      { value: "notes", label: "Notes" },
+      { value: "status", label: "Status" },
+      { value: "skip", label: "-- Skip this column --" },
+    ],
+  },
+  service_providers: {
+    label: "Title & Escrow Companies",
+    description: "Import title companies, escrow companies, and other service providers",
+    table: "service_providers",
+    requiredFields: ["name", "provider_type"],
+    fields: [
+      { value: "name", label: "Company Name" },
+      { value: "provider_type", label: "Provider Type (title/escrow/insurance/appraisal)" },
+      { value: "contact_name", label: "Contact Name" },
+      { value: "email", label: "Email" },
+      { value: "phone", label: "Phone" },
+      { value: "address", label: "Address" },
+      { value: "city", label: "City" },
+      { value: "state", label: "State" },
+      { value: "zip_code", label: "Zip Code" },
+      { value: "website", label: "Website" },
+      { value: "license_number", label: "License Number" },
+      { value: "services_offered", label: "Services Offered" },
+      { value: "notes", label: "Notes" },
+      { value: "status", label: "Status" },
+      { value: "skip", label: "-- Skip this column --" },
+    ],
+  },
+};
 
 export function CSVImporter({ onImportComplete }: CSVImporterProps) {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [destination, setDestination] = useState<ImportDestination>("leads");
   const [file, setFile] = useState<File | null>(null);
   const [fileType, setFileType] = useState<"csv" | "excel" | null>(null);
   const [csvData, setCsvData] = useState<ParsedRow[]>([]);
@@ -61,6 +128,8 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
   const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>([]);
   const [importing, setImporting] = useState(false);
   const [importResults, setImportResults] = useState<{ success: number; failed: number; errors: string[] } | null>(null);
+
+  const currentConfig = DESTINATION_CONFIGS[destination];
 
   const parseCSV = (text: string): { headers: string[]; rows: ParsedRow[] } => {
     const lines = text.split(/\r?\n/).filter(line => line.trim());
@@ -135,7 +204,7 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
     
     const mappings: FieldMapping[] = parsedHeaders.map(header => {
       const normalizedHeader = header.toLowerCase().replace(/[_\s-]/g, "");
-      const matchedField = CONTACT_FIELDS.find(f => {
+      const matchedField = currentConfig.fields.find(f => {
         const normalizedField = f.value.toLowerCase().replace(/[_\s-]/g, "");
         return normalizedHeader.includes(normalizedField) || normalizedField.includes(normalizedHeader);
       });
@@ -198,11 +267,31 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
     );
   };
 
+  const handleDestinationChange = (newDestination: ImportDestination) => {
+    setDestination(newDestination);
+    // Re-process field mappings if file is already loaded
+    if (headers.length > 0) {
+      const newConfig = DESTINATION_CONFIGS[newDestination];
+      const mappings: FieldMapping[] = headers.map(header => {
+        const normalizedHeader = header.toLowerCase().replace(/[_\s-]/g, "");
+        const matchedField = newConfig.fields.find(f => {
+          const normalizedField = f.value.toLowerCase().replace(/[_\s-]/g, "");
+          return normalizedHeader.includes(normalizedField) || normalizedField.includes(normalizedHeader);
+        });
+        return {
+          csvColumn: header,
+          dbField: matchedField?.value || "skip",
+        };
+      });
+      setFieldMappings(mappings);
+    }
+  };
+
   const handleImport = async () => {
     if (csvData.length === 0) {
       toast({
         title: "No Data",
-        description: "Please load a CSV file first.",
+        description: "Please load a file first.",
         variant: "destructive",
       });
       return;
@@ -227,7 +316,7 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
 
       for (let i = 0; i < csvData.length; i++) {
         const row = csvData[i];
-        const contactData: Record<string, any> = {
+        const recordData: Record<string, any> = {
           user_id: user.id,
         };
 
@@ -236,36 +325,31 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
           if (mapping.dbField !== "skip" && row[mapping.csvColumn]) {
             let value: any = row[mapping.csvColumn];
             
-            // Convert numeric fields
-            if (["loan_amount", "annual_revenue", "credit_score", "years_in_business"].includes(mapping.dbField)) {
+            // Convert numeric fields based on destination
+            const numericFields = getNumericFields(destination);
+            if (numericFields.includes(mapping.dbField)) {
               value = parseFloat(value.replace(/[,$]/g, "")) || null;
             }
             
-            contactData[mapping.dbField] = value;
+            recordData[mapping.dbField] = value;
           }
         });
 
-        // Ensure required fields
-        if (!contactData.name && (contactData.first_name || contactData.last_name)) {
-          contactData.name = `${contactData.first_name || ""} ${contactData.last_name || ""}`.trim();
-        }
-        if (!contactData.email) {
-          contactData.email = `import-${Date.now()}-${i}@placeholder.com`;
-        }
-        if (!contactData.name) {
-          contactData.name = contactData.email.split("@")[0];
-        }
+        // Handle destination-specific logic
+        const insertData = prepareInsertData(destination, recordData, i);
 
-        const insertData = {
-          email: contactData.email as string,
-          name: contactData.name as string,
-          user_id: contactData.user_id as string,
-          ...contactData,
-        };
-
-        const { error } = await supabase
-          .from("contact_entities")
-          .insert(insertData);
+        let error: Error | null = null;
+        
+        if (destination === "leads") {
+          const { error: err } = await supabase.from("contact_entities").insert(insertData as any);
+          error = err;
+        } else if (destination === "lenders") {
+          const { error: err } = await supabase.from("lenders").insert(insertData as any);
+          error = err;
+        } else if (destination === "service_providers") {
+          const { error: err } = await supabase.from("service_providers").insert(insertData as any);
+          error = err;
+        }
 
         if (error) {
           results.failed++;
@@ -281,7 +365,7 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
 
       toast({
         title: "Import Complete",
-        description: `Successfully imported ${results.success} of ${csvData.length} records.`,
+        description: `Successfully imported ${results.success} of ${csvData.length} records to ${currentConfig.label}.`,
         variant: results.failed > 0 ? "destructive" : "default",
       });
 
@@ -300,6 +384,59 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
     }
   };
 
+  const getNumericFields = (dest: ImportDestination): string[] => {
+    switch (dest) {
+      case "leads":
+        return ["loan_amount", "annual_revenue", "credit_score", "years_in_business"];
+      case "lenders":
+        return ["min_loan_amount", "max_loan_amount", "interest_rate_min", "interest_rate_max"];
+      case "service_providers":
+        return [];
+      default:
+        return [];
+    }
+  };
+
+  const prepareInsertData = (dest: ImportDestination, data: Record<string, any>, index: number): Record<string, any> => {
+    switch (dest) {
+      case "leads":
+        if (!data.name && (data.first_name || data.last_name)) {
+          data.name = `${data.first_name || ""} ${data.last_name || ""}`.trim();
+        }
+        if (!data.email) {
+          data.email = `import-${Date.now()}-${index}@placeholder.com`;
+        }
+        if (!data.name) {
+          data.name = data.email.split("@")[0];
+        }
+        return data;
+      
+      case "lenders":
+        if (!data.name) {
+          data.name = `Lender ${Date.now()}-${index}`;
+        }
+        if (!data.status) {
+          data.status = "active";
+        }
+        return data;
+      
+      case "service_providers":
+        if (!data.name) {
+          data.name = `Provider ${Date.now()}-${index}`;
+        }
+        if (!data.provider_type) {
+          data.provider_type = "title";
+        }
+        if (!data.status) {
+          data.status = "active";
+        }
+        return data;
+      
+      default:
+        return data;
+    }
+  };
+
   const resetImporter = () => {
     setFile(null);
     setFileType(null);
@@ -314,12 +451,43 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
 
   return (
     <div className="space-y-6">
+      {/* Destination Selection */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Database className="h-5 w-5" />
+            Import Destination
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Select where you want to import your data:
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(Object.entries(DESTINATION_CONFIGS) as [ImportDestination, DestinationConfig][]).map(([key, config]) => (
+              <div
+                key={key}
+                onClick={() => handleDestinationChange(key)}
+                className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  destination === key
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-primary/50"
+                }`}
+              >
+                <h3 className="font-semibold">{config.label}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{config.description}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* File Upload */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Upload className="h-5 w-5" />
-            Import Data
+            Upload File
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -370,7 +538,7 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
       {headers.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Map Columns to Database Fields</CardTitle>
+            <CardTitle>Map Columns to {currentConfig.label} Fields</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -385,7 +553,7 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {CONTACT_FIELDS.map(field => (
+                      {currentConfig.fields.map(field => (
                         <SelectItem key={field.value} value={field.value}>
                           {field.label}
                         </SelectItem>
@@ -442,7 +610,7 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
               )}
               <div>
                 <p className="font-medium">
-                  Imported {importResults.success} of {csvData.length} records
+                  Imported {importResults.success} of {csvData.length} records to {currentConfig.label}
                 </p>
                 {importResults.errors.length > 0 && (
                   <ul className="text-sm mt-2">
@@ -463,7 +631,7 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
           <Button
             onClick={handleImport}
             disabled={importing}
-            className="bg-[#0f62fe] hover:bg-[#0353e9] text-white"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             {importing ? (
               <>
@@ -473,7 +641,7 @@ export function CSVImporter({ onImportComplete }: CSVImporterProps) {
             ) : (
               <>
                 <Upload className="h-4 w-4 mr-2" />
-                Import {csvData.length} Records
+                Import {csvData.length} Records to {currentConfig.label}
               </>
             )}
           </Button>
