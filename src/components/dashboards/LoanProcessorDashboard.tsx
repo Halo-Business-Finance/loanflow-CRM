@@ -10,6 +10,9 @@ import { DocumentChecklistWidget } from '@/components/widgets/DocumentChecklistW
 import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
 import { CompactCalendarWidget } from '@/components/CompactCalendarWidget';
 import { TodaysScheduleWidget } from '@/components/widgets/TodaysScheduleWidget';
+import { SmartDocumentTracker } from '@/components/processor/SmartDocumentTracker';
+import { PreFlightChecklist } from '@/components/processor/PreFlightChecklist';
+import { StackingOrderAutomation } from '@/components/processor/StackingOrderAutomation';
 import { 
   FileText, 
   Clock, 
@@ -18,7 +21,10 @@ import {
   TrendingUp,
   Users,
   Calendar,
-  Filter
+  Filter,
+  FileSearch,
+  ClipboardCheck,
+  Layers
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -62,6 +68,7 @@ export const LoanProcessorDashboard = () => {
   const [pipelineCount, setPipelineCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [priorityFilter, setPriorityFilter] = useState<'all' | 'urgent' | 'high' | 'urgent-high'>('all');
+  const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
   const [updatingBadges, setUpdatingBadges] = useState<{
     pending: boolean;
     documents: boolean;
@@ -434,6 +441,18 @@ export const LoanProcessorDashboard = () => {
                 {metrics.processedToday}
               </Badge>
             </TabsTrigger>
+            <TabsTrigger value="doc-tracker" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+              <FileSearch className="w-4 h-4" />
+              Doc Tracker
+            </TabsTrigger>
+            <TabsTrigger value="preflight" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+              <ClipboardCheck className="w-4 h-4" />
+              Pre-Flight
+            </TabsTrigger>
+            <TabsTrigger value="stacking" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+              <Layers className="w-4 h-4" />
+              Stacking Order
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending" className="space-y-6">
@@ -614,7 +633,7 @@ export const LoanProcessorDashboard = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="completed" className="space-y-4">
+          <TabsContent value="completed" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Completed Applications Today</CardTitle>
@@ -625,6 +644,96 @@ export const LoanProcessorDashboard = () => {
               </div>
             </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="doc-tracker">
+            <SmartDocumentTracker />
+          </TabsContent>
+
+          <TabsContent value="preflight" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Select Application
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                    {pendingApps.length === 0 ? (
+                      <p className="text-muted-foreground text-center py-4">No pending applications</p>
+                    ) : (
+                      pendingApps.map((app) => (
+                        <div 
+                          key={app.id}
+                          className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                            selectedAppId === app.id 
+                              ? 'bg-primary/10 border-primary' 
+                              : 'hover:bg-muted/50 border-border'
+                          }`}
+                          onClick={() => setSelectedAppId(app.id)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium">{app.business_name || app.name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {formatCurrency(app.loan_amount || 0)} • {app.loan_type || 'N/A'}
+                              </p>
+                            </div>
+                            <Badge variant="outline">{app.stage}</Badge>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+              <PreFlightChecklist applicationId={selectedAppId} />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="stacking" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Select Application
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                    {pendingApps.length === 0 ? (
+                      <p className="text-muted-foreground text-center py-4">No pending applications</p>
+                    ) : (
+                      pendingApps.map((app) => (
+                        <div 
+                          key={app.id}
+                          className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                            selectedAppId === app.id 
+                              ? 'bg-primary/10 border-primary' 
+                              : 'hover:bg-muted/50 border-border'
+                          }`}
+                          onClick={() => setSelectedAppId(app.id)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium">{app.business_name || app.name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {formatCurrency(app.loan_amount || 0)} • {app.loan_type || 'N/A'}
+                              </p>
+                            </div>
+                            <Badge variant="outline">{app.stage}</Badge>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+              <StackingOrderAutomation applicationId={selectedAppId} />
+            </div>
           </TabsContent>
         </Tabs>
       </div>

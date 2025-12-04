@@ -84,3 +84,6 @@ verify_jwt = true
 
 [functions.generate-conditions]
 verify_jwt = true
+
+[functions.ai-decision-engine]
+verify_jwt = true
