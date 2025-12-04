@@ -8,6 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { FundingQueueWidget } from '@/components/widgets/FundingQueueWidget';
 import { ClosingCalendarWidget } from '@/components/widgets/ClosingCalendarWidget';
+import { PreClosingChecklist } from '@/components/closer/PreClosingChecklist';
 import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
 import { CompactCalendarWidget } from '@/components/CompactCalendarWidget';
 import { TodaysScheduleWidget } from '@/components/widgets/TodaysScheduleWidget';
@@ -20,7 +21,8 @@ import {
   AlertCircle,
   Calendar,
   Download,
-  HandCoins
+  HandCoins,
+  ClipboardCheck
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency } from '@/lib/utils';
@@ -368,6 +370,10 @@ export const LoanCloserDashboard = () => {
         <TabsList>
           <TabsTrigger value="funding">Funding Pipeline</TabsTrigger>
           <TabsTrigger value="closings">Scheduled Closings</TabsTrigger>
+          <TabsTrigger value="checklist" className="flex items-center gap-1">
+            <ClipboardCheck className="h-3 w-3" />
+            Pre-Closing Checklist
+          </TabsTrigger>
           <TabsTrigger value="documents">Document Status</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
         </TabsList>
@@ -455,6 +461,11 @@ export const LoanCloserDashboard = () => {
               </ScrollArea>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Pre-Closing Checklist Tab */}
+        <TabsContent value="checklist" className="space-y-4">
+          <PreClosingChecklist />
         </TabsContent>
 
         {/* Document Status Tab */}
