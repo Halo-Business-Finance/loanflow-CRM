@@ -13,6 +13,8 @@ import { TodaysScheduleWidget } from '@/components/widgets/TodaysScheduleWidget'
 import { SmartDocumentTracker } from '@/components/processor/SmartDocumentTracker';
 import { PreFlightChecklist } from '@/components/processor/PreFlightChecklist';
 import { StackingOrderAutomation } from '@/components/processor/StackingOrderAutomation';
+import { DocumentExpirationTracker } from '@/components/processor/DocumentExpirationTracker';
+import { SLATimelineTracker } from '@/components/processor/SLATimelineTracker';
 import { 
   FileText, 
   Clock, 
@@ -24,7 +26,9 @@ import {
   Filter,
   FileSearch,
   ClipboardCheck,
-  Layers
+  Layers,
+  CalendarClock,
+  Target
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -453,6 +457,14 @@ export const LoanProcessorDashboard = () => {
               <Layers className="w-4 h-4" />
               Stacking Order
             </TabsTrigger>
+            <TabsTrigger value="expiration" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+              <CalendarClock className="w-4 h-4" />
+              Doc Expiration
+            </TabsTrigger>
+            <TabsTrigger value="sla" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+              <Target className="w-4 h-4" />
+              SLA Tracker
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending" className="space-y-6">
@@ -734,6 +746,14 @@ export const LoanProcessorDashboard = () => {
               </Card>
               <StackingOrderAutomation applicationId={selectedAppId} />
             </div>
+          </TabsContent>
+
+          <TabsContent value="expiration" className="space-y-4">
+            <DocumentExpirationTracker />
+          </TabsContent>
+
+          <TabsContent value="sla" className="space-y-4">
+            <SLATimelineTracker />
           </TabsContent>
         </Tabs>
       </div>

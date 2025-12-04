@@ -27,9 +27,11 @@ import {
   DollarSign,
   RefreshCw,
   Filter,
-  Sparkles
+  Sparkles,
+  Target
 } from 'lucide-react';
 import { AutoConditionGenerator } from '@/components/underwriting/AutoConditionGenerator';
+import { RiskScoringDashboard } from '@/components/underwriting/RiskScoringDashboard';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency, formatNumber } from '@/lib/utils';
@@ -541,6 +543,10 @@ export const UnderwriterDashboard = () => {
             <TabsTrigger value="ai-conditions" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <Sparkles className="w-4 h-4" />
               <span>AI Conditions</span>
+            </TabsTrigger>
+            <TabsTrigger value="risk-scoring" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+              <Target className="w-4 h-4" />
+              <span>Risk Scoring</span>
             </TabsTrigger>
           </TabsList>
 
@@ -1220,6 +1226,19 @@ export const UnderwriterDashboard = () => {
                 }}
               />
             </div>
+          </TabsContent>
+
+          <TabsContent value="risk-scoring" className="space-y-4">
+            <RiskScoringDashboard 
+              application={selectedAppForConditions ? {
+                creditScore: selectedAppForConditions.credit_score,
+                dti: selectedAppForConditions.debt_to_income_ratio,
+                yearsInBusiness: selectedAppForConditions.years_in_business,
+                annualRevenue: selectedAppForConditions.income ? selectedAppForConditions.income * 12 : undefined,
+                loanAmount: selectedAppForConditions.loan_amount,
+                collateralValue: selectedAppForConditions.collateral_value
+              } : undefined}
+            />
           </TabsContent>
         </Tabs>
       </div>
