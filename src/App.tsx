@@ -79,6 +79,7 @@ const RoleDiagnostics = lazy(() => import("./pages/RoleDiagnostics"));
 const LoanCloserDashboard = lazy(() => import("@/components/dashboards/LoanCloserDashboard").then(m => ({ default: m.LoanCloserDashboard })));
 const LoanProcessorDashboard = lazy(() => import("@/components/dashboards/LoanProcessorDashboard").then(m => ({ default: m.LoanProcessorDashboard })));
 const UnderwriterDashboard = lazy(() => import("@/components/dashboards/UnderwriterDashboard").then(m => ({ default: m.UnderwriterDashboard })));
+const LoanOriginatorDashboard = lazy(() => import("@/components/dashboards/LoanOriginatorDashboard").then(m => ({ default: m.LoanOriginatorDashboard })));
 const DataIntegrityDashboard = lazy(() => import("@/components/DataIntegrityDashboard").then(m => ({ default: m.DataIntegrityDashboard })));
 
 const queryClient = new QueryClient();
@@ -143,8 +144,8 @@ function AuthenticatedApp() {
         
         {/* Protected routes - require authentication */}
         <Route path="/" element={<Navigate to="/loan-originator" replace />} errorElement={<RouteErrorBoundary />} />
-        <Route path="/loan-originator" element={<IBMCloudLayout key="dashboard-layout"><Dashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
-        <Route path="/dashboard" element={<Navigate to="/loan-originator" replace />} errorElement={<RouteErrorBoundary />} />
+        <Route path="/loan-originator" element={<IBMCloudLayout key="dashboard-layout"><LoanOriginatorDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/dashboard" element={<IBMCloudLayout><Dashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         
         <Route path="/leads" element={<IBMCloudLayout><Leads /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/leads/new" element={<IBMCloudLayout><NewLead /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
