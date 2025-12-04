@@ -26,8 +26,10 @@ import {
   Eye,
   DollarSign,
   RefreshCw,
-  Filter
+  Filter,
+  Sparkles
 } from 'lucide-react';
+import { AutoConditionGenerator } from '@/components/underwriting/AutoConditionGenerator';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency, formatNumber } from '@/lib/utils';
@@ -62,6 +64,10 @@ interface LeadWithContact {
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   credit_score?: number;
   income?: number;
+  debt_to_income_ratio?: number;
+  years_in_business?: number;
+  collateral_value?: number;
+  purpose_of_loan?: string;
 }
 
 export const UnderwriterDashboard = () => {
@@ -84,6 +90,7 @@ export const UnderwriterDashboard = () => {
   const [pipelineCount, setPipelineCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [priorityFilter, setPriorityFilter] = useState<'all' | 'urgent' | 'high' | 'urgent-high'>('all');
+  const [selectedAppForConditions, setSelectedAppForConditions] = useState<LeadWithContact | null>(null);
   const [updatingBadges, setUpdatingBadges] = useState<{
     pending: boolean;
     documents: boolean;
@@ -530,6 +537,10 @@ export const UnderwriterDashboard = () => {
             <TabsTrigger value="loan-tools" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <Calculator className="w-4 h-4" />
               <span>Tools</span>
+            </TabsTrigger>
+            <TabsTrigger value="ai-conditions" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              <span>AI Conditions</span>
             </TabsTrigger>
           </TabsList>
 
@@ -1137,6 +1148,77 @@ export const UnderwriterDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="ai-conditions" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Application Selector */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Select Application
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                    {pendingReviews.length === 0 ? (
+                      <p className="text-muted-foreground text-center py-4">No pending applications</p>
+                    ) : (
+                      pendingReviews.map((app) => (
+                        <div 
+                          key={app.id} 
+                          className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                            selectedAppForConditions?.id === app.id 
+                              ? 'bg-primary/10 border-primary' 
+                              : 'hover:bg-muted/50 border-border'
+                          }`}
+                          onClick={() => setSelectedAppForConditions({
+                            id: app.id,
+                            name: app.name,
+                            business_name: app.business_name,
+                            loan_amount: app.loan_amount,
+                            loan_type: app.loan_type,
+                            credit_score: app.credit_score,
+                            income: app.income,
+                            debt_to_income_ratio: app.debt_to_income_ratio,
+                            years_in_business: app.years_in_business,
+                            collateral_value: app.collateral_value,
+                            purpose_of_loan: app.purpose_of_loan,
+                            stage: app.stage || '',
+                            created_at: app.created_at || '',
+                            updated_at: app.updated_at || '',
+                            contact_entity_id: app.id
+                          })}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium">{app.business_name || app.name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {formatCurrency(app.loan_amount || 0)} • {app.loan_type || 'N/A'}
+                              </p>
+                            </div>
+                            <Badge variant="outline">{app.stage}</Badge>
+                          </div>
+                          <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
+                            <span>Credit: {app.credit_score || 'N/A'}</span>
+                            <span>Income: {formatCurrency(app.income || 0)}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* AI Condition Generator */}
+              <AutoConditionGenerator 
+                application={selectedAppForConditions}
+                onConditionsGenerated={(conditions) => {
+                  console.log('Conditions generated:', conditions);
+                }}
+              />
             </div>
           </TabsContent>
         </Tabs>
