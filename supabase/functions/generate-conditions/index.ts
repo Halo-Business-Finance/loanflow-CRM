@@ -1,4 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { SecureLogger } from '../_shared/secure-logger.ts';
+
+const logger = new SecureLogger('generate-conditions');
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,6 +29,9 @@ serve(async (req) => {
 
   try {
     const { application } = await req.json() as { application: LoanApplication };
+    
+    logger.info('Generating conditions for loan application', { loanType: application.loan_type });
+    
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -150,7 +156,7 @@ Based on this information, generate appropriate underwriting conditions.`;
         );
       }
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      logger.error('AI gateway error', new Error(errorText), { status: response.status });
       return new Response(
         JSON.stringify({ error: "Failed to generate conditions" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -162,6 +168,7 @@ Based on this information, generate appropriate underwriting conditions.`;
     
     if (toolCall?.function?.arguments) {
       const conditions = JSON.parse(toolCall.function.arguments);
+      logger.info('Conditions generated successfully', { conditionCount: conditions.conditions?.length || 0 });
       return new Response(
         JSON.stringify(conditions),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -174,9 +181,9 @@ Based on this information, generate appropriate underwriting conditions.`;
     );
 
   } catch (error) {
-    console.error("Error generating conditions:", error);
+    logger.error('Error generating conditions', error instanceof Error ? error : new Error(String(error)));
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "An error occurred processing your request" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

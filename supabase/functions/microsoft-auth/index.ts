@@ -316,7 +316,7 @@ serve(async (req) => {
         
         if (now >= expiresAt) {
           // Refresh token logic would go here
-          console.log('Token expired, refresh needed');
+          logger.info('Token expired, refresh needed');
         }
 
         // Send email via Microsoft Graph

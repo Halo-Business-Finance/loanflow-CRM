@@ -1,5 +1,8 @@
 // Rate limiting utilities for Edge Functions
 import { SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { SecureLogger } from './secure-logger.ts';
+
+const logger = new SecureLogger('rate-limit');
 
 export interface RateLimitConfig {
   action: string;
@@ -23,7 +26,7 @@ export const checkRateLimit = async (
     });
     
     if (error) {
-      console.error('Rate limit check failed:', error);
+      logger.error('Rate limit check failed', error, { action: config.action });
       // Fail open (allow request) if rate limit check fails
       return { allowed: true };
     }
@@ -37,7 +40,7 @@ export const checkRateLimit = async (
     
     return { allowed: true };
   } catch (error) {
-    console.error('Rate limit error:', error);
+    logger.error('Rate limit error', error instanceof Error ? error : new Error(String(error)), { action: config.action });
     // Fail open (allow request) if rate limit check fails
     return { allowed: true };
   }

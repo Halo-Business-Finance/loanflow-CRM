@@ -87,3 +87,6 @@ verify_jwt = true
 
 [functions.ai-decision-engine]
 verify_jwt = true
+
+[functions.scan-document]
+verify_jwt = true
