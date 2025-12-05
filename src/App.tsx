@@ -92,6 +92,8 @@ const Messages = lazy(() => import("./pages/Messages"));
 const LeadAccessDiagnostics = lazy(() => import("./pages/LeadAccessDiagnostics"));
 const RoleDiagnostics = lazy(() => import("./pages/RoleDiagnostics"));
 const Automation = lazy(() => import("./pages/Automation"));
+const AdvancedReports = lazy(() => import("./pages/AdvancedReports"));
+const ReportBuilder = lazy(() => import("./pages/ReportBuilder"));
 
 // Lazy load dashboard components for code splitting (with named export handling)
 const LoanCloserDashboard = lazy(() => import("@/components/dashboards/LoanCloserDashboard").then(m => ({ default: m.LoanCloserDashboard })));
@@ -184,6 +186,9 @@ function AuthenticatedApp() {
         <Route path="/messages" element={<IBMCloudLayout><Messages /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         
         <Route path="/reports" element={<IBMCloudLayout><Reports /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/advanced-reports" element={<IBMCloudLayout><AdvancedReports /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/report-builder" element={<IBMCloudLayout><ReportBuilder /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/report-builder/:id" element={<IBMCloudLayout><ReportBuilder /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/support" element={<IBMCloudLayout><Support /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/user-directory" element={<IBMCloudLayout><UserDirectory /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         

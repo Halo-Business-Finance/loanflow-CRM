@@ -3590,6 +3590,159 @@ export type Database = {
         }
         Relationships: []
       }
+      report_execution_logs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          execution_time_ms: number | null
+          execution_type: string
+          export_path: string | null
+          id: string
+          report_id: string
+          row_count: number | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          execution_type: string
+          export_path?: string | null
+          id?: string
+          report_id: string
+          row_count?: number | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          execution_type?: string
+          export_path?: string | null
+          id?: string
+          report_id?: string
+          row_count?: number | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_execution_logs_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "saved_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_schedules: {
+        Row: {
+          created_at: string
+          day_of_month: number | null
+          day_of_week: number | null
+          delivery_config: Json | null
+          delivery_method: string
+          export_format: string | null
+          id: string
+          is_active: boolean | null
+          last_sent_at: string | null
+          next_send_at: string | null
+          report_id: string
+          schedule_type: string
+          send_count: number | null
+          time_of_day: string
+          timezone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          day_of_month?: number | null
+          day_of_week?: number | null
+          delivery_config?: Json | null
+          delivery_method?: string
+          export_format?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_sent_at?: string | null
+          next_send_at?: string | null
+          report_id: string
+          schedule_type: string
+          send_count?: number | null
+          time_of_day?: string
+          timezone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          day_of_month?: number | null
+          day_of_week?: number | null
+          delivery_config?: Json | null
+          delivery_method?: string
+          export_format?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_sent_at?: string | null
+          next_send_at?: string | null
+          report_id?: string
+          schedule_type?: string
+          send_count?: number | null
+          time_of_day?: string
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_schedules_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "saved_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_subscriptions: {
+        Row: {
+          created_at: string
+          email_on_change: boolean | null
+          id: string
+          notification_enabled: boolean | null
+          report_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_on_change?: boolean | null
+          id?: string
+          notification_enabled?: boolean | null
+          report_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_on_change?: boolean | null
+          id?: string
+          notification_enabled?: boolean | null
+          report_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_subscriptions_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "saved_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ringcentral_accounts: {
         Row: {
           client_id: string
@@ -3691,6 +3844,69 @@ export type Database = {
           used_at?: string | null
           user_id?: string
           verification_token?: string
+        }
+        Relationships: []
+      }
+      saved_reports: {
+        Row: {
+          chart_type: string | null
+          created_at: string
+          data_source: string
+          description: string | null
+          filters: Json | null
+          group_by: string | null
+          id: string
+          is_favorite: boolean | null
+          is_public: boolean | null
+          last_run_at: string | null
+          name: string
+          report_type: string
+          run_count: number | null
+          selected_columns: Json
+          sort_by: string | null
+          sort_order: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          chart_type?: string | null
+          created_at?: string
+          data_source: string
+          description?: string | null
+          filters?: Json | null
+          group_by?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          is_public?: boolean | null
+          last_run_at?: string | null
+          name: string
+          report_type?: string
+          run_count?: number | null
+          selected_columns?: Json
+          sort_by?: string | null
+          sort_order?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          chart_type?: string | null
+          created_at?: string
+          data_source?: string
+          description?: string | null
+          filters?: Json | null
+          group_by?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          is_public?: boolean | null
+          last_run_at?: string | null
+          name?: string
+          report_type?: string
+          run_count?: number | null
+          selected_columns?: Json
+          sort_by?: string | null
+          sort_order?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
