@@ -93,6 +93,12 @@ All colors MUST be HSL.
     --navy-light: 222 70% 35%;
     --navy-dark: 222 84% 15%;
 
+    /* Success/Info colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 84% 4.9%;
     --sidebar-primary: 221 83% 53%;
@@ -104,71 +110,96 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Refined dark mode with better contrast */
+    --background: 222 47% 8%;
+    --foreground: 210 40% 96%;
 
-    --card: 222 84% 7%;
-    --card-foreground: 210 40% 98%;
+    --card: 222 47% 10%;
+    --card-foreground: 210 40% 96%;
 
-    --popover: 222 84% 7%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 96%;
 
-    --primary: 240 100% 60%;
-    --primary-foreground: 222 84% 4.9%;
-    --primary-glow: 240 100% 70%;
-    --royal-blue: 240 100% 60%;
+    /* Vibrant primary blue for dark mode */
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 8%;
+    --primary-glow: 217 100% 70%;
+    --royal-blue: 217 91% 60%;
     
     --navy: 217 91% 60%;
-    --navy-light: 217 70% 72%;
+    --navy-light: 217 80% 72%;
     --navy-dark: 217 91% 50%;
 
-    --secondary: 217 32% 17%;
-    --secondary-foreground: 210 40% 98%;
+    /* Better secondary contrast */
+    --secondary: 217 32% 18%;
+    --secondary-foreground: 210 40% 96%;
 
-    --muted: 217 32% 17%;
-    --muted-foreground: 215 20% 65%;
+    /* Improved muted colors for readability */
+    --muted: 217 25% 16%;
+    --muted-foreground: 215 20% 70%;
 
-    --accent: 217 32% 17%;
-    --accent-foreground: 210 40% 98%;
+    /* Enhanced accent for visibility */
+    --accent: 217 40% 20%;
+    --accent-foreground: 210 40% 96%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 222 84% 4.9%;
+    /* Warmer warning for dark backgrounds */
+    --warning: 45 93% 58%;
+    --warning-foreground: 222 47% 8%;
 
-    --destructive: 0 75% 60%;
+    /* Softer destructive for dark mode */
+    --destructive: 0 72% 55%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 32% 17%;
-    --input: 217 32% 17%;
+    /* More visible borders */
+    --border: 217 25% 22%;
+    --input: 217 32% 18%;
+    --input-border: 217 40% 30%;
+    --input-border-hover: 217 50% 40%;
+    --input-border-focus: 217 91% 60%;
     --ring: 217 91% 60%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 70% 72%));
-    --gradient-blue: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 70% 72%));
-    --gradient-navy: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 70% 72%));
-    --gradient-green: linear-gradient(135deg, hsl(142 76% 60%), hsl(142 65% 72%));
-    --gradient-orange: linear-gradient(135deg, hsl(25 95% 65%), hsl(25 85% 77%));
-    --gradient-purple: linear-gradient(135deg, hsl(262 83% 68%), hsl(262 70% 80%));
-    --gradient-red: linear-gradient(135deg, hsl(0 75% 60%), hsl(0 65% 72%));
-    --shadow-glow: 0 0 25px hsl(217 91% 60% / 0.2);
-    --gradient-card: linear-gradient(145deg, hsl(222 84% 7%), hsl(217 32% 10%));
-    --gradient-accent: linear-gradient(135deg, hsl(217 32% 17%), hsl(217 20% 22%));
+    /* Enhanced gradients for dark mode */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 55%), hsl(217 80% 65%));
+    --gradient-blue: linear-gradient(135deg, hsl(217 91% 55%), hsl(217 80% 65%));
+    --gradient-navy: linear-gradient(135deg, hsl(217 91% 55%), hsl(217 80% 65%));
+    --gradient-green: linear-gradient(135deg, hsl(142 70% 50%), hsl(142 60% 62%));
+    --gradient-orange: linear-gradient(135deg, hsl(30 95% 55%), hsl(30 85% 67%));
+    --gradient-purple: linear-gradient(135deg, hsl(262 80% 60%), hsl(262 70% 72%));
+    --gradient-red: linear-gradient(135deg, hsl(0 72% 55%), hsl(0 62% 67%));
     
-    /* Dark Mode Glassmorphism */
-    --glass-bg: hsl(222 84% 7% / 0.85);
-    --glass-border: hsl(217 91% 60% / 0.1);
-    --glass-shadow: 0 8px 32px 0 hsl(217 91% 60% / 0.12);
-    --glass-backdrop: blur(8px);
-    --widget-glow: 0 0 0 1px hsl(217 91% 60% / 0.08), 0 4px 16px -4px hsl(217 91% 60% / 0.15);
-    --widget-pattern: radial-gradient(circle at 1px 1px, hsl(217 91% 60% / 0.04) 1px, transparent 0);
+    /* Enhanced shadows and glows */
+    --shadow-soft: 0 1px 3px 0 hsl(0 0% 0% / 0.3);
+    --shadow-medium: 0 4px 8px -1px hsl(0 0% 0% / 0.4), 0 2px 4px -2px hsl(0 0% 0% / 0.3);
+    --shadow-large: 0 12px 20px -4px hsl(0 0% 0% / 0.5), 0 4px 8px -4px hsl(0 0% 0% / 0.3);
+    --shadow-glow: 0 0 30px hsl(217 91% 60% / 0.25);
+    
+    --gradient-card: linear-gradient(145deg, hsl(222 47% 10%), hsl(217 32% 12%));
+    --gradient-accent: linear-gradient(135deg, hsl(217 32% 18%), hsl(217 25% 22%));
+    
+    /* Refined Dark Mode Glassmorphism */
+    --glass-bg: hsl(222 47% 10% / 0.9);
+    --glass-border: hsl(217 91% 60% / 0.15);
+    --glass-shadow: 0 8px 32px 0 hsl(0 0% 0% / 0.4);
+    --glass-backdrop: blur(12px);
+    --widget-glow: 0 0 0 1px hsl(217 91% 60% / 0.12), 0 4px 20px -4px hsl(217 91% 60% / 0.2);
+    --widget-pattern: radial-gradient(circle at 1px 1px, hsl(217 91% 60% / 0.06) 1px, transparent 0);
     --widget-pattern-size: 20px 20px;
 
-    --sidebar-background: 222 84% 4.9%;
-    --sidebar-foreground: 210 40% 98%;
+    /* Sidebar refinements */
+    --sidebar-background: 222 47% 7%;
+    --sidebar-foreground: 210 40% 96%;
     --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 222 84% 4.9%;
-    --sidebar-accent: 217 32% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 32% 17%;
+    --sidebar-primary-foreground: 222 47% 8%;
+    --sidebar-accent: 217 32% 18%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 217 25% 20%;
     --sidebar-ring: 217 91% 60%;
+
+    /* Success/Info states for dark mode */
+    --success: 142 70% 50%;
+    --success-foreground: 222 47% 8%;
+    --info: 199 89% 55%;
+    --info-foreground: 222 47% 8%;
   }
 }
 
@@ -374,5 +405,81 @@ All colors MUST be HSL.
   /* Button hover override - apply blue outline to all outline buttons */
   button[class*="outline"]:not([class*="destructive"]):hover {
     @apply outline outline-2 outline-blue-500 outline-offset-[-2px] bg-transparent;
+  }
+
+  /* Dark mode specific refinements */
+  .dark {
+    /* Enhanced text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .dark input,
+  .dark textarea,
+  .dark select {
+    @apply border-input-border bg-muted/50 text-foreground;
+    @apply focus:border-primary focus:ring-2 focus:ring-primary/30;
+  }
+
+  .dark .card,
+  .dark [data-card="true"],
+  .dark .bg-card {
+    @apply border-border/50;
+    background: linear-gradient(145deg, hsl(222 47% 10%), hsl(217 32% 12%));
+  }
+
+  .dark .widget-glass {
+    background: hsl(222 47% 10% / 0.92);
+    border-color: hsl(217 91% 60% / 0.15);
+  }
+
+  /* Improved badge contrast in dark mode */
+  .dark .badge-outline {
+    @apply border-border text-foreground;
+  }
+
+  /* Better table styling in dark mode */
+  .dark table th {
+    @apply bg-muted/30 text-foreground;
+  }
+
+  .dark table tr:hover {
+    @apply bg-muted/20;
+  }
+
+  /* Enhanced scrollbar for dark mode */
+  .dark ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    background: hsl(222 47% 8%);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: hsl(217 25% 25%);
+    border-radius: 4px;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: hsl(217 30% 35%);
+  }
+
+  /* Success and info colors */
+  .text-success {
+    color: hsl(var(--success));
+  }
+
+  .bg-success {
+    background-color: hsl(var(--success));
+  }
+
+  .text-info {
+    color: hsl(var(--info));
+  }
+
+  .bg-info {
+    background-color: hsl(var(--info));
   }
 }
