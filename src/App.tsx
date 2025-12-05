@@ -31,13 +31,11 @@ function KeyboardShortcutsProvider() {
   return null;
 }
 
-// Lazy-loading wrapper for enhanced security
+// Security hook provider - must be called directly, not lazy loaded
+import { useEnhancedSecurity } from "@/hooks/useEnhancedSecurity";
+
 function SecurityProvider() {
-  useEffect(() => {
-    import("@/hooks/useEnhancedSecurity").then(({ useEnhancedSecurity }) => {
-      // Security hook loaded on demand
-    });
-  }, []);
+  useEnhancedSecurity();
   return null;
 }
 
