@@ -4939,7 +4939,39 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      email_accounts_secure: {
+        Row: {
+          created_at: string | null
+          display_name: string | null
+          email_address: string | null
+          expires_at: string | null
+          id: string | null
+          is_active: boolean | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_name?: string | null
+          email_address?: string | null
+          expires_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_name?: string | null
+          email_address?: string | null
+          expires_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       admin_update_profile:

@@ -33,9 +33,9 @@ export const useSecureEmailAccounts = () => {
     try {
       setIsLoading(true);
       
-      // Use secure RLS policies to fetch only user's own accounts
+      // Use secure view that excludes OAuth tokens entirely
       const { data, error } = await supabase
-        .from('email_accounts')
+        .from('email_accounts_secure' as any)
         .select('id, email_address, display_name, expires_at, is_active, created_at, updated_at')
         .eq('is_active', true)
         .order('created_at', { ascending: false });
@@ -44,7 +44,7 @@ export const useSecureEmailAccounts = () => {
         throw error;
       }
 
-      setEmailAccounts(data || []);
+      setEmailAccounts((data as unknown as EmailAccount[]) || []);
     } catch (error: any) {
       logger.error('Error loading email accounts:', error);
       toast({
