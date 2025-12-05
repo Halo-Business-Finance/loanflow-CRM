@@ -7,11 +7,12 @@ import { TodaysScheduleWidget } from '@/components/widgets/TodaysScheduleWidget'
 import { LeadScoring } from '@/components/ai/LeadScoring';
 import { QuoteGenerator } from '@/components/originator/QuoteGenerator';
 import { CommissionCalculator } from '@/components/originator/CommissionCalculator';
+import { WidgetCustomizer } from '@/components/dashboard/WidgetCustomizer';
 import { 
   Target,
   Calculator,
   DollarSign,
-  Users
+  Settings2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
@@ -29,14 +30,24 @@ export const LoanOriginatorDashboard = () => {
         title="Loan Originator Dashboard"
         subtitle="Generate leads, quotes, and track commissions"
         actions={
-          <Button 
-            size="sm" 
-            onClick={handleRefresh}
-            className="h-9 px-4 bg-[#0f62fe] hover:bg-[#0353e9] text-white"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh Data
-          </Button>
+          <div className="flex items-center gap-2">
+            <WidgetCustomizer 
+              trigger={
+                <Button variant="outline" size="sm" className="h-9 gap-2">
+                  <Settings2 className="h-4 w-4" />
+                  Customize
+                </Button>
+              }
+            />
+            <Button 
+              size="sm" 
+              onClick={handleRefresh}
+              className="h-9 px-4 bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh Data
+            </Button>
+          </div>
         }
       />
 
