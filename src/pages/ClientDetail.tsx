@@ -18,6 +18,7 @@ import { PhoneDialer } from "@/components/PhoneDialer"
 import { EmailComposer } from "@/components/EmailComposer"
 import { LoanManager } from "@/components/LoanManager"
 import LoanRequestManager from "@/components/LoanRequestManager"
+import { ClientScheduler } from "@/components/calendar/ClientScheduler"
 import { formatPhoneNumber } from "@/lib/utils"
 import { formatNumber, formatCurrency } from "@/lib/utils"
 import { 
@@ -1438,6 +1439,13 @@ export default function ClientDetail() {
               />
             </CardContent>
           </Card>
+
+          {/* Client Scheduling */}
+          <ClientScheduler 
+            clientId={client.contact_entity_id || client.id}
+            clientName={client.name}
+            clientType="client"
+          />
 
           {/* General Notes Section */}
           <Card>
