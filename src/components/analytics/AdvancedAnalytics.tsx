@@ -23,13 +23,18 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
-  Zap
+  Zap,
+  Building2,
+  Sparkles
 } from 'lucide-react';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart as RechartsPieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart } from 'recharts';
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { PipelineVelocity } from './PipelineVelocity';
+import { RevenueForecastDashboard } from './RevenueForecastDashboard';
+import { LenderPerformance } from './LenderPerformance';
 
 interface AnalyticsData {
   revenue: any[];
@@ -267,8 +272,20 @@ export function AdvancedAnalytics() {
       </div>
 
       {/* Analytics Tabs */}
-      <Tabs defaultValue="revenue" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+      <Tabs defaultValue="velocity" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-9">
+          <TabsTrigger value="velocity" className="flex items-center gap-1">
+            <Zap className="h-4 w-4" />
+            <span className="hidden lg:inline">Velocity</span>
+          </TabsTrigger>
+          <TabsTrigger value="forecast" className="flex items-center gap-1">
+            <Sparkles className="h-4 w-4" />
+            <span className="hidden lg:inline">Forecast</span>
+          </TabsTrigger>
+          <TabsTrigger value="lenders" className="flex items-center gap-1">
+            <Building2 className="h-4 w-4" />
+            <span className="hidden lg:inline">Lenders</span>
+          </TabsTrigger>
           <TabsTrigger value="revenue">Revenue</TabsTrigger>
           <TabsTrigger value="conversion">Conversion</TabsTrigger>
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
@@ -276,6 +293,18 @@ export function AdvancedAnalytics() {
           <TabsTrigger value="team">Team</TabsTrigger>
           <TabsTrigger value="predictive">AI Insights</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="velocity">
+          <PipelineVelocity />
+        </TabsContent>
+
+        <TabsContent value="forecast">
+          <RevenueForecastDashboard />
+        </TabsContent>
+
+        <TabsContent value="lenders">
+          <LenderPerformance />
+        </TabsContent>
 
         <TabsContent value="revenue" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
