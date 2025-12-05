@@ -1606,6 +1606,59 @@ export type Database = {
         }
         Relationships: []
       }
+      document_scan_results: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          document_id: string | null
+          file_hash: string
+          file_name: string | null
+          file_size: number | null
+          id: string
+          is_safe: boolean
+          scan_id: string | null
+          scanned_at: string
+          scanned_by: string | null
+          threats_found: string[] | null
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          document_id?: string | null
+          file_hash: string
+          file_name?: string | null
+          file_size?: number | null
+          id?: string
+          is_safe?: boolean
+          scan_id?: string | null
+          scanned_at?: string
+          scanned_by?: string | null
+          threats_found?: string[] | null
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          document_id?: string | null
+          file_hash?: string
+          file_name?: string | null
+          file_size?: number | null
+          id?: string
+          is_safe?: boolean
+          scan_id?: string | null
+          scanned_at?: string
+          scanned_by?: string | null
+          threats_found?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_scan_results_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "lead_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       document_templates: {
         Row: {
           created_at: string | null
