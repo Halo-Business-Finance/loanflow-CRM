@@ -8,12 +8,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { User, Building2, Search } from 'lucide-react';
 
-interface User {
+interface TeamUser {
   id: string;
   first_name: string;
   last_name: string;
   email: string;
+}
+
+interface ClientContact {
+  id: string;
+  name: string;
+  business_name: string | null;
+  email: string;
+  phone: string | null;
+  type: 'client' | 'lead';
 }
 
 interface ScheduleMeetingModalProps {
@@ -21,16 +31,20 @@ interface ScheduleMeetingModalProps {
   onOpenChange: (open: boolean) => void;
   selectedDate?: Date;
   onSuccess?: () => void;
+  preselectedClient?: { id: string; name: string; type: 'client' | 'lead' };
 }
 
 export function ScheduleMeetingModal({ 
   open, 
   onOpenChange, 
   selectedDate,
-  onSuccess 
+  onSuccess,
+  preselectedClient
 }: ScheduleMeetingModalProps) {
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<TeamUser[]>([]);
+  const [clients, setClients] = useState<ClientContact[]>([]);
+  const [clientSearch, setClientSearch] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     message: '',
@@ -38,13 +52,23 @@ export function ScheduleMeetingModal({
     scheduledDate: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
     scheduledTime: '09:00',
     assignedUserId: '',
+    clientId: preselectedClient?.id || '',
+    clientType: preselectedClient?.type || '' as 'client' | 'lead' | '',
   });
 
   useEffect(() => {
     if (open) {
       fetchUsers();
+      fetchClients();
+      if (preselectedClient) {
+        setFormData(prev => ({
+          ...prev,
+          clientId: preselectedClient.id,
+          clientType: preselectedClient.type,
+        }));
+      }
     }
-  }, [open]);
+  }, [open, preselectedClient]);
 
   const fetchUsers = async () => {
     try {
@@ -54,17 +78,15 @@ export function ScheduleMeetingModal({
         .from('profiles')
         .select('id, first_name, last_name, email, is_active')
         .eq('is_active', true)
-        .neq('id', currentUser?.id || '') // Exclude current user
+        .neq('id', currentUser?.id || '')
         .order('first_name', { ascending: true });
 
       if (error) throw error;
       
-      // Filter out users without names
       const activeUsers = (data || []).filter(u => u.first_name || u.last_name);
       setUsers(activeUsers);
     } catch (error) {
       console.error('Error fetching users:', error);
-      // Fallback: try without is_active filter if column doesn't exist
       try {
         const { data: { user: currentUser } } = await supabase.auth.getUser();
         const { data, error: fallbackError } = await supabase
@@ -81,6 +103,45 @@ export function ScheduleMeetingModal({
       }
     }
   };
+
+  const fetchClients = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Fetch from contact_entities (leads/contacts)
+      const { data: contacts, error } = await supabase
+        .from('contact_entities')
+        .select('id, name, business_name, email, phone')
+        .order('name', { ascending: true })
+        .limit(100);
+
+      if (error) throw error;
+
+      const clientList: ClientContact[] = (contacts || []).map(c => ({
+        id: c.id,
+        name: c.name,
+        business_name: c.business_name,
+        email: c.email,
+        phone: c.phone,
+        type: 'lead' as const,
+      }));
+
+      setClients(clientList);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+    }
+  };
+
+  const filteredClients = clients.filter(client => {
+    if (!clientSearch) return true;
+    const search = clientSearch.toLowerCase();
+    return (
+      client.name.toLowerCase().includes(search) ||
+      (client.business_name?.toLowerCase().includes(search)) ||
+      client.email.toLowerCase().includes(search)
+    );
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,6 +162,8 @@ export function ScheduleMeetingModal({
           message: formData.message,
           type: formData.type,
           scheduled_for: scheduledFor.toISOString(),
+          related_id: formData.clientId || null,
+          related_type: formData.clientType || null,
         });
 
       if (error) throw error;
@@ -134,7 +197,10 @@ export function ScheduleMeetingModal({
         scheduledDate: '',
         scheduledTime: '09:00',
         assignedUserId: '',
+        clientId: '',
+        clientType: '',
       });
+      setClientSearch('');
     } catch (error) {
       console.error('Error scheduling event:', error);
       toast.error('Failed to schedule event');
@@ -181,9 +247,57 @@ export function ScheduleMeetingModal({
             </Select>
           </div>
 
+          {/* Client/Lead Selection */}
+          <div className="space-y-2">
+            <Label className="flex items-center gap-2">
+              <Building2 className="h-4 w-4" />
+              Link to Client/Lead
+            </Label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search clients..."
+                value={clientSearch}
+                onChange={(e) => setClientSearch(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <Select
+              value={formData.clientId}
+              onValueChange={(value) => {
+                const client = clients.find(c => c.id === value);
+                setFormData(prev => ({ 
+                  ...prev, 
+                  clientId: value,
+                  clientType: client?.type || '',
+                }));
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a client (optional)" />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50 max-h-[200px]">
+                <SelectItem value="">None</SelectItem>
+                {filteredClients.map((client) => (
+                  <SelectItem key={client.id} value={client.id}>
+                    <div className="flex flex-col">
+                      <span>{client.name}</span>
+                      {client.business_name && (
+                        <span className="text-xs text-muted-foreground">{client.business_name}</span>
+                      )}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {(formData.type === 'meeting' || formData.type === 'call') && (
             <div className="space-y-2">
-              <Label htmlFor="assignedUser">Assign to Team Member</Label>
+              <Label className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Assign to Team Member
+              </Label>
               <Select
                 value={formData.assignedUserId}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, assignedUserId: value }))}

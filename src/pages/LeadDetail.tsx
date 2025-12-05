@@ -25,6 +25,7 @@ import { LenderSelect } from "@/components/LenderSelect"
 import { LenderInfoWidget } from "@/components/LenderInfoWidget"
 import { ServiceProviderSelect } from "@/components/ServiceProviderSelect"
 import { ServiceProviderInfoWidget } from "@/components/ServiceProviderInfoWidget"
+import { ClientScheduler } from "@/components/calendar/ClientScheduler"
 
 import { formatNumber, formatCurrency, formatPhoneNumber, cn } from "@/lib/utils"
 import { useNotifications } from "@/hooks/useNotifications"
@@ -2240,6 +2241,17 @@ export default function LeadDetail() {
                 <BorrowerDocumentsWidget 
                   leadId={lead.id} 
                   contactEntityId={lead.contact_entity_id || lead.id}
+                />
+              </div>
+            )}
+
+            {/* Client Scheduling Widget */}
+            {lead && (
+              <div className="lg:col-span-2">
+                <ClientScheduler 
+                  clientId={lead.contact_entity_id || lead.id}
+                  clientName={lead.name || lead.business_name || 'Lead'}
+                  clientType="lead"
                 />
               </div>
             )}
