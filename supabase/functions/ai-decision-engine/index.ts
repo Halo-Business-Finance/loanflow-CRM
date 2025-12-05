@@ -1,4 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { SecureLogger } from '../_shared/secure-logger.ts';
+
+const logger = new SecureLogger('ai-decision-engine');
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -29,6 +32,8 @@ serve(async (req) => {
       application: LoanApplication;
       lenderGuidelines?: string;
     };
+    
+    logger.info('Processing loan decision request', { loanType: application.loan_type });
     
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -172,7 +177,7 @@ Provide your underwriting decision and analysis.`;
         );
       }
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      logger.error('AI gateway error', new Error(errorText), { status: response.status });
       return new Response(
         JSON.stringify({ error: "Failed to generate decision" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -184,6 +189,7 @@ Provide your underwriting decision and analysis.`;
     
     if (toolCall?.function?.arguments) {
       const decision = JSON.parse(toolCall.function.arguments);
+      logger.info('Decision generated successfully', { recommendation: decision.recommendation });
       return new Response(
         JSON.stringify(decision),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -196,9 +202,9 @@ Provide your underwriting decision and analysis.`;
     );
 
   } catch (error) {
-    console.error("Error in decision engine:", error);
+    logger.error('Error in decision engine', error instanceof Error ? error : new Error(String(error)));
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "An error occurred processing your request" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

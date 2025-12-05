@@ -1,6 +1,10 @@
 // Secure error handling utilities for Edge Functions
 // CRITICAL: Never expose internal errors to clients
 
+import { SecureLogger } from './secure-logger.ts';
+
+const logger = new SecureLogger('error-handler');
+
 export interface ErrorResponse {
   error: string;
   code?: string;
@@ -8,8 +12,8 @@ export interface ErrorResponse {
 
 // Map internal errors to safe, generic messages
 export const sanitizeError = (error: unknown): ErrorResponse => {
-  // Log full error server-side for debugging
-  console.error('Internal error:', error);
+  // Log full error server-side using secure logger (sanitizes sensitive data)
+  logger.error('Internal error occurred', error instanceof Error ? error : new Error(String(error)));
   
   const message = error instanceof Error ? error.message : String(error);
   
