@@ -11,6 +11,9 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     sourcemap: true,
+    cssMinify: true, // Ensure CSS is minified
+    cssCodeSplit: true, // Split CSS per component for smaller initial load
+    target: 'esnext', // Modern browsers for smaller output
     rollupOptions: {
       output: {
         manualChunks: {
