@@ -11,6 +11,7 @@ interface SecurityHeadersConfig {
 }
 
 const defaultSecurityHeaders: SecurityHeadersConfig = {
+  // Note: frame-ancestors and report-uri removed - only work via HTTP headers, not meta tags
   contentSecurityPolicy: [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gshxxsniwytjgcnthyfq.supabase.co https://maps.googleapis.com",
@@ -22,12 +23,10 @@ const defaultSecurityHeaders: SecurityHeadersConfig = {
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    "frame-ancestors 'none'",
     "manifest-src 'self'",
     "media-src 'self'",
     "worker-src 'self'",
     "child-src 'none'",
-    "report-uri /csp-violation-report-endpoint",
     "upgrade-insecure-requests"
   ].join("; "),
   referrerPolicy: "strict-origin-when-cross-origin",
@@ -71,11 +70,8 @@ export function ProductionSecurityHeaders() {
       noSniffMeta.content = defaultSecurityHeaders.xContentTypeOptions;
       document.head.appendChild(noSniffMeta);
 
-      // X-Frame-Options
-      const frameMeta = document.createElement('meta');
-      frameMeta.httpEquiv = 'X-Frame-Options';
-      frameMeta.content = defaultSecurityHeaders.xFrameOptions;
-      document.head.appendChild(frameMeta);
+      // X-Frame-Options - REMOVED: Cannot be set via meta tag, must be HTTP header
+      // The browser ignores X-Frame-Options in meta tags per W3C spec
 
       // X-XSS-Protection
       const xssMeta = document.createElement('meta');

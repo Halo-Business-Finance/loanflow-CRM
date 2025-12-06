@@ -40,12 +40,12 @@ export const getEnhancedSecurityHeaders = (config: SecurityHeadersConfig = {}) =
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
-      "frame-ancestors 'none'",
+      // frame-ancestors removed - only works via HTTP header, not meta tag
       "manifest-src 'self'",
       "media-src 'self'",
       "worker-src 'self' blob: https://acrobatservices.adobe.com https://documentservices.adobe.com",
       "child-src 'self' https://acrobatservices.adobe.com https://documentservices.adobe.com",
-      "report-uri /csp-violation-report-endpoint",
+      // report-uri removed - only works via HTTP header, not meta tag
       "upgrade-insecure-requests"
     ].join('; ');
 
