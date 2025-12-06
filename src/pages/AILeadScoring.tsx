@@ -52,8 +52,7 @@ export default function AILeadScoring() {
       supabase.from("leads").select(`
         id,
         contact_entity_id,
-        stage,
-        contact_entities (
+        contact_entities!leads_contact_entity_id_fkey (
           name,
           business_name,
           loan_amount
@@ -265,7 +264,7 @@ export default function AILeadScoring() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {scores.filter(s => s.next_best_actions?.length > 0).slice(0, 10).map((score) => {
+                {scores.filter(s => Array.isArray(s.next_best_actions) && s.next_best_actions.length > 0).slice(0, 10).map((score) => {
                   const lead = leads.find(l => l.id === score.lead_id);
                   const actions = score.next_best_actions as any[];
                   return (
