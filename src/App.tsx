@@ -94,6 +94,13 @@ const RoleDiagnostics = lazy(() => import("./pages/RoleDiagnostics"));
 const Automation = lazy(() => import("./pages/Automation"));
 const AdvancedReports = lazy(() => import("./pages/AdvancedReports"));
 const ReportBuilder = lazy(() => import("./pages/ReportBuilder"));
+const SLAManagement = lazy(() => import("./pages/SLAManagement"));
+const AILeadScoring = lazy(() => import("./pages/AILeadScoring"));
+const ExecutiveDashboard = lazy(() => import("./pages/ExecutiveDashboard"));
+const PartnerPortal = lazy(() => import("./pages/PartnerPortal"));
+const IntegrationHub = lazy(() => import("./pages/IntegrationHub"));
+const MultiEntityManagement = lazy(() => import("./pages/MultiEntityManagement"));
+const ComplianceDashboard = lazy(() => import("./pages/ComplianceDashboard"));
 
 // Lazy load dashboard components for code splitting (with named export handling)
 const LoanCloserDashboard = lazy(() => import("@/components/dashboards/LoanCloserDashboard").then(m => ({ default: m.LoanCloserDashboard })));
@@ -225,6 +232,13 @@ function AuthenticatedApp() {
         
         <Route path="/enterprise" element={<IBMCloudLayout><Enterprise /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/automation" element={<IBMCloudLayout><Automation /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/sla-management" element={<IBMCloudLayout><SLAManagement /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/ai-lead-scoring" element={<IBMCloudLayout><AILeadScoring /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/executive-dashboard" element={<IBMCloudLayout><ExecutiveDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/partner-portal" element={<IBMCloudLayout><PartnerPortal /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/integration-hub" element={<IBMCloudLayout><IntegrationHub /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/multi-entity" element={<IBMCloudLayout><MultiEntityManagement /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        <Route path="/compliance-dashboard" element={<IBMCloudLayout><ComplianceDashboard /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/analytics/advanced" element={<IBMCloudLayout><AdvancedAnalytics /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/integrations" element={<IBMCloudLayout><Integrations /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/ai-tools" element={<IBMCloudLayout><AITools /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
