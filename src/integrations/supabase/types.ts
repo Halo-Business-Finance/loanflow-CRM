@@ -285,6 +285,48 @@ export type Database = {
           },
         ]
       }
+      ai_lead_scores: {
+        Row: {
+          confidence: number
+          created_at: string
+          factors: Json
+          id: string
+          lead_id: string
+          model_version: string
+          next_best_actions: Json
+          predicted_close_date: string | null
+          predicted_value: number | null
+          score: number
+          scored_at: string
+        }
+        Insert: {
+          confidence?: number
+          created_at?: string
+          factors?: Json
+          id?: string
+          lead_id: string
+          model_version?: string
+          next_best_actions?: Json
+          predicted_close_date?: string | null
+          predicted_value?: number | null
+          score?: number
+          scored_at?: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          factors?: Json
+          id?: string
+          lead_id?: string
+          model_version?: string
+          next_best_actions?: Json
+          predicted_close_date?: string | null
+          predicted_value?: number | null
+          score?: number
+          scored_at?: string
+        }
+        Relationships: []
+      }
       ai_security_bots: {
         Row: {
           bot_name: string
@@ -646,6 +688,47 @@ export type Database = {
           verified_at?: string | null
         }
         Relationships: []
+      }
+      business_entities: {
+        Row: {
+          created_at: string
+          entity_type: string
+          id: string
+          is_active: boolean
+          name: string
+          parent_entity_id: string | null
+          settings: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entity_type?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          parent_entity_id?: string | null
+          settings?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entity_type?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          parent_entity_id?: string | null
+          settings?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_entities_parent_entity_id_fkey"
+            columns: ["parent_entity_id"]
+            isOneToOne: false
+            referencedRelation: "business_entities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       case_comments: {
         Row: {
@@ -1369,6 +1452,51 @@ export type Database = {
           },
         ]
       }
+      dashboard_widgets: {
+        Row: {
+          configuration: Json
+          created_at: string
+          height: number
+          id: string
+          is_visible: boolean
+          position_x: number
+          position_y: number
+          title: string
+          updated_at: string
+          user_id: string
+          widget_type: string
+          width: number
+        }
+        Insert: {
+          configuration?: Json
+          created_at?: string
+          height?: number
+          id?: string
+          is_visible?: boolean
+          position_x?: number
+          position_y?: number
+          title: string
+          updated_at?: string
+          user_id: string
+          widget_type: string
+          width?: number
+        }
+        Update: {
+          configuration?: Json
+          created_at?: string
+          height?: number
+          id?: string
+          is_visible?: boolean
+          position_x?: number
+          position_y?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+          widget_type?: string
+          width?: number
+        }
+        Relationships: []
+      }
       data_import_jobs: {
         Row: {
           completed_at: string | null
@@ -2075,6 +2203,41 @@ export type Database = {
         }
         Relationships: []
       }
+      entity_memberships: {
+        Row: {
+          created_at: string
+          entity_id: string
+          id: string
+          is_primary: boolean
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          id?: string
+          is_primary?: boolean
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          id?: string
+          is_primary?: boolean
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_memberships_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "business_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_attendees: {
         Row: {
           attendance_date: string | null
@@ -2398,6 +2561,95 @@ export type Database = {
             columns: ["blockchain_record_id"]
             isOneToOne: false
             referencedRelation: "blockchain_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_connections: {
+        Row: {
+          created_at: string
+          created_by: string
+          credentials_encrypted: string | null
+          error_message: string | null
+          id: string
+          integration_type: string
+          last_sync_at: string | null
+          name: string
+          provider: string
+          settings: Json
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          credentials_encrypted?: string | null
+          error_message?: string | null
+          id?: string
+          integration_type: string
+          last_sync_at?: string | null
+          name: string
+          provider: string
+          settings?: Json
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          credentials_encrypted?: string | null
+          error_message?: string | null
+          id?: string
+          integration_type?: string
+          last_sync_at?: string | null
+          name?: string
+          provider?: string
+          settings?: Json
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      integration_logs: {
+        Row: {
+          action: string
+          connection_id: string
+          created_at: string
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          request_data: Json | null
+          response_data: Json | null
+          status: string
+        }
+        Insert: {
+          action: string
+          connection_id: string
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          request_data?: Json | null
+          response_data?: Json | null
+          status: string
+        }
+        Update: {
+          action?: string
+          connection_id?: string
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          request_data?: Json | null
+          response_data?: Json | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_logs_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "integration_connections"
             referencedColumns: ["id"]
           },
         ]
@@ -3313,6 +3565,148 @@ export type Database = {
             columns: ["opportunity_id"]
             isOneToOne: false
             referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_organizations: {
+        Row: {
+          api_key_hash: string | null
+          commission_rate: number | null
+          contact_email: string
+          contact_phone: string | null
+          created_at: string
+          id: string
+          name: string
+          partner_type: string
+          settings: Json
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          api_key_hash?: string | null
+          commission_rate?: number | null
+          contact_email: string
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          partner_type?: string
+          settings?: Json
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          api_key_hash?: string | null
+          commission_rate?: number | null
+          contact_email?: string
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          partner_type?: string
+          settings?: Json
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      partner_submissions: {
+        Row: {
+          assigned_to: string | null
+          borrower_email: string
+          borrower_name: string
+          borrower_phone: string | null
+          business_name: string | null
+          converted_lead_id: string | null
+          created_at: string
+          id: string
+          loan_amount: number
+          loan_type: string
+          notes: string | null
+          organization_id: string
+          status: string
+          submitted_by: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          borrower_email: string
+          borrower_name: string
+          borrower_phone?: string | null
+          business_name?: string | null
+          converted_lead_id?: string | null
+          created_at?: string
+          id?: string
+          loan_amount: number
+          loan_type: string
+          notes?: string | null
+          organization_id: string
+          status?: string
+          submitted_by: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          borrower_email?: string
+          borrower_name?: string
+          borrower_phone?: string | null
+          business_name?: string | null
+          converted_lead_id?: string | null
+          created_at?: string
+          id?: string
+          loan_amount?: number
+          loan_type?: string
+          notes?: string | null
+          organization_id?: string
+          status?: string
+          submitted_by?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_submissions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "partner_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_users: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          organization_id: string
+          permissions: Json
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          organization_id: string
+          permissions?: Json
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          organization_id?: string
+          permissions?: Json
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_users_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "partner_organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -4532,6 +4926,107 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      sla_policies: {
+        Row: {
+          created_at: string
+          created_by: string
+          entity_type: string
+          escalation_rules: Json
+          id: string
+          is_active: boolean
+          name: string
+          priority_multipliers: Json
+          resolution_time_hours: number
+          response_time_hours: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          entity_type?: string
+          escalation_rules?: Json
+          id?: string
+          is_active?: boolean
+          name: string
+          priority_multipliers?: Json
+          resolution_time_hours?: number
+          response_time_hours?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          entity_type?: string
+          escalation_rules?: Json
+          id?: string
+          is_active?: boolean
+          name?: string
+          priority_multipliers?: Json
+          resolution_time_hours?: number
+          response_time_hours?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sla_tracking: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          entity_id: string
+          entity_type: string
+          escalation_level: number
+          first_response_at: string | null
+          id: string
+          last_escalated_at: string | null
+          policy_id: string
+          resolution_deadline: string
+          resolved_at: string | null
+          response_deadline: string
+          started_at: string
+          status: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          escalation_level?: number
+          first_response_at?: string | null
+          id?: string
+          last_escalated_at?: string | null
+          policy_id: string
+          resolution_deadline: string
+          resolved_at?: string | null
+          response_deadline: string
+          started_at?: string
+          status?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          escalation_level?: number
+          first_response_at?: string | null
+          id?: string
+          last_escalated_at?: string | null
+          policy_id?: string
+          resolution_deadline?: string
+          resolved_at?: string | null
+          response_deadline?: string
+          started_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sla_tracking_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "sla_policies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       social_media_profiles: {
         Row: {
