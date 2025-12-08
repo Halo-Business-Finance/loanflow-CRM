@@ -315,99 +315,54 @@ export default function Integrations() {
   return (
     <StandardPageLayout>
       <IBMPageHeader 
-        title="Integration Command Center"
+        title="Integrations"
         subtitle="Connect external services and configure AI-powered automation tools"
       />
       
-      <ResponsiveContainer padding="md">{/* Integration Metrics Overview */}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Connected</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <CheckCircle className="w-5 h-5 text-accent" />
-                  <p className="text-2xl font-bold">{integrations.filter(i => i.status === "connected").length}</p>
-                </div>
-              </div>
-            </div>
-          </StandardContentCard>
-
-          <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Available</p>
-                <p className="text-2xl font-bold">{integrations.filter(i => i.status === "available").length}</p>
-              </div>
-              <Clock className="w-8 h-8 text-primary" />
-            </div>
-          </StandardContentCard>
-
-          <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Categories</p>
-                <p className="text-2xl font-bold">{categoryFilters.length - 1}</p>
-              </div>
-              <Filter className="w-8 h-8 text-primary" />
-            </div>
-          </StandardContentCard>
-
-          <StandardContentCard>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">AI Tools</p>
-                <p className="text-2xl font-bold">{aiTools.filter(t => t.status === 'active').length}</p>
-              </div>
-              <Sparkles className="w-8 h-8 text-primary" />
-            </div>
-          </StandardContentCard>
-        </div>
-
-        <StandardContentCard>
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+      <ResponsiveContainer padding="md">
+        <div className="space-y-6">
+          {/* Search and Filter Row */}
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <div className="relative flex-1 w-full sm:max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Search integrations and tools..."
-                className="pl-10 border-[#0A1628]"
+                placeholder="Search integrations..."
+                className="pl-10"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0">
-              {categoryFilters.map((category) => (
+            <div className="flex gap-2 flex-wrap">
+              {categoryFilters.slice(0, 4).map((category) => (
                 <Button
                   key={category.id}
                   variant={selectedCategory === category.id ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedCategory(category.id)}
-                  className="flex items-center gap-2 whitespace-nowrap"
+                  className="whitespace-nowrap"
                 >
-                  <category.icon className="w-3 h-3" />
                   {category.name}
                 </Button>
               ))}
             </div>
           </div>
-        </StandardContentCard>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="integrations">
-              <Workflow className="w-4 h-4 mr-2" />
-              Third-Party Integrations
-            </TabsTrigger>
-            <TabsTrigger value="ai-tools">
-              <Bot className="w-4 h-4 mr-2" />
-              AI Tools
-            </TabsTrigger>
-            <TabsTrigger value="webhooks">
-              <Zap className="w-4 h-4 mr-2" />
-              Webhooks & API
-            </TabsTrigger>
-          </TabsList>
+          {/* Main Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="w-full sm:w-auto">
+              <TabsTrigger value="integrations" className="gap-2">
+                <Workflow className="w-4 h-4" />
+                <span className="hidden sm:inline">Third-Party</span> Integrations
+              </TabsTrigger>
+              <TabsTrigger value="ai-tools" className="gap-2">
+                <Bot className="w-4 h-4" />
+                AI Tools
+              </TabsTrigger>
+              <TabsTrigger value="webhooks" className="gap-2">
+                <Zap className="w-4 h-4" />
+                Webhooks
+              </TabsTrigger>
+            </TabsList>
 
           <TabsContent value="integrations" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -611,19 +566,12 @@ export default function Integrations() {
                       ))}
                     </div>
                   </div>
-                  <Button 
-                    variant="outline" 
-                    className="w-full"
-                    onClick={() => navigate('/api-docs')}
-                  >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    API Documentation
-                  </Button>
                 </div>
               </StandardContentCard>
             </div>
           </TabsContent>
         </Tabs>
+        </div>
 
         {/* Adobe Configuration Dialog */}
         <Dialog open={showAdobeConfig} onOpenChange={setShowAdobeConfig}>
