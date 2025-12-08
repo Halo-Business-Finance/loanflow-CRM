@@ -122,6 +122,7 @@ const navItems: NavItemData[] = [
       { icon: Sparkles, label: 'AI Tools', to: '/ai-tools' },
       { icon: BookOpen, label: 'Resources', to: '/resources' },
       { icon: Layers, label: 'Stage Management', to: '/pipeline/stages' },
+      { icon: CheckSquare, label: 'Compliance', to: '/compliance-dashboard' },
     ]
   },
   { 
