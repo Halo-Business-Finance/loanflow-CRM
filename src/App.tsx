@@ -76,7 +76,7 @@ const AdvancedAnalytics = lazy(() => import("./pages/AdvancedAnalytics"));
 const Integrations = lazy(() => import("./pages/Integrations"));
 const AITools = lazy(() => import("./pages/AITools"));
 
-const Screenshots = lazy(() => import("./pages/Screenshots"));
+
 const Security = lazy(() => import("./pages/Security"));
 const EmergencyMaintenance = lazy(() => import("./pages/EmergencyMaintenance"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -242,7 +242,7 @@ function AuthenticatedApp() {
         <Route path="/analytics/advanced" element={<IBMCloudLayout><AdvancedAnalytics /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/integrations" element={<IBMCloudLayout><Integrations /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/ai-tools" element={<IBMCloudLayout><AITools /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
-        <Route path="/screenshots" element={<IBMCloudLayout><Screenshots /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
+        
         
         <Route path="/resources" element={<IBMCloudLayout><Resources /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
         <Route path="/emergency-maintenance" element={<IBMCloudLayout><EmergencyMaintenance /></IBMCloudLayout>} errorElement={<RouteErrorBoundary />} />
