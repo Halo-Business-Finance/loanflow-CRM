@@ -16,8 +16,6 @@ import {
   AlertTriangle,
   Settings,
   Users,
-  Target,
-  GraduationCap,
   HelpCircle,
   Search
 } from "lucide-react";
@@ -25,7 +23,6 @@ import {
 interface ResourceOverview {
   totalResources: number;
   documentationScore: number;
-  trainingCompleted: number;
   supportTickets: number;
   knowledgeBaseArticles: number;
   videoTutorials: number;
@@ -37,7 +34,6 @@ export default function Resources() {
   const [overview] = useState<ResourceOverview>({
     totalResources: 0,
     documentationScore: 0,
-    trainingCompleted: 0,
     supportTickets: 0,
     knowledgeBaseArticles: 0,
     videoTutorials: 0,
@@ -51,14 +47,6 @@ export default function Resources() {
     { name: "Best Practices Guide", type: "PDF", category: "Training", url: "https://docs.lovable.dev/tips-tricks/troubleshooting", status: "Updated" },
     { name: "Security Protocols", type: "PDF", category: "Compliance", url: "https://docs.lovable.dev/", status: "Critical" },
     { name: "Integration Handbook", type: "PDF", category: "Technical", url: "https://supabase.com/docs", status: "Updated" }
-  ];
-
-  const trainingMaterials = [
-    { name: "Getting Started Tutorial", type: "Video", duration: "15 min", url: "https://www.youtube.com/watch?v=9KHLTZaJcR8", completion: "100%" },
-    { name: "Advanced Features Training", type: "Video", duration: "45 min", url: "https://www.youtube.com/playlist?list=PLbVHz4urQBZkJiAWdG8HWoJTdgEysigIO", completion: "87%" },
-    { name: "CRM Workflow Guide", type: "Interactive", duration: "30 min", url: "https://docs.lovable.dev/user-guides/quickstart", completion: "92%" },
-    { name: "Security Best Practices", type: "Video", duration: "25 min", url: "https://docs.lovable.dev/", completion: "78%" },
-    { name: "Compliance Training", type: "Course", duration: "2 hours", url: "https://docs.lovable.dev/", completion: "65%" }
   ];
 
   const getStatusColor = (status: string) => {
@@ -75,8 +63,6 @@ export default function Resources() {
       case 'PDF': return Download;
       case 'Video': return Video;
       case 'Web': return ExternalLink;
-      case 'Interactive': return Target;
-      case 'Course': return GraduationCap;
       default: return FileText;
     }
   };
@@ -91,7 +77,7 @@ export default function Resources() {
       <ResponsiveContainer>
         <div className="space-y-6">
           {/* Resource Overview Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <StandardContentCard className="hover:shadow-md transition-shadow">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -109,16 +95,6 @@ export default function Resources() {
                   <BookOpen className="w-4 h-4 text-muted-foreground" />
                 </div>
                 <p className="text-3xl font-bold text-primary">{overview.documentationScore}%</p>
-              </div>
-            </StandardContentCard>
-
-            <StandardContentCard className="hover:shadow-md transition-shadow">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-muted-foreground">Training Completed</p>
-                  <GraduationCap className="w-4 h-4 text-muted-foreground" />
-                </div>
-                <p className="text-3xl font-bold text-primary">{overview.trainingCompleted}%</p>
               </div>
             </StandardContentCard>
 
@@ -143,15 +119,6 @@ export default function Resources() {
                 </AlertDescription>
               </Alert>
             )}
-
-            {overview.trainingCompleted < 90 && (
-              <Alert className="border-l-4 border-l-primary">
-                <GraduationCap className="h-4 w-4" />
-                <AlertDescription>
-                  Training completion is at {overview.trainingCompleted}%. Consider completing remaining courses.
-                </AlertDescription>
-              </Alert>
-            )}
           </div>
 
           {/* Main Resource Dashboard Tabs */}
@@ -171,14 +138,7 @@ export default function Resources() {
                 <FileText className="h-4 w-4" />
                 Documentation
               </TabsTrigger>
-              <TabsTrigger 
-                value="training" 
-                className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-              >
-                <GraduationCap className="h-4 w-4" />
-                Training
-              </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="support" 
                 className="flex items-center gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
               >
@@ -323,45 +283,6 @@ export default function Resources() {
                           <p className="text-sm text-muted-foreground">
                             {item.type} • {item.category}
                           </p>
-                        </div>
-                        <Button variant="ghost" size="sm" onClick={() => window.open(item.url, '_blank')}>
-                          <ExternalLink className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </StandardContentCard>
-            </TabsContent>
-
-            <TabsContent value="training" className="mt-6">
-              <StandardContentCard title="Training & Development">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Learning materials and progress tracking
-                </p>
-                <div className="space-y-4">
-                  {trainingMaterials.map((item, index) => {
-                    const TypeIcon = getTypeIcon(item.type);
-                    const completion = parseInt(item.completion);
-                    return (
-                      <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
-                        <TypeIcon className="w-5 h-5 text-muted-foreground" />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium">{item.name}</span>
-                            <span className="text-sm font-medium">
-                              {item.completion} Complete
-                            </span>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {item.type} • {item.duration}
-                          </p>
-                          <div className="w-full bg-secondary/20 rounded-full h-2 mt-2">
-                            <div 
-                              className="bg-primary h-2 rounded-full transition-all duration-300" 
-                              style={{ width: `${completion}%` }}
-                            />
-                          </div>
                         </div>
                         <Button variant="ghost" size="sm" onClick={() => window.open(item.url, '_blank')}>
                           <ExternalLink className="w-4 h-4" />
