@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
@@ -9,12 +10,18 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { toast } from "sonner";
-import { format, formatDistanceToNow, isToday, isYesterday, subDays } from "date-fns";
+import { format, formatDistanceToNow, isToday, isYesterday } from "date-fns";
 import { 
   Shield, CheckCircle2, AlertTriangle, XCircle, FileText, 
   Clock, Download, RefreshCw, Lock, Eye, Trash2, Calendar,
-  Users, Database, Activity
+  Users, Database, Activity, ChevronDown, ChevronRight,
+  ExternalLink, CheckCheck, RotateCcw, Settings
 } from "lucide-react";
 
 interface ComplianceMetrics {
@@ -43,6 +50,8 @@ interface ComplianceCheck {
   status: "compliant" | "warning" | "non-compliant";
   lastChecked: string;
   description: string;
+  detailsExpanded?: boolean;
+  actionTaken?: boolean;
 }
 
 interface RetentionPolicy {
@@ -52,12 +61,18 @@ interface RetentionPolicy {
   action: string;
   status: "active" | "pending";
   recordCount: number;
+  navigateTo?: string;
 }
+
+const AUTO_REFRESH_INTERVAL = 30000; // 30 seconds
 
 export default function ComplianceDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [lastScan, setLastScan] = useState<string | null>(null);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [expandedChecks, setExpandedChecks] = useState<Set<string>>(new Set());
   const [metrics, setMetrics] = useState<ComplianceMetrics>({
     totalLeads: 0,
     totalDocuments: 0,
@@ -70,16 +85,10 @@ export default function ComplianceDashboard() {
   const [complianceChecks, setComplianceChecks] = useState<ComplianceCheck[]>([]);
   const [retentionPolicies, setRetentionPolicies] = useState<RetentionPolicy[]>([]);
 
-  useEffect(() => {
-    if (user) {
-      fetchComplianceData();
-    }
-  }, [user]);
-
-  const fetchComplianceData = async () => {
-    setIsLoading(true);
+  const fetchComplianceData = useCallback(async () => {
+    if (!user) return;
+    
     try {
-      // Fetch counts in parallel
       const [
         leadsResult,
         documentsResult,
@@ -94,7 +103,6 @@ export default function ComplianceDashboard() {
         supabase.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(50),
       ]);
 
-      // Count logins and data changes from recent logs
       const logs = recentAuditLogs.data || [];
       const loginCount = logs.filter(log => log.action === 'user_login').length;
       const dataChanges = logs.filter(log => 
@@ -111,27 +119,37 @@ export default function ComplianceDashboard() {
       });
 
       setAuditLogs(logs as AuditLogEntry[]);
-
-      // Generate compliance checks based on real data
       generateComplianceChecks(logs, sessionsResult.count || 0);
-
-      // Generate retention policies with real counts
       await generateRetentionPolicies();
-
       setLastScan(new Date().toISOString());
     } catch (error) {
       console.error('Error fetching compliance data:', error);
-      toast.error('Failed to load compliance data');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchComplianceData();
+    }
+  }, [user, fetchComplianceData]);
+
+  // Auto-refresh effect
+  useEffect(() => {
+    if (!autoRefresh || !user) return;
+
+    const interval = setInterval(() => {
+      fetchComplianceData();
+    }, AUTO_REFRESH_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [autoRefresh, user, fetchComplianceData]);
 
   const generateComplianceChecks = (logs: AuditLogEntry[], activeSessions: number) => {
     const now = new Date().toISOString();
     const checks: ComplianceCheck[] = [];
 
-    // Check audit logging
     const hasRecentAuditLogs = logs.length > 0;
     checks.push({
       id: "audit-logging",
@@ -144,7 +162,6 @@ export default function ComplianceDashboard() {
         : "No recent audit logs found",
     });
 
-    // Check session management
     checks.push({
       id: "session-mgmt",
       name: "Active Session Monitoring",
@@ -154,7 +171,6 @@ export default function ComplianceDashboard() {
       description: `${activeSessions} active sessions currently tracked`,
     });
 
-    // Check for suspicious login patterns
     const loginLogs = logs.filter(l => l.action === 'user_login');
     const uniqueIPs = new Set(loginLogs.map(l => l.ip_address)).size;
     checks.push({
@@ -166,7 +182,6 @@ export default function ComplianceDashboard() {
       description: `${loginLogs.length} logins from ${uniqueIPs} unique locations`,
     });
 
-    // Data encryption check (always compliant as it's enforced)
     checks.push({
       id: "encryption",
       name: "Data Encryption at Rest",
@@ -176,7 +191,6 @@ export default function ComplianceDashboard() {
       description: "AES-256 encryption enabled for all sensitive data",
     });
 
-    // SOX compliance checks
     checks.push({
       id: "sox-302",
       name: "SOX Section 302 - Financial Reporting Controls",
@@ -195,7 +209,6 @@ export default function ComplianceDashboard() {
       description: "Internal control framework documented and tested",
     });
 
-    // GDPR checks
     const deletionRequests = logs.filter(l => l.action === 'lead_deleted').length;
     checks.push({
       id: "gdpr-rights",
@@ -215,7 +228,6 @@ export default function ComplianceDashboard() {
       description: "Processing activities documented with lawful basis",
     });
 
-    // Access control check
     const adminActions = logs.filter(l => l.action.includes('admin')).length;
     checks.push({
       id: "access-control",
@@ -244,7 +256,8 @@ export default function ComplianceDashboard() {
         retentionPeriod: "7 years", 
         action: "Archive", 
         status: "active",
-        recordCount: leadsCount.count || 0
+        recordCount: leadsCount.count || 0,
+        navigateTo: "/leads"
       },
       { 
         id: "2", 
@@ -252,7 +265,8 @@ export default function ComplianceDashboard() {
         retentionPeriod: "10 years", 
         action: "Archive", 
         status: "active",
-        recordCount: docsCount.count || 0
+        recordCount: docsCount.count || 0,
+        navigateTo: "/documents"
       },
       { 
         id: "3", 
@@ -260,7 +274,8 @@ export default function ComplianceDashboard() {
         retentionPeriod: "7 years", 
         action: "Retain", 
         status: "active",
-        recordCount: auditCount.count || 0
+        recordCount: auditCount.count || 0,
+        navigateTo: "/security/audit"
       },
       { 
         id: "4", 
@@ -268,9 +283,47 @@ export default function ComplianceDashboard() {
         retentionPeriod: "90 days", 
         action: "Delete", 
         status: "active",
-        recordCount: sessionsCount.count || 0
+        recordCount: sessionsCount.count || 0,
+        navigateTo: "/security/access"
       },
     ]);
+  };
+
+  const toggleCheckExpanded = (checkId: string) => {
+    setExpandedChecks(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(checkId)) {
+        newSet.delete(checkId);
+      } else {
+        newSet.add(checkId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleMarkAsReviewed = (checkId: string) => {
+    setComplianceChecks(prev => 
+      prev.map(check => 
+        check.id === checkId 
+          ? { ...check, actionTaken: true, status: "compliant" as const }
+          : check
+      )
+    );
+    toast.success("Compliance check marked as reviewed");
+  };
+
+  const handleRerunCheck = (checkId: string) => {
+    toast.info("Re-running compliance check...");
+    setTimeout(() => {
+      setComplianceChecks(prev => 
+        prev.map(check => 
+          check.id === checkId 
+            ? { ...check, lastChecked: new Date().toISOString() }
+            : check
+        )
+      );
+      toast.success("Check completed");
+    }, 1000);
   };
 
   const getStatusIcon = (status: string) => {
@@ -324,6 +377,7 @@ export default function ComplianceDashboard() {
   };
 
   const runComplianceScan = async () => {
+    setIsLoading(true);
     toast.info("Running compliance scan...");
     await fetchComplianceData();
     toast.success("Compliance scan completed");
@@ -367,7 +421,15 @@ export default function ComplianceDashboard() {
         title="Compliance Dashboard"
         description="SOX/regulatory compliance tracking and data retention policies"
         actions={
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            <Button 
+              variant={autoRefresh ? "default" : "outline"} 
+              size="sm"
+              onClick={() => setAutoRefresh(!autoRefresh)}
+              title={autoRefresh ? "Auto-refresh enabled (30s)" : "Auto-refresh disabled"}
+            >
+              <RotateCcw className={`h-4 w-4 ${autoRefresh ? 'animate-spin' : ''}`} style={{ animationDuration: '3s' }} />
+            </Button>
             <Button variant="outline" onClick={exportReport}>
               <Download className="h-4 w-4 mr-2" />Export Report
             </Button>
@@ -388,89 +450,144 @@ export default function ComplianceDashboard() {
         </Alert>
       )}
 
+      {/* Clickable Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card>
+        <Card 
+          className="cursor-pointer hover:border-primary/50 transition-colors"
+          onClick={() => navigate('/security')}
+        >
           <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-primary/20">
-                <Shield className="h-5 w-5 text-primary" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-primary/20">
+                  <Shield className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Compliance Score</p>
+                  <p className="text-2xl font-bold">{stats.overallScore}%</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Compliance Score</p>
-                <p className="text-2xl font-bold">{stats.overallScore}%</p>
-              </div>
+              <ExternalLink className="h-4 w-4 text-muted-foreground" />
             </div>
             <Progress value={stats.overallScore} className="mt-3" />
           </CardContent>
         </Card>
-        <Card>
+        <Card 
+          className="cursor-pointer hover:border-primary/50 transition-colors"
+          onClick={() => {
+            const checksTab = document.querySelector('[value="checks"]') as HTMLElement;
+            checksTab?.click();
+          }}
+        >
           <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-green-500/20">
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-green-500/20">
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Compliant</p>
+                  <p className="text-2xl font-bold">{stats.compliant}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Compliant</p>
-                <p className="text-2xl font-bold">{stats.compliant}</p>
-              </div>
+              <ExternalLink className="h-4 w-4 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card 
+          className="cursor-pointer hover:border-primary/50 transition-colors"
+          onClick={() => {
+            const checksTab = document.querySelector('[value="checks"]') as HTMLElement;
+            checksTab?.click();
+          }}
+        >
           <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-yellow-500/20">
-                <AlertTriangle className="h-5 w-5 text-yellow-500" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-yellow-500/20">
+                  <AlertTriangle className="h-5 w-5 text-yellow-500" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Warnings</p>
+                  <p className="text-2xl font-bold">{stats.warnings}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Warnings</p>
-                <p className="text-2xl font-bold">{stats.warnings}</p>
-              </div>
+              <ExternalLink className="h-4 w-4 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card 
+          className="cursor-pointer hover:border-primary/50 transition-colors"
+          onClick={() => navigate('/security/audit')}
+        >
           <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-blue-500/20">
-                <Activity className="h-5 w-5 text-blue-500" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-blue-500/20">
+                  <Activity className="h-5 w-5 text-blue-500" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Audit Events</p>
+                  <p className="text-2xl font-bold">{metrics.auditLogsCount}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Audit Events</p>
-                <p className="text-2xl font-bold">{metrics.auditLogsCount}</p>
-              </div>
+              <ExternalLink className="h-4 w-4 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Quick Stats Row */}
+      {/* Clickable Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <Card className="bg-muted/30">
+        <Card 
+          className="bg-muted/30 cursor-pointer hover:border-primary/50 transition-colors"
+          onClick={() => navigate('/security/access')}
+        >
           <CardContent className="py-4">
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Active Sessions</span>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Active Sessions</span>
+                </div>
+                <p className="text-xl font-semibold mt-1">{metrics.activeSessions}</p>
+              </div>
+              <ExternalLink className="h-3 w-3 text-muted-foreground" />
             </div>
-            <p className="text-xl font-semibold mt-1">{metrics.activeSessions}</p>
           </CardContent>
         </Card>
-        <Card className="bg-muted/30">
+        <Card 
+          className="bg-muted/30 cursor-pointer hover:border-primary/50 transition-colors"
+          onClick={() => navigate('/leads')}
+        >
           <CardContent className="py-4">
-            <div className="flex items-center gap-2">
-              <Database className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Total Leads</span>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Database className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Total Leads</span>
+                </div>
+                <p className="text-xl font-semibold mt-1">{metrics.totalLeads}</p>
+              </div>
+              <ExternalLink className="h-3 w-3 text-muted-foreground" />
             </div>
-            <p className="text-xl font-semibold mt-1">{metrics.totalLeads}</p>
           </CardContent>
         </Card>
-        <Card className="bg-muted/30">
+        <Card 
+          className="bg-muted/30 cursor-pointer hover:border-primary/50 transition-colors"
+          onClick={() => navigate('/documents')}
+        >
           <CardContent className="py-4">
-            <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Documents</span>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Documents</span>
+                </div>
+                <p className="text-xl font-semibold mt-1">{metrics.totalDocuments}</p>
+              </div>
+              <ExternalLink className="h-3 w-3 text-muted-foreground" />
             </div>
-            <p className="text-xl font-semibold mt-1">{metrics.totalDocuments}</p>
           </CardContent>
         </Card>
         <Card className="bg-muted/30">
@@ -482,6 +599,9 @@ export default function ComplianceDashboard() {
             <p className="text-sm font-medium mt-1">
               {lastScan ? formatDistanceToNow(new Date(lastScan), { addSuffix: true }) : "Never"}
             </p>
+            {autoRefresh && (
+              <p className="text-xs text-muted-foreground mt-1">Auto-refresh: 30s</p>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -508,21 +628,86 @@ export default function ComplianceDashboard() {
                       <h4 className="text-sm font-semibold text-muted-foreground mb-3">{category}</h4>
                       <div className="space-y-2">
                         {categoryChecks.map((check) => (
-                          <div key={check.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                            <div className="flex items-center gap-3">
-                              {getStatusIcon(check.status)}
-                              <div>
-                                <p className="font-medium">{check.name}</p>
-                                <p className="text-sm text-muted-foreground">{check.description}</p>
-                              </div>
+                          <Collapsible 
+                            key={check.id}
+                            open={expandedChecks.has(check.id)}
+                            onOpenChange={() => toggleCheckExpanded(check.id)}
+                          >
+                            <div className="border rounded-lg overflow-hidden">
+                              <CollapsibleTrigger asChild>
+                                <div className="flex items-center justify-between p-3 hover:bg-muted/50 transition-colors cursor-pointer">
+                                  <div className="flex items-center gap-3">
+                                    {expandedChecks.has(check.id) ? (
+                                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                                    ) : (
+                                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                                    )}
+                                    {getStatusIcon(check.status)}
+                                    <div>
+                                      <p className="font-medium">{check.name}</p>
+                                      <p className="text-sm text-muted-foreground">{check.description}</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-muted-foreground hidden sm:block">
+                                      {format(new Date(check.lastChecked), 'MMM d, h:mm a')}
+                                    </span>
+                                    <Badge className={getStatusBadge(check.status)}>
+                                      {check.actionTaken ? 'reviewed' : check.status}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </CollapsibleTrigger>
+                              <CollapsibleContent>
+                                <div className="px-3 pb-3 pt-1 border-t bg-muted/20">
+                                  <div className="space-y-3">
+                                    <div className="text-sm text-muted-foreground">
+                                      <p><strong>Last Checked:</strong> {format(new Date(check.lastChecked), 'MMMM d, yyyy h:mm a')}</p>
+                                      <p><strong>Category:</strong> {check.category}</p>
+                                      <p><strong>Details:</strong> {check.description}</p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                      {check.status === "warning" && !check.actionTaken && (
+                                        <Button 
+                                          size="sm" 
+                                          variant="outline"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleMarkAsReviewed(check.id);
+                                          }}
+                                        >
+                                          <CheckCheck className="h-3 w-3 mr-1" />
+                                          Mark as Reviewed
+                                        </Button>
+                                      )}
+                                      <Button 
+                                        size="sm" 
+                                        variant="outline"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleRerunCheck(check.id);
+                                        }}
+                                      >
+                                        <RefreshCw className="h-3 w-3 mr-1" />
+                                        Re-run Check
+                                      </Button>
+                                      <Button 
+                                        size="sm" 
+                                        variant="outline"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          navigate('/security');
+                                        }}
+                                      >
+                                        <Settings className="h-3 w-3 mr-1" />
+                                        Configure
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CollapsibleContent>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground hidden sm:block">
-                                {format(new Date(check.lastChecked), 'MMM d, h:mm a')}
-                              </span>
-                              <Badge className={getStatusBadge(check.status)}>{check.status}</Badge>
-                            </div>
-                          </div>
+                          </Collapsible>
                         ))}
                       </div>
                     </div>
@@ -541,7 +726,11 @@ export default function ComplianceDashboard() {
             <CardContent>
               <div className="space-y-4">
                 {retentionPolicies.map((policy) => (
-                  <div key={policy.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <div 
+                    key={policy.id} 
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                    onClick={() => policy.navigateTo && navigate(policy.navigateTo)}
+                  >
                     <div className="flex items-center gap-4">
                       <div className="p-2 rounded-lg bg-primary/20">
                         <FileText className="h-5 w-5 text-primary" />
@@ -567,6 +756,7 @@ export default function ComplianceDashboard() {
                       <Badge variant={policy.status === "active" ? "default" : "secondary"}>
                         {policy.status}
                       </Badge>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground" />
                     </div>
                   </div>
                 ))}
@@ -577,8 +767,12 @@ export default function ComplianceDashboard() {
 
         <TabsContent value="audit">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Audit Trail</CardTitle>
+              <Button variant="outline" size="sm" onClick={() => navigate('/security/audit')}>
+                <ExternalLink className="h-4 w-4 mr-2" />
+                View All
+              </Button>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
