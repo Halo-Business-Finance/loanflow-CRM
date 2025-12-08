@@ -7,7 +7,6 @@ import {
   FileText,
   Shield,
   Database,
-  Server,
   Briefcase,
   ChevronDown,
   BarChart3,
@@ -17,7 +16,6 @@ import {
   Link2,
   Sparkles,
   BookOpen,
-  Code,
   Camera,
   Layers,
   TrendingUp,
@@ -124,7 +122,6 @@ const navItems: NavItemData[] = [
       { icon: Link2, label: 'Integrations', to: '/integrations' },
       { icon: Sparkles, label: 'AI Tools', to: '/ai-tools' },
       { icon: BookOpen, label: 'Resources', to: '/resources' },
-      { icon: Code, label: 'API Docs', to: '/api-docs' },
       { icon: Camera, label: 'Screenshots', to: '/screenshots' },
       { icon: Layers, label: 'Stage Management', to: '/pipeline/stages' },
     ]
