@@ -186,7 +186,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
           onClick={handleClick}
           className={cn(
             'flex items-center h-10 text-xs transition-all duration-300 relative group cursor-pointer rounded',
-            collapsed ? 'justify-center w-full px-0' : 'pl-0 pr-4',
+            collapsed ? 'justify-center w-full px-0' : 'pl-2 pr-4',
             (isActive || hasActiveSubItem)
               ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-white font-medium'
               : 'text-[#a8a8a8] hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-white'
@@ -236,7 +236,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
       to={to!}
       className={cn(
         'flex items-center h-10 text-xs transition-all duration-300 relative group rounded',
-        collapsed ? 'justify-center w-full px-0' : 'pl-0 pr-4',
+        collapsed ? 'justify-center w-full px-0' : 'pl-2 pr-4',
         isActive
           ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-white font-medium'
           : 'text-[#a8a8a8] hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-white'
@@ -268,7 +268,7 @@ export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className={cn(
             'group flex items-center h-10 text-[#a8a8a8] hover:text-white transition-colors rounded',
-            collapsed ? 'justify-center w-full px-0' : 'pl-0 pr-4'
+            collapsed ? 'justify-center w-full px-0' : 'pl-2 pr-4'
           )}
         >
           <div className="w-12 flex items-center justify-center">
