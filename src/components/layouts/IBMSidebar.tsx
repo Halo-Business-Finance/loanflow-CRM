@@ -16,7 +16,6 @@ import {
   Link2,
   Sparkles,
   BookOpen,
-  Camera,
   Layers,
   TrendingUp,
   FileCheck,
@@ -122,7 +121,6 @@ const navItems: NavItemData[] = [
       { icon: Link2, label: 'Integrations', to: '/integrations' },
       { icon: Sparkles, label: 'AI Tools', to: '/ai-tools' },
       { icon: BookOpen, label: 'Resources', to: '/resources' },
-      { icon: Camera, label: 'Screenshots', to: '/screenshots' },
       { icon: Layers, label: 'Stage Management', to: '/pipeline/stages' },
     ]
   },
