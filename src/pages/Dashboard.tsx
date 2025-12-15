@@ -442,40 +442,6 @@ export default function Dashboard() {
         {/* Messages Widget */}
         <CompactMessagesWidget />
 
-        {/* Full Calendar Widget */}
-        <Card className="bg-card border border-blue-600">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CalendarIcon className="h-4 w-4 text-primary" />
-                <CardTitle className="text-base">Calendar</CardTitle>
-              </div>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/activities/calendar')}
-                className="h-7 text-xs"
-              >
-                View Full
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="flex justify-center pb-4">
-            <Calendar
-              mode="single"
-              selected={new Date()}
-              className="rounded-md scale-90 -my-3"
-              modifiers={{
-                hasEvents: datesWithEvents
-              }}
-              modifiersClassNames={{
-                hasEvents: "bg-primary/10 font-semibold relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:rounded-full after:bg-primary"
-              }}
-              onDayClick={(date) => navigate('/activities/calendar')}
-            />
-          </CardContent>
-        </Card>
-
         {/* Today's Schedule */}
         <Card className="bg-card border border-blue-600">
           <CardHeader className="pb-3">
@@ -541,6 +507,40 @@ export default function Dashboard() {
                 ))}
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Full Calendar Widget */}
+        <Card className="bg-card border border-blue-600">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CalendarIcon className="h-4 w-4 text-primary" />
+                <CardTitle className="text-base">Calendar</CardTitle>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate('/activities/calendar')}
+                className="h-7 text-xs"
+              >
+                View Full
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="flex justify-center pb-4">
+            <Calendar
+              mode="single"
+              selected={new Date()}
+              className="rounded-md scale-90 -my-3"
+              modifiers={{
+                hasEvents: datesWithEvents
+              }}
+              modifiersClassNames={{
+                hasEvents: "bg-primary/10 font-semibold relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:rounded-full after:bg-primary"
+              }}
+              onDayClick={(date) => navigate('/activities/calendar')}
+            />
           </CardContent>
         </Card>
       </div>
