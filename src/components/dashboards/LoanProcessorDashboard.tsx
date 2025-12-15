@@ -411,8 +411,8 @@ export const LoanProcessorDashboard = () => {
         {/* Top Widgets Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <CompactMessagesWidget />
-          <CompactCalendarWidget />
           <TodaysScheduleWidget />
+          <CompactCalendarWidget />
         </div>
 
         {/* Main Content Tabs */}
