@@ -5688,22 +5688,22 @@ export type Database = {
       admin_update_profile:
         | {
             Args: {
-              p_first_name?: string
-              p_is_active?: boolean
-              p_last_name?: string
-              p_phone?: string
-              p_user_id: string
-            }
-            Returns: Json
-          }
-        | {
-            Args: {
               p_city?: string
               p_first_name?: string
               p_is_active?: boolean
               p_last_name?: string
               p_phone?: string
               p_state?: string
+              p_user_id: string
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              p_first_name?: string
+              p_is_active?: boolean
+              p_last_name?: string
+              p_phone?: string
               p_user_id: string
             }
             Returns: Json
@@ -5803,20 +5803,20 @@ export type Database = {
         | {
             Args: {
               p_device_fingerprint: string
+              p_session_token: string
+              p_user_agent: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_device_fingerprint: string
               p_ip_address: unknown
               p_session_token: string
               p_user_agent: string
               p_user_id: string
             }
             Returns: string
-          }
-        | {
-            Args: {
-              p_device_fingerprint: string
-              p_session_token: string
-              p_user_agent: string
-            }
-            Returns: undefined
           }
       create_test_user: {
         Args: { p_email: string; p_full_name?: string; p_role: string }
@@ -6102,26 +6102,6 @@ export type Database = {
       }
       get_verified_blockchain_records_secure:
         | {
-            Args: { p_record_id?: string; p_record_type?: string }
-            Returns: {
-              action: string
-              audit_verified: boolean
-              block_number: number
-              blockchain_hash: string
-              created_at: string
-              data_hash: string
-              id: string
-              metadata: Json
-              record_id: string
-              record_type: string
-              transaction_hash: string
-              updated_at: string
-              user_id: string
-              verification_status: string
-              verified_at: string
-            }[]
-          }
-        | {
             Args: never
             Returns: {
               block_number: number | null
@@ -6143,6 +6123,26 @@ export type Database = {
               isOneToOne: false
               isSetofReturn: true
             }
+          }
+        | {
+            Args: { p_record_id?: string; p_record_type?: string }
+            Returns: {
+              action: string
+              audit_verified: boolean
+              block_number: number
+              blockchain_hash: string
+              created_at: string
+              data_hash: string
+              id: string
+              metadata: Json
+              record_id: string
+              record_type: string
+              transaction_hash: string
+              updated_at: string
+              user_id: string
+              verification_status: string
+              verified_at: string
+            }[]
           }
       get_verified_blockchain_records_secure_view: {
         Args: { p_record_id?: string; p_record_type?: string }
@@ -6183,14 +6183,14 @@ export type Database = {
       }
       has_role:
         | {
+            Args: { required_role: string; user_id?: string }
+            Returns: boolean
+          }
+        | {
             Args: {
               required_role: Database["public"]["Enums"]["user_role"]
               user_id?: string
             }
-            Returns: boolean
-          }
-        | {
-            Args: { required_role: string; user_id?: string }
             Returns: boolean
           }
       has_sensitive_data_permission: {
@@ -6399,16 +6399,16 @@ export type Database = {
       }
       validate_session_security:
         | {
+            Args: { p_session_token: string; p_user_id: string }
+            Returns: Json
+          }
+        | {
             Args: {
               p_ip_address: unknown
               p_session_token: string
               p_user_agent: string
               p_user_id: string
             }
-            Returns: Json
-          }
-        | {
-            Args: { p_session_token: string; p_user_id: string }
             Returns: Json
           }
       validate_session_with_security_checks: {
