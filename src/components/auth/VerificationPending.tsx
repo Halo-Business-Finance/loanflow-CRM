@@ -30,7 +30,7 @@ export function VerificationPending() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
+    <main className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
@@ -86,6 +86,6 @@ export function VerificationPending() {
           </p>
         </CardContent>
       </Card>
-    </div>
+    </main>
   )
 }
