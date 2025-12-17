@@ -169,12 +169,12 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
             'flex items-center h-10 text-xs transition-all duration-300 relative group rounded',
             'justify-center w-full px-0',
             (isActive || hasActiveSubItem)
-              ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-foreground dark:text-white font-medium'
-              : 'text-muted-foreground hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-foreground dark:text-gray-400 dark:hover:text-white'
+              ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-white font-medium'
+              : 'text-gray-400 hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-white'
           )}
         >
           <div className="w-12 flex items-center justify-center">
-            <Icon className="h-4 w-4 flex-shrink-0 dark:text-white" />
+            <Icon className="h-4 w-4 flex-shrink-0 text-white" />
           </div>
         </NavLink>
       );
@@ -188,15 +188,15 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
             'flex items-center h-10 text-xs transition-all duration-300 relative group cursor-pointer rounded',
             collapsed ? 'justify-center w-full px-0' : 'pl-2 pr-4',
             (isActive || hasActiveSubItem)
-              ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-foreground dark:text-white font-medium'
-              : 'text-muted-foreground hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-foreground dark:text-gray-400 dark:hover:text-white'
+              ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-white font-medium'
+              : 'text-gray-400 hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-white'
           )}
         >
           {(isActive || hasActiveSubItem) && !collapsed && (
             <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
           )}
           <div className="w-12 flex items-center justify-center">
-            <Icon className="h-4 w-4 flex-shrink-0 dark:text-white" />
+            <Icon className="h-4 w-4 flex-shrink-0 text-white" />
           </div>
           {!collapsed && (
             <>
@@ -210,7 +210,7 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
           )}
         </div>
         {!collapsed && isOpen && (
-          <div className="ml-4 border-l border-border pb-4">
+          <div className="ml-4 border-l border-[#1a2942] pb-4">
             {subItems.map((subItem) => (
               <NavLink
                 key={subItem.to}
@@ -218,8 +218,8 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
                 className={cn(
                   'flex items-center h-8 text-xs transition-all duration-300 relative pl-4 rounded mr-1',
                   location.pathname === subItem.to || location.pathname.startsWith(subItem.to! + '/')
-                    ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-foreground dark:text-white font-medium'
-                    : 'text-muted-foreground hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-foreground dark:text-gray-400 dark:hover:text-white'
+                    ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-white font-medium'
+                    : 'text-gray-400 hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-white'
                 )}
               >
                 <span className="truncate text-xs">{subItem.label}</span>
@@ -238,15 +238,15 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
         'flex items-center h-10 text-xs transition-all duration-300 relative group rounded',
         collapsed ? 'justify-center w-full px-0' : 'pl-2 pr-4',
         isActive
-          ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-foreground dark:text-white font-medium'
-          : 'text-muted-foreground hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-foreground dark:text-gray-400 dark:hover:text-white'
+          ? 'outline outline-2 outline-blue-500 outline-offset-[-2px] text-white font-medium'
+          : 'text-gray-400 hover:outline hover:outline-2 hover:outline-blue-500 hover:outline-offset-[-2px] hover:text-white'
       )}
     >
       {isActive && !collapsed && (
         <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
       )}
       <div className="w-12 flex items-center justify-center">
-        <Icon className="h-4 w-4 flex-shrink-0 dark:text-white" />
+        <Icon className="h-4 w-4 flex-shrink-0 text-white" />
       </div>
       {!collapsed && <span className="truncate">{label}</span>}
     </NavLink>
@@ -257,7 +257,7 @@ export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
   return (
     <aside
       className={cn(
-        'bg-background dark:bg-[#0a1628] border-r border-border flex-shrink-0 transition-all duration-300 overflow-y-auto no-scrollbar',
+        'bg-[#0a1628] border-r border-[#1a2942] flex-shrink-0 transition-all duration-300 overflow-y-auto no-scrollbar',
         collapsed ? 'w-16' : 'w-48'
       )}
     >
@@ -267,13 +267,13 @@ export function IBMSidebar({ collapsed, onToggle }: IBMSidebarProps) {
           onClick={onToggle}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className={cn(
-            'group flex items-center h-10 text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-white transition-colors rounded',
+            'group flex items-center h-10 text-gray-400 hover:text-white transition-colors rounded',
             collapsed ? 'justify-center w-full px-0' : 'pl-2 pr-4'
           )}
         >
           <div className="w-12 flex items-center justify-center">
             <span className="inline-flex p-0.5 rounded border border-transparent group-hover:border-blue-500 transition-colors duration-200">
-              <Menu className="h-5 w-5 dark:text-white" />
+              <Menu className="h-5 w-5 text-white" />
             </span>
           </div>
         </button>
