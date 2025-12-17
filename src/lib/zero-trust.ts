@@ -1,10 +1,13 @@
 /**
  * Zero Trust Architecture Implementation
  * Never trust, always verify - every request is authenticated and authorized
+ * 
+ * SECURITY: Uses server-side encryption via Edge Functions
  */
 
 import { supabase } from "@/integrations/supabase/client";
 import { SecurityManager } from "./security";
+import { encryptData, decryptData } from "./server-encryption";
 import { logger } from "./logger";
 import { EnhancedMFA } from "./enhanced-mfa";
 
@@ -146,7 +149,7 @@ export class ZeroTrustManager {
         }).catch(() => logger.error('Failed to record API access'));
         
         return response;
-      } catch (error) {
+      } catch (error: any) {
         this.recordBehavioralData('api_error', {
           timestamp: startTime,
           url,
@@ -161,7 +164,7 @@ export class ZeroTrustManager {
     let keystrokes: number[] = [];
     let lastKeyTime = 0;
     
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keydown', () => {
       const now = Date.now();
       
       if (lastKeyTime > 0) {
@@ -192,7 +195,7 @@ export class ZeroTrustManager {
       avgKeystrokeTime: avgTime,
       variance: variance,
       pattern: keystrokes.slice(-10) // Last 10 for pattern analysis
-    }).catch(console.error);
+    }).catch(() => logger.error('Failed to record typing pattern'));
   }
 
   private async recordBehavioralData(type: string, data: any): Promise<void> {
@@ -317,13 +320,15 @@ export class ZeroTrustManager {
     
     this.riskScores.set(userId, riskScore);
     
-    // Adjust required authentication methods based on risk
+    // Adjust required authentication methods based on risk using server-side encryption
     const requiredMethods = await EnhancedMFA.getRequiredAuthMethods(riskScore);
-    const encryptedMethods = await SecurityManager.encryptSensitiveData(JSON.stringify(requiredMethods));
-    await supabase.rpc('store_secure_session_data', {
-      p_key: `required_auth_${userId}`,
-      p_value: encryptedMethods
-    });
+    const encryptResult = await encryptData(requiredMethods, 'required_auth');
+    if (encryptResult.success && encryptResult.encrypted) {
+      await supabase.rpc('store_secure_session_data', {
+        p_key: `required_auth_${userId}`,
+        p_value: encryptResult.encrypted
+      });
+    }
     
     // Adjust session timeout based on risk
     const sessionTimeout = this.calculateSessionTimeout(riskScore);
@@ -449,18 +454,21 @@ export class ZeroTrustManager {
   private async triggerAdditionalVerification(userId: string, riskScore: number): Promise<void> {
     const requiredMethods = await EnhancedMFA.getRequiredAuthMethods(riskScore);
     
-    // Store verification requirement server-side
+    // Store verification requirement server-side using secure encryption
     const verificationData = {
       methods: requiredMethods,
       riskScore,
       timestamp: Date.now(),
       expiresAt: Date.now() + (5 * 60 * 1000) // 5 minutes
     };
-    const encryptedData = await SecurityManager.encryptSensitiveData(JSON.stringify(verificationData));
-    await supabase.rpc('store_secure_session_data', {
-      p_key: `pending_verification_${userId}`,
-      p_value: encryptedData
-    });
+    
+    const encryptResult = await encryptData(verificationData, 'pending_verification');
+    if (encryptResult.success && encryptResult.encrypted) {
+      await supabase.rpc('store_secure_session_data', {
+        p_key: `pending_verification_${userId}`,
+        p_value: encryptResult.encrypted
+      });
+    }
     
     // Notify user
     this.notifyAdditionalVerificationRequired(requiredMethods);
@@ -468,7 +476,7 @@ export class ZeroTrustManager {
 
   private notifyAdditionalVerificationRequired(methods: string[]): void {
     // In production, show modal or redirect to verification page
-    logger.warn('Additional verification required');
+    logger.warn('Additional verification required', { methods });
   }
 
   private getAnomalySeverity(type: string): number {
@@ -504,91 +512,12 @@ export class ZeroTrustManager {
   }
 
   private async updateTrustLevel(userId: string): Promise<void> {
+    // Update trust level based on successful verifications
     const currentTrust = this.trustLevels.get(userId) || 50;
-    
-    // Gradually increase trust over time for good behavior
-    const timeSinceLastIncident = this.getTimeSinceLastSecurityIncident(userId);
-    
-    if (timeSinceLastIncident > 24 * 60 * 60 * 1000) { // 24 hours
-      this.trustLevels.set(userId, Math.min(100, currentTrust + 1));
-    }
-  }
-
-  private getTimeSinceLastSecurityIncident(userId: string): number {
-    const incidents = JSON.parse(localStorage.getItem('_security_incidents') || '[]');
-    const userIncidents = incidents.filter((incident: any) => 
-      incident.data?.userId === userId
-    );
-    
-    if (userIncidents.length === 0) return Infinity;
-    
-    const lastIncident = Math.max(...userIncidents.map((incident: any) => incident.timestamp));
-    return Date.now() - lastIncident;
-  }
-
-  // Public methods
-  async verifyAccess(resource: string, action: string): Promise<boolean> {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) return false;
-    
-    const userId = session.user.id;
-    const riskScore = this.riskScores.get(userId) || 50;
-    
-    // Check if additional verification is required
-    const { data: encryptedVerificationData } = await supabase.rpc('get_secure_session_data', {
-      p_key: `pending_verification_${userId}`
-    });
-    
-    if (encryptedVerificationData) {
-      try {
-        const decryptedData = await SecurityManager.decryptSensitiveData(encryptedVerificationData as string);
-        const pendingVerification = JSON.parse(decryptedData);
-        
-        if (pendingVerification && Date.now() < pendingVerification.expiresAt) {
-          return false; // Block access until verification is complete
-        }
-      } catch (error) {
-        logger.error('Failed to check pending verification');
-      }
-    }
-    
-    // Risk-based access control
-    const resourceRiskThreshold = this.getResourceRiskThreshold(resource, action);
-    
-    return riskScore <= resourceRiskThreshold;
-  }
-
-  private getResourceRiskThreshold(resource: string, action: string): number {
-    // Define risk thresholds for different resources and actions
-    const thresholds: Record<string, Record<string, number>> = {
-      'financial_data': {
-        'read': 60,
-        'write': 40,
-        'delete': 20
-      },
-      'pii_data': {
-        'read': 70,
-        'write': 50,
-        'delete': 30
-      },
-      'system_settings': {
-        'read': 50,
-        'write': 30,
-        'delete': 10
-      }
-    };
-    
-    return thresholds[resource]?.[action] || 50;
-  }
-
-  getRiskScore(userId: string): number {
-    return this.riskScores.get(userId) || 50;
-  }
-
-  getTrustLevel(userId: string): number {
-    return this.trustLevels.get(userId) || 50;
+    // Gradually increase trust with successful verifications (max 100)
+    this.trustLevels.set(userId, Math.min(100, currentTrust + 1));
   }
 }
 
 // Export singleton instance
-export const zeroTrust = ZeroTrustManager.getInstance();
+export const zeroTrustManager = ZeroTrustManager.getInstance();
