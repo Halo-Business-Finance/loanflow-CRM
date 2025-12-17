@@ -83,7 +83,7 @@ export function CompactCalendarWidget() {
               onSelect={setDate}
               month={currentMonth}
               onMonthChange={setCurrentMonth}
-              className="rounded-md w-full [&_.rdp-caption]:hidden [&_.rdp-nav]:hidden [&_.rdp-button_previous]:hidden [&_.rdp-button_next]:hidden [&_nav]:hidden [&_.rdp-caption_label]:hidden p-0"
+              className="rounded-md w-full p-0"
               modifiers={{
                 hasEvents: datesWithEvents,
               }}
@@ -93,6 +93,12 @@ export function CompactCalendarWidget() {
               classNames={{
                 months: "w-full",
                 month: "w-full",
+                caption: "flex justify-center pt-1 relative items-center",
+                caption_label: "text-sm font-medium",
+                nav: "hidden",
+                nav_button: "hidden",
+                nav_button_previous: "hidden",
+                nav_button_next: "hidden",
                 table: "w-full border-collapse",
                 head_row: "flex w-full",
                 head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-[0.7rem] text-center",
