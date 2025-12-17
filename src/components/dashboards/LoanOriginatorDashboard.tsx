@@ -4,12 +4,11 @@ import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
 import { CompactCalendarWidget } from '@/components/CompactCalendarWidget';
 import { TodaysScheduleWidget } from '@/components/widgets/TodaysScheduleWidget';
-import { LeadScoring } from '@/components/ai/LeadScoring';
+import { ActiveLeadsWidget } from '@/components/widgets/ActiveLeadsWidget';
 import { QuoteGenerator } from '@/components/originator/QuoteGenerator';
 import { CommissionCalculator } from '@/components/originator/CommissionCalculator';
 import { WidgetCustomizer } from '@/components/dashboard/WidgetCustomizer';
 import { 
-  Target,
   Calculator,
   DollarSign,
   Settings2
@@ -59,13 +58,12 @@ export const LoanOriginatorDashboard = () => {
           <CompactCalendarWidget />
         </div>
 
+        {/* Active Leads Widget */}
+        <ActiveLeadsWidget />
+
         {/* Main Content Tabs */}
-        <Tabs defaultValue="lead-scoring" className="space-y-4">
+        <Tabs defaultValue="quote-generator" className="space-y-4">
           <TabsList className="bg-[#0A1628] p-1 gap-2 inline-flex w-auto">
-            <TabsTrigger value="lead-scoring" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
-              <Target className="w-4 h-4" />
-              AI Lead Scoring
-            </TabsTrigger>
             <TabsTrigger value="quote-generator" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
               <Calculator className="w-4 h-4" />
               Quote Generator
@@ -75,10 +73,6 @@ export const LoanOriginatorDashboard = () => {
               Commissions
             </TabsTrigger>
           </TabsList>
-
-          <TabsContent value="lead-scoring" className="space-y-4">
-            <LeadScoring />
-          </TabsContent>
 
           <TabsContent value="quote-generator" className="space-y-4">
             <QuoteGenerator />
