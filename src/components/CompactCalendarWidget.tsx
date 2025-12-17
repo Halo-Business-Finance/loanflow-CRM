@@ -43,7 +43,7 @@ export function CompactCalendarWidget() {
   const eventsForSelectedDate = date ? getEventsForDate(date) : []
 
   return (
-    <Card className="shadow-soft h-[280px] flex flex-col">
+    <Card className="shadow-soft h-[280px] flex flex-col overflow-hidden bg-card">
       <CardHeader className="pb-2 pt-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
