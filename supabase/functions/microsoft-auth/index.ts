@@ -179,7 +179,9 @@ serve(async (req) => {
     }
 
     // Handle POST requests (JSON API)
-    const { action, code, state } = await req.json();
+    // Parse body once and reuse throughout
+    const body = await req.json();
+    const { action, code, state, to, subject, body: emailBody, cc, bcc, recipientEmail, recipientName } = body;
     
     // Get authorization header
     const authHeader = req.headers.get('Authorization');
@@ -294,7 +296,7 @@ serve(async (req) => {
       }
 
       case 'send_email': {
-        const { to, subject, body, cc, bcc } = await req.json();
+        // to, subject, emailBody (as body), cc, bcc already extracted from body above
 
         // Get active email account
         const { data: emailAccount, error: accountError } = await supabase
@@ -325,7 +327,7 @@ serve(async (req) => {
             subject: subject,
             body: {
               contentType: 'HTML',
-              content: body,
+              content: emailBody,
             },
             toRecipients: to.map((email: string) => ({
               emailAddress: { address: email }
@@ -364,7 +366,7 @@ serve(async (req) => {
       }
 
       case 'send_password_reset': {
-        const { recipientEmail, recipientName } = await req.json();
+        // recipientEmail and recipientName already extracted from body above
 
         // Get active email account for the admin user
         const { data: emailAccount, error: accountError } = await supabase
