@@ -122,7 +122,7 @@ All colors MUST be HSL.
 
     /* Vibrant primary blue for dark mode */
     --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 8%;
+    --primary-foreground: 0 0% 100%;
     --primary-glow: 217 100% 70%;
     --royal-blue: 217 91% 60%;
     
