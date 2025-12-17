@@ -216,8 +216,9 @@ export function LoginForm({ onToggleMode }: LoginFormProps) {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1 min-w-[24px] min-h-[24px] flex items-center justify-center"
                   disabled={isLoading}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" />
@@ -258,6 +259,7 @@ export function LoginForm({ onToggleMode }: LoginFormProps) {
               disabled={isMicrosoftLoading || isLoading}
               variant="outline"
               className="flex-1 h-12"
+              aria-label="Sign in with Microsoft"
             >
               {isMicrosoftLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
