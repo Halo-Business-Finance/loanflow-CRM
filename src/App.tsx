@@ -270,7 +270,9 @@ const App = () => {
     }}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="loanflow-theme-v2">
-          <CSPHeaders />
+          <Suspense fallback={null}>
+            <CSPHeaders />
+          </Suspense>
           {/* Security enhancement providers temporarily disabled */}
           <AuthProvider>
             {/* Temporarily disabled security enhancement providers to prevent auto-refresh */}
