@@ -83,7 +83,7 @@ export function CompactCalendarWidget() {
               onSelect={setDate}
               month={currentMonth}
               onMonthChange={setCurrentMonth}
-              className="rounded-md w-full [&_.rdp-caption]:hidden [&_.rdp-nav]:hidden p-0"
+              className="rounded-md w-full [&_.rdp-caption]:hidden [&_.rdp-nav]:hidden [&_.rdp-button_previous]:hidden [&_.rdp-button_next]:hidden [&_nav]:hidden [&_.rdp-caption_label]:hidden p-0"
               modifiers={{
                 hasEvents: datesWithEvents,
               }}
