@@ -121,26 +121,7 @@ export const SecureRoleManager: React.FC<SecureRoleManagerProps> = ({
             {isLoading ? 'Assigning...' : 'Assign Role'}
           </Button>
           
-          <Dialog open={mfaDialogOpen} onOpenChange={setMfaDialogOpen}>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex-1"
-              >
-                <Smartphone className="h-4 w-4 mr-2" />
-                MFA Setup
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Multi-Factor Authentication</DialogTitle>
-                <DialogDescription>
-                  Register or update MFA details for {targetUserName}
-                </DialogDescription>
-              </DialogHeader>
-              <MicrosoftAuthenticatorSetup />
-            </DialogContent>
-          </Dialog>
+          {/* MFA Setup disabled to prevent unwanted authenticator entries */}
         </div>
 
         {/* Security Notice */}

@@ -382,11 +382,13 @@ const SecurityPage: React.FC = () => {
                       Multi-Factor Authentication
                     </CardTitle>
                     <CardDescription className="text-base">
-                      Configure Microsoft Authenticator for enhanced account security
+                      MFA setup is currently disabled
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <MicrosoftAuthenticatorSetup />
+                    <p className="text-sm text-muted-foreground">
+                      Two-factor authentication via Microsoft Authenticator has been disabled to prevent unwanted entries in your authenticator app.
+                    </p>
                   </CardContent>
                 </Card>
               </TabsContent>
