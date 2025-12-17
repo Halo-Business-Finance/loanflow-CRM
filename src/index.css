@@ -268,7 +268,7 @@ All colors MUST be HSL.
     @apply font-sans font-semibold;
   }
 
-  /* Dark mode icon colors - use primary blue */
+  /* Dark mode icon colors - use primary blue for general icons */
   .dark svg:not([class*="text-"]):not([class*="fill-"]) {
     color: hsl(var(--primary));
   }
@@ -276,6 +276,22 @@ All colors MUST be HSL.
   .dark .text-muted-foreground svg,
   .dark svg.text-muted-foreground {
     color: hsl(var(--primary));
+  }
+
+  /* Icons inside buttons should be white in dark mode */
+  .dark button svg,
+  .dark [role="button"] svg,
+  .dark a[class*="button"] svg,
+  .dark .btn svg {
+    color: currentColor;
+  }
+  
+  /* Primary/default buttons - icons should be white */
+  .dark button[class*="bg-primary"] svg,
+  .dark button[class*="bg-[#0f62fe]"] svg,
+  .dark [class*="variant-primary"] svg,
+  .dark [class*="variant-default"] svg {
+    color: hsl(0 0% 100%);
   }
 
   /* Enhanced input field styling */
