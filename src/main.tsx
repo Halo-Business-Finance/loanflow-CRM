@@ -8,4 +8,8 @@ import { initializeSecurityHeaders, setupCSPReporting } from './lib/content-secu
 initializeSecurityHeaders()
 setupCSPReporting()
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
