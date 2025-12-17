@@ -479,17 +479,44 @@ export default function UserDirectory() {
     }
   };
 
-  const getEdgeFunctionErrorMessage = (err: any) => {
+  const getEdgeFunctionErrorMessage = async (err: any): Promise<string> => {
     const fallback = err?.message || 'Failed to complete the request';
 
-    const body = err?.context?.body;
-    if (typeof body === 'string') {
+    const parseMaybeJson = (text: string) => {
+      if (!text) return '';
       try {
-        const parsed = JSON.parse(body);
+        const parsed = JSON.parse(text);
         if (parsed?.error) return String(parsed.error);
       } catch {
         // ignore
       }
+      return text;
+    };
+
+    // Supabase FunctionsHttpError stores the Response in error.context
+    const ctx = err?.context;
+    const responseCandidate =
+      (typeof Response !== 'undefined' && ctx instanceof Response)
+        ? ctx
+        : (ctx && typeof ctx === 'object' && typeof (ctx as any).clone === 'function' && typeof (ctx as any).text === 'function')
+          ? (ctx as Response)
+          : null;
+
+    if (responseCandidate) {
+      try {
+        const text = await responseCandidate.clone().text();
+        const msg = parseMaybeJson(text);
+        if (msg) return msg;
+      } catch {
+        // ignore
+      }
+    }
+
+    // Back-compat: some errors include a body payload
+    const body = err?.context?.body;
+    if (typeof body === 'string') {
+      const msg = parseMaybeJson(body);
+      if (msg) return msg;
     }
     if (body && typeof body === 'object' && 'error' in body) {
       return String((body as any).error);
@@ -526,7 +553,7 @@ export default function UserDirectory() {
         description: `Sent via Microsoft 365 to ${user.email}`,
       });
     } catch (error: any) {
-      const message = getEdgeFunctionErrorMessage(error);
+      const message = await getEdgeFunctionErrorMessage(error);
 
       // If Microsoft 365 isn't connected, fall back to Supabase's built-in password reset email.
       if (message.toLowerCase().includes('no active email account')) {
