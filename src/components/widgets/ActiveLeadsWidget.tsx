@@ -253,7 +253,7 @@ export const ActiveLeadsWidget = () => {
           </div>
           <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
             <PopoverTrigger asChild>
-              <Button variant="default" size="sm" className="h-10 px-4">
+              <Button variant="primary" size="sm" className="h-10 px-4">
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
               </Button>

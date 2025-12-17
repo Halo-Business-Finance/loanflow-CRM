@@ -39,9 +39,10 @@ export const LoanOriginatorDashboard = () => {
               }
             />
             <Button 
+              variant="primary"
               size="sm" 
               onClick={handleRefresh}
-              className="h-9 px-4 bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="h-9 px-4"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               Refresh Data
@@ -63,12 +64,12 @@ export const LoanOriginatorDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="quote-generator" className="space-y-4">
-          <TabsList className="bg-[#0A1628] p-1 gap-2 inline-flex w-auto">
-            <TabsTrigger value="quote-generator" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+          <TabsList className="bg-transparent p-0 gap-2 inline-flex w-auto h-auto">
+            <TabsTrigger value="quote-generator" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white bg-[#0f62fe] text-white hover:bg-[#0353e9] rounded-md flex items-center gap-2 px-4 py-2 h-9 text-sm font-medium transition-colors duration-200">
               <Calculator className="w-4 h-4" />
               Quote Generator
             </TabsTrigger>
-            <TabsTrigger value="commissions" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-white hover:text-white rounded-md flex items-center gap-2">
+            <TabsTrigger value="commissions" className="data-[state=active]:bg-[#0f62fe] data-[state=active]:text-white bg-[#0f62fe] text-white hover:bg-[#0353e9] rounded-md flex items-center gap-2 px-4 py-2 h-9 text-sm font-medium transition-colors duration-200">
               <DollarSign className="w-4 h-4" />
               Commissions
             </TabsTrigger>
