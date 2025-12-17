@@ -134,13 +134,8 @@ export function applySecurityHeaders(): void {
     document.head.appendChild(meta1);
   }
 
-  // X-Frame-Options (backup to CSP frame-ancestors)
-  if (!document.querySelector('meta[http-equiv="X-Frame-Options"]')) {
-    const meta2 = document.createElement('meta');
-    meta2.httpEquiv = 'X-Frame-Options';
-    meta2.content = 'DENY';
-    document.head.appendChild(meta2);
-  }
+  // Note: X-Frame-Options cannot be set via meta tag - it must be set via HTTP header
+  // The CSP frame-ancestors directive handles this protection
 
   // Referrer-Policy
   if (!document.querySelector('meta[name="referrer"]')) {
