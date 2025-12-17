@@ -479,6 +479,25 @@ export default function UserDirectory() {
     }
   };
 
+  const getEdgeFunctionErrorMessage = (err: any) => {
+    const fallback = err?.message || 'Failed to complete the request';
+
+    const body = err?.context?.body;
+    if (typeof body === 'string') {
+      try {
+        const parsed = JSON.parse(body);
+        if (parsed?.error) return String(parsed.error);
+      } catch {
+        // ignore
+      }
+    }
+    if (body && typeof body === 'object' && 'error' in body) {
+      return String((body as any).error);
+    }
+
+    return fallback;
+  };
+
   const handleSendPasswordReset = async (user: UserProfile) => {
     if (!user.email) {
       toast({
@@ -491,8 +510,8 @@ export default function UserDirectory() {
 
     try {
       setSendingPasswordReset(user.id);
-      
-      const { data, error } = await supabase.functions.invoke('microsoft-auth', {
+
+      const { error } = await supabase.functions.invoke('microsoft-auth', {
         body: {
           action: 'send_password_reset',
           recipientEmail: user.email,
@@ -503,14 +522,41 @@ export default function UserDirectory() {
       if (error) throw error;
 
       toast({
-        title: 'Password Reset Email Sent',
-        description: `A password reset email has been sent to ${user.email}`,
+        title: 'Password reset email sent',
+        description: `Sent via Microsoft 365 to ${user.email}`,
       });
     } catch (error: any) {
-      logger.error('Error sending password reset');
+      const message = getEdgeFunctionErrorMessage(error);
+
+      // If Microsoft 365 isn't connected, fall back to Supabase's built-in password reset email.
+      if (message.toLowerCase().includes('no active email account')) {
+        try {
+          const { error: resetError } = await supabase.auth.resetPasswordForEmail(user.email, {
+            redirectTo: `${window.location.origin}/auth?mode=reset`,
+          });
+
+          if (resetError) throw resetError;
+
+          toast({
+            title: 'Password reset email sent',
+            description: `Microsoft 365 isn’t connected — sent via system email to ${user.email}`,
+          });
+          return;
+        } catch (fallbackError: any) {
+          logger.error('Fallback password reset failed', fallbackError);
+          toast({
+            title: 'Error',
+            description: fallbackError?.message || message,
+            variant: 'destructive',
+          });
+          return;
+        }
+      }
+
+      logger.error('Error sending password reset', error);
       toast({
         title: 'Error',
-        description: error?.message || 'Failed to send password reset email',
+        description: message,
         variant: 'destructive',
       });
     } finally {
