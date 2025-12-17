@@ -135,11 +135,17 @@ function AuthenticatedApp() {
   if (!user) {
     return (
       <BrowserRouter>
-        <Routes>
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/auth/callback" element={<CallbackHandler />} />
-          <Route path="*" element={<Navigate to="/auth" replace />} />
-        </Routes>
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        }>
+          <Routes>
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/auth/callback" element={<CallbackHandler />} />
+            <Route path="*" element={<Navigate to="/auth" replace />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     );
   }
