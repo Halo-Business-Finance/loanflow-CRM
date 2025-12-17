@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription"
 import { Badge } from "@/components/ui/badge"
+import { LeadScoring } from "@/components/ai/LeadScoring"
 import {
   Popover,
   PopoverContent,
@@ -840,6 +841,9 @@ export default function LeadAssignmentPage() {
             </div>
           </div>
         </StandardContentCard>
+
+        {/* AI Lead Scoring Section */}
+        <LeadScoring />
       </div>
     </div>
   )
