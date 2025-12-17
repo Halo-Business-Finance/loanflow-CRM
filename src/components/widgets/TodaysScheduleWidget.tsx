@@ -38,12 +38,12 @@ export function TodaysScheduleWidget() {
   };
 
   return (
-    <Card className="bg-card border border-border">
-      <CardHeader className="pb-3">
+    <Card className="bg-card border border-border h-[280px] flex flex-col">
+      <CardHeader className="pb-2 pt-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-primary" />
-            <CardTitle className="text-base font-normal text-[#161616]">
+            <Calendar className="h-4 w-4 text-primary" />
+            <CardTitle className="text-base font-normal text-foreground">
               Today's Schedule
             </CardTitle>
           </div>
@@ -51,64 +51,59 @@ export function TodaysScheduleWidget() {
             variant="link" 
             size="sm"
             onClick={() => navigate('/activities/calendar')}
-            className="text-xs text-primary"
+            className="text-xs text-primary h-7 px-2"
           >
             View All
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-xs text-muted-foreground">
           {format(currentDate, 'EEEE, MMMM d, yyyy')}
         </p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1 flex flex-col pb-3">
         {loading ? (
-          <div className="flex items-center justify-center h-32">
+          <div className="flex items-center justify-center flex-1">
             <p className="text-sm text-muted-foreground">Loading events...</p>
           </div>
         ) : todaysEvents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-32 text-center">
-            <Clock className="h-12 w-12 text-muted-foreground mb-3" />
-            <p className="text-sm text-muted-foreground mb-3">No events scheduled for today</p>
+          <div className="flex flex-col items-center justify-center flex-1 text-center">
+            <Clock className="h-8 w-8 text-muted-foreground mb-2" />
+            <p className="text-sm text-muted-foreground mb-2">No events scheduled for today</p>
             <Button
               variant="link"
               size="sm"
               onClick={() => navigate('/activities/calendar')}
-              className="text-primary"
+              className="text-primary h-7"
             >
-              <CalendarPlus className="h-4 w-4 mr-2" />
+              <CalendarPlus className="h-3.5 w-3.5 mr-1" />
               Schedule an event
             </Button>
           </div>
         ) : (
-          <ScrollArea className="h-[280px]">
-            <div className="space-y-3">
-              {todaysEvents.map((event) => (
+          <ScrollArea className="flex-1">
+            <div className="space-y-2">
+              {todaysEvents.slice(0, 3).map((event) => (
                 <div
                   key={event.id}
-                  className="p-3 border border-[#e0e0e0] rounded-lg hover:bg-[#f4f4f4] transition-colors cursor-pointer"
+                  className="p-2 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
                   onClick={() => {
                     if (event.relatedId) {
                       navigate(`/leads/${event.relatedId}`);
                     }
                   }}
                 >
-                  <div className="flex items-start gap-3">
-                    <div className={`w-2 h-2 rounded-full mt-1.5 ${getEventTypeColor(event.type)}`} />
+                  <div className="flex items-start gap-2">
+                    <div className={`w-1.5 h-1.5 rounded-full mt-1.5 ${getEventTypeColor(event.type)}`} />
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-[#161616] truncate">
+                      <p className="font-medium text-xs text-foreground truncate">
                         {event.title}
                       </p>
-                      {event.description && (
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                          {event.description}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge variant="outline" className="text-xs">
-                          <Clock className="h-3 w-3 mr-1" />
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <Badge variant="outline" className="text-[10px] h-5 px-1.5">
+                          <Clock className="h-2.5 w-2.5 mr-0.5" />
                           {formatEventTime(event.startTime)}
                         </Badge>
-                        <Badge variant="secondary" className="text-xs capitalize">
+                        <Badge variant="secondary" className="text-[10px] h-5 px-1.5 capitalize">
                           {event.type}
                         </Badge>
                       </div>

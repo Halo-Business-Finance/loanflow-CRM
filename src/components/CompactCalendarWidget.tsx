@@ -43,36 +43,36 @@ export function CompactCalendarWidget() {
   const eventsForSelectedDate = date ? getEventsForDate(date) : []
 
   return (
-    <Card className="shadow-soft">
-      <CardHeader className="pb-3">
+    <Card className="shadow-soft h-[280px] flex flex-col">
+      <CardHeader className="pb-2 pt-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <CalendarIcon className="h-5 w-5" />
+          <CardTitle className="text-base flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4" />
             Calendar
           </CardTitle>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6 w-6"
               onClick={handlePreviousMonth}
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-3.5 w-3.5" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6 w-6"
               onClick={handleNextMonth}
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="px-3">
+      <CardContent className="px-2 pb-2 flex-1 flex flex-col">
         {loading ? (
-          <div className="flex items-center justify-center h-64">
+          <div className="flex items-center justify-center flex-1">
             <div className="animate-pulse text-sm text-muted-foreground">Loading events...</div>
           </div>
         ) : (
@@ -95,10 +95,10 @@ export function CompactCalendarWidget() {
                 month: "w-full",
                 table: "w-full border-collapse",
                 head_row: "flex w-full",
-                head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] text-center",
-                row: "flex w-full mt-2",
-                cell: "p-0 relative flex-1 text-center text-sm focus-within:relative focus-within:z-20 h-14",
-                day: "w-full h-14 p-0 font-normal aria-selected:opacity-100",
+                head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-[0.7rem] text-center",
+                row: "flex w-full mt-1",
+                cell: "p-0 relative flex-1 text-center text-xs focus-within:relative focus-within:z-20 h-8",
+                day: "w-full h-8 p-0 font-normal aria-selected:opacity-100",
               }}
               components={{
                 Day: ({ date: dayDate, ...props }) => {
@@ -110,25 +110,22 @@ export function CompactCalendarWidget() {
                       <button
                         {...props}
                         className={cn(
-                          "relative w-full h-14 p-0 font-normal hover:bg-accent hover:text-accent-foreground rounded-md flex flex-col items-center justify-center gap-1",
+                          "relative w-full h-8 p-0 font-normal hover:bg-accent hover:text-accent-foreground rounded-md flex flex-col items-center justify-center",
                           isSelected && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
                         )}
                       >
-                        <span className="text-sm">{dayDate.getDate()}</span>
+                        <span className="text-xs">{dayDate.getDate()}</span>
                         {dayEvents.length > 0 && (
-                          <div className="flex gap-0.5 justify-center">
-                            {dayEvents.slice(0, 3).map((event, idx) => (
+                          <div className="flex gap-0.5 justify-center absolute bottom-0.5">
+                            {dayEvents.slice(0, 2).map((event, idx) => (
                               <span
                                 key={idx}
                                 className={cn(
-                                  "w-1.5 h-1.5 rounded-full",
+                                  "w-1 h-1 rounded-full",
                                   getEventTypeColor(event.type)
                                 )}
                               />
                             ))}
-                            {dayEvents.length > 3 && (
-                              <span className="text-[8px] leading-none ml-0.5">+</span>
-                            )}
                           </div>
                         )}
                       </button>
@@ -137,25 +134,16 @@ export function CompactCalendarWidget() {
                 },
               }}
             />
-            <div className="mt-3 text-xs text-muted-foreground text-center">
+            <div className="mt-1 text-[10px] text-muted-foreground text-center">
               {date ? (
-                <div className="space-y-1">
-                  <p className="font-medium">
-                    {date.toLocaleDateString('en-US', { 
-                      weekday: 'long',
-                      month: 'long', 
-                      day: 'numeric',
-                      year: 'numeric' 
-                    })}
-                  </p>
-                  {eventsForSelectedDate.length > 0 ? (
-                    <p className="text-primary">
-                      {eventsForSelectedDate.length} event{eventsForSelectedDate.length > 1 ? 's' : ''} scheduled
-                    </p>
-                  ) : (
-                    <p>No events scheduled</p>
-                  )}
-                </div>
+                <p className="font-medium">
+                  {date.toLocaleDateString('en-US', { 
+                    weekday: 'long',
+                    month: 'long', 
+                    day: 'numeric',
+                    year: 'numeric' 
+                  })}
+                </p>
               ) : (
                 <p>Select a date</p>
               )}
