@@ -460,11 +460,13 @@ export default function Settings() {
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-normal text-[#161616]">Multi-Factor Authentication</CardTitle>
                 <CardDescription className="text-[#525252]">
-                  Secure your account with Microsoft Authenticator (TOTP)
+                  MFA setup is currently disabled. Contact your administrator if you need to enable this feature.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <MicrosoftAuthenticatorSetup />
+                <p className="text-sm text-muted-foreground">
+                  Two-factor authentication via Microsoft Authenticator has been disabled to prevent unwanted entries in your authenticator app.
+                </p>
               </CardContent>
             </Card>
           </TabsContent>
