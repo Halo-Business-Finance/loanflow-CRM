@@ -396,27 +396,26 @@ export class SecurityManager {
     }
   }
 
-  // DEPRECATED: Client-side key storage is insecure
-  // TODO: Migrate to server-side encryption via Edge Functions
-  // @see: src/lib/server-encryption.ts for secure alternative
-  private static async generateMasterKey(): Promise<string> {
-    console.warn('[SECURITY] security.ts uses deprecated client-side keys. Migrate to server-encryption.ts');
-    
-    // In-memory ephemeral cache ONLY (no sessionStorage persistence)
-    // @ts-ignore
-    if ((SecurityManager as any)._ephemeralMasterKey) {
-      // @ts-ignore
-      return (SecurityManager as any)._ephemeralMasterKey as string;
+  /**
+   * Generate secure token for various purposes
+   * @param length - Token length in bytes
+   */
+  static generateSecureToken(length: number = 32): string {
+    const array = new Uint8Array(length);
+    crypto.getRandomValues(array);
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  /**
+   * Constant-time string comparison to prevent timing attacks
+   */
+  static secureCompare(a: string, b: string): boolean {
+    if (a.length !== b.length) return false;
+    let result = 0;
+    for (let i = 0; i < a.length; i++) {
+      result |= a.charCodeAt(i) ^ b.charCodeAt(i);
     }
-
-    // Generate new ephemeral key (memory only, no persistence)
-    const key = Array.from(crypto.getRandomValues(new Uint8Array(64)))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-
-    // @ts-ignore - Store in memory only
-    (SecurityManager as any)._ephemeralMasterKey = key;
-    return key;
+    return result === 0;
   }
 
   // Audit logging for frontend actions

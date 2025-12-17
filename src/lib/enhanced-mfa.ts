@@ -1,10 +1,13 @@
 /**
  * Enhanced Multi-Factor Authentication Implementation
  * Provides multiple layers of authentication security
+ * 
+ * SECURITY: Uses server-side encryption via Edge Functions
  */
 
 import { supabase } from "@/integrations/supabase/client";
 import { SecurityManager } from "./security";
+import { encryptData, decryptData } from "./server-encryption";
 import { logger } from "./logger";
 
 export class EnhancedMFA {
@@ -20,9 +23,11 @@ export class EnhancedMFA {
     // Generate base32 secret for TOTP
     const secret = this.generateBase32Secret();
     
-    // Store encrypted secret
-    const encryptedSecret = await SecurityManager.encryptSensitiveData(secret);
-    this.totpSecrets.set(userId, encryptedSecret);
+    // Store encrypted secret using server-side encryption
+    const encryptResult = await encryptData(secret, 'totp_secret');
+    if (encryptResult.success && encryptResult.encrypted) {
+      this.totpSecrets.set(userId, encryptResult.encrypted);
+    }
     
     // Generate backup codes
     const backupCodes = Array.from({ length: 10 }, () => 
@@ -32,10 +37,14 @@ export class EnhancedMFA {
         .toUpperCase()
     );
     
-    // Store encrypted backup codes
-    const encryptedBackupCodes = await Promise.all(
-      backupCodes.map(code => SecurityManager.encryptSensitiveData(code))
-    );
+    // Store encrypted backup codes using server-side encryption
+    const encryptedBackupCodes: string[] = [];
+    for (const code of backupCodes) {
+      const result = await encryptData(code, 'backup_code');
+      if (result.success && result.encrypted) {
+        encryptedBackupCodes.push(result.encrypted);
+      }
+    }
     this.backupCodes.set(userId, encryptedBackupCodes);
     
     // Generate QR code data
@@ -55,8 +64,9 @@ export class EnhancedMFA {
     if (!encryptedSecret) return false;
     
     try {
-      const secret = await SecurityManager.decryptSensitiveData(encryptedSecret);
-      return await this.validateTOTPCode(secret, code);
+      const decryptResult = await decryptData(encryptedSecret, 'totp_secret');
+      if (!decryptResult.success || !decryptResult.decrypted) return false;
+      return await this.validateTOTPCode(decryptResult.decrypted, code);
     } catch (error) {
       logger.error('TOTP verification failed');
       return false;
@@ -72,9 +82,13 @@ export class EnhancedMFA {
         .toUpperCase()
     );
     
-    const encryptedBackupCodes = await Promise.all(
-      backupCodes.map(code => SecurityManager.encryptSensitiveData(code))
-    );
+    const encryptedBackupCodes: string[] = [];
+    for (const code of backupCodes) {
+      const result = await encryptData(code, 'backup_code');
+      if (result.success && result.encrypted) {
+        encryptedBackupCodes.push(result.encrypted);
+      }
+    }
     
     this.backupCodes.set(userId, encryptedBackupCodes);
     
@@ -87,13 +101,15 @@ export class EnhancedMFA {
     if (!encryptedBackupCodes) return false;
     
     try {
-      const backupCodes = await Promise.all(
-        encryptedBackupCodes.map(encrypted => 
-          SecurityManager.decryptSensitiveData(encrypted)
-        )
-      );
+      const decryptedCodes: string[] = [];
+      for (const encrypted of encryptedBackupCodes) {
+        const result = await decryptData(encrypted, 'backup_code');
+        if (result.success && result.decrypted) {
+          decryptedCodes.push(result.decrypted);
+        }
+      }
       
-      const codeIndex = backupCodes.indexOf(code.toUpperCase());
+      const codeIndex = decryptedCodes.indexOf(code.toUpperCase());
       if (codeIndex === -1) return false;
       
       // Remove used backup code
@@ -139,7 +155,7 @@ export class EnhancedMFA {
       });
       
       if (credential) {
-        // Store biometric credential securely via server-side RPC
+        // Store biometric credential securely via server-side encryption
         const pkCredential = credential as PublicKeyCredential;
         const credentialData = {
           id: credential.id,
@@ -147,12 +163,14 @@ export class EnhancedMFA {
           type: credential.type
         };
         
-        const encryptedData = await SecurityManager.encryptSensitiveData(JSON.stringify(credentialData));
-        await supabase.rpc('store_secure_session_data', {
-          p_key: 'biometric_credential',
-          p_value: encryptedData
-        });
-        return true;
+        const encryptResult = await encryptData(credentialData, 'biometric');
+        if (encryptResult.success && encryptResult.encrypted) {
+          await supabase.rpc('store_secure_session_data', {
+            p_key: 'biometric_credential',
+            p_value: encryptResult.encrypted
+          });
+          return true;
+        }
       }
       
       return false;
@@ -172,8 +190,10 @@ export class EnhancedMFA {
       });
       if (!encryptedData) return false;
       
-      const decryptedData = await SecurityManager.decryptSensitiveData(encryptedData as string);
-      const storedCredential = JSON.parse(decryptedData);
+      const decryptResult = await decryptData(encryptedData as string, 'biometric');
+      if (!decryptResult.success || !decryptResult.decrypted) return false;
+      
+      const storedCredential = decryptResult.decrypted;
       if (!storedCredential) return false;
       
       const assertion = await navigator.credentials.get({
@@ -210,12 +230,14 @@ export class EnhancedMFA {
         }
       });
       
-      // Store encrypted code temporarily on server-side session storage
-      const encryptedCode = await SecurityManager.encryptSensitiveData(code);
-      await supabase.rpc('store_secure_session_data', {
-        p_key: `_sms_code_${phoneNumber}`,
-        p_value: encryptedCode,
-      });
+      // Store encrypted code using server-side encryption
+      const encryptResult = await encryptData(code, 'sms_code');
+      if (encryptResult.success && encryptResult.encrypted) {
+        await supabase.rpc('store_secure_session_data', {
+          p_key: `_sms_code_${phoneNumber}`,
+          p_value: encryptResult.encrypted,
+        });
+      }
       
       // Auto-expire in 5 minutes
       setTimeout(() => {
@@ -238,8 +260,10 @@ export class EnhancedMFA {
     if (error || !storedEncrypted) return false;
     
     try {
-      const storedCode = await SecurityManager.decryptSensitiveData(storedEncrypted as string);
-      const isValid = SecurityManager.secureCompare(code, storedCode);
+      const decryptResult = await decryptData(storedEncrypted as string, 'sms_code');
+      if (!decryptResult.success || !decryptResult.decrypted) return false;
+      
+      const isValid = SecurityManager.secureCompare(code, decryptResult.decrypted);
       
       if (isValid) {
         await supabase.rpc('remove_secure_session_data', { p_key: `_sms_code_${phoneNumber}` });
@@ -265,11 +289,14 @@ export class EnhancedMFA {
       expiresAt: timestamp + (15 * 60 * 1000) // 15 minutes
     };
     
-    const encryptedData = await SecurityManager.encryptSensitiveData(JSON.stringify(verificationData));
-    await supabase.rpc('store_secure_session_data', {
-      p_key: `_email_verification_${email}`,
-      p_value: encryptedData,
-    });
+    const encryptResult = await encryptData(verificationData, 'email_verification');
+    if (encryptResult.success && encryptResult.encrypted) {
+      await supabase.rpc('store_secure_session_data', {
+        p_key: `_email_verification_${email}`,
+        p_value: encryptResult.encrypted,
+      });
+    }
+    
     // Auto-expire in 15 minutes (client-side cleanup; server TTL is handled separately)
     setTimeout(() => {
       supabase.rpc('remove_secure_session_data', { p_key: `_email_verification_${email}` });
@@ -299,8 +326,10 @@ export class EnhancedMFA {
     if (error || !storedEncrypted) return false;
     
     try {
-      const decryptedData = await SecurityManager.decryptSensitiveData(storedEncrypted as string);
-      const verificationData = JSON.parse(decryptedData);
+      const decryptResult = await decryptData(storedEncrypted as string, 'email_verification');
+      if (!decryptResult.success || !decryptResult.decrypted) return false;
+      
+      const verificationData = decryptResult.decrypted;
       
       const isValidToken = SecurityManager.secureCompare(token, verificationData.token);
       const isNotExpired = Date.now() < verificationData.expiresAt;
@@ -356,12 +385,14 @@ export class EnhancedMFA {
           type: credential.type
         };
         
-        const encryptedData = await SecurityManager.encryptSensitiveData(JSON.stringify(credentialData));
-        await supabase.rpc('store_secure_session_data', {
-          p_key: 'security_key',
-          p_value: encryptedData
-        });
-        return true;
+        const encryptResult = await encryptData(credentialData, 'security_key');
+        if (encryptResult.success && encryptResult.encrypted) {
+          await supabase.rpc('store_secure_session_data', {
+            p_key: 'security_key',
+            p_value: encryptResult.encrypted
+          });
+          return true;
+        }
       }
       
       return false;
@@ -381,8 +412,10 @@ export class EnhancedMFA {
       });
       if (!encryptedData) return false;
       
-      const decryptedData = await SecurityManager.decryptSensitiveData(encryptedData as string);
-      const storedCredential = JSON.parse(decryptedData);
+      const decryptResult = await decryptData(encryptedData as string, 'security_key');
+      if (!decryptResult.success || !decryptResult.decrypted) return false;
+      
+      const storedCredential = decryptResult.decrypted;
       if (!storedCredential) return false;
       
       const assertion = await navigator.credentials.get({
@@ -490,7 +523,7 @@ export class EnhancedMFA {
                    (h[offset + 3] & 0xff);
 
     // 5) Modulo to get 6 digits
-    const code = (binary % 1_000_000).toString().padStart(6, '0');
-    return code;
+    const totpCode = (binary % 1_000_000).toString().padStart(6, '0');
+    return totpCode;
   }
 }
