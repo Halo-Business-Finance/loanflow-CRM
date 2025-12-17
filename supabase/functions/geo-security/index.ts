@@ -33,46 +33,46 @@ serve(async (req) => {
       clientIP = realIP.trim();
     }
 
-    // Known Tor exit nodes and VPN/Proxy indicators - be more specific
-    const suspiciousHeaders = [
-      'tor-exit-node',
-      'x-tor'
-    ];
-
+    // Only flag truly suspicious indicators (actual Tor/proxy headers)
+    const suspiciousHeaders = ['tor-exit-node', 'x-tor'];
     const userAgent = req.headers.get('user-agent') || '';
-    // Only flag as suspicious for actual Tor/proxy indicators, not normal headers
-    const isSuspicious = suspiciousHeaders.some(header => req.headers.has(header)) ||
-                        userAgent.toLowerCase().includes('tor browser') ||
-                        userAgent.toLowerCase().includes('phantom') ||
-                        userAgent.toLowerCase().includes('headless');
+    
+    // Only flag as suspicious for ACTUAL Tor browser usage, not normal browsers
+    const isTorBrowser = userAgent.toLowerCase().includes('tor browser');
+    const hasSuspiciousHeaders = suspiciousHeaders.some(header => req.headers.has(header));
+    const isSuspicious = isTorBrowser || hasSuspiciousHeaders;
 
-    // Check IP geolocation using a free service
     let countryCode = 'UNKNOWN';
-    let isAllowed = false; // Default to blocked for security
+    let isAllowed = true; // Default to ALLOWED - fail open for better UX
     
     logger.info('Geo-security check initiated', { suspicious: isSuspicious })
     
     try {
-      // Skip geolocation for localhost/private IPs and allow them (development)
+      // Allow localhost/private IPs (development)
       if (clientIP === 'unknown' || clientIP.startsWith('127.') || 
           clientIP.startsWith('192.168.') || clientIP.startsWith('10.') ||
           clientIP.startsWith('172.')) {
-        logger.info('Local/private IP detected, allowing access for development')
+        logger.info('Local/private IP detected, allowing access')
         countryCode = 'US';
         isAllowed = true;
       } else {
-        // Use ipapi.co for geolocation (free tier: 1000 requests/day)
+        // Use ipapi.co for geolocation
         const geoResponse = await fetch(`https://ipapi.co/${clientIP}/json/`);
         const geoData = await geoResponse.json();
         countryCode = geoData.country_code || 'UNKNOWN';
         
         logger.info('Geolocation check completed', { country: countryCode })
 
-        // Allow US users unless they are actually suspicious
-        if (countryCode === 'US') {
-          isAllowed = !isSuspicious;
+        // UNKNOWN = geolocation failed, allow access (don't punish users for API failures)
+        if (countryCode === 'UNKNOWN') {
+          isAllowed = true;
+          logger.info('Country unknown, allowing access by default')
+        } else if (countryCode === 'US') {
+          // US users allowed unless using Tor browser
+          isAllowed = !isTorBrowser;
         } else {
-          isAllowed = false; // Block non-US
+          // Non-US users blocked
+          isAllowed = false;
         }
         
         logger.info('Access decision made', { 
@@ -84,8 +84,8 @@ serve(async (req) => {
       
     } catch (geoError) {
       logger.error('Geolocation check failed', geoError)
-      // Default to blocked on errors for security
-      isAllowed = false;
+      // Default to ALLOWED on errors - don't block users due to geo API issues
+      isAllowed = true;
       countryCode = 'UNKNOWN';
     }
 
