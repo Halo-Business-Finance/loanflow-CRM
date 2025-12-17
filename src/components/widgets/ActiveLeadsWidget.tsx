@@ -204,7 +204,7 @@ export const ActiveLeadsWidget = () => {
   };
 
   return (
-    <Card className="border-border">
+    <Card className="border-border bg-card relative z-10">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold">Active Leads</CardTitle>
