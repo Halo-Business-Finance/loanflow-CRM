@@ -134,20 +134,6 @@ export function CompactCalendarWidget() {
                 },
               }}
             />
-            <div className="mt-1 text-[10px] text-muted-foreground text-center">
-              {date ? (
-                <p className="font-medium">
-                  {date.toLocaleDateString('en-US', { 
-                    weekday: 'long',
-                    month: 'long', 
-                    day: 'numeric',
-                    year: 'numeric' 
-                  })}
-                </p>
-              ) : (
-                <p>Select a date</p>
-              )}
-            </div>
           </>
         )}
       </CardContent>
