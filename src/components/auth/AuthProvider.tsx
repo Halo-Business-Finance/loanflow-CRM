@@ -73,14 +73,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
         
-        if (mounted && !error) {
+        if (error) {
+          console.error('[AuthProvider] getSession error:', error.message)
+          logSecureError(error, 'Session check error', supabase)
+        }
+        
+        if (mounted) {
           setSession(session)
           setUser(session?.user ?? null)
           if (session?.user) {
-            await fetchUserRole(session.user.id)
-            await checkEmailVerification(session.user.id)
+            try {
+              await fetchUserRole(session.user.id)
+              await checkEmailVerification(session.user.id)
+            } catch (roleError) {
+              console.error('[AuthProvider] Role fetch failed during checkSession:', roleError)
+              // Set fallback role so app doesn't hang
+              setUserRole('viewer')
+              setUserRoles(['viewer'])
+            }
           } else {
             setUserRole(null)
+            setUserRoles([])
             setIsEmailVerified(false)
           }
           setLoading(false)
