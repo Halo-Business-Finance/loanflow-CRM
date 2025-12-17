@@ -70,7 +70,7 @@ export function CompactCalendarWidget() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="px-2 pb-2 flex-1 flex flex-col">
+      <CardContent className="px-3 pb-2 pt-0 flex-1 flex flex-col">
         {loading ? (
           <div className="flex items-center justify-center flex-1">
             <div className="animate-pulse text-sm text-muted-foreground">Loading events...</div>
@@ -83,7 +83,7 @@ export function CompactCalendarWidget() {
               onSelect={setDate}
               month={currentMonth}
               onMonthChange={setCurrentMonth}
-              className="rounded-md w-full [&_.rdp-caption]:hidden [&_.rdp-nav]:hidden"
+              className="rounded-md w-full [&_.rdp-caption]:hidden [&_.rdp-nav]:hidden p-0"
               modifiers={{
                 hasEvents: datesWithEvents,
               }}
