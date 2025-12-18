@@ -1,3 +1,4 @@
+// Security manager - server-side encryption should be used for sensitive data
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from '@/lib/logger';
 
