@@ -301,101 +301,6 @@ export class SecurityManager {
     );
   }
 
-  // Enhanced encryption utilities with key derivation
-  static async encryptSensitiveData(data: string, key?: string): Promise<string> {
-    try {
-      const encoder = new TextEncoder();
-      const dataBuffer = encoder.encode(data);
-      
-      // Use PBKDF2 for proper key derivation
-      const salt = crypto.getRandomValues(new Uint8Array(16));
-      const keyMaterial = await crypto.subtle.importKey(
-        'raw',
-        encoder.encode(key || await this.generateMasterKey()),
-        { name: 'PBKDF2' },
-        false,
-        ['deriveKey']
-      );
-
-      const derivedKey = await crypto.subtle.deriveKey(
-        {
-          name: 'PBKDF2',
-          salt,
-          iterations: 100000,
-          hash: 'SHA-256'
-        },
-        keyMaterial,
-        { name: 'AES-GCM', length: 256 },
-        false,
-        ['encrypt', 'decrypt']
-      );
-
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const encryptedData = await crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv },
-        derivedKey,
-        dataBuffer
-      );
-
-      // Combine salt, IV and encrypted data
-      const combined = new Uint8Array(salt.length + iv.length + encryptedData.byteLength);
-      combined.set(salt);
-      combined.set(iv, salt.length);
-      combined.set(new Uint8Array(encryptedData), salt.length + iv.length);
-
-      return btoa(String.fromCharCode(...combined));
-    } catch (error) {
-      logger.error('Enhanced encryption error:', error);
-      throw new Error('Encryption failed');
-    }
-  }
-
-  // Decrypt with enhanced security
-  static async decryptSensitiveData(encryptedData: string, key?: string): Promise<string> {
-    try {
-      const combined = new Uint8Array(
-        atob(encryptedData).split('').map(char => char.charCodeAt(0))
-      );
-      
-      const salt = combined.slice(0, 16);
-      const iv = combined.slice(16, 28);
-      const encrypted = combined.slice(28);
-      
-      const encoder = new TextEncoder();
-      const keyMaterial = await crypto.subtle.importKey(
-        'raw',
-        encoder.encode(key || await this.generateMasterKey()),
-        { name: 'PBKDF2' },
-        false,
-        ['deriveKey']
-      );
-
-      const derivedKey = await crypto.subtle.deriveKey(
-        {
-          name: 'PBKDF2',
-          salt,
-          iterations: 100000,
-          hash: 'SHA-256'
-        },
-        keyMaterial,
-        { name: 'AES-GCM', length: 256 },
-        false,
-        ['encrypt', 'decrypt']
-      );
-      
-      const decrypted = await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv },
-        derivedKey,
-        encrypted
-      );
-      
-      return new TextDecoder().decode(decrypted);
-    } catch (error) {
-      logger.error('Decryption error:', error);
-      throw new Error('Decryption failed');
-    }
-  }
-
   /**
    * Generate secure token for various purposes
    * @param length - Token length in bytes
@@ -530,24 +435,5 @@ export class SecurityManager {
     }
 
     return { score, checks };
-  }
-
-  // Generate secure token (alias for generateCSRFToken)
-  static generateSecureToken(length: number = 32): string {
-    return Array.from(crypto.getRandomValues(new Uint8Array(length)))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-  }
-
-  // Secure constant-time string comparison
-  static secureCompare(a: string, b: string): boolean {
-    if (a.length !== b.length) return false;
-    
-    let result = 0;
-    for (let i = 0; i < a.length; i++) {
-      result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-    }
-    
-    return result === 0;
   }
 }
