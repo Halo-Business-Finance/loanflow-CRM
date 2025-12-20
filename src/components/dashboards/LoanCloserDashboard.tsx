@@ -186,11 +186,35 @@ export const LoanCloserDashboard = () => {
     }
   };
 
-  const handleScheduleClosing = (loanId: string) => {
-    toast({
-      title: 'Schedule Closing',
-      description: 'Closing scheduled successfully',
-    });
+  const handleScheduleClosing = async (loanId: string) => {
+    try {
+      // Update the loan with scheduled closing date (today + 7 days as default)
+      const scheduledDate = new Date();
+      scheduledDate.setDate(scheduledDate.getDate() + 7);
+      
+      const { error } = await supabase
+        .from('contact_entities')
+        .update({ 
+          next_follow_up: scheduledDate.toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', loanId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Schedule Closing',
+        description: `Closing scheduled for ${scheduledDate.toLocaleDateString()}`,
+      });
+
+      fetchCloserData();
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to schedule closing',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleApproveFunding = async (loanId: string) => {
