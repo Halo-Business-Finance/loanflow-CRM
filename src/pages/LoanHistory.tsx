@@ -289,9 +289,13 @@ export default function LoanHistory() {
                   ))}
                 </SelectContent>
               </Select>
-              <Button onClick={fetchLoanHistory} variant="outline">
+              <Button 
+                onClick={fetchLoanHistory} 
+                variant="outline"
+                disabled={loading || !user}
+              >
                 <Search className="h-4 w-4 mr-2" />
-                Refresh
+                {loading ? 'Loading...' : 'Refresh'}
               </Button>
             </div>
           </CardContent>
