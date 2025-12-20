@@ -75,50 +75,74 @@ export function LeadsList({
                   aria-label="Select all leads"
                   className={someSelected ? "data-[state=checked]:bg-primary/50" : ""}
                 />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onSort?.('name')}
-                  className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
-                >
-                  Lead Name
-                  <SortIcon column="name" />
-                </Button>
+                {onSort ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onSort('name')}
+                    className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
+                  >
+                    Lead Name
+                    <SortIcon column="name" />
+                  </Button>
+                ) : (
+                  <span className={`font-medium uppercase tracking-wider text-muted-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
+                    Lead Name
+                  </span>
+                )}
               </div>
             </TableHead>
             <TableHead className={`font-medium uppercase tracking-wider text-muted-foreground ${isCompact ? 'px-2 py-1 text-[10px]' : 'px-4 text-xs'}`}>Contact Information</TableHead>
             <TableHead className={isCompact ? 'px-2 py-1' : 'px-4'}>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onSort?.('loan_amount')}
-                className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
-              >
-                Loan Details
-                <SortIcon column="loan_amount" />
-              </Button>
+              {onSort ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onSort('loan_amount')}
+                  className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
+                >
+                  Loan Details
+                  <SortIcon column="loan_amount" />
+                </Button>
+              ) : (
+                <span className={`font-medium uppercase tracking-wider text-muted-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
+                  Loan Details
+                </span>
+              )}
             </TableHead>
             <TableHead className={isCompact ? 'px-2 py-1' : 'px-4'}>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onSort?.('stage')}
-                className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
-              >
-                Lead Status
-                <SortIcon column="stage" />
-              </Button>
+              {onSort ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onSort('stage')}
+                  className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
+                >
+                  Lead Status
+                  <SortIcon column="stage" />
+                </Button>
+              ) : (
+                <span className={`font-medium uppercase tracking-wider text-muted-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
+                  Lead Status
+                </span>
+              )}
             </TableHead>
             <TableHead className={isCompact ? 'px-2 py-1' : 'px-4'}>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onSort?.('created_at')}
-                className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
-              >
-                Created
-                <SortIcon column="created_at" />
-              </Button>
+              {onSort ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onSort('created_at')}
+                  className={`h-auto p-0 hover:bg-transparent font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}
+                >
+                  Created
+                  <SortIcon column="created_at" />
+                </Button>
+              ) : (
+                <span className={`font-medium uppercase tracking-wider text-muted-foreground ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
+                  Created
+                </span>
+              )}
             </TableHead>
             <TableHead className={`w-[280px] text-right font-medium uppercase tracking-wider text-muted-foreground ${isCompact ? 'px-2 py-1 text-[10px]' : 'px-4 text-xs'}`}>Actions</TableHead>
           </TableRow>

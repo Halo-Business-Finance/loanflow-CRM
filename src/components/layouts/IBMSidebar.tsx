@@ -152,9 +152,18 @@ function NavItem({ icon: Icon, label, to, collapsed, subItems }: NavItemProps) {
     item.to && (location.pathname === item.to || location.pathname.startsWith(item.to + '/'))
   );
 
+  // Auto-expand if a sub-item is active
+  React.useEffect(() => {
+    if (hasActiveSubItem && !collapsed) {
+      setIsOpen(true);
+    }
+  }, [hasActiveSubItem, collapsed]);
+
   const handleClick = (e: React.MouseEvent) => {
+    // Only toggle submenu when expanded and has sub-items
     if (subItems && subItems.length > 0 && !collapsed) {
       e.preventDefault();
+      e.stopPropagation();
       setIsOpen(!isOpen);
     }
   };

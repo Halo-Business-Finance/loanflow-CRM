@@ -30,7 +30,7 @@ interface ActionReminderProps {
   entityName: string
   entityType: 'lead' | 'client'
   isOpen: boolean
-  onClose: () => void
+  onClose?: () => void
 }
 
 export function ActionReminder({ entityId, entityName, entityType, isOpen, onClose }: ActionReminderProps) {
@@ -136,7 +136,7 @@ export function ActionReminder({ entityId, entityName, entityType, isOpen, onClo
       setSelectedDate(undefined)
       setReminderType(undefined)
       setCustomNote("")
-      onClose()
+      onClose?.()
     } catch (error) {
       console.error('Error creating reminder:', error)
       toast({
@@ -151,10 +151,14 @@ export function ActionReminder({ entityId, entityName, entityType, isOpen, onClo
 
   if (!isOpen) return null
 
+  const handleClose = () => {
+    onClose?.();
+  };
+
   return (
     <div 
       className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-2"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div 
         className="w-full max-w-md max-h-[85vh] overflow-y-auto"
@@ -165,7 +169,7 @@ export function ActionReminder({ entityId, entityName, entityType, isOpen, onClo
         <CardTitle className="text-base font-semibold dark:text-white">
           Create Reminder
         </CardTitle>
-        <Button variant="ghost" size="sm" onClick={onClose}>
+        <Button variant="ghost" size="sm" onClick={handleClose}>
           <X className="h-4 w-4" />
         </Button>
       </CardHeader>
@@ -280,7 +284,7 @@ export function ActionReminder({ entityId, entityName, entityType, isOpen, onClo
               </>
             )}
           </Button>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
         </div>
