@@ -9,11 +9,11 @@ export interface Lead {
   is_converted_to_client: boolean
   converted_at?: string
   contact_entity?: ContactEntity
-  // Team member assignments
+  // Team member assignments (matches database schema)
   loan_originator_id?: string | null
-  loan_processor_id?: string | null
-  closer_id?: string | null
-  funder_id?: string | null
+  processor_id?: string | null
+  underwriter_id?: string | null
+  assigned_at?: string | null
   // Computed fields (mapped from contact_entity for convenience)
   name?: string
   email?: string
