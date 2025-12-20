@@ -19,6 +19,7 @@ import {
 import { useCollaboration } from '@/hooks/useCollaboration';
 import { supabase } from '@/integrations/supabase/client';
 import { AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface EscalationDialogProps {
   open: boolean;
@@ -73,19 +74,24 @@ export function EscalationDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const result = await escalateApplication({
-      application_id: applicationId,
-      ...formData,
-    });
-
-    if (result) {
-      onOpenChange(false);
-      setFormData({
-        escalated_to: '',
-        reason: '',
-        priority: 'high',
+    try {
+      const result = await escalateApplication({
+        application_id: applicationId,
+        ...formData,
       });
-      onSuccess?.();
+
+      if (result) {
+        onOpenChange(false);
+        setFormData({
+          escalated_to: '',
+          reason: '',
+          priority: 'high',
+        });
+        onSuccess?.();
+      }
+    } catch (error) {
+      console.error('Error escalating application:', error);
+      toast.error('Failed to escalate application. Please try again.');
     }
   };
 

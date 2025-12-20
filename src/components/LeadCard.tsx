@@ -39,9 +39,9 @@ import { toast } from "sonner"
 
 interface LeadCardProps {
   lead: Lead
-  onEdit: (lead: Lead) => void
-  onDelete: (leadId: string, leadName: string) => void
-  onConvert: (lead: Lead) => void
+  onEdit?: (lead: Lead) => void
+  onDelete?: (leadId: string, leadName: string) => void
+  onConvert?: (lead: Lead) => void
   hasAdminRole: boolean
   currentUserId?: string
 }
@@ -195,14 +195,16 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 bg-card border border-border shadow-xl">
-              <DropdownMenuItem 
-                onClick={(e) => { e.stopPropagation(); onEdit(lead); }}
-                className="cursor-pointer"
-              >
-                <Edit className="h-4 w-4 mr-3 text-primary" />
-                Edit Lead Details
-              </DropdownMenuItem>
-              {!lead.is_converted_to_client && (
+              {onEdit && (
+                <DropdownMenuItem 
+                  onClick={(e) => { e.stopPropagation(); onEdit(lead); }}
+                  className="cursor-pointer"
+                >
+                  <Edit className="h-4 w-4 mr-3 text-primary" />
+                  Edit Lead Details
+                </DropdownMenuItem>
+              )}
+              {!lead.is_converted_to_client && onConvert && (
                 <DropdownMenuItem 
                   onClick={(e) => { e.stopPropagation(); onConvert(lead); }}
                   className="cursor-pointer"
@@ -212,7 +214,7 @@ export function LeadCard({ lead, onEdit, onDelete, onConvert, hasAdminRole, curr
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
-              {canDelete && (
+              {canDelete && onDelete && (
                 <DropdownMenuItem 
                   onClick={(e) => { e.stopPropagation(); onDelete(lead.id, lead.name); }}
                   className="text-destructive focus:text-destructive cursor-pointer"

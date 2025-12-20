@@ -33,11 +33,11 @@ interface AdditionalBorrowerCardProps {
   borrower: AdditionalBorrower
   borrowerNumber: number
   isEditing: boolean
-  onUpdate: (borrower: AdditionalBorrower) => void
-  onDelete: (borrowerId: string) => void
-  onStartEdit: () => void
-  onCancelEdit: () => void
-  onSave: () => void
+  onUpdate?: (borrower: AdditionalBorrower) => void
+  onDelete?: (borrowerId: string) => void
+  onStartEdit?: () => void
+  onCancelEdit?: () => void
+  onSave?: () => void
 }
 
 export function AdditionalBorrowerCard({
@@ -55,7 +55,7 @@ export function AdditionalBorrowerCard({
   const handleFieldChange = (field: keyof AdditionalBorrower, value: string | number) => {
     const updatedBorrower = { ...editableFields, [field]: value }
     setEditableFields(updatedBorrower)
-    onUpdate(updatedBorrower)
+    onUpdate?.(updatedBorrower)
   }
 
   return (
@@ -71,44 +71,52 @@ export function AdditionalBorrowerCard({
           <div className="flex items-center gap-2">
             {isEditing ? (
               <>
-                <Button
-                  size="sm"
-                  onClick={onSave}
-                  className="text-xs"
-                >
-                  <Save className="w-3 h-3 mr-1" />
-                  Save
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={onCancelEdit}
-                  className="text-xs"
-                >
-                  <X className="w-3 h-3 mr-1" />
-                  Cancel
-                </Button>
+                {onSave && (
+                  <Button
+                    size="sm"
+                    onClick={onSave}
+                    className="text-xs"
+                  >
+                    <Save className="w-3 h-3 mr-1" />
+                    Save
+                  </Button>
+                )}
+                {onCancelEdit && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={onCancelEdit}
+                    className="text-xs"
+                  >
+                    <X className="w-3 h-3 mr-1" />
+                    Cancel
+                  </Button>
+                )}
               </>
             ) : (
               <>
-                <Button
-                  size="sm"
-                  variant="default"
-                  onClick={onStartEdit}
-                  className="text-xs bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  <Edit className="w-3 h-3 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => onDelete(borrower.id)}
-                  className="text-xs"
-                >
-                  <Trash2 className="w-3 h-3 mr-1" />
-                  Remove
-                </Button>
+                {onStartEdit && (
+                  <Button
+                    size="sm"
+                    variant="default"
+                    onClick={onStartEdit}
+                    className="text-xs bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Edit className="w-3 h-3 mr-1" />
+                    Edit
+                  </Button>
+                )}
+                {onDelete && (
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => onDelete(borrower.id)}
+                    className="text-xs"
+                  >
+                    <Trash2 className="w-3 h-3 mr-1" />
+                    Remove
+                  </Button>
+                )}
               </>
             )}
           </div>

@@ -30,9 +30,9 @@ import { ClickablePhone } from "@/components/ui/clickable-phone"
 
 interface LeadTableRowProps {
   lead: Lead
-  onEdit: (lead: Lead) => void
-  onDelete: (leadId: string, leadName: string) => void
-  onConvert: (lead: Lead) => void
+  onEdit?: (lead: Lead) => void
+  onDelete?: (leadId: string, leadName: string) => void
+  onConvert?: (lead: Lead) => void
   hasAdminRole: boolean
   onRefresh?: () => void
   currentUserId?: string
@@ -226,16 +226,18 @@ export function LeadTableRow({
             <span className={`ml-1 ${isCompact ? 'text-[10px]' : 'text-xs'}`}>View</span>
           </Button>
           
-          <Button
-            size="sm"
-            onClick={() => onEdit(lead)}
-            className={`font-medium bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
-          >
-            <Edit className={isCompact ? 'h-2.5 w-2.5' : 'h-3.5 w-3.5'} />
-            <span className={`ml-1 ${isCompact ? 'text-[10px]' : 'text-xs'}`}>Edit</span>
-          </Button>
+          {onEdit && (
+            <Button
+              size="sm"
+              onClick={() => onEdit(lead)}
+              className={`font-medium bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center ${isCompact ? 'h-6 px-2' : 'h-8 px-3'}`}
+            >
+              <Edit className={isCompact ? 'h-2.5 w-2.5' : 'h-3.5 w-3.5'} />
+              <span className={`ml-1 ${isCompact ? 'text-[10px]' : 'text-xs'}`}>Edit</span>
+            </Button>
+          )}
           
-          {!lead.is_converted_to_client && (
+          {!lead.is_converted_to_client && onConvert && (
             <Button
               size="sm"
               onClick={() => onConvert(lead)}
@@ -246,7 +248,7 @@ export function LeadTableRow({
             </Button>
           )}
           
-          {canDelete && (
+          {canDelete && onDelete && (
             <Button
               variant="destructive"
               size="sm"
