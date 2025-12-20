@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select';
 import { useCollaboration } from '@/hooks/useCollaboration';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface TaskAssignmentDialogProps {
   open: boolean;
@@ -82,23 +83,28 @@ export function TaskAssignmentDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const result = await assignTask({
-      ...formData,
-      related_entity_id: relatedEntityId,
-      related_entity_type: relatedEntityType,
-    });
-
-    if (result) {
-      onOpenChange(false);
-      setFormData({
-        title: '',
-        description: '',
-        task_type: 'review',
-        priority: 'medium',
-        assigned_to: '',
-        due_date: '',
+    try {
+      const result = await assignTask({
+        ...formData,
+        related_entity_id: relatedEntityId,
+        related_entity_type: relatedEntityType,
       });
-      onSuccess?.();
+
+      if (result) {
+        onOpenChange(false);
+        setFormData({
+          title: '',
+          description: '',
+          task_type: 'review',
+          priority: 'medium',
+          assigned_to: '',
+          due_date: '',
+        });
+        onSuccess?.();
+      }
+    } catch (error) {
+      console.error('Error assigning task:', error);
+      toast.error('Failed to assign task. Please try again.');
     }
   };
 

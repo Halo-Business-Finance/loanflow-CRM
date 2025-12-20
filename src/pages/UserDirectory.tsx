@@ -377,13 +377,15 @@ export default function UserDirectory() {
   };
 
   const toggleUserSelection = (userId: string) => {
-    const newSelection = new Set(selectedUserIds);
-    if (newSelection.has(userId)) {
-      newSelection.delete(userId);
-    } else {
-      newSelection.add(userId);
-    }
-    setSelectedUserIds(newSelection);
+    setSelectedUserIds(prev => {
+      const newSelection = new Set(prev);
+      if (newSelection.has(userId)) {
+        newSelection.delete(userId);
+      } else {
+        newSelection.add(userId);
+      }
+      return newSelection;
+    });
   };
 
   const toggleSelectAll = () => {
