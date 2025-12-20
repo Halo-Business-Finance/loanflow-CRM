@@ -16,39 +16,19 @@ export default defineConfig(({ mode }) => ({
     target: 'esnext', // Modern browsers for smaller output
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          // Isolate recharts to only load when needed (biggest savings ~92KB)
-          if (id.includes('recharts') || id.includes('decimal.js-light') || id.includes('d3-')) {
-            return 'vendor-charts';
-          }
-          // Core React - needed immediately
-          if (id.includes('react-dom') || (id.includes('node_modules/react/') && !id.includes('react-'))) {
-            return 'vendor-react-core';
-          }
-          // React Router - defer until app routing starts
-          if (id.includes('react-router')) {
-            return 'vendor-router';
-          }
-          // Radix UI components - only load as needed
-          if (id.includes('@radix-ui')) {
-            return 'vendor-ui';
-          }
-          // Supabase - needed for auth but can be chunked
-          if (id.includes('@supabase')) {
-            return 'vendor-supabase';
-          }
-          // React Query
-          if (id.includes('@tanstack/react-query')) {
-            return 'vendor-query';
-          }
-          // Forms - only load on form pages
-          if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('node_modules/zod')) {
-            return 'vendor-forms';
-          }
-          // Floating UI (used by Radix)
-          if (id.includes('@floating-ui')) {
-            return 'vendor-ui';
-          }
+        manualChunks: {
+          // Keep React together to avoid hooks issues
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          // Split heavy chart library
+          'vendor-charts': ['recharts'],
+          // UI components
+          'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-popover', '@radix-ui/react-select', '@radix-ui/react-tabs', '@radix-ui/react-tooltip'],
+          // Data fetching
+          'vendor-query': ['@tanstack/react-query'],
+          // Forms
+          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          // Supabase
+          'vendor-supabase': ['@supabase/supabase-js'],
         },
       },
     },
