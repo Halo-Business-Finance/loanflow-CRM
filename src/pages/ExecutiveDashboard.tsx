@@ -33,27 +33,46 @@ export default function ExecutiveDashboard() {
   const fetchDashboardData = async () => {
     setIsLoading(true);
     const [leadsRes, clientsRes] = await Promise.all([
-      supabase.from("leads").select("*, contact_entities(loan_amount)"),
-      supabase.from("clients").select("*"),
+      supabase.from("leads").select("*, contact_entities(loan_amount, stage)"),
+      supabase.from("clients").select("*, contact_entities(loan_amount)"),
     ]);
 
     const leads = leadsRes.data || [];
     const clients = clientsRes.data || [];
 
+    // Calculate total pipeline value from leads
     const totalPipeline = leads.reduce((sum, lead: any) => {
       const amount = lead.contact_entities?.loan_amount || 0;
       return sum + amount;
     }, 0);
 
+    // Calculate actual closed/won revenue from clients
+    const closedWon = clients.reduce((sum, client: any) => {
+      const amount = client.contact_entities?.loan_amount || 0;
+      return sum + amount;
+    }, 0);
+
+    // Calculate average deal size from actual client data
+    const avgDealSize = clients.length > 0 ? closedWon / clients.length : 0;
+
+    // Count leads this month
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const leadsThisMonth = leads.filter((l: any) => new Date(l.created_at) > thirtyDaysAgo).length;
+
+    // Count active deals (leads not in Loan Funded or Archive)
+    const activeDeals = leads.filter((l: any) => {
+      const stage = l.contact_entities?.stage || '';
+      return stage !== 'Loan Funded' && stage !== 'Archive';
+    }).length;
+
     setStats({
       totalPipeline,
-      closedWon: clients.length * 150000,
+      closedWon,
       conversionRate: leads.length > 0 ? (clients.length / leads.length) * 100 : 0,
-      avgDealSize: clients.length > 0 ? (clients.length * 150000) / clients.length : 0,
-      leadsThisMonth: leads.filter((l: any) => new Date(l.created_at) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length,
-      activeDeals: leads.length,
+      avgDealSize,
+      leadsThisMonth,
+      activeDeals,
     });
-    setIsLoading(false);
     setIsLoading(false);
   };
 

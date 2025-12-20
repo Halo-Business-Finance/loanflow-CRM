@@ -459,12 +459,59 @@ export default function ClientDetail() {
         updated_at: new Date().toISOString()
       }
 
-      const { error } = await supabase
+      // Update contact_entities table (where core data lives)
+      const { error: contactError } = await supabase
+        .from('contact_entities')
+        .update({
+          name: updateData.name,
+          email: updateData.email,
+          phone: updateData.phone,
+          business_name: updateData.business_name,
+          business_address: updateData.business_address,
+          business_city: updateData.business_city,
+          business_state: updateData.business_state,
+          business_zip_code: updateData.business_zip_code,
+          naics_code: updateData.naics_code,
+          ownership_structure: updateData.ownership_structure,
+          owns_property: updateData.owns_property,
+          property_payment_amount: updateData.property_payment_amount,
+          year_established: updateData.year_established,
+          priority: updateData.priority,
+          credit_score: updateData.credit_score,
+          net_operating_income: updateData.net_operating_income,
+          bank_lender_name: updateData.bank_lender_name,
+          annual_revenue: updateData.annual_revenue,
+          existing_loan_amount: updateData.existing_loan_amount,
+          income: updateData.income,
+          pos_system: updateData.pos_system,
+          monthly_processing_volume: updateData.monthly_processing_volume,
+          average_transaction_size: updateData.average_transaction_size,
+          processor_name: updateData.processor_name,
+          current_processing_rate: updateData.current_processing_rate,
+          bdo_name: updateData.bdo_name,
+          bdo_telephone: updateData.bdo_telephone,
+          bdo_email: updateData.bdo_email,
+          maturity_date: updateData.maturity_date,
+          interest_rate: updateData.interest_rate,
+          stage: updateData.stage,
+          loan_amount: updateData.loan_amount,
+          loan_type: updateData.loan_type,
+          updated_at: updateData.updated_at
+        })
+        .eq('id', client.contact_entity_id)
+
+      if (contactError) throw contactError
+
+      // Also update client-specific fields in clients table
+      const { error: clientError } = await supabase
         .from('clients')
-        .update(updateData)
+        .update({
+          status: updateData.status,
+          updated_at: updateData.updated_at
+        })
         .eq('id', client.id)
 
-      if (error) throw error
+      if (clientError) throw clientError
 
       setIsEditing(false)
       toast({
