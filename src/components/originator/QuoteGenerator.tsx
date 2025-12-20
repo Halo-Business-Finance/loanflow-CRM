@@ -216,7 +216,7 @@ APR: ${quote.apr.toFixed(2)}%
           </div>
         </div>
 
-        <Button onClick={generateQuotes} disabled={isGenerating} className="w-full">
+        <Button onClick={generateQuotes} disabled={isGenerating}>
           {isGenerating ? (
             <>Generating Quotes...</>
           ) : (
