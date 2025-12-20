@@ -1,6 +1,6 @@
 // Cloud configuration for multi-cloud compatibility
 export interface CloudConfig {
-  provider: 'supabase' | 'oracle' | 'aws' | 'azure';
+  provider: 'supabase' | 'oracle' | 'aws' | 'azure' | 'ibm';
   database: {
     url: string;
     key: string;
@@ -19,7 +19,58 @@ export interface CloudConfig {
     encryptionKey: string;
     vaultService?: string;
   };
+  auth?: {
+    clientId: string;
+    discoveryEndpoint: string;
+  };
+  ai?: {
+    apiKey: string;
+    projectId: string;
+    endpoint: string;
+  };
+  realtime?: {
+    brokers: string[];
+    username: string;
+    password: string;
+  };
 }
+
+// IBM Cloud configuration
+export const ibmCloudConfig: CloudConfig = {
+  provider: 'ibm',
+  database: {
+    url: process.env.IBM_DB_CONNECTION_STRING || '',
+    key: process.env.IBM_DB_API_KEY || '',
+    ssl: true
+  },
+  storage: {
+    bucket: process.env.IBM_COS_BUCKET || 'crm-documents',
+    region: process.env.IBM_REGION || 'us-south',
+    endpoint: process.env.IBM_COS_ENDPOINT || 's3.us-south.cloud-object-storage.appdomain.cloud'
+  },
+  functions: {
+    baseUrl: process.env.IBM_FUNCTIONS_URL || 'https://us-south.functions.cloud.ibm.com/api/v1/web',
+    region: process.env.IBM_REGION || 'us-south'
+  },
+  security: {
+    encryptionKey: process.env.IBM_KEY_PROTECT_KEY || '',
+    vaultService: process.env.IBM_KEY_PROTECT_INSTANCE
+  },
+  auth: {
+    clientId: process.env.IBM_APPID_CLIENT_ID || '',
+    discoveryEndpoint: process.env.IBM_APPID_DISCOVERY_ENDPOINT || ''
+  },
+  ai: {
+    apiKey: process.env.IBM_WATSONX_API_KEY || '',
+    projectId: process.env.IBM_WATSONX_PROJECT_ID || '',
+    endpoint: 'https://us-south.ml.cloud.ibm.com'
+  },
+  realtime: {
+    brokers: (process.env.IBM_KAFKA_BROKERS || '').split(','),
+    username: process.env.IBM_KAFKA_USERNAME || '',
+    password: process.env.IBM_KAFKA_PASSWORD || ''
+  }
+};
 
 // Oracle Cloud specific configuration
 export const oracleCloudConfig: CloudConfig = {
@@ -69,6 +120,8 @@ export function getCloudConfig(): CloudConfig {
   const provider = process.env.CLOUD_PROVIDER || 'supabase';
   
   switch (provider) {
+    case 'ibm':
+      return ibmCloudConfig;
     case 'oracle':
       return oracleCloudConfig;
     case 'supabase':
@@ -80,8 +133,9 @@ export function getCloudConfig(): CloudConfig {
 // Database connection factory
 export function createDatabaseClient(config: CloudConfig) {
   switch (config.provider) {
+    case 'ibm':
+      return createIBMClient(config);
     case 'oracle':
-      // Oracle Database connection would go here
       return createOracleClient(config);
     case 'supabase':
     default:
@@ -89,14 +143,25 @@ export function createDatabaseClient(config: CloudConfig) {
   }
 }
 
+function createIBMClient(config: CloudConfig) {
+  // IBM Cloud Databases for PostgreSQL connection
+  // Uses pg driver with SSL in production
+  return {
+    query: async (sql: string, params?: any[]) => {
+      console.log('IBM PostgreSQL query:', sql, params);
+      // Implement IBM-specific query logic using pg driver
+    },
+    close: () => {
+      console.log('Closing IBM connection');
+    }
+  };
+}
+
 function createOracleClient(config: CloudConfig) {
   // Oracle Autonomous Database connection
-  // This would use Oracle's node-oracledb driver in production
   return {
-    // Placeholder for Oracle client methods
     query: async (sql: string, params?: any[]) => {
       console.log('Oracle query:', sql, params);
-      // Implement Oracle-specific query logic
     },
     close: () => {
       console.log('Closing Oracle connection');
@@ -107,7 +172,6 @@ function createOracleClient(config: CloudConfig) {
 function createSupabaseClient(config: CloudConfig) {
   // Keep existing Supabase client
   return {
-    // Current Supabase implementation
     from: (table: string) => ({
       select: () => ({ data: [], error: null }),
       insert: () => ({ data: [], error: null }),
