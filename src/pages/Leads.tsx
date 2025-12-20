@@ -1024,8 +1024,6 @@ export default function Leads() {
             <SecureLeadForm
               lead={editingLead}
               onSubmit={(data) => {
-                console.log('Edit lead form data received:', data);
-                console.log('Credit score from edit lead form:', data.credit_score, typeof data.credit_score);
                 return handleFormSubmit(data);
               }}
               onCancel={() => setIsFormOpen(false)}
@@ -1041,8 +1039,6 @@ export default function Leads() {
             </DialogHeader>
             <SecureLeadForm
               onSubmit={(data) => {
-                console.log('New lead form data received:', data);
-                console.log('Credit score from new lead form:', data.credit_score, typeof data.credit_score);
                 return handleFormSubmit(data);
               }}
               onCancel={() => setShowNewLeadForm(false)}
