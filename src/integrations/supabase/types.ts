@@ -6183,6 +6183,13 @@ export type Database = {
       }
       has_role:
         | {
+            Args: {
+              _role: Database["public"]["Enums"]["user_role"]
+              _user_id: string
+            }
+            Returns: boolean
+          }
+        | {
             Args: { required_role: string; user_id?: string }
             Returns: boolean
           }
@@ -6193,6 +6200,10 @@ export type Database = {
             }
             Returns: boolean
           }
+      has_role_text: {
+        Args: { _role: string; _user_id: string }
+        Returns: boolean
+      }
       has_sensitive_data_permission: {
         Args: {
           p_admin_user_id: string
