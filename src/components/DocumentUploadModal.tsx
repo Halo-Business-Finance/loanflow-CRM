@@ -83,33 +83,38 @@ export function DocumentUploadModal({ isOpen, onClose, onUpload, preSelectedLead
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const allowedTypes = [
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'image/jpeg',
-        'image/png',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      ];
-      const maxSize = 10 * 1024 * 1024; // 10MB
+    try {
+      const file = e.target.files?.[0];
+      if (file) {
+        const allowedTypes = [
+          'application/pdf',
+          'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'image/jpeg',
+          'image/png',
+          'application/vnd.ms-excel',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ];
+        const maxSize = 10 * 1024 * 1024; // 10MB
 
-      if (!allowedTypes.includes(file.type)) {
-        toast({ title: 'Invalid file type', description: 'Allowed: PDF, DOC, DOCX, XLS, XLSX, PNG, JPG', variant: 'destructive' });
-        return;
-      }
-      if (file.size > maxSize) {
-        toast({ title: 'File too large', description: 'Maximum size is 10MB', variant: 'destructive' });
-        return;
-      }
+        if (!allowedTypes.includes(file.type)) {
+          toast({ title: 'Invalid file type', description: 'Allowed: PDF, DOC, DOCX, XLS, XLSX, PNG, JPG', variant: 'destructive' });
+          return;
+        }
+        if (file.size > maxSize) {
+          toast({ title: 'File too large', description: 'Maximum size is 10MB', variant: 'destructive' });
+          return;
+        }
 
-      setSelectedFile(file);
-      if (!documentName) {
-        const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, '');
-        setDocumentName(nameWithoutExtension);
+        setSelectedFile(file);
+        if (!documentName) {
+          const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, '');
+          setDocumentName(nameWithoutExtension);
+        }
       }
+    } catch (error) {
+      console.error('Error processing file:', error);
+      toast({ title: 'Error', description: 'Failed to process file. Please try again.', variant: 'destructive' });
     }
   };
 

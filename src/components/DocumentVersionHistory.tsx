@@ -55,9 +55,13 @@ export function DocumentVersionHistory({
   const [uploading, setUploading] = useState(false);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
+    try {
+      const file = e.target.files?.[0];
+      if (file) {
+        setSelectedFile(file);
+      }
+    } catch (error) {
+      console.error('Error selecting file:', error);
     }
   };
 
