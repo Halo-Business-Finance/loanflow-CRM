@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarCheck, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { formatCurrency } from '@/lib/utils';
 import { format } from 'date-fns';
+import { CLOSER_STAGES } from '@/lib/loan-stages';
 
 interface ClosingEvent {
   id: string;
@@ -28,23 +28,23 @@ export function ClosingCalendarWidget() {
 
   const fetchClosingEvents = async () => {
     try {
+      // Fetch loans in closing stages with scheduled closing dates (next_follow_up)
       const { data, error } = await supabase
         .from('contact_entities')
-        .select('id, name, business_name, loan_amount, updated_at')
+        .select('id, name, business_name, loan_amount, updated_at, next_follow_up')
         .eq('stage', 'Closing')
-        .order('updated_at', { ascending: true });
+        .not('next_follow_up', 'is', null)
+        .order('next_follow_up', { ascending: true });
 
       if (error) throw error;
 
-      // Simulate closing dates (in reality, these would come from a dedicated closing_date field)
-      const eventsWithDates = (data || []).map((item, index) => {
-        const closingDate = new Date();
-        closingDate.setDate(closingDate.getDate() + index + 1); // Spread over next few days
-        return {
+      // Use actual scheduled dates from next_follow_up field
+      const eventsWithDates = (data || [])
+        .filter(item => item.next_follow_up)
+        .map((item) => ({
           ...item,
-          closingDate,
-        };
-      });
+          closingDate: new Date(item.next_follow_up!),
+        }));
 
       setEvents(eventsWithDates);
     } catch (error) {

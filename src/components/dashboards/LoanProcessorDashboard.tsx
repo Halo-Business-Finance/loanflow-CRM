@@ -15,6 +15,7 @@ import { PreFlightChecklist } from '@/components/processor/PreFlightChecklist';
 import { StackingOrderAutomation } from '@/components/processor/StackingOrderAutomation';
 import { DocumentExpirationTracker } from '@/components/processor/DocumentExpirationTracker';
 import { SLATimelineTracker } from '@/components/processor/SLATimelineTracker';
+import { PROCESSOR_STAGES } from '@/lib/loan-stages';
 import { 
   FileText, 
   Clock, 
@@ -284,7 +285,7 @@ export const LoanProcessorDashboard = () => {
           created_at,
           updated_at
         `)
-        .in('stage', ['Application', 'Pre-approval']);
+        .in('stage', PROCESSOR_STAGES);
 
       if (contactsError) {
         throw contactsError;
@@ -331,7 +332,7 @@ export const LoanProcessorDashboard = () => {
         .from('contact_entities')
         .select('id')
         .gte('updated_at', today)
-        .in('stage', ['Pre-approval', 'Documentation']);
+        .in('stage', ['Documentation', 'Underwriting']);
 
       // Fetch this week's processing stats
       const { data: weeklyContactsData } = await supabase
@@ -348,7 +349,7 @@ export const LoanProcessorDashboard = () => {
       const { data: pipelineData, count: pipelineItemsCount } = await supabase
         .from('contact_entities')
         .select('id', { count: 'exact' })
-        .in('stage', ['Application', 'Pre-approval', 'Documentation']);
+        .in('stage', PROCESSOR_STAGES);
 
       setPendingApps(transformedPending);
       setDocumentCount(docsCount || 0);

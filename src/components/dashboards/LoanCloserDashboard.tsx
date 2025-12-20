@@ -9,6 +9,7 @@ import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { FundingQueueWidget } from '@/components/widgets/FundingQueueWidget';
 import { ClosingCalendarWidget } from '@/components/widgets/ClosingCalendarWidget';
 import { PreClosingChecklist } from '@/components/closer/PreClosingChecklist';
+import { CLOSER_STAGES } from '@/lib/loan-stages';
 import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
 import { CompactCalendarWidget } from '@/components/CompactCalendarWidget';
 import { TodaysScheduleWidget } from '@/components/widgets/TodaysScheduleWidget';
@@ -98,7 +99,7 @@ export const LoanCloserDashboard = () => {
         supabase
           .from('contact_entities')
           .select('id, name, business_name, loan_amount, loan_type, stage, priority, created_at')
-          .in('stage', ['Underwriting', 'Approved'])
+          .in('stage', ['Approval', 'Underwriting'])
           .order('created_at', { ascending: false })
           .limit(20)
       ]);

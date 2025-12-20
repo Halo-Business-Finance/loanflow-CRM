@@ -8,6 +8,7 @@ import { StandardContentCard } from '@/components/StandardContentCard';
 import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { ApprovalQueueWidget } from '@/components/widgets/ApprovalQueueWidget';
 import { RiskAssessmentWidget } from '@/components/widgets/RiskAssessmentWidget';
+import { UNDERWRITER_STAGES } from '@/lib/loan-stages';
 import { TaskTimelineWidget } from '@/components/widgets/TaskTimelineWidget';
 import { DocumentChecklistWidget } from '@/components/widgets/DocumentChecklistWidget';
 import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
@@ -278,7 +279,7 @@ export const UnderwriterDashboard = () => {
       const { data: pendingData } = await supabase
         .from('contact_entities')
         .select('*')
-        .in('stage', ['Pre-approval', 'Documentation']);
+        .in('stage', ['Documentation', 'Underwriting']);
 
       const { data: approvedToday } = await supabase
         .from('contact_entities')
@@ -308,7 +309,7 @@ export const UnderwriterDashboard = () => {
           credit_score,
           income
         `)
-        .in('stage', ['Application', 'Pre-approval']);
+        .in('stage', UNDERWRITER_STAGES);
 
       if (contactsError) throw contactsError;
 
@@ -349,7 +350,7 @@ export const UnderwriterDashboard = () => {
         .from('contact_entities')
         .select('id')
         .gte('updated_at', today)
-        .in('stage', ['Pre-approval', 'Documentation']);
+        .in('stage', ['Documentation', 'Underwriting']);
 
       const { data: weeklyContactsData } = await supabase
         .from('contact_entities')
@@ -363,7 +364,7 @@ export const UnderwriterDashboard = () => {
       const { count: pipelineItemsCount } = await supabase
         .from('contact_entities')
         .select('id', { count: 'exact' })
-        .in('stage', ['Application', 'Pre-approval', 'Documentation']);
+        .in('stage', UNDERWRITER_STAGES);
 
       setPendingReviews(pendingData || []);
       setPendingApps(transformedPending);
