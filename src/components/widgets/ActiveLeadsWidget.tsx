@@ -33,7 +33,7 @@ interface Lead {
   email: string;
   phone: string | null;
   loan_type: string | null;
-  requested_amount: number | null;
+  loan_amount: number | null;
   stage: string;
   priority: string;
   created_at: string;
@@ -105,7 +105,7 @@ export const ActiveLeadsWidget = () => {
       const contactIds = leadsData.map(l => l.contact_entity_id).filter(Boolean);
       const { data: contacts, error: contactsError } = await supabase
         .from('contact_entities')
-        .select('id, name, business_name, email, phone, loan_type, requested_amount, stage, priority')
+        .select('id, name, business_name, email, phone, loan_type, loan_amount, stage, priority')
         .in('id', contactIds as string[]);
 
       if (contactsError) throw contactsError;
@@ -123,8 +123,8 @@ export const ActiveLeadsWidget = () => {
           email: contact.email,
           phone: contact.phone,
           loan_type: contact.loan_type,
-          requested_amount: contact.requested_amount,
-          stage: contact.stage || 'New',
+          loan_amount: contact.loan_amount,
+          stage: contact.stage || 'New Lead',
           priority: contact.priority || 'Medium',
           created_at: lead.created_at
         };
@@ -133,9 +133,9 @@ export const ActiveLeadsWidget = () => {
       setLeads(formattedLeads);
 
       // Calculate stats
-      const newLeads = formattedLeads.filter(l => l.stage === 'New' || l.stage === 'Initial Contact').length;
+      const newLeads = formattedLeads.filter(l => l.stage === 'New Lead' || l.stage === 'Initial Contact').length;
       const highPriorityLeads = formattedLeads.filter(l => l.priority?.toLowerCase() === 'high').length;
-      const pipelineValue = formattedLeads.reduce((sum, l) => sum + (l.requested_amount || 0), 0);
+      const pipelineValue = formattedLeads.reduce((sum, l) => sum + (l.loan_amount || 0), 0);
 
       setStats({
         totalLeads: formattedLeads.length,
@@ -355,10 +355,10 @@ export const ActiveLeadsWidget = () => {
                             <span>{lead.loan_type}</span>
                           </div>
                         )}
-                        {lead.requested_amount && (
+                        {lead.loan_amount && (
                           <div className="flex items-center gap-1 text-sm">
                             <DollarSign className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span>{formatCurrency(lead.requested_amount)}</span>
+                            <span>{formatCurrency(lead.loan_amount)}</span>
                           </div>
                         )}
                       </div>

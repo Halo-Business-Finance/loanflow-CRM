@@ -163,6 +163,7 @@ export interface ContactEntity {
 
 export const STAGES = [
   "All", 
+  "New Lead",
   "Initial Contact", 
   "Loan Application Signed", 
   "Waiting for Documentation", 
