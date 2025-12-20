@@ -410,7 +410,7 @@ All colors MUST be HSL.
 
   /* Button hover override - apply blue outline to all outline buttons */
   button[class*="outline"]:not([class*="destructive"]):hover {
-    @apply outline outline-2 outline-blue-500 outline-offset-[-2px] bg-transparent;
+    @apply outline outline-2 outline-blue-500 outline-offset-[-2px];
   }
 
   /* Dark mode specific refinements */
