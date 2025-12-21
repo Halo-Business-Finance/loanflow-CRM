@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { SecureLogger } from '../_shared/secure-logger.ts'
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rate-limit.ts'
 
 const logger = new SecureLogger('encrypt-data')
 
@@ -31,6 +32,25 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
+    // Verify authentication
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Authorization required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token)
+    
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid authentication' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     // Get request body
     const { 
       action, 
@@ -48,6 +68,18 @@ serve(async (req) => {
           status: 400, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
         }
+      )
+    }
+
+    // Apply rate limiting based on action
+    const rateLimitConfig = action === 'encrypt' ? RATE_LIMITS.ENCRYPT_DATA : RATE_LIMITS.DECRYPT_DATA
+    const rateLimitResult = await checkRateLimit(supabase, user.id, rateLimitConfig)
+    
+    if (!rateLimitResult.allowed) {
+      logger.warn('Rate limit exceeded for encryption operation', { userId: user.id, action })
+      return new Response(
+        JSON.stringify({ error: rateLimitResult.error }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 

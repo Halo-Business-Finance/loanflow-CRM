@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { SecureLogger } from '../_shared/secure-logger.ts'
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rate-limit.ts'
 
 const logger = new SecureLogger('session-security')
 
@@ -20,6 +21,22 @@ Deno.serve(async (req) => {
 
   try {
     const { action, session_token, user_id, device_fingerprint } = await req.json()
+
+    // Apply rate limiting for session operations (except cleanup which is internal)
+    if (action !== 'cleanup_sessions' && user_id) {
+      const rateLimitConfig = action === 'validate_session' 
+        ? RATE_LIMITS.SESSION_VALIDATE 
+        : RATE_LIMITS.SESSION_TRACK
+      const rateLimitResult = await checkRateLimit(supabase, user_id, rateLimitConfig)
+      
+      if (!rateLimitResult.allowed) {
+        logger.warn('Rate limit exceeded for session operation', { userId: user_id, action })
+        return new Response(
+          JSON.stringify({ error: rateLimitResult.error }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 }
+        )
+      }
+    }
 
     switch (action) {
       case 'validate_session':

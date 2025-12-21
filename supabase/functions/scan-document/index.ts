@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { SecureLogger } from '../_shared/secure-logger.ts';
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rate-limit.ts';
 
 const logger = new SecureLogger('scan-document');
 
@@ -51,6 +52,17 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ error: 'Invalid authentication' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Apply rate limiting
+    const rateLimitResult = await checkRateLimit(supabase, user.id, RATE_LIMITS.SCAN_DOCUMENT);
+    
+    if (!rateLimitResult.allowed) {
+      logger.warn('Rate limit exceeded for document scan', { userId: user.id });
+      return new Response(
+        JSON.stringify({ error: rateLimitResult.error }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

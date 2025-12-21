@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 import { SecureLogger } from '../_shared/secure-logger.ts';
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rate-limit.ts';
 
 const logger = new SecureLogger('microsoft-auth');
 
@@ -197,6 +198,26 @@ serve(async (req) => {
     }
 
     logger.logAction(action, { userId: user.id });
+
+    // Apply rate limiting based on action type
+    let rateLimitConfig = RATE_LIMITS.AUTH_LOGIN;
+    if (action === 'exchange_code') {
+      rateLimitConfig = RATE_LIMITS.AUTH_EXCHANGE_CODE;
+    } else if (action === 'send_email') {
+      rateLimitConfig = RATE_LIMITS.SEND_EMAIL;
+    } else if (action === 'send_password_reset') {
+      rateLimitConfig = RATE_LIMITS.SEND_PASSWORD_RESET;
+    }
+
+    const rateLimitResult = await checkRateLimit(supabase, user.id, rateLimitConfig);
+    
+    if (!rateLimitResult.allowed) {
+      logger.warn('Rate limit exceeded for Microsoft auth operation', { userId: user.id, action });
+      return new Response(
+        JSON.stringify({ error: rateLimitResult.error }),
+        { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    }
 
     switch (action) {
       case 'get_auth_url': {
