@@ -16,7 +16,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 
-export default function Enterprise() {
+export default function EnterpriseManagement() {
   return (
     <StandardPageLayout>
       <IBMPageHeader 
