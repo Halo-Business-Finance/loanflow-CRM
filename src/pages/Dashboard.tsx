@@ -61,6 +61,7 @@ import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { CompactMessagesWidget } from '@/components/CompactMessagesWidget';
 import { cn } from '@/lib/utils';
+import { secureStorage } from '@/lib/secure-storage';
 
 const COLORS = ['#0f62fe', '#0353e9', '#8a3ffc', '#33b1ff', '#d12771'];
 
@@ -386,21 +387,26 @@ export default function Dashboard() {
     }
     fetchDashboardData();
     
-    // Load saved widget order from localStorage
-    const savedOrder = localStorage.getItem('dashboard-widget-order');
-    if (savedOrder) {
+    // Load saved widget order from secure encrypted storage
+    const loadWidgetOrder = async () => {
       try {
-        setWidgetOrder(JSON.parse(savedOrder));
-      } catch (e) {
-        console.error('Failed to load widget order:', e);
+        const savedOrder = await secureStorage.getItem('dashboard-widget-order');
+        if (savedOrder) {
+          setWidgetOrder(JSON.parse(savedOrder));
+        }
+      } catch {
+        // Use default order on error
       }
-    }
+    };
+    loadWidgetOrder();
   }, [user, hasRole]);
 
-  // Save widget order to localStorage when it changes
+  // Save widget order to secure encrypted storage when it changes
   useEffect(() => {
     if (widgetOrder.length > 0) {
-      localStorage.setItem('dashboard-widget-order', JSON.stringify(widgetOrder));
+      secureStorage.setItem('dashboard-widget-order', JSON.stringify(widgetOrder)).catch(() => {
+        // Silently fail - will use defaults on next load
+      });
     }
   }, [widgetOrder]);
 

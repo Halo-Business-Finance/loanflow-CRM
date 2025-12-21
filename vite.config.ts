@@ -9,8 +9,12 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  // Strip console.log and debugger statements in production to prevent information leakage
+  esbuild: {
+    drop: mode === 'production' ? ['console', 'debugger'] : [],
+  },
   build: {
-    sourcemap: true,
+    sourcemap: mode !== 'production', // Disable sourcemaps in production for security
     cssMinify: true, // Ensure CSS is minified
     cssCodeSplit: true, // Split CSS per component for smaller initial load
     target: 'esnext', // Modern browsers for smaller output
