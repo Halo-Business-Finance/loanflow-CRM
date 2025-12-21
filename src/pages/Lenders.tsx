@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
+import { StandardKPICard } from '@/components/StandardKPICard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -195,30 +196,10 @@ export default function Lenders() {
       <div className="p-8 space-y-8">
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-sm text-muted-foreground mb-2">Total Lenders</div>
-              <div className="text-3xl font-bold text-primary">{totalLenders}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-sm text-muted-foreground mb-2">Active Lenders</div>
-              <div className="text-3xl font-bold text-primary">{activeLenders}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-sm text-muted-foreground mb-2">Inactive Lenders</div>
-              <div className="text-3xl font-bold text-primary">{inactiveLenders}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-sm text-muted-foreground mb-2">Total Contacts</div>
-              <div className="text-3xl font-bold text-primary">{totalContacts}</div>
-            </CardContent>
-          </Card>
+          <StandardKPICard title="Total Lenders" value={totalLenders.toString()} />
+          <StandardKPICard title="Active Lenders" value={activeLenders.toString()} />
+          <StandardKPICard title="Inactive Lenders" value={inactiveLenders.toString()} />
+          <StandardKPICard title="Total Contacts" value={totalContacts.toString()} />
         </div>
 
         {/* Performance Charts */}

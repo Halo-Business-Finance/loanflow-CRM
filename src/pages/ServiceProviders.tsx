@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardKPICard } from "@/components/StandardKPICard";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Search, Phone, Mail, MapPin, Plus, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
@@ -165,30 +166,10 @@ export default function ServiceProviders() {
       <div className="p-8 space-y-8">
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-sm text-muted-foreground mb-2">Total Providers</div>
-              <div className="text-3xl font-bold text-primary">{totalProviders}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-sm text-muted-foreground mb-2">Active Providers</div>
-              <div className="text-3xl font-bold text-primary">{activeProviders}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-sm text-muted-foreground mb-2">Inactive Providers</div>
-              <div className="text-3xl font-bold text-primary">{inactiveProviders}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-sm text-muted-foreground mb-2">Related Leads</div>
-              <div className="text-3xl font-bold text-primary">{totalLeads}</div>
-            </CardContent>
-          </Card>
+          <StandardKPICard title="Total Providers" value={totalProviders.toString()} />
+          <StandardKPICard title="Active Providers" value={activeProviders.toString()} />
+          <StandardKPICard title="Inactive Providers" value={inactiveProviders.toString()} />
+          <StandardKPICard title="Related Leads" value={totalLeads.toString()} />
         </div>
 
         {/* Performance Charts */}
