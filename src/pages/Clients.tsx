@@ -46,7 +46,7 @@ interface Loan {
   notes?: string
 }
 
-export default function ExistingBorrowers() {
+export default function Clients() {
   const navigate = useNavigate()
   const { user, hasRole } = useAuth()
   const { toast } = useToast()

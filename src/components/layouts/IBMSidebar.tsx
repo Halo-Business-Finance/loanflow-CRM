@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { LucideIcon } from 'lucide-react';
 import {
   LayoutDashboard,
   Users,
@@ -36,7 +37,7 @@ interface IBMSidebarProps {
 }
 
 interface NavItemData {
-  icon: React.ElementType;
+  icon: LucideIcon;
   label: string;
   to?: string;
   subItems?: NavItemData[];
