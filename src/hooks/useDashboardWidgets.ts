@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
-
+import { secureStorage } from '@/lib/secure-storage';
 export interface WidgetConfig {
   id: string;
   name: string;
@@ -174,11 +174,12 @@ export function useDashboardWidgets() {
       .map(widget => widget.id);
   }, []);
 
-  // Load preferences from storage
+  // Load preferences from secure storage
   useEffect(() => {
-    const loadPreferences = () => {
+    const loadPreferences = async () => {
       try {
-        const stored = localStorage.getItem(STORAGE_KEY);
+        // Use secure encrypted storage instead of plain localStorage
+        const stored = await secureStorage.getItem(STORAGE_KEY);
         if (stored) {
           const parsed = JSON.parse(stored) as WidgetPreferences;
           setPreferences(parsed);
@@ -207,9 +208,13 @@ export function useDashboardWidgets() {
     loadPreferences();
   }, [getUserRole, getDefaultWidgetsForRole]);
 
-  // Save preferences
-  const savePreferences = useCallback((newPrefs: WidgetPreferences) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newPrefs));
+  // Save preferences to secure storage
+  const savePreferences = useCallback(async (newPrefs: WidgetPreferences) => {
+    try {
+      await secureStorage.setItem(STORAGE_KEY, JSON.stringify(newPrefs));
+    } catch {
+      // Fallback silently - preferences will be reset on next load
+    }
     setPreferences(newPrefs);
   }, []);
 

@@ -303,6 +303,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  /**
+   * Client-side role check for UI visibility ONLY.
+   * SECURITY NOTE: This is for UI convenience only and MUST NOT be trusted for authorization.
+   * All sensitive operations are protected by:
+   * 1. Row Level Security (RLS) policies in Supabase
+   * 2. Server-side role verification via get_user_role() RPC
+   * 3. Edge function authorization checks
+   * 
+   * Attackers can manipulate client-side JavaScript, so never rely on this for security.
+   */
   const hasRole = (role: string) => {
     if (!userRoles || userRoles.length === 0) return false
     
@@ -315,7 +325,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // If checking for super_admin specifically, only super_admin can have it
     if (role === 'super_admin') return userRoles.includes('super_admin')
     
-    // Role hierarchy: super_admin > admin > manager > agent/loan_originator/loan_processor/funder/underwriter/closer > tech
+    // Role hierarchy for UI display purposes only
+    // Actual authorization is enforced by RLS and server-side checks
     const roleHierarchy = ['tech', 'closer', 'underwriter', 'funder', 'loan_processor', 'loan_originator', 'manager', 'admin', 'super_admin']
     
     // Find highest role user has
