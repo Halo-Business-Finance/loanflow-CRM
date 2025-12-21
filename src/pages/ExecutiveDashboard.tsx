@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
 import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardKPICard } from "@/components/StandardKPICard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -183,29 +184,15 @@ export default function ExecutiveDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         {kpiCards.map((kpi, index) => (
-          <Card key={index}>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">{kpi.title}</p>
-                  <p className="text-2xl font-bold mt-1">{kpi.value}</p>
-                  <div className="flex items-center gap-1 mt-1">
-                    {kpi.trend === "up" ? (
-                      <ArrowUpRight className="h-3 w-3 text-green-400" />
-                    ) : (
-                      <ArrowDownRight className="h-3 w-3 text-red-400" />
-                    )}
-                    <span className={`text-xs ${kpi.trend === "up" ? "text-green-400" : "text-red-400"}`}>
-                      {kpi.change}
-                    </span>
-                  </div>
-                </div>
-                <div className={`p-3 rounded-lg ${kpi.color}`}>
-                  <kpi.icon className="h-5 w-5" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <StandardKPICard
+            key={index}
+            title={kpi.title}
+            value={kpi.value}
+            trend={{
+              value: kpi.change,
+              direction: kpi.trend === "up" ? "up" : "down"
+            }}
+          />
         ))}
       </div>
 

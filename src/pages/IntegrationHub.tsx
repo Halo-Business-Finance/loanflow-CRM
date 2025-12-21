@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
 import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { StandardKPICard } from "@/components/StandardKPICard";
+import { StandardContentCard } from "@/components/StandardContentCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -192,49 +194,20 @@ export default function IntegrationHub() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-green-500/20">
-                <Link2 className="h-5 w-5 text-green-400" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Connected</p>
-                <p className="text-2xl font-bold">{connections.filter(c => c.status === "active").length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-blue-500/20">
-                <Zap className="h-5 w-5 text-blue-400" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Available</p>
-                <p className="text-2xl font-bold">{availableIntegrations.length - connections.length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-purple-500/20">
-                <Activity className="h-5 w-5 text-purple-400" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Last Sync</p>
-                <p className="text-2xl font-bold">
-                  {connections.length > 0 && connections[0].last_sync_at 
-                    ? new Date(connections[0].last_sync_at).toLocaleDateString() 
-                    : "Never"}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <StandardKPICard 
+          title="Connected" 
+          value={connections.filter(c => c.status === "active").length.toString()} 
+        />
+        <StandardKPICard 
+          title="Available" 
+          value={(availableIntegrations.length - connections.length).toString()} 
+        />
+        <StandardKPICard 
+          title="Last Sync" 
+          value={connections.length > 0 && connections[0].last_sync_at 
+            ? new Date(connections[0].last_sync_at).toLocaleDateString() 
+            : "Never"} 
+        />
       </div>
 
       <Tabs defaultValue="connected" className="space-y-4">

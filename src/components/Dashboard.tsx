@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StandardKPICard } from '@/components/StandardKPICard';
 import { Button } from '@/components/ui/button';
 
 import { 
@@ -362,41 +363,10 @@ function Dashboard() {
           <>
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="widget-glass widget-glow">
-                <CardContent className="widget-content p-6">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                    <p className="text-3xl font-semibold text-foreground">{formatCurrency(metrics.totalRevenue)}</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="widget-glass widget-glow">
-                <CardContent className="widget-content p-6">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-muted-foreground">Total Leads</p>
-                    <p className="text-3xl font-semibold text-foreground">{metrics.totalLeads}</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="widget-glass widget-glow">
-                <CardContent className="widget-content p-6">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
-                    <p className="text-3xl font-semibold text-foreground">{formatCurrency(metrics.pipelineValue)}</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="widget-glass widget-glow">
-                <CardContent className="widget-content p-6">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-muted-foreground">Conversion Rate</p>
-                    <p className="text-3xl font-semibold text-foreground">{metrics.conversionRate.toFixed(1)}%</p>
-                  </div>
-                </CardContent>
-              </Card>
+              <StandardKPICard title="Total Revenue" value={formatCurrency(metrics.totalRevenue)} />
+              <StandardKPICard title="Total Leads" value={metrics.totalLeads.toString()} />
+              <StandardKPICard title="Pipeline Value" value={formatCurrency(metrics.pipelineValue)} />
+              <StandardKPICard title="Conversion Rate" value={`${metrics.conversionRate.toFixed(1)}%`} />
             </div>
 
             {/* Widgets Row - Messages, Calendar, Today's Tasks */}
