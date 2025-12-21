@@ -1,7 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@4.0.0";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getSecurityHeaders, handleSecureOptions, escapeHtml, validateEmail, sanitizeString } from "../_shared/security-headers.ts";
 import { SecureLogger } from "../_shared/secure-logger.ts";
+import { checkRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 
 const logger = new SecureLogger('send-email');
 
@@ -23,6 +25,42 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Initialize Supabase client for rate limiting
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Verify authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Authorization required" }),
+        { status: 401, headers: getSecurityHeaders({ "Content-Type": "application/json" }) }
+      );
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication" }),
+        { status: 401, headers: getSecurityHeaders({ "Content-Type": "application/json" }) }
+      );
+    }
+
+    // Apply rate limiting to prevent email spam
+    const rateLimitResult = await checkRateLimit(supabase, user.id, RATE_LIMITS.SEND_EMAIL);
+    
+    if (!rateLimitResult.allowed) {
+      logger.warn('Rate limit exceeded for send email', { userId: user.id });
+      return new Response(
+        JSON.stringify({ error: rateLimitResult.error }),
+        { status: 429, headers: getSecurityHeaders({ "Content-Type": "application/json" }) }
+      );
+    }
+
     const { to, subject, body, leadName, fromName, replyTo }: EmailRequest = await req.json();
 
     // Enhanced input validation

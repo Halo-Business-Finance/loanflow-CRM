@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.52.1'
 import { SecureLogger } from '../_shared/secure-logger.ts'
+import { checkRateLimit, RATE_LIMITS } from '../_shared/rate-limit.ts'
 
 const logger = new SecureLogger('encryption-key-service')
 
@@ -45,6 +46,18 @@ Deno.serve(async (req) => {
     }
 
     const { action, keyType, fieldIdentifier }: KeyRequest = await req.json()
+
+    // Apply rate limiting based on action
+    const rateLimitConfig = action === 'rotate' ? RATE_LIMITS.ENCRYPTION_KEY_ROTATE : RATE_LIMITS.ENCRYPTION_KEY_DERIVE
+    const rateLimitResult = await checkRateLimit(supabaseClient, user.id, rateLimitConfig)
+    
+    if (!rateLimitResult.allowed) {
+      logger.warn('Rate limit exceeded for key operation', { userId: user.id, action })
+      return new Response(
+        JSON.stringify({ success: false, error: rateLimitResult.error }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
     // Log key access for audit
     await supabaseClient.from('security_events').insert({
