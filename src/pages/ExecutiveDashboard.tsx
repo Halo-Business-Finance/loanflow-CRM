@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
-import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -154,9 +154,9 @@ export default function ExecutiveDashboard() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
+      <IBMPageHeader
         title="Executive Dashboard"
-        description="Real-time KPI monitoring and drill-down analytics"
+        subtitle="Real-time KPI monitoring and drill-down analytics"
         actions={
           <div className="flex gap-2">
             <Select value={timeRange} onValueChange={setTimeRange}>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StandardPageLayout } from '@/components/StandardPageLayout';
-import { StandardPageHeader } from '@/components/StandardPageHeader';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -116,9 +116,9 @@ export default function AdvancedReports() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
+      <IBMPageHeader
         title="Advanced Reports"
-        description="Build, schedule, and share custom reports"
+        subtitle="Build, schedule, and share custom reports"
         actions={
           <Button onClick={() => navigate('/report-builder')}>
             <Plus className="h-4 w-4 mr-2" />

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
-import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -186,9 +186,9 @@ export default function IntegrationHub() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
+      <IBMPageHeader
         title="Integration Hub"
-        description="Connect to Plaid, credit bureaus, and accounting systems"
+        subtitle="Connect to Plaid, credit bureaus, and accounting systems"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

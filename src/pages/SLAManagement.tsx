@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
-import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -128,9 +128,9 @@ export default function SLAManagement() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
+      <IBMPageHeader
         title="SLA Management"
-        description="Monitor response times, escalations, and deadline compliance"
+        subtitle="Monitor response times, escalations, and deadline compliance"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
