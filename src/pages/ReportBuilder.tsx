@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { StandardPageLayout } from '@/components/StandardPageLayout';
-import { StandardPageHeader } from '@/components/StandardPageHeader';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -295,9 +295,9 @@ export default function ReportBuilder() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
+      <IBMPageHeader
         title={isEditing ? 'Edit Report' : 'Report Builder'}
-        description="Create custom reports with drag-and-drop simplicity"
+        subtitle="Create custom reports with drag-and-drop simplicity"
         actions={
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => navigate('/advanced-reports')}>

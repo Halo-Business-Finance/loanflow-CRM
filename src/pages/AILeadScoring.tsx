@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
-import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -135,9 +135,9 @@ export default function AILeadScoring() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
+      <IBMPageHeader
         title="AI Lead Scoring"
-        description="Predictive conversion probability with next best action suggestions"
+        subtitle="Predictive conversion probability with next best action suggestions"
         actions={
           <Button onClick={runScoring} disabled={isScoring}>
             {isScoring ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Brain className="h-4 w-4 mr-2" />}

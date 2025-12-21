@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { StandardPageLayout } from "@/components/StandardPageLayout";
-import { StandardPageHeader } from "@/components/StandardPageHeader";
+import { IBMPageHeader } from "@/components/ui/IBMPageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -417,9 +417,9 @@ export default function ComplianceDashboard() {
 
   return (
     <StandardPageLayout>
-      <StandardPageHeader
+      <IBMPageHeader
         title="Compliance Dashboard"
-        description="SOX/regulatory compliance tracking and data retention policies"
+        subtitle="SOX/regulatory compliance tracking and data retention policies"
         actions={
           <div className="flex gap-2 items-center">
             <Button 

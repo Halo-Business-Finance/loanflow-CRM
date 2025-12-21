@@ -1,11 +1,12 @@
 import React from 'react';
-// import HybridLayout from '@/components/HybridLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BankPartnerCollaboration } from '@/components/partnerships/BankPartnerCollaboration';
 import { AdvancedAnalytics } from '@/components/analytics/AdvancedAnalytics';
 import { TeamCollaboration } from '@/components/collaboration/TeamCollaboration';
 import { WorkflowAutomation } from '@/components/operations/WorkflowAutomation';
+import { StandardPageLayout } from '@/components/StandardPageLayout';
+import { IBMPageHeader } from '@/components/ui/IBMPageHeader';
 import { 
   Handshake, 
   BarChart3, 
@@ -17,15 +18,13 @@ import {
 
 export default function Enterprise() {
   return (
-    <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center gap-2 mb-6">
-          <Building2 className="h-6 w-6" />
-          <h1 className="text-3xl font-bold">Enterprise Management Center</h1>
-          <p className="text-muted-foreground ml-4">
-            Advanced business intelligence, collaboration, and partner management
-          </p>
-        </div>
+    <StandardPageLayout>
+      <IBMPageHeader 
+        title="Enterprise Management Center"
+        subtitle="Advanced business intelligence, collaboration, and partner management"
+      />
 
+      <div className="p-6 space-y-6">
         {/* Enterprise Overview Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card className="border-l-4 border-l-primary">
@@ -104,5 +103,6 @@ export default function Enterprise() {
           </TabsContent>
         </Tabs>
       </div>
+    </StandardPageLayout>
   );
 }
