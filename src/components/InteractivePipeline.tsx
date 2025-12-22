@@ -10,7 +10,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom"
 import { Lead } from "@/types/lead"
-import { formatPhoneNumber, formatCurrency } from "@/lib/utils"
+import { formatPhoneNumber } from "@/lib/utils"
 import { useRoleBasedAccess } from "@/hooks/useRoleBasedAccess"
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription"
 
@@ -396,7 +396,7 @@ export function InteractivePipeline() {
               {selectedLead.loan_amount && (
                 <div>
                   <label className="text-sm font-medium dark:text-white">Loan Amount:</label>
-                  <p className="text-sm text-muted-foreground dark:text-white">{formatCurrency(selectedLead.loan_amount)}</p>
+                  <p className="text-sm text-muted-foreground dark:text-white">${selectedLead.loan_amount.toLocaleString()}</p>
                 </div>
               )}
               

@@ -1061,11 +1061,11 @@ export const UnderwriterDashboard = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm font-medium">Loan Amount</label>
-                        <div className="text-lg font-semibold text-blue-600">{formatCurrency(320000)}</div>
+                        <div className="text-lg font-semibold text-blue-600">$320,000</div>
                       </div>
                       <div>
                         <label className="text-sm font-medium">Property Value</label>
-                        <div className="text-lg font-semibold text-green-600">{formatCurrency(400000)}</div>
+                        <div className="text-lg font-semibold text-green-600">$400,000</div>
                       </div>
                     </div>
                     <div className="p-4 bg-muted rounded-lg">
