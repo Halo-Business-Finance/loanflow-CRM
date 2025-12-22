@@ -17,6 +17,7 @@ import {
   Info
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { formatCurrency } from '@/lib/utils';
 
 interface RiskFactor {
   name: string;
@@ -278,21 +279,21 @@ export function RiskScoringDashboard({ application }: RiskScoringDashboardProps)
               <div className="text-center">
                 <DollarSign className="h-5 w-5 mx-auto text-muted-foreground" />
                 <div className="text-lg font-semibold mt-1">
-                  ${application?.loanAmount?.toLocaleString() || 'N/A'}
+                  {application?.loanAmount ? formatCurrency(application.loanAmount) : 'N/A'}
                 </div>
                 <div className="text-xs text-muted-foreground">Loan Amount</div>
               </div>
               <div className="text-center">
                 <Building2 className="h-5 w-5 mx-auto text-muted-foreground" />
                 <div className="text-lg font-semibold mt-1">
-                  ${application?.collateralValue?.toLocaleString() || 'N/A'}
+                  {application?.collateralValue ? formatCurrency(application.collateralValue) : 'N/A'}
                 </div>
                 <div className="text-xs text-muted-foreground">Collateral Value</div>
               </div>
               <div className="text-center">
                 <TrendingUp className="h-5 w-5 mx-auto text-muted-foreground" />
                 <div className="text-lg font-semibold mt-1">
-                  ${application?.annualRevenue?.toLocaleString() || 'N/A'}
+                  {application?.annualRevenue ? formatCurrency(application.annualRevenue) : 'N/A'}
                 </div>
                 <div className="text-xs text-muted-foreground">Annual Revenue</div>
               </div>
