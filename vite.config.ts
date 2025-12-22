@@ -46,7 +46,7 @@ export default defineConfig(({ mode }) => ({
   },
   // Ensure Vite pre-bundling doesn't create multiple React copies
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', 'react-router-dom'],
+    include: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', 'react/jsx-dev-runtime', 'react-router-dom'],
   },
   plugins: [
     react(),
@@ -56,8 +56,21 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Hard-pin React resolution to a single copy (prevents hook dispatcher null)
+      react: path.resolve(__dirname, "node_modules/react"),
+      "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+      "react-dom/client": path.resolve(__dirname, "node_modules/react-dom/client"),
+      "react/jsx-runtime": path.resolve(__dirname, "node_modules/react/jsx-runtime"),
+      "react/jsx-dev-runtime": path.resolve(__dirname, "node_modules/react/jsx-dev-runtime"),
     },
     // Prevent multiple React copies (fixes "Cannot read properties of null (reading 'useState')")
-    dedupe: ['react', 'react-dom', 'react-router-dom'],
+    dedupe: [
+      'react',
+      'react-dom',
+      'react-dom/client',
+      'react/jsx-runtime',
+      'react/jsx-dev-runtime',
+      'react-router-dom',
+    ],
   },
 }));
