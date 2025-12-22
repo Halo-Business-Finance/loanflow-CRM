@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { formatNumberWithCommas, parseNumberFromFormatted } from '@/lib/utils';
 
 interface LoanQuote {
   lender: string;
@@ -165,9 +166,12 @@ APR: ${quote.apr.toFixed(2)}%
               <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 id="loanAmount"
-                type="number"
-                value={loanAmount}
-                onChange={(e) => setLoanAmount(e.target.value)}
+                type="text"
+                value={formatNumberWithCommas(loanAmount)}
+                onChange={(e) => {
+                  const parsed = parseNumberFromFormatted(e.target.value);
+                  setLoanAmount(parsed);
+                }}
                 className="pl-9"
                 placeholder="500,000"
               />
@@ -177,12 +181,15 @@ APR: ${quote.apr.toFixed(2)}%
           <div className="space-y-2">
             <Label htmlFor="propertyValue">Property Value</Label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 id="propertyValue"
-                type="number"
-                value={propertyValue}
-                onChange={(e) => setPropertyValue(e.target.value)}
+                type="text"
+                value={formatNumberWithCommas(propertyValue)}
+                onChange={(e) => {
+                  const parsed = parseNumberFromFormatted(e.target.value);
+                  setPropertyValue(parsed);
+                }}
                 className="pl-9"
                 placeholder="650,000"
               />
