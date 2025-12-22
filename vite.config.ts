@@ -21,8 +21,15 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks: {
-          // Keep React together to avoid hooks issues
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          // Keep React + JSX runtime together (prevents invalid hook call / dispatcher null)
+          'vendor-react': [
+            'react',
+            'react-dom',
+            'react-dom/client',
+            'react/jsx-runtime',
+            'react/jsx-dev-runtime',
+            'react-router-dom',
+          ],
           // Split heavy chart library
           'vendor-charts': ['recharts'],
           // UI components
@@ -37,6 +44,10 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  // Ensure Vite pre-bundling doesn't create multiple React copies
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', 'react-router-dom'],
+  },
   plugins: [
     react(),
     mode === 'development' &&
@@ -47,6 +58,6 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
     // Prevent multiple React copies (fixes "Cannot read properties of null (reading 'useState')")
-    dedupe: ['react', 'react-dom'],
+    dedupe: ['react', 'react-dom', 'react-router-dom'],
   },
 }));
